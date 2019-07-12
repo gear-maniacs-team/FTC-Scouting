@@ -57,9 +57,11 @@ class TournamentActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        tournamentKey = intent.getStringExtra(ARG_TOURNAMENT_KEY)
+        tournamentKey = intent.getStringExtra(ARG_TOURNAMENT_KEY) ?: throw IllegalArgumentException(ARG_TOURNAMENT_KEY)
         viewModel.tournamentKey = tournamentKey
-        viewModel.setDefaultName(intent.getStringExtra(ARG_TOURNAMENT_NAME))
+        val tournamentName = intent.getStringExtra(ARG_TOURNAMENT_NAME)
+            ?: throw IllegalArgumentException(ARG_TOURNAMENT_NAME)
+        viewModel.setDefaultName(tournamentName)
 
         bottom_navigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
