@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "824774994590",
+    "firebase_url": "https://ftc-scouting-rover-ruckus.firebaseio.com",
+    "project_id": "ftc-scouting-rover-ruckus",
+    "storage_bucket": "ftc-scouting-rover-ruckus.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:824774994590:android:aff139b500efcb7d",
+        "android_client_info": {
+          "package_name": "net.gearmaniacs.ftcscouting"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "824774994590-pbnrt6ccaltd5epl126t8l3bl8omms86.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3egNCurC99zykinx1iQFokZ-dTSjKpkA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

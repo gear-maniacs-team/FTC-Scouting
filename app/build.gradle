@@ -1,0 +1,63 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'io.fabric'
+
+android {
+    compileSdkVersion Versions.compile_sdk
+
+    defaultConfig {
+        applicationId "net.gearmaniacs.ftcscouting"
+        minSdkVersion Versions.min_sdk
+        targetSdkVersion Versions.target_sdk
+        versionCode 1
+        versionName "1.0"
+        resConfigs "en"
+    }
+
+    buildTypes {
+        debug {
+            manifestPlaceholders = [enableCrashlytics:false]
+            ext.enableCrashlytics = false
+            ext.alwaysUpdateBuildId = false
+            aaptOptions.cruncherEnabled = false
+            versionNameSuffix "-debug"
+        }
+        release {
+            manifestPlaceholders = [enableCrashlytics:false]
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+androidExtensions {
+    experimental = true
+}
+
+dependencies {
+    implementation Libs.kotlin_stdlib
+    implementation Libs.kotlin_coroutines
+    implementation Libs.kotlin_ktx
+
+    implementation Libs.google_material
+    implementation Libs.androidx_appcompat
+    implementation Libs.androidx_recycler_view
+    implementation Libs.androidx_card_view
+    implementation Libs.androidx_constraint_layout
+    implementation Libs.androidx_lifecycle
+    implementation Libs.androidx_lifecycle_ktx
+
+    implementation Libs.firebase_core
+    implementation Libs.firebase_database
+    implementation Libs.firebase_auth
+    implementation Libs.firebase_crashlytics
+
+    implementation Libs.material_about
+
+    testImplementation Libs.tests
+}
+
+apply plugin: 'com.google.gms.google-services'

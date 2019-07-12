@@ -1,0 +1,89 @@
+<resources>
+    <string name="app_name">FTC Scouting</string>
+
+    <!-- More General Strings -->
+    <string name="action_add">Add</string>
+    <string name="action_create">Create</string>
+    <string name="action_update">Update</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_edit_name">Edit Name</string>
+    <string name="none">None</string>
+    <string name="category_other">Other</string>
+    <string name="title_about">About</string>
+    <string name="version">Version</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="prompt_confirm_password">Confirm Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_register">Register Team Account</string>
+    <string name="action_no_account">You don\'t have a team account?</string>
+    <string name="action_already_own_account">I already own an account</string>
+    <string name="action_sign_out">Sign Out</string>
+    <string name="error_empty_team_number">Invalid Team Number</string>
+    <string name="error_invalid_team_number">Team Number can\'t be empty</string>
+    <string name="error_invalid_team_name">Team Name can\'t be empty</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_incorrect_confirm_password">The two passwords are not the same</string>
+    <string name="error_field_required">This field is required</string>
+
+    <!-- Strings related to the tournament -->
+    <string name="action_delete_tournament">Delete tournament</string>
+    <string name="action_export_excel">Export to Excel</string>
+    <string name="delete_tournament">Delete this tournament?</string>
+    <string name="delete_tournament_desc">If deleted, the tournament will also be removed from all other devices!</string>
+    <string name="title_tournaments">Tournaments</string>
+    <string name="title_teams">Teams</string>
+    <string name="title_matches">Matches</string>
+    <string name="title_analytics">Analytics</string>
+    <string name="export_finished">Finished Exporting Tournament</string>
+
+    <!-- Strings related to the team -->
+    <string name="team_preferred_depot">Depot</string>
+    <string name="team_preferred_crater">Crater</string>
+    <string name="team_id_name">#%d - %s</string>
+    <string name="team_predicted_score">Predicted Score: %d</string>
+    <string name="team_description"><b>Autonomous Score:</b> %d\n<b>TeleOp Score:</b> %d\n<b>End Game Score:</b> %d\n<b>Preferred Location: %s</b>\n<b>Comments:</b> %s</string>
+    <string name="team_comments">Comments</string>
+    <string name="delete_team">Delete this team?</string>
+    <string name="delete_team_desc">If deleted, the team will also be removed from all other devices!</string>
+    <string name="period_autonomous">Autonomous</string>
+    <string name="period_teleop">TeleOp</string>
+    <string name="period_end_game">End Game</string>
+    <string name="prompt_team_number">Team Number</string>
+    <string name="prompt_team_name">Team Name</string>
+    <string name="prompt_minerals_collected">Minerals Collected</string>
+    <string name="prompt_minerals_depot">Minerals in Depot</string>
+    <string name="prompt_minerals_lander">Minerals in Lander</string>
+    <string name="latching">Latching</string>
+    <string name="sampling">Sampling</string>
+    <string name="marker_claimed">Marker Claimed</string>
+    <string name="parking">Parking</string>
+    <string name="robot_latched">Robot Latched</string>
+    <string name="partially_parked">Partially Parked</string>
+    <string name="completely_parked">Completely Parked</string>
+    <string name="preferred_location">Preferred Location:</string>
+
+    <!-- Strings related to the match -->
+    <string name="delete_match">Delete this match?</string>
+    <string name="delete_match_desc">If deleted, the match will also be removed from all other devices!</string>
+    <string name="prompt_match_number">Match Number</string>
+    <string name="blue_alliance">Blue Alliance</string>
+    <string name="prompt_first_team">First Team</string>
+    <string name="prompt_second_team">Second Team</string>
+    <string name="prompt_score">Score</string>
+    <string name="red_alliance">Red Alliance</string>
+    <string name="blue_wins">Blue Wins</string>
+    <string name="red_wins">Red Wins</string>
+    <string name="draw">Draw</string>
+    <string name="match_basic_info">R%d &#8211; B%d: %s</string>
+    <string name="match_detailed_info">Red Alliance: %d and %d\nBlue Alliance: %d and %d</string>
+    <string name="action_add_teams_number">Add Teams by Number</string>
+    <string name="action_create_tournament">Create Tournament</string>
+    <string name="title_account">Account</string>
+
+</resources>
