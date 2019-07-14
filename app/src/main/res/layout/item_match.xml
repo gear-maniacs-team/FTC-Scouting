@@ -7,8 +7,7 @@
     android:layout_marginStart="@dimen/card_horizontal_margin"
     android:layout_marginTop="@dimen/card_vertical_margin"
     android:layout_marginEnd="@dimen/card_horizontal_margin"
-    android:layout_marginBottom="@dimen/card_vertical_margin"
-    app:cardBackgroundColor="@color/colorBackgroundLight">
+    android:layout_marginBottom="@dimen/card_vertical_margin">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

@@ -86,31 +86,9 @@ class MatchAdapter(
         return holder
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: MatchViewHolder, position: Int) {
         val match = getItem(position)
-        val context = holder.itemView.context
-
-        val redScore = match.redAlliance.score
-        val blueScore = match.blueAlliance.score
-        val winner = context.getString(
-            when {
-                blueScore > redScore -> R.string.blue_wins
-                blueScore < redScore -> R.string.red_wins
-                else -> R.string.draw
-            }
-        )
-
-        holder.tvMatchId.text = "#${match.id}"
-        holder.tvBasicInfo.text =
-            context.getString(R.string.match_basic_info, match.redAlliance.score, match.blueAlliance.score, winner)
-        holder.tvDetailedInfo.text = context.getString(
-            R.string.match_detailed_info,
-            match.redAlliance.firstTeam,
-            match.redAlliance.secondTeam,
-            match.blueAlliance.firstTeam,
-            match.blueAlliance.secondTeam
-        )
+        holder.bind(match)
     }
 
     override fun onViewRecycled(holder: MatchViewHolder) {
@@ -121,11 +99,38 @@ class MatchAdapter(
     }
 
     class MatchViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvMatchId: TextView = itemView.findViewById(R.id.tv_match_id)
+        private val tvMatchId: TextView = itemView.findViewById(R.id.tv_match_id)
         val ivExpand: ImageView = itemView.findViewById(R.id.iv_match_expand)
-        val tvBasicInfo: TextView = itemView.findViewById(R.id.tv_match_basic_info)
+        private val tvBasicInfo: TextView = itemView.findViewById(R.id.tv_match_basic_info)
         val tvDetailedInfo: TextView = itemView.findViewById(R.id.tv_match_detailed_info)
         val btnEdit: Button = itemView.findViewById(R.id.btn_edit)
         val btnDelete: Button = itemView.findViewById(R.id.btn_delete)
+
+        @SuppressLint("SetTextI18n")
+        fun bind(match: Match) {
+            val context = itemView.context
+
+            val redScore = match.redAlliance.score
+            val blueScore = match.blueAlliance.score
+            val winner = context.getString(
+                when {
+                    blueScore > redScore -> R.string.blue_wins
+                    blueScore < redScore -> R.string.red_wins
+                    else -> R.string.draw
+                }
+            )
+
+            tvMatchId.text = "#${match.id}"
+            tvBasicInfo.text =
+                context.getString(R.string.match_basic_info, match.redAlliance.score, match.blueAlliance.score, winner)
+            tvDetailedInfo.text = context.getString(
+                R.string.match_detailed_info,
+                match.redAlliance.firstTeam,
+                match.redAlliance.secondTeam,
+                match.blueAlliance.firstTeam,
+                match.blueAlliance.secondTeam
+            )
+
+        }
     }
 }

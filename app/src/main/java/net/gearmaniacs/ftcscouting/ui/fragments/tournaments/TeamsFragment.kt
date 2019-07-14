@@ -11,7 +11,7 @@ import net.gearmaniacs.ftcscouting.ui.adapter.TeamAdapter
 import net.gearmaniacs.ftcscouting.ui.viewmodel.TournamentViewModel
 import net.gearmaniacs.ftcscouting.utils.DataRecyclerListener
 import net.gearmaniacs.ftcscouting.utils.architecture.getViewModel
-import net.gearmaniacs.ftcscouting.utils.architecture.observe
+import net.gearmaniacs.ftcscouting.utils.architecture.observeNonNull
 import net.gearmaniacs.ftcscouting.utils.extensions.lazyFast
 
 class TeamsFragment : TournamentsFragment(), DataRecyclerListener {
@@ -25,12 +25,12 @@ class TeamsFragment : TournamentsFragment(), DataRecyclerListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val activity = activity ?: return null
-        val recyclerView = activity.recycler_view
+        val recyclerView = activity.rv_main
 
         adapter = TeamAdapter(recyclerView, this)
         recyclerView.adapter = adapter
 
-        activity.observe(viewModel.teamsData) {
+        activity.observeNonNull(viewModel.teamsData) {
             adapter.submitList(it)
         }
 

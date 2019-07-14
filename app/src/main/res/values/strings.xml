@@ -37,6 +37,7 @@
     <string name="delete_tournament">Delete this tournament?</string>
     <string name="delete_tournament_desc">If deleted, the tournament will also be removed from all other devices!</string>
     <string name="title_tournaments">Tournaments</string>
+    <string name="title_info">Info</string>
     <string name="title_teams">Teams</string>
     <string name="title_matches">Matches</string>
     <string name="title_analytics">Analytics</string>

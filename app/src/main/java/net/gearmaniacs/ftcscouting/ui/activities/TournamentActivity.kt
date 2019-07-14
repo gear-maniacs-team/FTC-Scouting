@@ -15,13 +15,16 @@ import android.view.animation.ScaleAnimation
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_tournament.*
 import kotlinx.coroutines.*
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.data.Tournament
+import net.gearmaniacs.ftcscouting.data.User
 import net.gearmaniacs.ftcscouting.ui.fragments.TournamentDialogFragment
 import net.gearmaniacs.ftcscouting.ui.fragments.tournaments.AnalyticsFragment
+import net.gearmaniacs.ftcscouting.ui.fragments.tournaments.InfoFragment
 import net.gearmaniacs.ftcscouting.ui.fragments.tournaments.MatchFragment
 import net.gearmaniacs.ftcscouting.ui.fragments.tournaments.TeamsFragment
 import net.gearmaniacs.ftcscouting.ui.fragments.tournaments.TournamentsFragment
@@ -36,11 +39,13 @@ class TournamentActivity : AppCompatActivity() {
 
     companion object {
         private const val ARG_TOURNAMENT_KEY = "tournament_key"
+        const val ARG_USER = "user"
         private const val ARG_TOURNAMENT_NAME = "tournament_name"
 
-        fun startActivity(context: Context, tournament: Tournament) {
+        fun startActivity(context: Context, user: User, tournament: Tournament) {
             val intent = Intent(context, TournamentActivity::class.java)
             intent.putExtra(ARG_TOURNAMENT_KEY, tournament.key)
+            intent.putExtra(ARG_USER, user)
             intent.putExtra(ARG_TOURNAMENT_NAME, tournament.name)
             context.startActivity(intent)
         }
@@ -65,6 +70,8 @@ class TournamentActivity : AppCompatActivity() {
 
         bottom_navigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
+                R.id.nav_info ->
+                    if (viewModel.fragmentTag != InfoFragment.TAG) replaceFragment(InfoFragment())
                 R.id.nav_teams ->
                     if (viewModel.fragmentTag != TeamsFragment.TAG) replaceFragment(TeamsFragment())
                 R.id.nav_matches ->
@@ -79,11 +86,12 @@ class TournamentActivity : AppCompatActivity() {
             tournamentsFragment?.fabClickListener()
         }
 
-        recycler_view.setHasFixedSize(true)
-        recycler_view.layoutManager = LinearLayoutManager(this)
+        rv_main.setHasFixedSize(true)
+        rv_main.layoutManager = LinearLayoutManager(this)
 
         if (tournamentsFragment == null) {
             tournamentsFragment = when (viewModel.fragmentTag) {
+                InfoFragment.TAG -> InfoFragment()
                 TeamsFragment.TAG -> TeamsFragment()
                 MatchFragment.TAG -> MatchFragment()
                 AnalyticsFragment.TAG -> AnalyticsFragment()
@@ -118,7 +126,7 @@ class TournamentActivity : AppCompatActivity() {
             R.id.action_add_teams -> {
                 val editText = EditText(this).apply {
                     inputType = InputType.TYPE_CLASS_NUMBER
-                    setSingleLine(true)
+                    isSingleLine = true
                     keyListener = DigitsKeyListener.getInstance("0123456789., ")
                 }
 
@@ -167,6 +175,11 @@ class TournamentActivity : AppCompatActivity() {
     }
 
     private fun updateFab(oldFragmentTag: String, newFragmentTag: String) {
+        if (oldFragmentTag == InfoFragment.TAG)
+            fab.isVisible = true
+        else if (newFragmentTag == InfoFragment.TAG)
+            fab.isVisible = false
+
         if (oldFragmentTag != AnalyticsFragment.TAG && newFragmentTag != AnalyticsFragment.TAG) return
 
         val refreshIcon = if (newFragmentTag == AnalyticsFragment.TAG) R.drawable.ic_refresh else R.drawable.ic_add

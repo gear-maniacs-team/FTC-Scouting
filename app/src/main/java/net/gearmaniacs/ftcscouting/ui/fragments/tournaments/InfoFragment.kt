@@ -5,36 +5,39 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.activity_tournament.*
-import net.gearmaniacs.ftcscouting.ui.adapter.AnalyticsAdapter
+import net.gearmaniacs.ftcscouting.data.User
+import net.gearmaniacs.ftcscouting.ui.activities.TournamentActivity
+import net.gearmaniacs.ftcscouting.ui.adapter.InfoAdapter
 import net.gearmaniacs.ftcscouting.ui.viewmodel.TournamentViewModel
 import net.gearmaniacs.ftcscouting.utils.architecture.getViewModel
 import net.gearmaniacs.ftcscouting.utils.architecture.observeNonNull
 import net.gearmaniacs.ftcscouting.utils.extensions.lazyFast
 
-class AnalyticsFragment : TournamentsFragment() {
+class InfoFragment : TournamentsFragment() {
 
     companion object {
-        const val TAG = "AnalyticsFragment"
+        const val TAG = "InfoFragment"
     }
 
     private val viewModel by lazyFast { activity!!.getViewModel<TournamentViewModel>() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val activity = activity ?: return null
-        val adapter = AnalyticsAdapter()
 
+        val adapter = InfoAdapter()
         activity.rv_main.adapter = adapter
 
-        activity.observeNonNull(viewModel.analyticsData) {
-            adapter.submitList(it)
+        val user = activity.intent.getParcelableExtra<User>(TournamentActivity.ARG_USER)
+
+        activity.observeNonNull(viewModel.matchesData) {
+            adapter.matchList = it.filter { match -> match.containsTeam(user.id) }
+            adapter.notifyDataSetChanged()
         }
 
         return null
     }
 
-    override fun fabClickListener() {
-        context?.applicationContext?.let { viewModel.calculateOpr(it) }
-    }
+    override fun fabClickListener() = Unit
 
     override fun getFragmentTag() = TAG
 }

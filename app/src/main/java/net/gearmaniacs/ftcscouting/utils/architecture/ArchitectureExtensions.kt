@@ -39,7 +39,7 @@ fun <T : Any, L : MutableLiveData<T>> LifecycleOwner.observe(liveData: L, body: 
     })
 }
 
-fun <T : Any, L : NonNullLiveData<T>> LifecycleOwner.observe(liveData: L, body: (T) -> Unit) {
+fun <T : Any, L : NonNullLiveData<T>> LifecycleOwner.observeNonNull(liveData: L, body: (T) -> Unit) {
     liveData.observe(this, Observer<T> { data: T? ->
         body(data ?: liveData.defaultValue)
     })

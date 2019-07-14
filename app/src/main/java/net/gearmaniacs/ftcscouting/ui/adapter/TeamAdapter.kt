@@ -82,21 +82,7 @@ class TeamAdapter(
 
     override fun onBindViewHolder(holder: TeamViewHolder, position: Int) {
         val team = getItem(position)
-        val context = holder.itemView.context
-
-        holder.tvName.text = context.getString(R.string.team_id_name, team.id, team.name)
-        holder.tvScore.text = context.getString(R.string.team_predicted_score, team.score)
-
-        val preferredLocation = when (team.preferredLocation) {
-            PreferredLocation.DEPOT -> R.string.team_preferred_depot
-            PreferredLocation.CRATER -> R.string.team_preferred_crater
-            else -> R.string.none
-        }
-        val description = context.getString(
-            R.string.team_description, team.autonomousScore, team.teleOpScore,
-            team.endGameScore, context.getString(preferredLocation), team.comments ?: ""
-        )
-        holder.tvDescription.text = description
+        holder.bind(team)
     }
 
     override fun onViewRecycled(holder: TeamViewHolder) {
@@ -107,11 +93,29 @@ class TeamAdapter(
     }
 
     class TeamViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvName: TextView = itemView.findViewById(R.id.tv_team_name)
+        private val tvName: TextView = itemView.findViewById(R.id.tv_team_name)
         val ivExpand: ImageView = itemView.findViewById(R.id.iv_team_expand)
-        val tvScore: TextView = itemView.findViewById(R.id.tv_team_predicted_score)
+        private val tvScore: TextView = itemView.findViewById(R.id.tv_team_predicted_score)
         val tvDescription: TextView = itemView.findViewById(R.id.tv_team_description)
         val btnEdit: Button = itemView.findViewById(R.id.btn_edit)
         val btnDelete: Button = itemView.findViewById(R.id.btn_delete)
+
+        fun bind(team: Team) {
+            val context = itemView.context
+
+            tvName.text = context.getString(R.string.team_id_name, team.id, team.name)
+            tvScore.text = context.getString(R.string.team_predicted_score, team.score)
+
+            val preferredLocation = when (team.preferredLocation) {
+                PreferredLocation.DEPOT -> R.string.team_preferred_depot
+                PreferredLocation.CRATER -> R.string.team_preferred_crater
+                else -> R.string.none
+            }
+            val description = context.getString(
+                R.string.team_description, team.autonomousScore, team.teleOpScore,
+                team.endGameScore, context.getString(preferredLocation), team.comments ?: ""
+            )
+            tvDescription.text = description
+        }
     }
 }

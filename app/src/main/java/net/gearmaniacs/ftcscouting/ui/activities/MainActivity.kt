@@ -20,7 +20,7 @@ import net.gearmaniacs.ftcscouting.ui.fragments.TournamentDialogFragment
 import net.gearmaniacs.ftcscouting.ui.viewmodel.MainViewModel
 import net.gearmaniacs.ftcscouting.utils.DataRecyclerListener
 import net.gearmaniacs.ftcscouting.utils.architecture.getViewModel
-import net.gearmaniacs.ftcscouting.utils.architecture.observe
+import net.gearmaniacs.ftcscouting.utils.architecture.observeNonNull
 import net.gearmaniacs.ftcscouting.utils.extensions.lazyFast
 import net.gearmaniacs.ftcscouting.utils.extensions.startActivity
 
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity(), DataRecyclerListener {
             }
         }
 
-        observe(viewModel.tournamentsData) {
+        observeNonNull(viewModel.tournamentsData) {
             adapter.submitList(it)
         }
     }
@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity(), DataRecyclerListener {
         }
         R.id.action_sign_out -> {
             FirebaseAuth.getInstance().signOut()
-            startActivity(Intent(this, LoginActivity::class.java))
+            startActivity<LoginActivity>()
             finish()
             true
         }
@@ -98,7 +98,8 @@ class MainActivity : AppCompatActivity(), DataRecyclerListener {
     override fun onEditItem(position: Int) {
         try {
             val item = adapter.getItem(position)
-            TournamentActivity.startActivity(this, item)
+            val user = viewModel.currentUser ?: return
+            TournamentActivity.startActivity(this, user, item)
         } catch (e: IndexOutOfBoundsException) {
         }
     }

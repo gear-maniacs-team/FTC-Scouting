@@ -14,7 +14,9 @@ import net.gearmaniacs.ftcscouting.data.Alliance
 import net.gearmaniacs.ftcscouting.data.Match
 import net.gearmaniacs.ftcscouting.data.Team
 import net.gearmaniacs.ftcscouting.data.TeamPower
+import net.gearmaniacs.ftcscouting.data.User
 import net.gearmaniacs.ftcscouting.opr.PowerRanking
+import net.gearmaniacs.ftcscouting.ui.fragments.tournaments.InfoFragment
 import net.gearmaniacs.ftcscouting.ui.fragments.tournaments.TeamsFragment
 import net.gearmaniacs.ftcscouting.utils.ChildListener
 import net.gearmaniacs.ftcscouting.utils.SingleValueListener
@@ -38,7 +40,8 @@ class TournamentViewModel : ViewModel() {
             .child("users")
             .child(FirebaseAuth.getInstance().currentUser!!.uid)
     }
-    var fragmentTag = TeamsFragment.TAG
+    var fragmentTag = InfoFragment.TAG
+
     val nameData = MutableLiveData("")
     val teamsData = MutexLiveData(emptyList<Team>())
     val matchesData = MutexLiveData(emptyList<Match>())
