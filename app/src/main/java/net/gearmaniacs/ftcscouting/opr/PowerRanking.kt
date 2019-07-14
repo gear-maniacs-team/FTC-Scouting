@@ -2,9 +2,9 @@ package net.gearmaniacs.ftcscouting.opr
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import net.gearmaniacs.ftcscouting.data.Alliance
-import net.gearmaniacs.ftcscouting.data.Team
-import net.gearmaniacs.ftcscouting.data.TeamPower
+import net.gearmaniacs.ftcscouting.model.Alliance
+import net.gearmaniacs.ftcscouting.model.Team
+import net.gearmaniacs.ftcscouting.model.TeamPower
 import java.text.DecimalFormat
 import java.util.HashSet
 

@@ -5,7 +5,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_register.view.*
 import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.ftcscouting.data.User
+import net.gearmaniacs.ftcscouting.model.User
 import net.gearmaniacs.ftcscouting.utils.extensions.getTextOrEmpty
 import net.gearmaniacs.ftcscouting.utils.extensions.isValidEmail
 

@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.ftcscouting.data.PreferredLocation
-import net.gearmaniacs.ftcscouting.data.Team
+import net.gearmaniacs.ftcscouting.model.PreferredLocation
+import net.gearmaniacs.ftcscouting.model.Team
 import net.gearmaniacs.ftcscouting.utils.DataRecyclerListener
 
 class TeamAdapter(

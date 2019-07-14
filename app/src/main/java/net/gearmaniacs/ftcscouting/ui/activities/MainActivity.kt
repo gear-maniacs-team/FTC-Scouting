@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.content_main.*
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.ui.adapter.TournamentAdapter
 import net.gearmaniacs.ftcscouting.ui.fragments.TournamentDialogFragment
-import net.gearmaniacs.ftcscouting.ui.viewmodel.MainViewModel
+import net.gearmaniacs.ftcscouting.viewmodel.MainViewModel
 import net.gearmaniacs.ftcscouting.utils.DataRecyclerListener
 import net.gearmaniacs.ftcscouting.utils.architecture.getViewModel
 import net.gearmaniacs.ftcscouting.utils.architecture.observeNonNull
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity(), DataRecyclerListener {
             }
         }
 
-        observeNonNull(viewModel.tournamentsData) {
+        observeNonNull(viewModel.tournamentListData) {
             adapter.submitList(it)
         }
     }

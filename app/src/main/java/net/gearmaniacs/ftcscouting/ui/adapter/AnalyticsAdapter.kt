@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.ftcscouting.data.TeamPower
+import net.gearmaniacs.ftcscouting.model.TeamPower
 
 class AnalyticsAdapter : RecyclerView.Adapter<AnalyticsAdapter.AnalyticsViewHolder>() {
 

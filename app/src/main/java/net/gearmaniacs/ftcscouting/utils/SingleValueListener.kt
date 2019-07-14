@@ -4,7 +4,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.*
-import net.gearmaniacs.ftcscouting.data.DatabaseClass
+import net.gearmaniacs.ftcscouting.model.DatabaseClass
 import net.gearmaniacs.ftcscouting.utils.architecture.MutexLiveData
 
 class SingleValueListener<T : DatabaseClass<T>>(

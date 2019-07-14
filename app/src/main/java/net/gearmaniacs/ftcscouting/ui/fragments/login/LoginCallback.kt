@@ -1,6 +1,6 @@
 package net.gearmaniacs.ftcscouting.ui.fragments.login
 
-import net.gearmaniacs.ftcscouting.data.User
+import net.gearmaniacs.ftcscouting.model.User
 
 interface LoginCallback {
 

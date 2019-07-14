@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.ftcscouting.data.Tournament
+import net.gearmaniacs.ftcscouting.model.Tournament
 import net.gearmaniacs.ftcscouting.utils.DataRecyclerListener
 
 class TournamentAdapter(

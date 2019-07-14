@@ -8,7 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_tournament.*
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.ui.adapter.MatchAdapter
-import net.gearmaniacs.ftcscouting.ui.viewmodel.TournamentViewModel
+import net.gearmaniacs.ftcscouting.viewmodel.TournamentViewModel
 import net.gearmaniacs.ftcscouting.utils.DataRecyclerListener
 import net.gearmaniacs.ftcscouting.utils.architecture.getViewModel
 import net.gearmaniacs.ftcscouting.utils.architecture.observeNonNull

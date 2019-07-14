@@ -1,9 +1,9 @@
 package net.gearmaniacs.ftcscouting
 
 import kotlinx.coroutines.*
-import net.gearmaniacs.ftcscouting.data.Alliance
-import net.gearmaniacs.ftcscouting.data.Team
-import net.gearmaniacs.ftcscouting.data.TeamPower
+import net.gearmaniacs.ftcscouting.model.Alliance
+import net.gearmaniacs.ftcscouting.model.Team
+import net.gearmaniacs.ftcscouting.model.TeamPower
 import net.gearmaniacs.ftcscouting.opr.PowerRanking
 import org.junit.Test
 

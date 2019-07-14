@@ -10,9 +10,9 @@ import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.dialog_edit_match.view.*
 import kotlinx.android.synthetic.main.dialog_edit_match_content.view.*
 import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.ftcscouting.data.Alliance
-import net.gearmaniacs.ftcscouting.data.Match
-import net.gearmaniacs.ftcscouting.ui.viewmodel.TournamentViewModel
+import net.gearmaniacs.ftcscouting.model.Alliance
+import net.gearmaniacs.ftcscouting.model.Match
+import net.gearmaniacs.ftcscouting.viewmodel.TournamentViewModel
 import net.gearmaniacs.ftcscouting.utils.architecture.getViewModel
 import net.gearmaniacs.ftcscouting.utils.extensions.getTextOrEmpty
 import net.gearmaniacs.ftcscouting.utils.extensions.lazyFast
