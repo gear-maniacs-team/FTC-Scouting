@@ -1,22 +1,60 @@
 package net.gearmaniacs.ftcscouting.opr
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import net.gearmaniacs.ftcscouting.data.Alliance
 import net.gearmaniacs.ftcscouting.data.Team
 import net.gearmaniacs.ftcscouting.data.TeamPower
 import java.text.DecimalFormat
+import java.util.HashSet
 
 class PowerRanking(
-    private val teams: List<Team>,
+    teamsList: List<Team>,
     private val redAlliances: List<Alliance>,
     private val blueAlliances: List<Alliance>
 ) {
 
+    private val teamPowerList = populateTeamPowerList(teamsList)
+
+    /**
+     * Creates a list with all the team numbers from the matches
+     *
+     * @param teamsList Combines the team numbers with the team names from this list
+     */
+    private fun populateTeamPowerList(teamsList: List<Team>): List<TeamPower> {
+        val allTeams = HashSet<Int>(redAlliances.size)
+
+        redAlliances.forEach {
+            allTeams.add(it.firstTeam)
+            allTeams.add(it.secondTeam)
+        }
+
+        blueAlliances.forEach {
+            allTeams.add(it.firstTeam)
+            allTeams.add(it.secondTeam)
+        }
+
+        val result = ArrayList<TeamPower>(allTeams.size)
+
+        allTeams.forEach { teamId ->
+            val foundTeam = teamsList.find { it.id == teamId }
+
+            // If available add the name to the team
+            if (foundTeam == null) {
+                result.add(TeamPower(teamId, ""))
+            } else {
+                result.add(TeamPower(teamId, foundTeam.name.orEmpty()))
+            }
+        }
+
+        return result
+    }
+
     private fun generateMatrix(): Array<IntArray> {
-        val matrix = Array(teams.size + 1) { IntArray(teams.size + 1) }
+        val matrix = Array(teamPowerList.size + 1) { IntArray(teamPowerList.size + 1) }
 
         // Set team number on first row and column
-        teams.forEachIndexed { index, team ->
+        teamPowerList.forEachIndexed { index, team ->
             matrix[0][index + 1] = team.id
             matrix[index + 1][0] = team.id
         }
@@ -46,7 +84,7 @@ class PowerRanking(
 
     private fun getMatchesTable(): Array<DoubleArray> {
         val matrix = generateMatrix()
-        val array = Array(teams.size) { DoubleArray(teams.size) }
+        val array = Array(teamPowerList.size) { DoubleArray(teamPowerList.size) }
 
         // Remove the team numbers from the first row and column
         // and convert the IntArray to a DoubleArray
@@ -58,9 +96,9 @@ class PowerRanking(
     }
 
     private fun getScoreArray(): DoubleArray {
-        val array = DoubleArray(teams.size)
+        val array = DoubleArray(teamPowerList.size)
 
-        teams.forEachIndexed { index, team ->
+        teamPowerList.forEachIndexed { index, team ->
             var value = 0
 
             redAlliances.asSequence()
@@ -85,11 +123,10 @@ class PowerRanking(
 
         val decimalFormat = DecimalFormat("#.##")
 
-        powerArray
-            .mapIndexed { index, power ->
-                TeamPower(teams[index].id, teams[index].name.orEmpty(), decimalFormat.format(power).toFloat())
-            }
-            .toMutableList()
-            .sortedByDescending { it.power }
+        powerArray.forEachIndexed { index, power ->
+            teamPowerList[index].power = decimalFormat.format(power).toFloat()
+        }
+
+        teamPowerList.sortedByDescending { it.power }
     }
 }

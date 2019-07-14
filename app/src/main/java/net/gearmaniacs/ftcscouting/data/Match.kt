@@ -26,4 +26,6 @@ data class Match(
     constructor() : this(0, Alliance(), Alliance())
 
     override fun compareTo(other: Match): Int = id.compareTo(other.id)
+
+    fun containsTeam(teamId: Int) = redAlliance.containsTeam(teamId) || blueAlliance.containsTeam(teamId)
 }

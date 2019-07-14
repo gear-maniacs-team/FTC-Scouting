@@ -15,6 +15,11 @@ android {
         resConfigs "en"
     }
 
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+
     buildTypes {
         debug {
             manifestPlaceholders = [enableCrashlytics:false]
@@ -40,7 +45,10 @@ androidExtensions {
 dependencies {
     implementation Libs.kotlin_stdlib
     implementation Libs.kotlin_coroutines
-    implementation Libs.kotlin_ktx
+
+    implementation Libs.ktx_core
+    implementation Libs.ktx_fragment
+    implementation Libs.ktx_viewmodel
 
     implementation Libs.google_material
     implementation Libs.androidx_appcompat
@@ -48,13 +56,12 @@ dependencies {
     implementation Libs.androidx_card_view
     implementation Libs.androidx_constraint_layout
     implementation Libs.androidx_lifecycle
-    implementation Libs.androidx_lifecycle_ktx
 
     implementation Libs.firebase_core
     implementation Libs.firebase_database
     implementation Libs.firebase_auth
     implementation Libs.firebase_crashlytics
-
+    
     implementation Libs.material_about
 
     testImplementation Libs.tests

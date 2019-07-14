@@ -3,7 +3,11 @@ object Libs {
     // Kotlin
     const val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin_version}"
     const val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.2"
-    const val kotlin_ktx = "androidx.core:core-ktx:1.2.0-alpha01"
+
+    // KTX
+    const val ktx_core = "androidx.core:core-ktx:1.2.0-alpha01"
+    const val ktx_fragment = "androidx.fragment:fragment-ktx:1.1.0-rc01"
+    const val ktx_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0-rc01"
 
     // AndroidX
     const val google_material = "com.google.android.material:material:1.1.0-alpha08"
@@ -11,8 +15,7 @@ object Libs {
     const val androidx_recycler_view = "androidx.recyclerview:recyclerview:1.0.0"
     const val androidx_card_view = "androidx.cardview:cardview:1.0.0"
     const val androidx_constraint_layout = "androidx.constraintlayout:constraintlayout:2.0.0-beta2"
-    const val androidx_lifecycle = "androidx.lifecycle:lifecycle-extensions:2.1.0-alpha04"
-    const val androidx_lifecycle_ktx = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0-alpha04"
+    const val androidx_lifecycle = "androidx.lifecycle:lifecycle-extensions:2.1.0-rc01"
 
     // Firebase
     const val firebase_core = "com.google.firebase:firebase-core:17.0.1"
