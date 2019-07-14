@@ -11,7 +11,7 @@ import net.gearmaniacs.ftcscouting.utils.extensions.isValidEmail
 
 class RegisterFragment : Fragment(R.layout.fragment_register) {
 
-    var loginCallback: LoginInterface? = null
+    var loginCallback: LoginCallback? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.btn_email_register.setOnClickListener {
@@ -45,11 +45,12 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             if (confirmPassword != password)
                 etConfirmPassword.error = getString(R.string.error_incorrect_confirm_password)
 
-            if (etId.error == null && etName.error == null && etEmail.error == null && etPassword.error == null
-                && etConfirmPassword.error == null
-            ) {
-                loginCallback?.onRegister(User(id.toInt(), name), email, password)
-            }
+            if (etId.error == null &&
+                etName.error == null &&
+                etEmail.error == null &&
+                etPassword.error == null &&
+                etConfirmPassword.error == null
+            ) loginCallback?.onRegister(User(id.toInt(), name), email, password)
         }
 
         view.tv_already_own_account.setOnClickListener {

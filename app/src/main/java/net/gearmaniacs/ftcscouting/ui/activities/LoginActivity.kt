@@ -1,24 +1,24 @@
 package net.gearmaniacs.ftcscouting.ui.activities
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.annotation.ContentView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_login.*
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.data.User
+import net.gearmaniacs.ftcscouting.ui.fragments.login.LoginCallback
 import net.gearmaniacs.ftcscouting.ui.fragments.login.LoginFragment
-import net.gearmaniacs.ftcscouting.ui.fragments.login.LoginInterface
 import net.gearmaniacs.ftcscouting.ui.fragments.login.RegisterFragment
 import net.gearmaniacs.ftcscouting.utils.extensions.lazyFast
 import net.gearmaniacs.ftcscouting.utils.extensions.longToast
+import net.gearmaniacs.ftcscouting.utils.extensions.startActivity
 
-class LoginActivity : AppCompatActivity(), LoginInterface {
+class LoginActivity : AppCompatActivity(), LoginCallback {
 
     companion object {
+        private const val TAG = "LoginActivity"
         const val BUNDLE_IS_LOGIN_ACTIVE = "login_fragment_active"
     }
 
@@ -39,6 +39,7 @@ class LoginActivity : AppCompatActivity(), LoginInterface {
             savedInstanceState?.let {
                 isLoginFragmentActive = it.getBoolean(BUNDLE_IS_LOGIN_ACTIVE, true)
             }
+
             if (isLoginFragmentActive)
                 setLoginFragment()
             else
@@ -66,10 +67,10 @@ class LoginActivity : AppCompatActivity(), LoginInterface {
                 pb_login.isRefreshing = false
 
                 if (task.isSuccessful) {
-                    Log.d("LoginActivity", "signInWithEmail:success")
+                    Log.d(TAG, "signInWithEmail:success")
                     startMainActivity()
                 } else {
-                    Log.w("LoginActivity", "signInWithEmail:failure", task.exception)
+                    Log.w(TAG, "signInWithEmail:failure", task.exception)
                     longToast("Login failed")
                 }
             }
@@ -81,12 +82,12 @@ class LoginActivity : AppCompatActivity(), LoginInterface {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Log.d("LoginActivity", "registerWithEmail:success")
+                    Log.d(TAG, "registerWithEmail:success")
 
                     registerUser(user)
                 } else {
                     pb_login.isRefreshing = false
-                    Log.w("LoginActivity", "registerWithEmail:failure")
+                    Log.w(TAG, "registerWithEmail:failure")
                     longToast("Registration failed.")
                 }
             }
@@ -105,10 +106,10 @@ class LoginActivity : AppCompatActivity(), LoginInterface {
             .child(auth.currentUser!!.uid)
             .setValue(user) { error, _ ->
                 if (error == null) {
-                    Log.d("LoginActivity", "registerInDatabase:success")
+                    Log.d(TAG, "registerInDatabase:success")
                     startMainActivity()
                 } else {
-                    Log.w("LoginActivity", "registerInDatabase:failure")
+                    Log.w(TAG, "registerInDatabase:failure")
                     longToast("Registration failed.")
                     pb_login.isRefreshing = false
                 }
@@ -136,6 +137,7 @@ class LoginActivity : AppCompatActivity(), LoginInterface {
     }
 
     private fun startMainActivity() {
-        startActivity(Intent(this, MainActivity::class.java))
+        startActivity<MainActivity>()
+        finish()
     }
 }

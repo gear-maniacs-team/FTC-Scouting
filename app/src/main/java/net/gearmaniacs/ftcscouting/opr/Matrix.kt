@@ -1,7 +1,12 @@
 package net.gearmaniacs.ftcscouting.opr
 
-import kotlinx.coroutines.*
-import java.util.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
+import java.util.ArrayList
+import kotlin.math.pow
 
 object Matrix {
 
@@ -33,7 +38,7 @@ object Matrix {
 
                 for (j in matrix[i].indices) {
                     val determinant = DeterminantCalculator(minor(matrix, i, j, minorCacheResult)).determinant()
-                    inverse[i][j] = Math.pow(-1.0, (i + j).toDouble()) * determinant
+                    inverse[i][j] = (-1.0).pow((i + j).toDouble()) * determinant
                 }
             }
 

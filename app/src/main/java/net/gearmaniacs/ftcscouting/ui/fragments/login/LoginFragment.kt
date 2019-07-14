@@ -9,7 +9,7 @@ import net.gearmaniacs.ftcscouting.utils.extensions.isValidEmail
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
 
-    var loginCallback: LoginInterface? = null
+    var loginCallback: LoginCallback? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.btn_email_sign_in.setOnClickListener {

@@ -15,10 +15,9 @@ import android.view.animation.ScaleAnimation
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_tournament.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Runnable
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.data.Tournament
 import net.gearmaniacs.ftcscouting.data.User
@@ -175,18 +174,24 @@ class TournamentActivity : AppCompatActivity() {
     }
 
     private fun updateFab(oldFragmentTag: String, newFragmentTag: String) {
-        if (oldFragmentTag == InfoFragment.TAG)
-            fab.isVisible = true
-        else if (newFragmentTag == InfoFragment.TAG)
-            fab.isVisible = false
+        val fabDrawable = if (newFragmentTag == AnalyticsFragment.TAG) R.drawable.ic_refresh else R.drawable.ic_add
+
+        if (oldFragmentTag == InfoFragment.TAG) {
+            fab.setImageResource(fabDrawable)
+            fab.show()
+            return
+        } else if (newFragmentTag == InfoFragment.TAG) {
+            fab.hide()
+            return
+        }
 
         if (oldFragmentTag != AnalyticsFragment.TAG && newFragmentTag != AnalyticsFragment.TAG) return
 
-        val refreshIcon = if (newFragmentTag == AnalyticsFragment.TAG) R.drawable.ic_refresh else R.drawable.ic_add
+        val animationDuration = 150L
 
         val fabAnimation =
             ScaleAnimation(1f, 0f, 1f, 0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
-        fabAnimation.duration = 150
+        fabAnimation.duration = animationDuration
         fabAnimation.interpolator = AccelerateInterpolator()
         fabAnimation.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation) = Unit
@@ -195,7 +200,7 @@ class TournamentActivity : AppCompatActivity() {
             override fun onAnimationEnd(animation: Animation) {
                 val expand =
                     ScaleAnimation(0f, 1f, 0f, 1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
-                expand.duration = 150
+                expand.duration = animationDuration
                 expand.interpolator = DecelerateInterpolator()
                 fab.startAnimation(expand)
             }
@@ -205,8 +210,8 @@ class TournamentActivity : AppCompatActivity() {
 
         val handler = Handler()
         handler.postDelayed(Runnable {
-            fab.setImageDrawable(getDrawable(refreshIcon))
-        }, 150)
+            fab.setImageDrawable(getDrawable(fabDrawable))
+        }, animationDuration)
     }
 
     private fun changeTournamentName() {

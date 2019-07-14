@@ -19,7 +19,7 @@ class PowerRanking(
     /**
      * Creates a list with all the team numbers from the matches
      *
-     * @param teamsList Combines the team numbers with the team names from this list
+     * @param teamsList Combines the extracted team numbers with the team names from this list
      */
     private fun populateTeamPowerList(teamsList: List<Team>): List<TeamPower> {
         val allTeams = HashSet<Int>(redAlliances.size)

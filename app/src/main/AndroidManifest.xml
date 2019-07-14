@@ -15,8 +15,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name=".ui.activities.LoginActivity"
-            android:noHistory="true">
+            android:name=".ui.activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,7 +30,7 @@
             android:label="@string/title_about"
             android:theme="@style/AppTheme.AboutActivity" />
         <activity
-            android:name=".AccountActivity"
+            android:name=".ui.activities.AccountActivity"
             android:label="@string/title_account"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
