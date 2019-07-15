@@ -4,15 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.text.InputType
-import android.text.method.DigitsKeyListener
 import android.view.Menu
 import android.view.MenuItem
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.ScaleAnimation
-import android.widget.EditText
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,12 +24,7 @@ import net.gearmaniacs.ftcscouting.ui.fragments.tournaments.AnalyticsFragment
 import net.gearmaniacs.ftcscouting.ui.fragments.tournaments.InfoFragment
 import net.gearmaniacs.ftcscouting.ui.fragments.tournaments.MatchFragment
 import net.gearmaniacs.ftcscouting.ui.fragments.tournaments.TeamsFragment
-import net.gearmaniacs.ftcscouting.ui.fragments.tournaments.TournamentsFragment
-import net.gearmaniacs.ftcscouting.utils.architecture.getViewModel
 import net.gearmaniacs.ftcscouting.utils.architecture.observe
-import net.gearmaniacs.ftcscouting.utils.extensions.getTextOrEmpty
-import net.gearmaniacs.ftcscouting.utils.extensions.lazyFast
-import net.gearmaniacs.ftcscouting.utils.extensions.toIntOrDefault
 import net.gearmaniacs.ftcscouting.viewmodel.TournamentViewModel
 
 class TournamentActivity : AppCompatActivity() {
@@ -40,6 +33,8 @@ class TournamentActivity : AppCompatActivity() {
         private const val ARG_TOURNAMENT_KEY = "tournament_key"
         const val ARG_USER = "user"
         private const val ARG_TOURNAMENT_NAME = "tournament_name"
+
+        private const val SAVED_FRAGMENT_INDEX = "tournament_key"
 
         fun startActivity(context: Context, user: User, tournament: Tournament) {
             val intent = Intent(context, TournamentActivity::class.java)
@@ -50,9 +45,11 @@ class TournamentActivity : AppCompatActivity() {
         }
     }
 
+    private val viewModel by viewModels<TournamentViewModel>()
+
+    private val fragments = listOf(InfoFragment(), TeamsFragment(), MatchFragment(), AnalyticsFragment())
+    private var activeFragment = fragments.first()
     private var tournamentKey = ""
-    private var tournamentsFragment: TournamentsFragment? = null
-    private val viewModel by lazyFast { getViewModel<TournamentViewModel>() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,49 +58,50 @@ class TournamentActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        tournamentKey = intent.getStringExtra(ARG_TOURNAMENT_KEY) ?: throw IllegalArgumentException(ARG_TOURNAMENT_KEY)
+        // Make sure the data from the intent is not null
+        tournamentKey = intent.getStringExtra(ARG_TOURNAMENT_KEY)
+            ?: throw IllegalArgumentException(ARG_TOURNAMENT_KEY)
         viewModel.tournamentKey = tournamentKey
         val tournamentName = intent.getStringExtra(ARG_TOURNAMENT_NAME)
             ?: throw IllegalArgumentException(ARG_TOURNAMENT_NAME)
+
         viewModel.setDefaultName(tournamentName)
 
-        bottom_navigation.setOnNavigationItemSelectedListener {
-            when (it.itemId) {
-                R.id.nav_info ->
-                    if (viewModel.fragmentTag != InfoFragment.TAG) replaceFragment(InfoFragment())
-                R.id.nav_teams ->
-                    if (viewModel.fragmentTag != TeamsFragment.TAG) replaceFragment(TeamsFragment())
-                R.id.nav_matches ->
-                    if (viewModel.fragmentTag != MatchFragment.TAG) replaceFragment(MatchFragment())
-                R.id.nav_analytics ->
-                    if (viewModel.fragmentTag != AnalyticsFragment.TAG) replaceFragment(AnalyticsFragment())
-            }
-            true
-        }
-
         fab.setOnClickListener {
-            tournamentsFragment?.fabClickListener()
+            activeFragment.fabClickListener()
         }
 
         rv_main.setHasFixedSize(true)
         rv_main.layoutManager = LinearLayoutManager(this)
+        rv_main.setItemViewCacheSize(5)
 
-        if (tournamentsFragment == null) {
-            tournamentsFragment = when (viewModel.fragmentTag) {
-                InfoFragment.TAG -> InfoFragment()
-                TeamsFragment.TAG -> TeamsFragment()
-                MatchFragment.TAG -> MatchFragment()
-                AnalyticsFragment.TAG -> AnalyticsFragment()
-                else -> throw IllegalArgumentException("Invalid Fragment Tag")
-            }
+        bottom_navigation.setOnNavigationItemSelectedListener {
+            val newFragment = fragments[it.order]
+            
+            if (activeFragment.getFragmentTag() != newFragment.getFragmentTag()) {
+                updateFab(activeFragment.getFragmentTag(), newFragment.getFragmentTag())
+
+                supportFragmentManager.beginTransaction()
+                    .remove(activeFragment)
+                    .add(newFragment, newFragment.getFragmentTag())
+                    .commit()
+                activeFragment = newFragment
+
+                true
+            } else false
         }
 
-        tournamentsFragment?.let {
-            replaceFragment(it)
+        // Setup Fragments
+        savedInstanceState?.let {
+            activeFragment = fragments[it.getInt(SAVED_FRAGMENT_INDEX)]
         }
+        supportFragmentManager.beginTransaction()
+            .add(activeFragment, activeFragment.getFragmentTag())
+            .commit()
 
         observe(viewModel.nameData) { name ->
-            if (name == null) { // Means the Tournament has been deleted
+            if (name == null) {
+                // Means the Tournament has been deleted so we can close the activity
                 finish()
                 return@observe
             }
@@ -123,25 +121,11 @@ class TournamentActivity : AppCompatActivity() {
             R.id.action_tournament_edit -> changeTournamentName()
             R.id.action_tournament_delete -> deleteTournament()
             R.id.action_add_teams -> {
-                val editText = EditText(this).apply {
-                    inputType = InputType.TYPE_CLASS_NUMBER
-                    isSingleLine = true
-                    keyListener = DigitsKeyListener.getInstance("0123456789., ")
-                }
-
                 AlertDialog.Builder(this)
-                    .setTitle("Add Teams")
-                    .setMessage("Add Teams Numbers separated by a comma or a space")
-                    .setView(editText)
-                    .setPositiveButton(R.string.action_add) { _, _ ->
-                        val text = editText.getTextOrEmpty()
-
-                        val teams = text.splitToSequence(',', '.', ' ')
-                            .map { it.toIntOrDefault() }
-                            .toList()
-
-                        viewModel.addTeams(teams)
-                        bottom_navigation.selectedItemId = R.id.nav_teams
+                    .setTitle(R.string.add_teams_from_matches)
+                    .setMessage(R.string.add_teams_from_matches_desc)
+                    .setPositiveButton(R.string.action_add_teams) { _, _ ->
+                        viewModel.addTeamsFromMatches()
                     }
                     .setNegativeButton(android.R.string.cancel, null)
                     .show()
@@ -158,19 +142,6 @@ class TournamentActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         viewModel.stopListening()
-    }
-
-    private fun replaceFragment(fragment: TournamentsFragment) {
-        updateFab(viewModel.fragmentTag, fragment.getFragmentTag())
-
-        supportFragmentManager.beginTransaction().apply {
-            tournamentsFragment?.let { remove(it) }
-            add(fragment, viewModel.fragmentTag)
-            commit()
-        }
-
-        tournamentsFragment = fragment
-        viewModel.fragmentTag = fragment.getFragmentTag()
     }
 
     private fun updateFab(oldFragmentTag: String, newFragmentTag: String) {

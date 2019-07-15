@@ -1,23 +1,12 @@
 package net.gearmaniacs.ftcscouting
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.runBlocking
 import net.gearmaniacs.ftcscouting.model.Alliance
-import net.gearmaniacs.ftcscouting.model.Team
 import net.gearmaniacs.ftcscouting.model.TeamPower
 import net.gearmaniacs.ftcscouting.opr.PowerRanking
 import org.junit.Test
 
 class PowerRankingTest {
-    private val teams = listOf(
-        Team(119), Team(40), Team(56), Team(28), Team(121), Team(77), Team(44), Team(38),
-        Team(65), Team(87), Team(23), Team(43), Team(80), Team(45), Team(51), Team(1),
-        Team(63), Team(62), Team(15), Team(68), Team(67), Team(42), Team(85), Team(52),
-        Team(89), Team(47), Team(19), Team(66), Team(11), Team(8), Team(34), Team(25),
-        Team(81), Team(2), Team(71), Team(90), Team(92), Team(57), Team(13), Team(7),
-        Team(27), Team(94), Team(98), Team(99), Team(101), Team(104), Team(108), Team(110),
-        Team(111), Team(112), Team(113), Team(124), Team(128), Team(130), Team(133),
-        Team(135), Team(137), Team(138), Team(141), Team(146)
-    )
 
     private val redAlliances = listOf(
         Alliance(57, 130, 212), Alliance(66, 98, 184),
@@ -120,7 +109,7 @@ class PowerRankingTest {
         val firstResult = TeamPower(id = 77, name = "", power = 232.49f)
         val lastResult = TeamPower(id = 44, name = "", power = -2.61f)
 
-        val powerRanking = PowerRanking(teams, redAlliances, blueAlliances)
+        val powerRanking = PowerRanking(emptyList(), redAlliances, blueAlliances)
         runBlocking {
             val results = powerRanking.generatePowerRankings()
             assert(results.first() == firstResult)

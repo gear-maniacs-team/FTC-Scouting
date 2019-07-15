@@ -57,6 +57,7 @@ class TournamentRepository(
             .child(DatabasePaths.KEY_TEAMS)
 
         teamIds
+            .asSequence()
             .filter { it != 0 }
             .distinct()
             .map { Team(it, null) }
@@ -122,19 +123,19 @@ class TournamentRepository(
 
     fun updateTournamentName(tournamentKey: String, newName: String) {
         currentUserReference
-            .child("tournaments")
+            .child(DatabasePaths.KEY_TOURNAMENTS)
             .child(tournamentKey)
             .setValue(newName)
     }
 
     fun deleteTournament(tournamentKey: String) {
         currentUserReference
-            .child("tournaments")
+            .child(DatabasePaths.KEY_TOURNAMENTS)
             .child(tournamentKey)
             .removeValue()
 
         currentUserReference
-            .child("data")
+            .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .removeValue()
     }

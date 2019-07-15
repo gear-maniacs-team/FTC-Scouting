@@ -14,6 +14,7 @@ import net.gearmaniacs.ftcscouting.model.User
 import net.gearmaniacs.ftcscouting.utils.extensions.getTextOrEmpty
 import net.gearmaniacs.ftcscouting.utils.extensions.toIntOrDefault
 import net.gearmaniacs.ftcscouting.utils.extensions.toast
+import net.gearmaniacs.ftcscouting.utils.firebase.DatabasePaths
 
 class AccountActivity : AppCompatActivity() {
 
@@ -33,7 +34,7 @@ class AccountActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val user = intent.getParcelableExtra<User>(ARG_USER) ?: return
+        val user = intent.getParcelableExtra<User>(ARG_USER) ?: throw IllegalArgumentException(ARG_USER)
 
         et_team_number.setText(user.id.toString())
         et_team_name.setText(user.teamName)
@@ -54,7 +55,7 @@ class AccountActivity : AppCompatActivity() {
 
             val currentUserRef = FirebaseDatabase.getInstance()
                 .reference
-                .child("users")
+                .child(DatabasePaths.KEY_USERS)
                 .child(FirebaseAuth.getInstance().currentUser!!.uid)
 
             val listener = object : OnSuccessListener<Void> {
@@ -64,7 +65,7 @@ class AccountActivity : AppCompatActivity() {
                     count++
 
                     if (count == 2) {
-                        toast("Account Info Updated")
+                        toast(R.string.account_updated)
                         finish()
                     }
                 }

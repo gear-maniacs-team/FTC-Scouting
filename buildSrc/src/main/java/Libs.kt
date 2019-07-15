@@ -5,7 +5,7 @@ object Libs {
     const val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.2"
 
     // KTX
-    const val ktx_core = "androidx.core:core-ktx:1.2.0-alpha01"
+    const val ktx_core = "androidx.core:core-ktx:1.2.0-alpha02"
     const val ktx_fragment = "androidx.fragment:fragment-ktx:1.1.0-rc01"
     const val ktx_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0-rc01"
 
@@ -29,7 +29,5 @@ object Libs {
     // Tests
     private const val tests_junit = "junit:junit:4.12"
     private const val tests_androidx = "androidx.test:core:1.0.0"
-    val tests = arrayOf(
-        tests_junit, tests_androidx
-    )
+    val tests = arrayOf(tests_junit, tests_androidx)
 }

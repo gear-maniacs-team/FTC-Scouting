@@ -103,7 +103,7 @@ class TeamAdapter(
         fun bind(team: Team) {
             val context = itemView.context
 
-            tvName.text = context.getString(R.string.team_id_name, team.id, team.name)
+            tvName.text = context.getString(R.string.team_id_name, team.id, team.name.orEmpty())
             tvScore.text = context.getString(R.string.team_predicted_score, team.score)
 
             val preferredLocation = when (team.preferredLocation) {

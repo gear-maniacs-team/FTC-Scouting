@@ -1,9 +1,6 @@
 package net.gearmaniacs.ftcscouting.ui.fragments.tournaments
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import kotlinx.android.synthetic.main.activity_tournament.*
@@ -22,8 +19,10 @@ class TeamsFragment : TournamentsFragment(), DataRecyclerViewListener {
     private val viewModel by activityViewModels<TournamentViewModel>()
     private lateinit var adapter: TeamAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val activity = activity ?: return null
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        val activity = activity ?: return
         val recyclerView = activity.rv_main
 
         adapter = TeamAdapter(recyclerView, this)
@@ -32,8 +31,6 @@ class TeamsFragment : TournamentsFragment(), DataRecyclerViewListener {
         activity.observeNonNull(viewModel.teamsData) {
             adapter.submitList(it)
         }
-
-        return null
     }
 
     override fun fabClickListener() {

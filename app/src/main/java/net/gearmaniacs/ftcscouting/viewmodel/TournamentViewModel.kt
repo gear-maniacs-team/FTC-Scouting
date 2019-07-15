@@ -6,13 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.model.Alliance
 import net.gearmaniacs.ftcscouting.model.Match
 import net.gearmaniacs.ftcscouting.model.Team
 import net.gearmaniacs.ftcscouting.model.TeamPower
 import net.gearmaniacs.ftcscouting.opr.PowerRanking
 import net.gearmaniacs.ftcscouting.repository.TournamentRepository
-import net.gearmaniacs.ftcscouting.ui.fragments.tournaments.InfoFragment
 import net.gearmaniacs.ftcscouting.utils.architecture.MutexLiveData
 import net.gearmaniacs.ftcscouting.utils.architecture.NonNullLiveData
 import net.gearmaniacs.ftcscouting.utils.extensions.toast
@@ -29,8 +29,6 @@ class TournamentViewModel : ViewModel() {
             startListening()
         }
 
-    var fragmentTag = InfoFragment.TAG
-
     val nameData = MutableLiveData("")
     val teamsData = MutexLiveData(emptyList<Team>())
     val matchesData = MutexLiveData(emptyList<Match>())
@@ -39,8 +37,7 @@ class TournamentViewModel : ViewModel() {
     private val repository = TournamentRepository(viewModelScope, teamsData, matchesData)
 
     init {
-        repository.nameCallback = object :
-            FirebaseDatabaseRepositoryCallback<String?> {
+        repository.nameCallback = object : FirebaseDatabaseRepositoryCallback<String?> {
             override fun onSuccess(result: String?) {
                 nameData.value = result
             }
@@ -58,9 +55,22 @@ class TournamentViewModel : ViewModel() {
 
     // region Teams Management
 
-    fun addTeams(teamIds: List<Int>) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.addTeams(tournamentKey, teamIds)
+    fun addTeamsFromMatches() {
+        viewModelScope.launch(Dispatchers.Default) {
+            val existingTeams = teamsData.value.map { it.id }
+            val matchesList = matchesData.value
+            val teamIds = HashSet<Int>(matchesList.size)
+
+            matchesList.forEach {
+                teamIds.add(it.redAlliance.firstTeam)
+                teamIds.add(it.redAlliance.secondTeam)
+                teamIds.add(it.blueAlliance.firstTeam)
+                teamIds.add(it.blueAlliance.secondTeam)
+            }
+
+            teamIds.removeAll(existingTeams)
+
+            repository.addTeams(tournamentKey, teamIds.toList())
         }
     }
 
@@ -113,7 +123,10 @@ class TournamentViewModel : ViewModel() {
         val teams = teamsData.value
         val matches = matchesData.value
 
-        if (teams.isEmpty() || matches.isEmpty()) return
+        if (matches.isEmpty()) {
+            appContext.toast(R.string.opr_error_no_matches)
+            return
+        }
 
         viewModelScope.launch(Dispatchers.Default) {
             val redAlliances = ArrayList<Alliance>(matches.size)
@@ -130,7 +143,7 @@ class TournamentViewModel : ViewModel() {
                 analyticsData.postValue(powerRankings)
             } catch (e: Exception) {
                 launch(Dispatchers.Main) {
-                    appContext.toast("Something went wrong. Please check the input data")
+                    appContext.toast(R.string.opr_error_data)
                 }
             }
         }
