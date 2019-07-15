@@ -66,6 +66,7 @@ class TournamentViewModel : ViewModel() {
 
     fun updateTeam(team: Team) {
         val key = team.key
+
         if (key == null)
             repository.addTeam(tournamentKey, team)
         else
@@ -82,6 +83,7 @@ class TournamentViewModel : ViewModel() {
 
     fun updateMatch(match: Match) {
         val key = match.key
+
         if (key == null)
             repository.addMatch(tournamentKey, match)
         else
@@ -92,7 +94,7 @@ class TournamentViewModel : ViewModel() {
         repository.deleteMatch(tournamentKey, matchKey)
     }
 
-    // end region
+    // endregion
 
     // region Tournament Management
 

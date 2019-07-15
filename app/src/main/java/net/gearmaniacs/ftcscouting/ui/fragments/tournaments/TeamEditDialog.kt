@@ -10,15 +10,14 @@ import androidx.core.view.forEachIndexed
 import androidx.core.view.get
 import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import kotlinx.android.synthetic.main.dialog_edit_team.view.*
 import kotlinx.android.synthetic.main.dialog_edit_team_content.view.*
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.model.AutonomousData
 import net.gearmaniacs.ftcscouting.model.Team
 import net.gearmaniacs.ftcscouting.model.TeleOpData
-import net.gearmaniacs.ftcscouting.utils.architecture.getViewModel
 import net.gearmaniacs.ftcscouting.utils.extensions.getTextOrEmpty
-import net.gearmaniacs.ftcscouting.utils.extensions.lazyFast
 import net.gearmaniacs.ftcscouting.utils.extensions.toIntOrDefault
 import net.gearmaniacs.ftcscouting.viewmodel.TournamentViewModel
 
@@ -34,7 +33,7 @@ class TeamEditDialog : DialogFragment() {
         }
     }
 
-    private val viewModel by lazyFast { activity!!.getViewModel<TournamentViewModel>() }
+    private val viewModel by activityViewModels<TournamentViewModel>()
     private var transitionPlayed = false
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.model.Tournament
-import net.gearmaniacs.ftcscouting.utils.DataRecyclerListener
+import net.gearmaniacs.ftcscouting.utils.DataRecyclerViewListener
 
 class TournamentAdapter(
-    private val listener: DataRecyclerListener
+    private val listener: DataRecyclerViewListener
 ) : RecyclerView.Adapter<TournamentAdapter.TournamentViewHolder>() {
 
     companion object {

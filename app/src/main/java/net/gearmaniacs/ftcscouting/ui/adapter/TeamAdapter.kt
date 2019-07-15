@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.RecyclerView
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.model.PreferredLocation
 import net.gearmaniacs.ftcscouting.model.Team
-import net.gearmaniacs.ftcscouting.utils.DataRecyclerListener
+import net.gearmaniacs.ftcscouting.utils.DataRecyclerViewListener
 
 class TeamAdapter(
     private val recyclerView: RecyclerView,
-    private val listener: DataRecyclerListener
+    private val listener: DataRecyclerViewListener
 ) : RecyclerView.Adapter<TeamAdapter.TeamViewHolder>() {
 
     companion object {

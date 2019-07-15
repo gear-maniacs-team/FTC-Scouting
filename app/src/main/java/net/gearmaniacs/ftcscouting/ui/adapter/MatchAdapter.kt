@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.model.Match
-import net.gearmaniacs.ftcscouting.utils.DataRecyclerListener
+import net.gearmaniacs.ftcscouting.utils.DataRecyclerViewListener
 
 class MatchAdapter(
     private val recyclerView: RecyclerView,
-    private val listener: DataRecyclerListener
+    private val listener: DataRecyclerViewListener
 ) : RecyclerView.Adapter<MatchAdapter.MatchViewHolder>() {
 
     companion object {

@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import net.gearmaniacs.ftcscouting.model.Team
 import net.gearmaniacs.ftcscouting.model.Tournament
 import net.gearmaniacs.ftcscouting.model.User
+import net.gearmaniacs.ftcscouting.utils.firebase.DatabasePaths
 import net.gearmaniacs.ftcscouting.utils.firebase.FirebaseDatabaseRepositoryCallback
 
 class MainRepository(coroutineScope: CoroutineScope) {
@@ -18,7 +19,7 @@ class MainRepository(coroutineScope: CoroutineScope) {
     private val currentUserReference by lazy {
         FirebaseDatabase.getInstance()
             .reference
-            .child("users")
+            .child(DatabasePaths.KEY_USERS)
             .child(FirebaseAuth.getInstance().currentUser!!.uid)
     }
 
@@ -68,7 +69,7 @@ class MainRepository(coroutineScope: CoroutineScope) {
         currentUserReference.addValueEventListener(userListener)
 
         currentUserReference
-            .child("tournaments")
+            .child(DatabasePaths.KEY_TOURNAMENTS)
             .addValueEventListener(tournamentsListener)
     }
 
@@ -76,13 +77,13 @@ class MainRepository(coroutineScope: CoroutineScope) {
         currentUserReference.addValueEventListener(userListener)
 
         currentUserReference
-            .child("tournaments")
+            .child(DatabasePaths.KEY_TOURNAMENTS)
             .removeEventListener(tournamentsListener)
     }
 
     fun createNewTournament(user: User, tournamentName: String) {
         val newTournament = currentUserReference
-            .child("tournaments")
+            .child(DatabasePaths.KEY_TOURNAMENTS)
             .push()
 
         newTournament.setValue(tournamentName)
@@ -91,9 +92,9 @@ class MainRepository(coroutineScope: CoroutineScope) {
         val team = Team(user.id, user.teamName)
 
         currentUserReference
-            .child("data")
+            .child(DatabasePaths.KEY_DATA)
             .child(key)
-            .child("teams")
+            .child(DatabasePaths.KEY_TEAMS)
             .push()
             .setValue(team)
     }

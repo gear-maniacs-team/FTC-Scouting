@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import net.gearmaniacs.ftcscouting.model.Match
 import net.gearmaniacs.ftcscouting.model.Team
 import net.gearmaniacs.ftcscouting.utils.architecture.MutexLiveData
+import net.gearmaniacs.ftcscouting.utils.firebase.DatabasePaths
 import net.gearmaniacs.ftcscouting.utils.firebase.FirebaseChildListener
 import net.gearmaniacs.ftcscouting.utils.firebase.FirebaseDatabaseRepositoryCallback
 import net.gearmaniacs.ftcscouting.utils.firebase.FirebaseSingleValueListener
@@ -22,7 +23,7 @@ class TournamentRepository(
     private val currentUserReference by lazy {
         FirebaseDatabase.getInstance()
             .reference
-            .child("users")
+            .child(DatabasePaths.KEY_USERS)
             .child(FirebaseAuth.getInstance().currentUser!!.uid)
     }
 
@@ -51,41 +52,41 @@ class TournamentRepository(
 
     fun addTeams(tournamentKey: String, teamIds: List<Int>) {
         val ref = currentUserReference
-            .child("data")
+            .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
-            .child("teams")
+            .child(DatabasePaths.KEY_TEAMS)
 
         teamIds
             .filter { it != 0 }
             .distinct()
-            .map { Team(it, "") }
+            .map { Team(it, null) }
             .forEach { ref.push().setValue(it) }
     }
 
 
     fun addTeam(tournamentKey: String, team: Team) {
         currentUserReference
-            .child("data")
+            .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
-            .child("matches")
+            .child(DatabasePaths.KEY_MATCHES)
             .push()
             .setValue(team)
     }
 
     fun updatedTeam(tournamentKey: String, team: Team) {
         currentUserReference
-            .child("data")
+            .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
-            .child("teams")
+            .child(DatabasePaths.KEY_TEAMS)
             .child(team.key!!)
             .setValue(team)
     }
 
     fun deleteTeam(tournamentKey: String, teamKey: String) {
         currentUserReference
-            .child("data")
+            .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
-            .child("teams")
+            .child(DatabasePaths.KEY_TEAMS)
             .child(teamKey)
             .removeValue()
     }
@@ -93,7 +94,7 @@ class TournamentRepository(
 
     fun addMatch(tournamentKey: String, match: Match) {
         currentUserReference
-            .child("data")
+            .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .child("matches")
             .push()
@@ -102,18 +103,18 @@ class TournamentRepository(
 
     fun updatedMatch(tournamentKey: String, match: Match) {
         currentUserReference
-            .child("data")
+            .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
-            .child("matches")
+            .child(DatabasePaths.KEY_MATCHES)
             .child(match.key!!)
             .setValue(match)
     }
 
     fun deleteMatch(tournamentKey: String, matchKey: String) {
         currentUserReference
-            .child("data")
+            .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
-            .child("matches")
+            .child(DatabasePaths.KEY_MATCHES)
             .child(matchKey)
             .removeValue()
     }
@@ -139,16 +140,16 @@ class TournamentRepository(
     }
 
     fun addListeners(tournamentKey: String) {
-        currentUserReference.child("tournaments")
+        currentUserReference.child(DatabasePaths.KEY_TOURNAMENTS)
             .child(tournamentKey)
             .addValueEventListener(nameChangeListener)
 
         val tournamentRef = currentUserReference
-            .child("data")
+            .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
 
-        val teamsRef = tournamentRef.child("teams")
-        val matchesRef = tournamentRef.child("matches")
+        val teamsRef = tournamentRef.child(DatabasePaths.KEY_TEAMS)
+        val matchesRef = tournamentRef.child(DatabasePaths.KEY_MATCHES)
 
         if (!initialized) {
             teamsRef.addListenerForSingleValueEvent(
@@ -174,20 +175,20 @@ class TournamentRepository(
 
     fun removeListeners(tournamentKey: String) {
         currentUserReference
-            .child("tournaments")
+            .child(DatabasePaths.KEY_TOURNAMENTS)
             .child(tournamentKey)
             .removeEventListener(nameChangeListener)
 
         currentUserReference
-            .child("data")
+            .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
-            .child("teams")
+            .child(DatabasePaths.KEY_TEAMS)
             .removeEventListener(teamsListener)
 
         currentUserReference
-            .child("data")
+            .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
-            .child("matches")
+            .child(DatabasePaths.KEY_MATCHES)
             .removeEventListener(matchesListener)
     }
 }

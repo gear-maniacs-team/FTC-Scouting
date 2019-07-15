@@ -16,13 +16,13 @@ import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.ui.adapter.TournamentAdapter
 import net.gearmaniacs.ftcscouting.ui.fragments.TournamentDialogFragment
 import net.gearmaniacs.ftcscouting.viewmodel.MainViewModel
-import net.gearmaniacs.ftcscouting.utils.DataRecyclerListener
+import net.gearmaniacs.ftcscouting.utils.DataRecyclerViewListener
 import net.gearmaniacs.ftcscouting.utils.architecture.getViewModel
 import net.gearmaniacs.ftcscouting.utils.architecture.observeNonNull
 import net.gearmaniacs.ftcscouting.utils.extensions.lazyFast
 import net.gearmaniacs.ftcscouting.utils.extensions.startActivity
 
-class MainActivity : AppCompatActivity(), DataRecyclerListener {
+class MainActivity : AppCompatActivity(), DataRecyclerViewListener {
 
     private val viewModel by lazyFast { getViewModel<MainViewModel>() }
     private val adapter by lazyFast { TournamentAdapter(this) }

@@ -5,22 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.activityViewModels
 import kotlinx.android.synthetic.main.activity_tournament.*
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.ui.adapter.MatchAdapter
-import net.gearmaniacs.ftcscouting.utils.DataRecyclerListener
-import net.gearmaniacs.ftcscouting.utils.architecture.getViewModel
+import net.gearmaniacs.ftcscouting.utils.DataRecyclerViewListener
 import net.gearmaniacs.ftcscouting.utils.architecture.observeNonNull
-import net.gearmaniacs.ftcscouting.utils.extensions.lazyFast
 import net.gearmaniacs.ftcscouting.viewmodel.TournamentViewModel
 
-class MatchFragment : TournamentsFragment(), DataRecyclerListener {
+class MatchFragment : TournamentsFragment(), DataRecyclerViewListener {
 
     companion object {
         const val TAG = "MatchFragment"
     }
 
-    private val viewModel by lazyFast { activity!!.getViewModel<TournamentViewModel>() }
+    private val viewModel by activityViewModels<TournamentViewModel>()
     private lateinit var adapter: MatchAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
