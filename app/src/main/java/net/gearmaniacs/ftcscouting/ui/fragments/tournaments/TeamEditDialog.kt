@@ -16,11 +16,11 @@ import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.model.AutonomousData
 import net.gearmaniacs.ftcscouting.model.Team
 import net.gearmaniacs.ftcscouting.model.TeleOpData
-import net.gearmaniacs.ftcscouting.viewmodel.TournamentViewModel
 import net.gearmaniacs.ftcscouting.utils.architecture.getViewModel
 import net.gearmaniacs.ftcscouting.utils.extensions.getTextOrEmpty
 import net.gearmaniacs.ftcscouting.utils.extensions.lazyFast
 import net.gearmaniacs.ftcscouting.utils.extensions.toIntOrDefault
+import net.gearmaniacs.ftcscouting.viewmodel.TournamentViewModel
 
 class TeamEditDialog : DialogFragment() {
 
@@ -111,16 +111,8 @@ class TeamEditDialog : DialogFragment() {
                 comments = if (comments.isNotBlank()) comments else null
             )
 
-            val teamsRef = viewModel.currentUserReference
-                .child("data")
-                .child(viewModel.tournamentKey)
-                .child("teams")
-
-            if (team == null) {
-                teamsRef.push().setValue(parsedTeam)
-            } else {
-                teamsRef.child(team.key!!).setValue(parsedTeam)
-            }
+            parsedTeam.key = team?.key
+            viewModel.updateTeam(parsedTeam)
 
             dismiss()
         }

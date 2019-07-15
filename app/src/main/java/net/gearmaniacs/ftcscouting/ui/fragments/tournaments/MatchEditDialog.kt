@@ -12,11 +12,11 @@ import kotlinx.android.synthetic.main.dialog_edit_match_content.view.*
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.model.Alliance
 import net.gearmaniacs.ftcscouting.model.Match
-import net.gearmaniacs.ftcscouting.viewmodel.TournamentViewModel
 import net.gearmaniacs.ftcscouting.utils.architecture.getViewModel
 import net.gearmaniacs.ftcscouting.utils.extensions.getTextOrEmpty
 import net.gearmaniacs.ftcscouting.utils.extensions.lazyFast
 import net.gearmaniacs.ftcscouting.utils.extensions.toIntOrDefault
+import net.gearmaniacs.ftcscouting.viewmodel.TournamentViewModel
 
 class MatchEditDialog : DialogFragment() {
 
@@ -85,16 +85,8 @@ class MatchEditDialog : DialogFragment() {
                 blueAlliance = blueAlliance
             )
 
-            val matchesRef = viewModel.currentUserReference
-                .child("data")
-                .child(viewModel.tournamentKey)
-                .child("matches")
-
-            if (match == null) {
-                matchesRef.push().setValue(parsedMatch)
-            } else {
-                matchesRef.child(match.key!!).setValue(parsedMatch)
-            }
+            parsedMatch.key = match?.key
+            viewModel.updateMatch(parsedMatch)
 
             dismiss()
         }

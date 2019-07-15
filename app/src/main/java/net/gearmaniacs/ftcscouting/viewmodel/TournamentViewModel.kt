@@ -4,40 +4,31 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import net.gearmaniacs.ftcscouting.model.Alliance
 import net.gearmaniacs.ftcscouting.model.Match
 import net.gearmaniacs.ftcscouting.model.Team
 import net.gearmaniacs.ftcscouting.model.TeamPower
 import net.gearmaniacs.ftcscouting.opr.PowerRanking
+import net.gearmaniacs.ftcscouting.repository.TournamentRepository
 import net.gearmaniacs.ftcscouting.ui.fragments.tournaments.InfoFragment
-import net.gearmaniacs.ftcscouting.utils.ChildListener
-import net.gearmaniacs.ftcscouting.utils.SingleValueListener
 import net.gearmaniacs.ftcscouting.utils.architecture.MutexLiveData
 import net.gearmaniacs.ftcscouting.utils.architecture.NonNullLiveData
 import net.gearmaniacs.ftcscouting.utils.extensions.toast
+import net.gearmaniacs.ftcscouting.utils.firebase.FirebaseDatabaseRepositoryCallback
 
 class TournamentViewModel : ViewModel() {
 
-    private var initialized = false
     private var listening = false
+
     var tournamentKey = ""
         set(value) {
             stopListening()
             field = value
             startListening()
         }
-    val currentUserReference by lazy {
-        FirebaseDatabase.getInstance()
-            .reference
-            .child("users")
-            .child(FirebaseAuth.getInstance().currentUser!!.uid)
-    }
+
     var fragmentTag = InfoFragment.TAG
 
     val nameData = MutableLiveData("")
@@ -45,85 +36,76 @@ class TournamentViewModel : ViewModel() {
     val matchesData = MutexLiveData(emptyList<Match>())
     val analyticsData = NonNullLiveData(emptyList<TeamPower>())
 
-    // Listeners
-    private val nameChangeListener = object : ValueEventListener {
-        override fun onDataChange(snapshot: DataSnapshot) {
-            nameData.value = snapshot.getValue(String::class.java)
-        }
+    private val repository = TournamentRepository(viewModelScope, teamsData, matchesData)
 
-        override fun onCancelled(error: DatabaseError) = Unit
+    init {
+        repository.nameCallback = object :
+            FirebaseDatabaseRepositoryCallback<String?> {
+            override fun onSuccess(result: String?) {
+                nameData.value = result
+            }
+
+            override fun onError(e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
-    private val teamsListener = ChildListener(Team::class.java, teamsData, viewModelScope)
-    private val matchesListener = ChildListener(Match::class.java, matchesData, viewModelScope)
 
     fun setDefaultName(defaultName: String) {
         if (nameData.value.isNullOrEmpty())
             nameData.value = defaultName
     }
 
-    fun startListening() {
-        if (listening) return
-
-        currentUserReference.child("tournaments")
-            .child(tournamentKey)
-            .addValueEventListener(nameChangeListener)
-
-        val tournamentRef = currentUserReference
-            .child("data")
-            .child(tournamentKey)
-        val teamsRef = tournamentRef.child("teams")
-        val matchesRef = tournamentRef.child("matches")
-
-        teamsRef.addChildEventListener(teamsListener)
-        matchesRef.addChildEventListener(matchesListener)
-
-        if (!initialized) {
-            teamsRef.addListenerForSingleValueEvent(SingleValueListener(Team::class.java, teamsData, viewModelScope))
-            matchesRef
-                .addListenerForSingleValueEvent(SingleValueListener(Match::class.java, matchesData, viewModelScope))
-            initialized = true
-        }
-
-        listening = true
-    }
-
-    fun stopListening() {
-        if (!listening) return
-
-        currentUserReference
-            .child("tournaments")
-            .child(tournamentKey)
-            .removeEventListener(nameChangeListener)
-
-        currentUserReference
-            .child("data")
-            .child(tournamentKey)
-            .child("teams")
-            .removeEventListener(teamsListener)
-
-        currentUserReference
-            .child("data")
-            .child(tournamentKey)
-            .child("matches")
-            .removeEventListener(teamsListener)
-
-        listening = false
-    }
+    // region Teams Management
 
     fun addTeams(teamIds: List<Int>) {
-        viewModelScope.launch(Dispatchers.Default) {
-            val ref = currentUserReference
-                .child("data")
-                .child(tournamentKey)
-                .child("teams")
-
-            teamIds
-                .filter { it != 0 }
-                .distinct()
-                .map { Team(it, "") }
-                .forEach { ref.push().setValue(it) }
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.addTeams(tournamentKey, teamIds)
         }
     }
+
+    fun updateTeam(team: Team) {
+        val key = team.key
+        if (key == null)
+            repository.addTeam(tournamentKey, team)
+        else
+            repository.updatedTeam(tournamentKey, team)
+    }
+
+    fun deleteTeam(teamKey: String) {
+        repository.deleteTeam(tournamentKey, teamKey)
+    }
+
+    // endregion
+
+    // region Match Management
+
+    fun updateMatch(match: Match) {
+        val key = match.key
+        if (key == null)
+            repository.addMatch(tournamentKey, match)
+        else
+            repository.updatedMatch(tournamentKey, match)
+    }
+
+    fun deleteMatch(matchKey: String) {
+        repository.deleteMatch(tournamentKey, matchKey)
+    }
+
+    // end region
+
+    // region Tournament Management
+
+    fun updateTournamentName(newName: String) {
+        if (newName.isNotBlank())
+            repository.updateTournamentName(tournamentKey, newName)
+    }
+
+    fun deleteTournament() {
+        repository.deleteTournament(tournamentKey)
+    }
+
+    // endregion
 
     fun calculateOpr(appContext: Context) {
         val teams = teamsData.value
@@ -150,6 +132,22 @@ class TournamentViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    fun startListening() {
+        if (listening) return
+
+        repository.addListeners(tournamentKey)
+
+        listening = true
+    }
+
+    fun stopListening() {
+        if (!listening) return
+
+        repository.removeListeners(tournamentKey)
+
+        listening = false
     }
 
     override fun onCleared() {

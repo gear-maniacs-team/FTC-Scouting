@@ -8,11 +8,11 @@ import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_tournament.*
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.ui.adapter.MatchAdapter
-import net.gearmaniacs.ftcscouting.viewmodel.TournamentViewModel
 import net.gearmaniacs.ftcscouting.utils.DataRecyclerListener
 import net.gearmaniacs.ftcscouting.utils.architecture.getViewModel
 import net.gearmaniacs.ftcscouting.utils.architecture.observeNonNull
 import net.gearmaniacs.ftcscouting.utils.extensions.lazyFast
+import net.gearmaniacs.ftcscouting.viewmodel.TournamentViewModel
 
 class MatchFragment : TournamentsFragment(), DataRecyclerListener {
 
@@ -64,18 +64,9 @@ class MatchFragment : TournamentsFragment(), DataRecyclerListener {
             .setTitle(R.string.delete_match)
             .setMessage(R.string.delete_match_desc)
             .setPositiveButton(R.string.action_delete) { _, _ ->
-                deleteMatch(key)
+                viewModel.deleteMatch(key)
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
-    }
-
-    private fun deleteMatch(key: String) {
-        viewModel.currentUserReference
-            .child("data")
-            .child(viewModel.tournamentKey)
-            .child("matches")
-            .child(key)
-            .removeValue()
     }
 }

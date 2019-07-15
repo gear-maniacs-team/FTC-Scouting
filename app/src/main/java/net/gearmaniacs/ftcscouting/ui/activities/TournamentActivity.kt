@@ -220,12 +220,7 @@ class TournamentActivity : AppCompatActivity() {
         dialogFragment.defaultName = viewModel.nameData.value
 
         dialogFragment.actionButtonListener = { newName ->
-            if (newName.isNotBlank()) {
-                viewModel.currentUserReference
-                    .child("tournaments")
-                    .child(tournamentKey)
-                    .setValue(newName)
-            }
+            viewModel.updateTournamentName(newName)
         }
 
         dialogFragment.show(supportFragmentManager, dialogFragment.tag)
@@ -236,15 +231,7 @@ class TournamentActivity : AppCompatActivity() {
             .setTitle(R.string.delete_tournament)
             .setMessage(R.string.delete_tournament_desc)
             .setPositiveButton(R.string.action_delete) { _, _ ->
-                viewModel.currentUserReference
-                    .child("tournaments")
-                    .child(tournamentKey)
-                    .removeValue()
-
-                viewModel.currentUserReference
-                    .child("data")
-                    .child(tournamentKey)
-                    .removeValue()
+                viewModel.deleteTournament()
 
                 finish()
             }

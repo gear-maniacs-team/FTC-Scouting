@@ -11,10 +11,9 @@ import kotlinx.coroutines.launch
 import net.gearmaniacs.ftcscouting.model.Team
 import net.gearmaniacs.ftcscouting.model.Tournament
 import net.gearmaniacs.ftcscouting.model.User
-import net.gearmaniacs.ftcscouting.utils.FirebaseDatabaseRepositoryCallback
+import net.gearmaniacs.ftcscouting.utils.firebase.FirebaseDatabaseRepositoryCallback
 
-
-class MainRepository(viewModelScope: CoroutineScope) {
+class MainRepository(coroutineScope: CoroutineScope) {
 
     private val currentUserReference by lazy {
         FirebaseDatabase.getInstance()
@@ -25,7 +24,7 @@ class MainRepository(viewModelScope: CoroutineScope) {
 
     private val tournamentsListener = object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
-            viewModelScope.launch(Dispatchers.Default) {
+            coroutineScope.launch(Dispatchers.IO) {
                 val list = snapshot.children.map {
                     Tournament(it.getValue(String::class.java)!!).apply {
                         this.key = it.key
