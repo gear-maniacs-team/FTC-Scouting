@@ -114,9 +114,10 @@ class MatchAdapter(
             val blueScore = match.blueAlliance.score
             val winner = context.getString(
                 when {
-                    blueScore > redScore -> R.string.blue_wins
-                    blueScore < redScore -> R.string.red_wins
-                    else -> R.string.draw
+                    blueScore > redScore -> R.string.match_blue_wins
+                    blueScore < redScore -> R.string.match_red_wins
+                    blueScore == 0 && redScore == 0 -> R.string.match_not_played
+                    else -> R.string.match_draw
                 }
             )
 

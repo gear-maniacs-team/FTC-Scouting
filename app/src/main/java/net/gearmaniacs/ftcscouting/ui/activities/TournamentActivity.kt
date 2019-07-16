@@ -77,7 +77,7 @@ class TournamentActivity : AppCompatActivity() {
 
         bottom_navigation.setOnNavigationItemSelectedListener {
             val newFragment = fragments[it.order]
-            
+
             if (activeFragment.getFragmentTag() != newFragment.getFragmentTag()) {
                 updateFab(activeFragment.getFragmentTag(), newFragment.getFragmentTag())
 

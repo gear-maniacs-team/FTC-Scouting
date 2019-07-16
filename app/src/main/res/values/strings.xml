@@ -82,9 +82,10 @@
     <string name="prompt_second_team">Second Team</string>
     <string name="prompt_score">Score</string>
     <string name="red_alliance">Red Alliance</string>
-    <string name="blue_wins">Blue Wins</string>
-    <string name="red_wins">Red Wins</string>
-    <string name="draw">Draw</string>
+    <string name="match_blue_wins">Blue Wins</string>
+    <string name="match_red_wins">Red Wins</string>
+    <string name="match_not_played">Not played</string>
+    <string name="match_draw">Draw</string>
     <string name="match_basic_info">R%d &#8211; B%d: %s</string>
     <string name="match_detailed_info">Red Alliance: %d and %d\nBlue Alliance: %d and %d</string>
     <string name="add_teams_from_matches">Add teams from matches</string>
