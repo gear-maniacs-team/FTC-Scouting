@@ -6,6 +6,7 @@ import net.gearmaniacs.core.model.Alliance
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeamPower
 import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.util.HashSet
 
 class PowerRanking(
@@ -122,6 +123,9 @@ class PowerRanking(
         val powerArray = Matrix.multiply(matches.await(), scores)
 
         val decimalFormat = DecimalFormat("#.##")
+        decimalFormat.decimalFormatSymbols = DecimalFormatSymbols().apply {
+            decimalSeparator = '.'
+        }
 
         powerArray.forEachIndexed { index, power ->
             teamPowerList[index].power = decimalFormat.format(power).toFloat()

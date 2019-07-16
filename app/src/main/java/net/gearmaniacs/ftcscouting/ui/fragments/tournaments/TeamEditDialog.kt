@@ -11,14 +11,15 @@ import androidx.core.view.get
 import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.dialog_edit_team.view.*
 import kotlinx.android.synthetic.main.dialog_edit_team_content.view.*
-import net.gearmaniacs.ftcscouting.R
+import net.gearmaniacs.core.extensions.getTextOrEmpty
+import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.model.AutonomousData
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeleOpData
-import net.gearmaniacs.core.extensions.getTextOrEmpty
-import net.gearmaniacs.core.extensions.toIntOrDefault
+import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.viewmodel.TournamentViewModel
 
 class TeamEditDialog : DialogFragment() {
@@ -93,7 +94,7 @@ class TeamEditDialog : DialogFragment() {
 
             var preferredLocation = 0
             view.toggle_preferred_location.forEachIndexed { index, child: View? ->
-                if (child is RadioButton && child.isChecked) {
+                if (child is MaterialButton && child.isChecked) {
                     preferredLocation = index
                     return@forEachIndexed
                 }
@@ -141,7 +142,7 @@ class TeamEditDialog : DialogFragment() {
             }
 
             if (team.preferredLocation != 0) {
-                val radioLocation = toggle_preferred_location[team.preferredLocation] as RadioButton?
+                val radioLocation = toggle_preferred_location[team.preferredLocation] as MaterialButton?
                 radioLocation?.isChecked = true
             }
 

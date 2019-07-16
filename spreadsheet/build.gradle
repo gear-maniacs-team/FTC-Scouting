@@ -1,0 +1,19 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion Versions.compile_sdk
+
+    defaultConfig {
+        minSdkVersion Versions.min_sdk
+        targetSdkVersion Versions.target_sdk
+
+        consumerProguardFiles 'proguard-rules-spreadsheet.pro'
+    }
+}
+
+dependencies {
+    implementation project(Modules.core)
+
+    implementation Libs.apache_poi
+}

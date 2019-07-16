@@ -95,4 +95,9 @@
     <string name="opr_error_no_matches">No matches found</string>
     <string name="opr_error_data">Something went wrong. Please check the input data</string>
 
+    <!-- Strings related to Spreadsheet -->
+    <string name="spreadsheet_empty">No content found to export</string>
+    <string name="spreadsheet_error">Couldn\'t export data</string>
+    <string name="spreadsheet_saved_successfully">File saved in sdcard/FtcScouting/%s.xls</string>
+
 </resources>

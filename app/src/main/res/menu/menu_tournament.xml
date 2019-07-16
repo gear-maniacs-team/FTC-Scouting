@@ -13,4 +13,8 @@
         android:id="@+id/action_add_teams"
         android:title="@string/add_teams_from_matches" />
 
+    <item
+        android:id="@+id/action_export"
+        android:title="Export to Spreadsheet" />
+
 </menu>

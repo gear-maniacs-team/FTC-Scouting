@@ -25,6 +25,7 @@ object Libs {
 
     // Other Libraries
     const val material_about = "com.github.daniel-stoneuk:material-about-library:2.4.2"
+    const val apache_poi = "org.apache.poi:poi:3.17"
 
     // Tests
     private const val tests_junit = "junit:junit:4.12"
