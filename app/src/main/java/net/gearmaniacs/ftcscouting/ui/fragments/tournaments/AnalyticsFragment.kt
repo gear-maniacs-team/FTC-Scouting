@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import kotlinx.android.synthetic.main.activity_tournament.*
+import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.ftcscouting.ui.adapter.AnalyticsAdapter
-import net.gearmaniacs.ftcscouting.utils.architecture.observeNonNull
 import net.gearmaniacs.ftcscouting.viewmodel.TournamentViewModel
 
 class AnalyticsFragment : TournamentsFragment() {

@@ -7,13 +7,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_login.*
 import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.ftcscouting.model.User
+import net.gearmaniacs.core.model.User
 import net.gearmaniacs.ftcscouting.ui.fragments.login.LoginCallback
 import net.gearmaniacs.ftcscouting.ui.fragments.login.LoginFragment
 import net.gearmaniacs.ftcscouting.ui.fragments.login.RegisterFragment
-import net.gearmaniacs.ftcscouting.utils.extensions.lazyFast
-import net.gearmaniacs.ftcscouting.utils.extensions.longToast
-import net.gearmaniacs.ftcscouting.utils.extensions.startActivity
+import net.gearmaniacs.core.extensions.lazyFast
+import net.gearmaniacs.core.extensions.longToast
+import net.gearmaniacs.core.extensions.startActivity
 
 class LoginActivity : AppCompatActivity(), LoginCallback {
 

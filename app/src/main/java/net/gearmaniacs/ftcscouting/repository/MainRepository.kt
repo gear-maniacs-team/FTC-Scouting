@@ -8,9 +8,9 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import net.gearmaniacs.ftcscouting.model.Team
-import net.gearmaniacs.ftcscouting.model.Tournament
-import net.gearmaniacs.ftcscouting.model.User
+import net.gearmaniacs.core.model.Team
+import net.gearmaniacs.core.model.Tournament
+import net.gearmaniacs.core.model.User
 import net.gearmaniacs.ftcscouting.utils.firebase.DatabasePaths
 import net.gearmaniacs.ftcscouting.utils.firebase.FirebaseDatabaseRepositoryCallback
 

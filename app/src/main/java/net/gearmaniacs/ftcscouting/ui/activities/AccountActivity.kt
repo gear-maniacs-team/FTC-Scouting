@@ -10,10 +10,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_account.*
 import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.ftcscouting.model.User
-import net.gearmaniacs.ftcscouting.utils.extensions.getTextOrEmpty
-import net.gearmaniacs.ftcscouting.utils.extensions.toIntOrDefault
-import net.gearmaniacs.ftcscouting.utils.extensions.toast
+import net.gearmaniacs.core.model.User
+import net.gearmaniacs.core.extensions.getTextOrEmpty
+import net.gearmaniacs.core.extensions.toIntOrDefault
+import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.ftcscouting.utils.firebase.DatabasePaths
 
 class AccountActivity : AppCompatActivity() {

@@ -17,10 +17,10 @@ import net.gearmaniacs.ftcscouting.ui.adapter.TournamentAdapter
 import net.gearmaniacs.ftcscouting.ui.fragments.TournamentDialogFragment
 import net.gearmaniacs.ftcscouting.viewmodel.MainViewModel
 import net.gearmaniacs.ftcscouting.utils.DataRecyclerViewListener
-import net.gearmaniacs.ftcscouting.utils.architecture.getViewModel
-import net.gearmaniacs.ftcscouting.utils.architecture.observeNonNull
-import net.gearmaniacs.ftcscouting.utils.extensions.lazyFast
-import net.gearmaniacs.ftcscouting.utils.extensions.startActivity
+import net.gearmaniacs.core.extensions.getViewModel
+import net.gearmaniacs.core.extensions.observeNonNull
+import net.gearmaniacs.core.extensions.lazyFast
+import net.gearmaniacs.core.extensions.startActivity
 
 class MainActivity : AppCompatActivity(), DataRecyclerViewListener {
 

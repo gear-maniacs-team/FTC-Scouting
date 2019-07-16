@@ -1,4 +1,4 @@
-package net.gearmaniacs.ftcscouting.model
+package net.gearmaniacs.core.model
 
 import android.os.Parcelable
 import com.google.firebase.database.Exclude

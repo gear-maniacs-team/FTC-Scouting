@@ -1,4 +1,4 @@
-package net.gearmaniacs.ftcscouting.model
+package net.gearmaniacs.core.model
 
 data class Tournament(
     val name: String

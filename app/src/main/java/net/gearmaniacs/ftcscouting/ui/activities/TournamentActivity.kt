@@ -17,14 +17,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_tournament.*
 import kotlinx.coroutines.Runnable
 import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.ftcscouting.model.Tournament
-import net.gearmaniacs.ftcscouting.model.User
+import net.gearmaniacs.core.model.Tournament
+import net.gearmaniacs.core.model.User
 import net.gearmaniacs.ftcscouting.ui.fragments.TournamentDialogFragment
 import net.gearmaniacs.ftcscouting.ui.fragments.tournaments.AnalyticsFragment
 import net.gearmaniacs.ftcscouting.ui.fragments.tournaments.InfoFragment
 import net.gearmaniacs.ftcscouting.ui.fragments.tournaments.MatchFragment
 import net.gearmaniacs.ftcscouting.ui.fragments.tournaments.TeamsFragment
-import net.gearmaniacs.ftcscouting.utils.architecture.observe
+import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.ftcscouting.viewmodel.TournamentViewModel
 
 class TournamentActivity : AppCompatActivity() {

@@ -5,7 +5,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_login.view.*
 import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.ftcscouting.utils.extensions.isValidEmail
+import net.gearmaniacs.core.extensions.isValidEmail
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
 

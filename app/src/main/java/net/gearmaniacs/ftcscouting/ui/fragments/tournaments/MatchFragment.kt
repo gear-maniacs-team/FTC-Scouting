@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.activity_tournament.*
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.ui.adapter.MatchAdapter
 import net.gearmaniacs.ftcscouting.utils.DataRecyclerViewListener
-import net.gearmaniacs.ftcscouting.utils.architecture.observeNonNull
+import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.ftcscouting.viewmodel.TournamentViewModel
 
 class MatchFragment : TournamentsFragment(), DataRecyclerViewListener {

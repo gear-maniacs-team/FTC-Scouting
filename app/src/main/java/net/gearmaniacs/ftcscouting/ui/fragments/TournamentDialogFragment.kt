@@ -13,7 +13,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.dialog_new_tournament.*
 import kotlinx.android.synthetic.main.dialog_new_tournament.view.*
 import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.ftcscouting.utils.extensions.getTextOrEmpty
+import net.gearmaniacs.core.extensions.getTextOrEmpty
 
 class TournamentDialogFragment : RoundedBottomSheetDialogFragment() {
 

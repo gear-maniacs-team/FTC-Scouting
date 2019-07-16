@@ -1,8 +1,10 @@
 package net.gearmaniacs.ftcscouting.opr
 
+import kotlin.math.abs
+
 class DeterminantCalculator(private val matrix: Array<DoubleArray>) {
 
-    var sign = 1
+    private var sign = 1
 
     private fun isUpperTriangular(): Boolean {
         if (matrix.size < 2)
@@ -92,7 +94,7 @@ class DeterminantCalculator(private val matrix: Array<DoubleArray>) {
                 val tmp1 = matrix[i][col]
                 val tmp2 = matrix[k][col]
 
-                if (Math.abs(tmp1) < Math.abs(tmp2))
+                if (abs(tmp1) < abs(tmp2))
                     replaceRow(i, k)
             }
         }

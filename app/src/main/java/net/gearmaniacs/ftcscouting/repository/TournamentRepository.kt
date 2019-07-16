@@ -6,9 +6,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.CoroutineScope
-import net.gearmaniacs.ftcscouting.model.Match
-import net.gearmaniacs.ftcscouting.model.Team
-import net.gearmaniacs.ftcscouting.utils.architecture.MutexLiveData
+import net.gearmaniacs.core.model.Match
+import net.gearmaniacs.core.model.Team
+import net.gearmaniacs.core.architecture.MutexLiveData
 import net.gearmaniacs.ftcscouting.utils.firebase.DatabasePaths
 import net.gearmaniacs.ftcscouting.utils.firebase.FirebaseChildListener
 import net.gearmaniacs.ftcscouting.utils.firebase.FirebaseDatabaseRepositoryCallback

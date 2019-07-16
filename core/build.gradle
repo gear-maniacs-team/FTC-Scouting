@@ -1,0 +1,41 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion Versions.compile_sdk
+
+    defaultConfig {
+        minSdkVersion Versions.min_sdk
+        targetSdkVersion Versions.target_sdk
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+androidExtensions {
+    experimental = true
+}
+
+dependencies {
+    api Libs.kotlin_stdlib
+    api Libs.kotlin_coroutines
+
+    api Libs.ktx_core
+    api Libs.ktx_fragment
+    api Libs.ktx_viewmodel
+
+    api Libs.androidx_appcompat
+    api Libs.androidx_recycler_view
+    api Libs.androidx_card_view
+    api Libs.androidx_constraint_layout
+    api Libs.androidx_lifecycle
+
+    api Libs.firebase_core
+    implementation Libs.firebase_database
+}

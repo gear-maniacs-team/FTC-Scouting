@@ -8,8 +8,8 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.ftcscouting.model.Match
-import net.gearmaniacs.ftcscouting.model.Team
+import net.gearmaniacs.core.model.Match
+import net.gearmaniacs.core.model.Team
 
 class InfoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

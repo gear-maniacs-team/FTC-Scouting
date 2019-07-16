@@ -14,11 +14,11 @@ import androidx.fragment.app.activityViewModels
 import kotlinx.android.synthetic.main.dialog_edit_team.view.*
 import kotlinx.android.synthetic.main.dialog_edit_team_content.view.*
 import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.ftcscouting.model.AutonomousData
-import net.gearmaniacs.ftcscouting.model.Team
-import net.gearmaniacs.ftcscouting.model.TeleOpData
-import net.gearmaniacs.ftcscouting.utils.extensions.getTextOrEmpty
-import net.gearmaniacs.ftcscouting.utils.extensions.toIntOrDefault
+import net.gearmaniacs.core.model.AutonomousData
+import net.gearmaniacs.core.model.Team
+import net.gearmaniacs.core.model.TeleOpData
+import net.gearmaniacs.core.extensions.getTextOrEmpty
+import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.ftcscouting.viewmodel.TournamentViewModel
 
 class TeamEditDialog : DialogFragment() {

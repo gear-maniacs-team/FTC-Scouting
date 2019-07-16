@@ -6,8 +6,8 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import net.gearmaniacs.ftcscouting.model.DatabaseClass
-import net.gearmaniacs.ftcscouting.utils.architecture.MutexLiveData
+import net.gearmaniacs.core.model.DatabaseClass
+import net.gearmaniacs.core.architecture.MutexLiveData
 
 class FirebaseSingleValueListener<T : DatabaseClass<T>>(
     private val clazz: Class<T>,

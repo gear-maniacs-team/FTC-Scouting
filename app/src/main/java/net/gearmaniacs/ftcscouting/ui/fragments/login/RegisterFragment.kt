@@ -5,9 +5,9 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_register.view.*
 import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.ftcscouting.model.User
-import net.gearmaniacs.ftcscouting.utils.extensions.getTextOrEmpty
-import net.gearmaniacs.ftcscouting.utils.extensions.isValidEmail
+import net.gearmaniacs.core.model.User
+import net.gearmaniacs.core.extensions.getTextOrEmpty
+import net.gearmaniacs.core.extensions.isValidEmail
 
 class RegisterFragment : Fragment(R.layout.fragment_register) {
 

@@ -6,16 +6,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import net.gearmaniacs.core.architecture.MutexLiveData
+import net.gearmaniacs.core.architecture.NonNullLiveData
+import net.gearmaniacs.core.extensions.toast
+import net.gearmaniacs.core.model.Alliance
+import net.gearmaniacs.core.model.Match
+import net.gearmaniacs.core.model.Team
+import net.gearmaniacs.core.model.TeamPower
 import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.ftcscouting.model.Alliance
-import net.gearmaniacs.ftcscouting.model.Match
-import net.gearmaniacs.ftcscouting.model.Team
-import net.gearmaniacs.ftcscouting.model.TeamPower
 import net.gearmaniacs.ftcscouting.opr.PowerRanking
 import net.gearmaniacs.ftcscouting.repository.TournamentRepository
-import net.gearmaniacs.ftcscouting.utils.architecture.MutexLiveData
-import net.gearmaniacs.ftcscouting.utils.architecture.NonNullLiveData
-import net.gearmaniacs.ftcscouting.utils.extensions.toast
 import net.gearmaniacs.ftcscouting.utils.firebase.FirebaseDatabaseRepositoryCallback
 
 class TournamentViewModel : ViewModel() {

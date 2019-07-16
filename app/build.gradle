@@ -29,7 +29,7 @@ android {
             versionNameSuffix "-debug"
         }
         release {
-            manifestPlaceholders = [enableCrashlytics:false]
+            manifestPlaceholders = [enableCrashlytics:false] // TODO: Change this to true on proper release
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
@@ -43,21 +43,10 @@ androidExtensions {
 }
 
 dependencies {
-    implementation Libs.kotlin_stdlib
-    implementation Libs.kotlin_coroutines
-
-    implementation Libs.ktx_core
-    implementation Libs.ktx_fragment
-    implementation Libs.ktx_viewmodel
+    implementation project(Modules.core)
 
     implementation Libs.google_material
-    implementation Libs.androidx_appcompat
-    implementation Libs.androidx_recycler_view
-    implementation Libs.androidx_card_view
-    implementation Libs.androidx_constraint_layout
-    implementation Libs.androidx_lifecycle
 
-    implementation Libs.firebase_core
     implementation Libs.firebase_database
     implementation Libs.firebase_auth
     implementation Libs.firebase_crashlytics

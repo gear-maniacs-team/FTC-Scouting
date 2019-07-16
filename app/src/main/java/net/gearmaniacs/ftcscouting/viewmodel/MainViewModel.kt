@@ -2,10 +2,10 @@ package net.gearmaniacs.ftcscouting.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import net.gearmaniacs.ftcscouting.model.Tournament
-import net.gearmaniacs.ftcscouting.model.User
+import net.gearmaniacs.core.model.Tournament
+import net.gearmaniacs.core.model.User
 import net.gearmaniacs.ftcscouting.repository.MainRepository
-import net.gearmaniacs.ftcscouting.utils.architecture.NonNullLiveData
+import net.gearmaniacs.core.architecture.NonNullLiveData
 import net.gearmaniacs.ftcscouting.utils.firebase.FirebaseDatabaseRepositoryCallback
 
 class MainViewModel : ViewModel() {
