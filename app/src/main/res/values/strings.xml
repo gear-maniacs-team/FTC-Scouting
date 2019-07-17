@@ -1,20 +1,6 @@
 <resources>
     <string name="app_name">FTC Scouting</string>
 
-    <!-- More General Strings -->
-    <string name="action_add">Add</string>
-    <string name="action_add_teams">Add Teams</string>
-    <string name="action_create">Create</string>
-    <string name="action_update">Update</string>
-    <string name="action_delete">Delete</string>
-    <string name="action_edit">Edit</string>
-    <string name="action_edit_name">Edit name</string>
-    <string name="action_create_tournament">Create Tournament</string>
-    <string name="none">None</string>
-    <string name="category_other">Other</string>
-    <string name="title_about">About</string>
-    <string name="version">Version</string>
-
     <!-- Strings related to login/account -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -34,70 +20,5 @@
     <string name="error_field_required">This field is required</string>
     <string name="title_account">Account</string>
     <string name="account_updated">Account Info Updated</string>
-
-    <!-- Strings related to the tournament -->
-    <string name="action_delete_tournament">Delete tournament</string>
-    <string name="action_export_excel">Export to Excel</string>
-    <string name="delete_tournament">Delete this tournament?</string>
-    <string name="delete_tournament_desc">If deleted, the tournament will also be removed from all other devices!</string>
-    <string name="title_tournaments">Tournaments</string>
-    <string name="title_info">Info</string>
-    <string name="title_teams">Teams</string>
-    <string name="title_matches">Matches</string>
-    <string name="title_analytics">Analytics</string>
-    <string name="export_finished">Finished Exporting Tournament</string>
-
-    <!-- Strings related to the team -->
-    <string name="team_preferred_depot">Depot</string>
-    <string name="team_preferred_crater">Crater</string>
-    <string name="team_id_name">#%d - %s</string>
-    <string name="team_predicted_score">Predicted Score: %d</string>
-    <string name="team_description"><b>Autonomous Score:</b> %d\n<b>TeleOp Score:</b> %d\n<b>End Game Score:</b> %d\n<b>Preferred Location: %s</b>\n<b>Comments:</b> %s</string>
-    <string name="team_comments">Comments</string>
-    <string name="delete_team">Delete this team?</string>
-    <string name="delete_team_desc">If deleted, the team will also be removed from all other devices!</string>
-    <string name="period_autonomous">Autonomous</string>
-    <string name="period_teleop">TeleOp</string>
-    <string name="period_end_game">End Game</string>
-    <string name="prompt_team_number">Team Number</string>
-    <string name="prompt_team_name">Team Name</string>
-    <string name="prompt_minerals_collected">Minerals Collected</string>
-    <string name="prompt_minerals_depot">Minerals in Depot</string>
-    <string name="prompt_minerals_lander">Minerals in Lander</string>
-    <string name="latching">Latching</string>
-    <string name="sampling">Sampling</string>
-    <string name="marker_claimed">Marker Claimed</string>
-    <string name="parking">Parking</string>
-    <string name="robot_latched">Robot Latched</string>
-    <string name="partially_parked">Partially Parked</string>
-    <string name="completely_parked">Completely Parked</string>
-    <string name="preferred_location">Preferred Location:</string>
-
-    <!-- Strings related to the match -->
-    <string name="delete_match">Delete this match?</string>
-    <string name="delete_match_desc">If deleted, the match will also be removed from all other devices!</string>
-    <string name="prompt_match_number">Match Number</string>
-    <string name="blue_alliance">Blue Alliance</string>
-    <string name="prompt_first_team">First Team</string>
-    <string name="prompt_second_team">Second Team</string>
-    <string name="prompt_score">Score</string>
-    <string name="red_alliance">Red Alliance</string>
-    <string name="match_blue_wins">Blue Wins</string>
-    <string name="match_red_wins">Red Wins</string>
-    <string name="match_not_played">Not played</string>
-    <string name="match_draw">Draw</string>
-    <string name="match_basic_info">R%d &#8211; B%d: %s</string>
-    <string name="match_detailed_info">Red Alliance: %d and %d\nBlue Alliance: %d and %d</string>
-    <string name="add_teams_from_matches">Add teams from matches</string>
-    <string name="add_teams_from_matches_desc">Are you sure you want to add all the teams from the Matches?</string>
-
-    <!-- Strings related to OPR -->
-    <string name="opr_error_no_matches">No matches found</string>
-    <string name="opr_error_data">Something went wrong. Please check the input data</string>
-
-    <!-- Strings related to Spreadsheet -->
-    <string name="spreadsheet_empty">No content found to export</string>
-    <string name="spreadsheet_error">Couldn\'t export data</string>
-    <string name="spreadsheet_saved_successfully">File saved in sdcard/FtcScouting/%s.xls</string>
 
 </resources>

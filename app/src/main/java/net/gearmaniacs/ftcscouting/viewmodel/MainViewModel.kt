@@ -2,11 +2,11 @@ package net.gearmaniacs.ftcscouting.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import net.gearmaniacs.core.architecture.NonNullLiveData
+import net.gearmaniacs.core.firebase.FirebaseDatabaseRepositoryCallback
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.User
 import net.gearmaniacs.ftcscouting.repository.MainRepository
-import net.gearmaniacs.core.architecture.NonNullLiveData
-import net.gearmaniacs.ftcscouting.utils.firebase.FirebaseDatabaseRepositoryCallback
 
 class MainViewModel : ViewModel() {
 
@@ -17,7 +17,8 @@ class MainViewModel : ViewModel() {
     var currentUser: User? = null
 
     init {
-        repository.tournamentsCallback = object : FirebaseDatabaseRepositoryCallback<List<Tournament>> {
+        repository.tournamentsCallback = object :
+            FirebaseDatabaseRepositoryCallback<List<Tournament>> {
             override fun onSuccess(result: List<Tournament>) {
                 tournamentListData.value = result
             }

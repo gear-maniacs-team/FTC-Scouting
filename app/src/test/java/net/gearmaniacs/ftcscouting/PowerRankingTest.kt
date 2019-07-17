@@ -3,7 +3,7 @@ package net.gearmaniacs.ftcscouting
 import kotlinx.coroutines.runBlocking
 import net.gearmaniacs.core.model.Alliance
 import net.gearmaniacs.core.model.TeamPower
-import net.gearmaniacs.ftcscouting.opr.PowerRanking
+import net.gearmaniacs.tournament.opr.PowerRanking
 import org.junit.Test
 
 class PowerRankingTest {

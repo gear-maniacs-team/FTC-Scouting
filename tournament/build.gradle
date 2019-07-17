@@ -1,0 +1,23 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion Versions.compile_sdk
+
+    defaultConfig {
+        minSdkVersion Versions.min_sdk
+        targetSdkVersion Versions.target_sdk
+
+        consumerProguardFiles 'proguard-rules-spreadsheet.pro'
+    }
+}
+
+dependencies {
+    api project(Modules.core)
+
+    api Libs.firebase_database
+    api Libs.firebase_auth
+
+    implementation Libs.apache_poi
+}

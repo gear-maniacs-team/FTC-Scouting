@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- More General Strings -->
+    <string name="action_add">Add</string>
+    <string name="action_add_teams">Add Teams</string>
+    <string name="action_create">Create</string>
+    <string name="action_update">Update</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_edit_name">Edit name</string>
+    <string name="action_create_tournament">Create Tournament</string>
+    <string name="none">None</string>
+    <string name="category_other">Other</string>
+    <string name="title_about">About</string>
+    <string name="version">Version</string>
+</resources>

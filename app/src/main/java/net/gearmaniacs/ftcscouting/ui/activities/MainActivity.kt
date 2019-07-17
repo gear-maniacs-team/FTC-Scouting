@@ -12,15 +12,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import net.gearmaniacs.core.extensions.getViewModel
+import net.gearmaniacs.core.extensions.lazyFast
+import net.gearmaniacs.core.extensions.observeNonNull
+import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.ui.adapter.TournamentAdapter
-import net.gearmaniacs.ftcscouting.ui.fragments.TournamentDialogFragment
 import net.gearmaniacs.ftcscouting.viewmodel.MainViewModel
-import net.gearmaniacs.ftcscouting.utils.DataRecyclerViewListener
-import net.gearmaniacs.core.extensions.getViewModel
-import net.gearmaniacs.core.extensions.observeNonNull
-import net.gearmaniacs.core.extensions.lazyFast
-import net.gearmaniacs.core.extensions.startActivity
+import net.gearmaniacs.tournament.ui.activity.TournamentActivity
+import net.gearmaniacs.tournament.ui.fragment.TournamentDialogFragment
+import net.gearmaniacs.tournament.utils.DataRecyclerViewListener
 
 class MainActivity : AppCompatActivity(), DataRecyclerViewListener {
 
@@ -63,7 +64,7 @@ class MainActivity : AppCompatActivity(), DataRecyclerViewListener {
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when(item.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.action_about -> {
             startActivity<AboutActivity>()
             true

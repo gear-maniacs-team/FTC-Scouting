@@ -11,8 +11,8 @@ import kotlinx.coroutines.launch
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.User
-import net.gearmaniacs.ftcscouting.utils.firebase.DatabasePaths
-import net.gearmaniacs.ftcscouting.utils.firebase.FirebaseDatabaseRepositoryCallback
+import net.gearmaniacs.core.firebase.DatabasePaths
+import net.gearmaniacs.core.firebase.FirebaseDatabaseRepositoryCallback
 
 class MainRepository(coroutineScope: CoroutineScope) {
 

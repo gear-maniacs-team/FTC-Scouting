@@ -25,6 +25,7 @@ dependencies {
     api Libs.ktx_fragment
     api Libs.ktx_viewmodel
 
+    api Libs.google_material
     api Libs.androidx_appcompat
     api Libs.androidx_recycler_view
     api Libs.androidx_card_view
@@ -32,5 +33,5 @@ dependencies {
     api Libs.androidx_lifecycle
 
     api Libs.firebase_core
-    implementation Libs.firebase_database
+    api Libs.firebase_database
 }

@@ -14,7 +14,7 @@ import net.gearmaniacs.core.model.User
 import net.gearmaniacs.core.extensions.getTextOrEmpty
 import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.extensions.toast
-import net.gearmaniacs.ftcscouting.utils.firebase.DatabasePaths
+import net.gearmaniacs.core.firebase.DatabasePaths
 
 class AccountActivity : AppCompatActivity() {
 

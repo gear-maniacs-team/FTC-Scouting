@@ -1,1 +1,1 @@
-include ':app', ':core', ':spreadsheet'
+include ':app', ':core', ':tournament'

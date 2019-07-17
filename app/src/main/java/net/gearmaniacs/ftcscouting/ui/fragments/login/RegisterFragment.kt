@@ -8,6 +8,7 @@ import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.core.model.User
 import net.gearmaniacs.core.extensions.getTextOrEmpty
 import net.gearmaniacs.core.extensions.isValidEmail
+import net.gearmaniacs.ftcscouting.utils.LoginCallback
 
 class RegisterFragment : Fragment(R.layout.fragment_register) {
 

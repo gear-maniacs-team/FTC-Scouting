@@ -44,12 +44,8 @@ androidExtensions {
 
 dependencies {
     implementation project(Modules.core)
-    implementation project(Modules.spreadsheet)
+    implementation project(Modules.tournament)
 
-    implementation Libs.google_material
-
-    implementation Libs.firebase_database
-    implementation Libs.firebase_auth
     implementation Libs.firebase_crashlytics
 
     implementation Libs.material_about

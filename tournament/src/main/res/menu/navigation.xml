@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_info"
+        android:icon="@drawable/ic_info"
+        android:orderInCategory="0"
+        android:title="@string/title_info" />
+
+    <item
+        android:id="@+id/nav_teams"
+        android:icon="@drawable/ic_teams"
+        android:orderInCategory="1"
+        android:title="@string/title_teams" />
+
+    <item
+        android:id="@+id/nav_matches"
+        android:icon="@drawable/ic_matches"
+        android:orderInCategory="2"
+        android:title="@string/title_matches" />
+
+    <item
+        android:id="@+id/nav_analytics"
+        android:icon="@drawable/ic_analytics"
+        android:orderInCategory="3"
+        android:title="@string/title_analytics" />
+
+</menu>
