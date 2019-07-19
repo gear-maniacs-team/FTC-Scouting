@@ -1,16 +1,17 @@
 package net.gearmaniacs.tournament.ui.fragment
 
-import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
-import kotlinx.android.synthetic.main.activity_tournament.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.fragment_recycler_view.view.*
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.ui.adapter.TeamAdapter
 import net.gearmaniacs.tournament.utils.DataRecyclerViewListener
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
-internal class TeamsFragment : TournamentsFragment(), DataRecyclerViewListener {
+internal class TeamsFragment : TournamentsFragment(R.layout.fragment_recycler_view), DataRecyclerViewListener {
 
     companion object {
         const val TAG = "TeamsFragment"
@@ -19,14 +20,15 @@ internal class TeamsFragment : TournamentsFragment(), DataRecyclerViewListener {
     private val viewModel by activityViewModels<TournamentViewModel>()
     private lateinit var adapter: TeamAdapter
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
+    override fun onInflateView(view: View) {
         val activity = activity ?: return
-        val recyclerView = activity.rv_main
+        val recyclerView = view.recycler_view
 
         if (!this::adapter.isInitialized)
             adapter = TeamAdapter(recyclerView, this)
+
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
 
         activity.observeNonNull(viewModel.teamsData) {

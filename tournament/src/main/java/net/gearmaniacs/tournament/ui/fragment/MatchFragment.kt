@@ -1,19 +1,17 @@
 package net.gearmaniacs.tournament.ui.fragment
 
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
-import kotlinx.android.synthetic.main.activity_tournament.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.fragment_recycler_view.view.*
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.ui.adapter.MatchAdapter
 import net.gearmaniacs.tournament.utils.DataRecyclerViewListener
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
-internal class MatchFragment : TournamentsFragment(), DataRecyclerViewListener {
+internal class MatchFragment : TournamentsFragment(R.layout.fragment_recycler_view), DataRecyclerViewListener {
 
     companion object {
         const val TAG = "MatchFragment"
@@ -22,19 +20,20 @@ internal class MatchFragment : TournamentsFragment(), DataRecyclerViewListener {
     private val viewModel by activityViewModels<TournamentViewModel>()
     private lateinit var adapter: MatchAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val activity = activity ?: return null
-        val recyclerView = activity.rv_main
+    override fun onInflateView(view: View) {
+        val activity = activity ?: return
+        val recyclerView = view.recycler_view
 
         if (!this::adapter.isInitialized)
             adapter = MatchAdapter(recyclerView, this)
+
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
 
         activity.observeNonNull(viewModel.matchesData) {
             adapter.submitList(it)
         }
-
-        return null
     }
 
     override fun fabClickListener() {

@@ -14,7 +14,6 @@ import android.view.animation.ScaleAnimation
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_tournament.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -80,10 +79,6 @@ class TournamentActivity : AppCompatActivity() {
             activeFragment.fabClickListener()
         }
 
-        rv_main.setHasFixedSize(true)
-        rv_main.layoutManager = LinearLayoutManager(this)
-        rv_main.setItemViewCacheSize(5)
-
         bottom_navigation.setOnNavigationItemSelectedListener {
             val newFragment = fragments[it.order]
 
@@ -91,8 +86,7 @@ class TournamentActivity : AppCompatActivity() {
                 updateFab(activeFragment.getFragmentTag(), newFragment.getFragmentTag())
 
                 supportFragmentManager.beginTransaction()
-                    .remove(activeFragment)
-                    .add(newFragment, newFragment.getFragmentTag())
+                    .replace(R.id.layout_fragment, newFragment, newFragment.getFragmentTag())
                     .commit()
                 activeFragment = newFragment
 
@@ -105,8 +99,9 @@ class TournamentActivity : AppCompatActivity() {
             activeFragment = fragments[it.getInt(SAVED_FRAGMENT_INDEX)]
         }
         supportFragmentManager.beginTransaction()
-            .add(activeFragment, activeFragment.getFragmentTag())
+            .replace(R.id.layout_fragment, activeFragment, activeFragment.getFragmentTag())
             .commit()
+        updateFab(fragments.first().getFragmentTag(), activeFragment.getFragmentTag())
 
         observe(viewModel.nameData) { name ->
             if (name == null) {
@@ -175,6 +170,7 @@ class TournamentActivity : AppCompatActivity() {
     }
 
     private fun updateFab(oldFragmentTag: String, newFragmentTag: String) {
+        if (oldFragmentTag == newFragmentTag) return
         val fabDrawable = if (newFragmentTag == AnalyticsFragment.TAG) R.drawable.ic_refresh else R.drawable.ic_add
 
         if (oldFragmentTag == InfoFragment.TAG) {

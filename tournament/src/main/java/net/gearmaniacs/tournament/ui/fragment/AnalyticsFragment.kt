@@ -1,17 +1,16 @@
 package net.gearmaniacs.tournament.ui.fragment
 
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import kotlinx.android.synthetic.main.activity_tournament.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.fragment_recycler_view.view.*
 import net.gearmaniacs.core.extensions.lazyFast
 import net.gearmaniacs.core.extensions.observeNonNull
+import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.ui.adapter.AnalyticsAdapter
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
-internal class AnalyticsFragment : TournamentsFragment() {
+internal class AnalyticsFragment : TournamentsFragment(R.layout.fragment_recycler_view) {
 
     companion object {
         const val TAG = "AnalyticsFragment"
@@ -20,16 +19,18 @@ internal class AnalyticsFragment : TournamentsFragment() {
     private val viewModel by activityViewModels<TournamentViewModel>()
     private val adapter by lazyFast { AnalyticsAdapter() }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val activity = activity ?: return null
+    override fun onInflateView(view: View) {
+        val activity = activity ?: return
 
-        activity.rv_main.adapter = adapter
+        val recyclerView = view.recycler_view
+
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.adapter = adapter
 
         activity.observeNonNull(viewModel.analyticsData) {
             adapter.submitList(it)
         }
-
-        return null
     }
 
     override fun fabClickListener() {
