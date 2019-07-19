@@ -18,7 +18,8 @@ import net.gearmaniacs.core.model.TeamPower
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.opr.PowerRanking
 import net.gearmaniacs.tournament.repository.TournamentRepository
-import net.gearmaniacs.tournament.utils.ExportToSpreadsheet
+import net.gearmaniacs.tournament.spreadsheet.ExportToSpreadsheet
+import net.gearmaniacs.tournament.spreadsheet.ImportFromSpreadsheet
 import java.io.File
 
 class TournamentViewModel : ViewModel() {
@@ -61,9 +62,10 @@ class TournamentViewModel : ViewModel() {
     // region Teams Management
 
     fun addTeamsFromMatches() {
+        val existingTeamsList = teamsData.value.map { it.id }
+        val matchesList = matchesData.value
+
         viewModelScope.launch(Dispatchers.Default) {
-            val existingTeams = teamsData.value.map { it.id }
-            val matchesList = matchesData.value
             val teamIds = HashSet<Int>(matchesList.size)
 
             matchesList.forEach {
@@ -73,9 +75,14 @@ class TournamentViewModel : ViewModel() {
                 teamIds.add(it.blueAlliance.secondTeam)
             }
 
-            teamIds.removeAll(existingTeams)
+            teamIds.removeAll(existingTeamsList)
 
-            repository.addTeams(tournamentKey, teamIds.toList())
+            val newTeamsList = teamIds.asSequence()
+                .filter { it != 0 }
+                .map { Team(it, null) }
+                .toList()
+
+            repository.addTeams(tournamentKey, newTeamsList)
         }
     }
 
@@ -194,6 +201,20 @@ class TournamentViewModel : ViewModel() {
                     appContext.toast(R.string.spreadsheet_error)
                 }
             }
+        }
+    }
+
+    fun importFromSpreadSheet(file: File) {
+        val currentTeams = teamsData.value
+        val currentMatches = matchesData.value
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val import = ImportFromSpreadsheet(file)
+            val importTeams = import.getTeams()
+            val importMatches = import.getMatches()
+
+            repository.addTeams(tournamentKey, importTeams.filterNot { currentTeams.contains(it) })
+            repository.addMatches(tournamentKey, importMatches.filterNot { currentMatches.contains(it) })
         }
     }
 

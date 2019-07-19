@@ -15,9 +15,13 @@ data class AutonomousData(
 
     constructor() : this(false, false, false, false, 0)
 
+    val isEmpty: Boolean
+        @Exclude
+        get() = !latching && !sampling && !marker && !parking && minerals == 0
+
     val isNotEmpty: Boolean
         @Exclude
-        get() = latching || sampling || marker || parking || minerals != 0
+        get() = !isEmpty
 
     fun calculateScore(): Int {
         var result = 0
@@ -40,9 +44,13 @@ data class TeleOpData(
 
     constructor() : this(0, 0)
 
+    val isEmpty: Boolean
+        @Exclude
+        get() = depotMinerals == 0 && landerMinerals == 0
+
     val isNotEmpty: Boolean
         @Exclude
-        get() = depotMinerals != 0 || landerMinerals != 0
+        get() = !isEmpty
 
     fun calculateScore(): Int {
         var result = 0

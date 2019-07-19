@@ -19,5 +19,6 @@ dependencies {
     api Libs.firebase_database
     api Libs.firebase_auth
 
+    implementation Libs.material_chooser
     implementation Libs.apache_poi
 }

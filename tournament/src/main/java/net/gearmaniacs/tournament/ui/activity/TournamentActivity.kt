@@ -1,9 +1,10 @@
 package net.gearmaniacs.tournament.ui.activity
 
+import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.view.animation.AccelerateInterpolator
@@ -15,7 +16,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_tournament.*
-import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import net.gearmaniacs.core.extensions.checkRuntimePermission
 import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.User
@@ -26,6 +31,8 @@ import net.gearmaniacs.tournament.ui.fragment.MatchFragment
 import net.gearmaniacs.tournament.ui.fragment.TeamsFragment
 import net.gearmaniacs.tournament.ui.fragment.TournamentDialogFragment
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
+import net.theluckycoder.materialchooser.Chooser
+import java.io.File
 
 class TournamentActivity : AppCompatActivity() {
 
@@ -35,6 +42,8 @@ class TournamentActivity : AppCompatActivity() {
         private const val ARG_TOURNAMENT_NAME = "tournament_name"
 
         private const val SAVED_FRAGMENT_INDEX = "tournament_key"
+
+        private const val SPREADSHEET_REQUEST_CODE = 1
 
         fun startActivity(context: Context, user: User, tournament: Tournament) {
             val intent = Intent(context, TournamentActivity::class.java)
@@ -130,7 +139,18 @@ class TournamentActivity : AppCompatActivity() {
                     .setNegativeButton(android.R.string.cancel, null)
                     .show()
             }
-            R.id.action_export -> viewModel.exportToSpreadsheet(applicationContext)
+            R.id.action_export -> {
+                checkRuntimePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                viewModel.exportToSpreadsheet(applicationContext)
+            }
+            R.id.action_import -> {
+                Chooser(
+                    activity = this,
+                    requestCode = SPREADSHEET_REQUEST_CODE,
+                    fileExtension = "xls",
+                    useNightTheme = true
+                ).start()
+            }
         }
         return true
     }
@@ -143,6 +163,15 @@ class TournamentActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         viewModel.stopListening()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == SPREADSHEET_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val path = data?.getStringExtra(Chooser.RESULT_PATH) ?: return
+            viewModel.importFromSpreadSheet(File(path))
+        }
     }
 
     private fun updateFab(oldFragmentTag: String, newFragmentTag: String) {
@@ -180,10 +209,10 @@ class TournamentActivity : AppCompatActivity() {
 
         fab.startAnimation(fabAnimation)
 
-        val handler = Handler()
-        handler.postDelayed(Runnable {
+        GlobalScope.launch(Dispatchers.Main.immediate) {
+            delay(animationDuration)
             fab.setImageDrawable(getDrawable(fabDrawable))
-        }, animationDuration)
+        }
     }
 
     private fun changeTournamentName() {

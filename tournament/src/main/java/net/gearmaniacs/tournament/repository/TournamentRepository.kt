@@ -50,21 +50,6 @@ internal class TournamentRepository(
 
     var nameCallback: FirebaseDatabaseRepositoryCallback<String?>? = null
 
-    fun addTeams(tournamentKey: String, teamIds: List<Int>) {
-        val ref = currentUserReference
-            .child(DatabasePaths.KEY_DATA)
-            .child(tournamentKey)
-            .child(DatabasePaths.KEY_TEAMS)
-
-        teamIds
-            .asSequence()
-            .filter { it != 0 }
-            .distinct()
-            .map { Team(it, null) }
-            .forEach { ref.push().setValue(it) }
-    }
-
-
     fun addTeam(tournamentKey: String, team: Team) {
         currentUserReference
             .child(DatabasePaths.KEY_DATA)
@@ -72,6 +57,17 @@ internal class TournamentRepository(
             .child(DatabasePaths.KEY_MATCHES)
             .push()
             .setValue(team)
+    }
+
+    fun addTeams(tournamentKey: String, teamIds: List<Team>) {
+        val ref = currentUserReference
+            .child(DatabasePaths.KEY_DATA)
+            .child(tournamentKey)
+            .child(DatabasePaths.KEY_TEAMS)
+
+        teamIds.forEach {
+            ref.push().setValue(it)
+        }
     }
 
     fun updatedTeam(tournamentKey: String, team: Team) {
@@ -100,6 +96,17 @@ internal class TournamentRepository(
             .child("matches")
             .push()
             .setValue(match)
+    }
+
+    fun addMatches(tournamentKey: String, matches: List<Match>) {
+        val ref = currentUserReference
+            .child(DatabasePaths.KEY_DATA)
+            .child(tournamentKey)
+            .child(DatabasePaths.KEY_MATCHES)
+
+        matches.forEach {
+            ref.push().setValue(it)
+        }
     }
 
     fun updatedMatch(tournamentKey: String, match: Match) {

@@ -64,4 +64,6 @@
     <string name="spreadsheet_empty">No content found to export</string>
     <string name="spreadsheet_error">Couldn\'t export data</string>
     <string name="spreadsheet_saved_successfully">File saved in sdcard/FtcScouting/%s.xls</string>
+    <string name="spreadsheet_export">Export to Spreadsheet</string>
+    <string name="spreadsheet_import">Import from Spreadsheet</string>
 </resources>
