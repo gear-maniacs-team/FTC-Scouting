@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 
-internal abstract class TournamentsFragment : Fragment {
+internal abstract class TournamentFragment : Fragment {
 
     constructor() : super()
 

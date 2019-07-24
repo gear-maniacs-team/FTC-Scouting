@@ -35,24 +35,6 @@ import java.io.File
 
 class TournamentActivity : AppCompatActivity() {
 
-    companion object {
-        private const val ARG_TOURNAMENT_KEY = "tournament_key"
-        const val ARG_USER = "user"
-        private const val ARG_TOURNAMENT_NAME = "tournament_name"
-
-        private const val SAVED_FRAGMENT_INDEX = "tournament_key"
-
-        private const val SPREADSHEET_REQUEST_CODE = 1
-
-        fun startActivity(context: Context, user: User, tournament: Tournament) {
-            val intent = Intent(context, TournamentActivity::class.java)
-            intent.putExtra(ARG_TOURNAMENT_KEY, tournament.key)
-            intent.putExtra(ARG_USER, user)
-            intent.putExtra(ARG_TOURNAMENT_NAME, tournament.name)
-            context.startActivity(intent)
-        }
-    }
-
     private val viewModel by viewModels<TournamentViewModel>()
 
     private val fragments = listOf(InfoFragment(), TeamsFragment(), MatchFragment(), AnalyticsFragment())
@@ -170,15 +152,21 @@ class TournamentActivity : AppCompatActivity() {
     }
 
     private fun updateFab(oldFragmentTag: String, newFragmentTag: String) {
-        if (oldFragmentTag == newFragmentTag) return
-        val fabDrawable = if (newFragmentTag == AnalyticsFragment.TAG) R.drawable.ic_refresh else R.drawable.ic_add
+        val newDrawable = getDrawable(
+            if (newFragmentTag == AnalyticsFragment.TAG)
+                R.drawable.ic_refresh
+            else
+                R.drawable.ic_add
+        )
 
-        if (oldFragmentTag == InfoFragment.TAG) {
-            fab.setImageResource(fabDrawable)
+        if (fab.isOrWillBeHidden) {
+            fab.setImageDrawable(newDrawable)
             fab.show()
             return
-        } else if (newFragmentTag == InfoFragment.TAG) {
-            fab.hide()
+        }
+
+        if (newFragmentTag == InfoFragment.TAG) {
+            fab.hide() // InfoFragment shouldn't have a visible FAB
             return
         }
 
@@ -207,7 +195,7 @@ class TournamentActivity : AppCompatActivity() {
 
         GlobalScope.launch(Dispatchers.Main.immediate) {
             delay(animationDuration)
-            fab.setImageDrawable(getDrawable(fabDrawable))
+            fab.setImageDrawable(newDrawable)
         }
     }
 
@@ -234,5 +222,23 @@ class TournamentActivity : AppCompatActivity() {
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
+    }
+
+    companion object {
+        private const val ARG_TOURNAMENT_KEY = "tournament_key"
+        const val ARG_USER = "user"
+        private const val ARG_TOURNAMENT_NAME = "tournament_name"
+
+        private const val SAVED_FRAGMENT_INDEX = "tournament_key"
+
+        private const val SPREADSHEET_REQUEST_CODE = 1
+
+        fun startActivity(context: Context, user: User, tournament: Tournament) {
+            val intent = Intent(context, TournamentActivity::class.java)
+            intent.putExtra(ARG_TOURNAMENT_KEY, tournament.key)
+            intent.putExtra(ARG_USER, user)
+            intent.putExtra(ARG_TOURNAMENT_NAME, tournament.name)
+            context.startActivity(intent)
+        }
     }
 }

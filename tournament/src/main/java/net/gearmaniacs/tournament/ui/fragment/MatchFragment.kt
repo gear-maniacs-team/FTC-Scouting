@@ -4,6 +4,8 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.activity_tournament.*
 import kotlinx.android.synthetic.main.fragment_recycler_view.view.*
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.tournament.R
@@ -11,7 +13,7 @@ import net.gearmaniacs.tournament.ui.adapter.MatchAdapter
 import net.gearmaniacs.tournament.utils.DataRecyclerViewListener
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
-internal class MatchFragment : TournamentsFragment(R.layout.fragment_recycler_view), DataRecyclerViewListener {
+internal class MatchFragment : TournamentFragment(R.layout.fragment_recycler_view), DataRecyclerViewListener {
 
     companion object {
         const val TAG = "MatchFragment"
@@ -22,14 +24,25 @@ internal class MatchFragment : TournamentsFragment(R.layout.fragment_recycler_vi
 
     override fun onInflateView(view: View) {
         val activity = activity ?: return
+
+        val fab = activity.fab
         val recyclerView = view.recycler_view
 
-        if (!this::adapter.isInitialized)
-            adapter = MatchAdapter(recyclerView, this)
+        adapter = MatchAdapter(recyclerView, this)
 
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy > 0 && fab.visibility == View.VISIBLE) {
+                    fab.hide()
+                } else if (dy < 0 && fab.visibility != View.VISIBLE) {
+                    fab.show()
+                }
+            }
+        })
 
         activity.observeNonNull(viewModel.matchesData) {
             adapter.submitList(it)
