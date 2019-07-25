@@ -17,7 +17,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name=".ui.activities.LoginActivity">
+            android:name=".ui.activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,14 +25,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activities.MainActivity" />
+        <activity android:name=".ui.activity.MainActivity" />
 
         <activity
-            android:name=".ui.activities.AboutActivity"
+            android:name=".ui.activity.AboutActivity"
             android:label="@string/title_about"
             android:theme="@style/AppTheme.AboutActivity" />
         <activity
-            android:name=".ui.activities.AccountActivity"
+            android:name=".ui.activity.AccountActivity"
             android:label="@string/title_account"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />

@@ -77,9 +77,12 @@ class TournamentActivity : AppCompatActivity() {
         }
 
         // Setup Fragments
-        savedInstanceState?.let {
-            activeFragment = fragments[it.getInt(SAVED_FRAGMENT_INDEX)]
+        savedInstanceState?.let { bundle ->
+            val restoredTag = bundle.getString(SAVED_FRAGMENT_INDEX)
+
+            activeFragment = fragments.find { it.getFragmentTag() == restoredTag } ?: fragments.first()
         }
+
         supportFragmentManager.beginTransaction()
             .replace(R.id.layout_fragment, activeFragment, activeFragment.getFragmentTag())
             .commit()
@@ -87,13 +90,18 @@ class TournamentActivity : AppCompatActivity() {
 
         observe(viewModel.nameData) { name ->
             if (name == null) {
-                // Means the Tournament has been deleted so we can close the activity
+                // Means the Tournament has been deleted so we should close the activity
                 finish()
                 return@observe
             }
 
             supportActionBar?.title = name
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(SAVED_FRAGMENT_INDEX, activeFragment.getFragmentTag())
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -217,7 +225,6 @@ class TournamentActivity : AppCompatActivity() {
             .setMessage(R.string.delete_tournament_desc)
             .setPositiveButton(R.string.action_delete) { _, _ ->
                 viewModel.deleteTournament()
-
                 finish()
             }
             .setNegativeButton(android.R.string.cancel, null)

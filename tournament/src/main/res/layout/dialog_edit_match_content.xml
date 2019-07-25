@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:ignore="UnusedAttribute"
     tools:showIn="@layout/dialog_edit_match">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,28 +16,6 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingEnd="@dimen/activity_horizontal_margin"
         android:paddingBottom="@dimen/activity_vertical_margin">
-
-        <!--<com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_match_division"
-            style="@style/TextInputLayoutTheme"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            app:layout_constraintEnd_toStartOf="@+id/layout_match_number"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_match_division"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/prompt_match_division"
-                android:inputType="textCapCharacters"
-                android:maxLength="12"
-                android:maxLines="1"
-                android:textSize="16sp" />
-        </com.google.android.material.textfield.TextInputLayout>-->
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layout_match_number"
@@ -66,8 +45,7 @@
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@+id/layout_match_number"
-            tools:layout_editor_absoluteX="16dp" />
+            app:layout_constraintTop_toBottomOf="@+id/layout_match_number" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layout_alliance_red_first"
@@ -86,8 +64,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_first_team"
+                android:importantForAutofill="no"
                 android:inputType="number"
                 android:maxLength="6"
+                android:maxLines="1"
+                android:nextFocusDown="@id/et_alliance_red_second"
                 android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,6 +89,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_second_team"
+                android:importantForAutofill="no"
                 android:inputType="number"
                 android:maxLength="6"
                 android:maxLines="1"
@@ -128,6 +110,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_score"
+                android:importantForAutofill="no"
                 android:inputType="number"
                 android:maxLength="4"
                 android:maxLines="1"
@@ -165,8 +148,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_first_team"
+                android:importantForAutofill="no"
                 android:inputType="number"
                 android:maxLength="6"
+                android:maxLines="1"
+                android:nextFocusDown="@id/et_alliance_blue_second"
                 android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -187,6 +173,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_second_team"
+                android:importantForAutofill="no"
                 android:inputType="number"
                 android:maxLength="6"
                 android:maxLines="1"
@@ -207,6 +194,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_score"
+                android:importantForAutofill="no"
                 android:inputType="number"
                 android:maxLength="4"
                 android:maxLines="1"

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/dialog_edit_team">
+    tools:ignore="UnusedAttribute">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_content"
@@ -32,6 +32,7 @@
                 android:inputType="number"
                 android:maxLength="6"
                 android:minEms="7"
+                android:nextFocusDown="@id/et_team_name"
                 android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -164,7 +165,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_minerals_depot"
                 android:inputType="number"
-                android:maxLength="3" />
+                android:maxLength="3"
+                android:nextFocusDown="@id/et_minerals_lander" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -307,10 +309,8 @@
                 android:id="@+id/et_comments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="9"
                 android:hint="@string/team_comments"
-                android:inputType="textImeMultiLine"
-                android:maxLines="1" />
+                android:inputType="textImeMultiLine" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

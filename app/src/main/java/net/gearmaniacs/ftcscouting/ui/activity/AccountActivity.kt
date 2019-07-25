@@ -1,4 +1,4 @@
-package net.gearmaniacs.ftcscouting.ui.activities
+package net.gearmaniacs.ftcscouting.ui.activity
 
 import android.content.Context
 import android.content.Intent

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_marginTop="@dimen/activity_vertical_margin"
     android:fitsSystemWindows="true"
-    tools:context=".ui.activities.LoginActivity">
+    tools:context=".ui.activity.LoginActivity">
 
     <ScrollView
         android:layout_width="match_parent"
