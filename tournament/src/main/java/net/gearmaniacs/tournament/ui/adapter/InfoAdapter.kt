@@ -5,63 +5,49 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.view.isVisible
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import net.gearmaniacs.core.model.Match
-import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.tournament.R
 
-internal class InfoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+internal class InfoAdapter : RecyclerView.Adapter<InfoAdapter.InfoViewHolder>() {
 
     companion object {
-        private const val TEAM_VIEW_TYPE = 0
-        private const val MATCH_VIEW_TYPE = 1
-    }
+        private val DIFF_CALLBACK: DiffUtil.ItemCallback<Match> = object : DiffUtil.ItemCallback<Match>() {
+            override fun areItemsTheSame(oldMatch: Match, newMatch: Match) = oldMatch.key == newMatch.key
 
-    var teamList = emptyList<Team>()
-    var matchList = emptyList<Match>()
-
-    override fun getItemCount() = teamList.size + matchList.size
-
-    override fun getItemViewType(position: Int): Int {
-        return when {
-            position < teamList.size -> TEAM_VIEW_TYPE
-            position - matchList.size < teamList.size -> MATCH_VIEW_TYPE
-            else -> -1
+            override fun areContentsTheSame(oldMatch: Match, newMatch: Match) = oldMatch == newMatch
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == TEAM_VIEW_TYPE) {
-            TeamAdapter.TeamViewHolder(
-                LayoutInflater.from(parent.context).inflate(
-                    R.layout.item_match,
-                    parent,
-                    false
-                )
-            ).apply {
-                ivExpand.isVisible = false
-            }
-        } else {
-            BasicMatchViewHolder(
-                LayoutInflater.from(parent.context).inflate(
-                    R.layout.item_match_basic,
-                    parent,
-                    false
-                )
-            )
-        }
+    private val differ = AsyncListDiffer(this, DIFF_CALLBACK)
+
+    init {
+        setHasStableIds(true)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is TeamAdapter.TeamViewHolder) {
+    private fun getItem(position: Int): Match = differ.currentList[position]
 
-        } else if (holder is BasicMatchViewHolder) {
-            holder.bind(matchList[position - teamList.size])
-        }
+    fun submitList(list: List<Match>) {
+        differ.submitList(list)
     }
 
-    class BasicMatchViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    override fun getItemCount() = differ.currentList.size
+
+    override fun getItemId(position: Int) = getItem(position).key.hashCode().toLong()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InfoViewHolder {
+        return InfoViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.item_info, parent, false)
+        )
+    }
+
+    override fun onBindViewHolder(holder: InfoViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+
+    class InfoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val tvMatchId: TextView = itemView.findViewById(R.id.tv_match_id)
         private val tvBasicInfo: TextView = itemView.findViewById(R.id.tv_match_basic_info)
         private val tvDetailedInfo: TextView = itemView.findViewById(R.id.tv_match_detailed_info)

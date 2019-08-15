@@ -3,6 +3,7 @@ package net.gearmaniacs.tournament.ui.fragment
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_tournament.*
@@ -13,10 +14,10 @@ import net.gearmaniacs.tournament.ui.adapter.TeamAdapter
 import net.gearmaniacs.tournament.utils.DataRecyclerViewListener
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
-internal class TeamsFragment : TournamentFragment(R.layout.fragment_recycler_view), DataRecyclerViewListener {
+internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view), DataRecyclerViewListener {
 
     companion object {
-        const val TAG = "TeamsFragment"
+        const val TAG = "TeamFragment"
     }
 
     private val viewModel by activityViewModels<TournamentViewModel>()
@@ -28,11 +29,12 @@ internal class TeamsFragment : TournamentFragment(R.layout.fragment_recycler_vie
         val fab = activity.fab
         val recyclerView = view.recycler_view
 
-        adapter = TeamAdapter(recyclerView, this)
+        adapter = TeamAdapter(this)
 
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
+        recyclerView.addItemDecoration(DividerItemDecoration(activity, RecyclerView.VERTICAL))
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

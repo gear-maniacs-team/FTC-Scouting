@@ -1,27 +1,26 @@
 package net.gearmaniacs.tournament.ui.adapter
 
 import android.annotation.SuppressLint
-import android.transition.TransitionManager
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
+import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import net.gearmaniacs.core.model.Match
+import net.gearmaniacs.core.view.ExpandableLayout
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.utils.DataRecyclerViewListener
 
 internal class MatchAdapter(
-    private val recyclerView: RecyclerView,
     private val listener: DataRecyclerViewListener
 ) : RecyclerView.Adapter<MatchAdapter.MatchViewHolder>() {
 
     companion object {
+        private const val EXPAND_ANIMATION_DURATION = 280L
+
         private val DIFF_CALLBACK: DiffUtil.ItemCallback<Match> = object : DiffUtil.ItemCallback<Match>() {
             override fun areItemsTheSame(oldMatch: Match, newMatch: Match) = oldMatch.key == newMatch.key
 
@@ -46,28 +45,11 @@ internal class MatchAdapter(
     override fun getItemId(position: Int) = getItem(position).key.hashCode().toLong()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MatchViewHolder {
-        val holder = MatchViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.item_match,
-                parent,
-                false
-            )
-        )
-
-        holder.itemView.setOnClickListener {
-            val expanded = holder.btnEdit.isVisible
-
-            holder.ivExpand.animate()
-                .setDuration(300L)
-                .rotation(if (expanded) 0f else 180f)
-                .start()
-
-            TransitionManager.beginDelayedTransition(recyclerView)
-
-            holder.tvDetailedInfo.isVisible = !expanded
-            holder.btnEdit.isVisible = !expanded
-            holder.btnDelete.isVisible = !expanded
+        val view = ExpandableLayout(parent.context).apply {
+            layoutParams =
+                FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         }
+        val holder = MatchViewHolder(view)
 
         holder.btnEdit.setOnClickListener {
             val pos = holder.adapterPosition
@@ -92,19 +74,20 @@ internal class MatchAdapter(
     }
 
     override fun onViewRecycled(holder: MatchViewHolder) {
-        holder.ivExpand.rotation = 0f
-        holder.tvDetailedInfo.isVisible = false
-        holder.btnEdit.isVisible = false
-        holder.btnDelete.isVisible = false
+        holder.card.collapse(false)
     }
 
     class MatchViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val tvMatchId: TextView = itemView.findViewById(R.id.tv_match_id)
-        val ivExpand: ImageView = itemView.findViewById(R.id.iv_match_expand)
-        private val tvBasicInfo: TextView = itemView.findViewById(R.id.tv_match_basic_info)
-        val tvDetailedInfo: TextView = itemView.findViewById(R.id.tv_match_detailed_info)
-        val btnEdit: Button = itemView.findViewById(R.id.btn_edit)
-        val btnDelete: Button = itemView.findViewById(R.id.btn_delete)
+        val card = itemView as ExpandableLayout
+        private val tvMatchId: TextView = itemView.findViewById(R.id.tv_card_title)
+        private val tvBasicInfo: TextView = itemView.findViewById(R.id.tv_card_primary_desc)
+        private val tvDetailedInfo: TextView = itemView.findViewById(R.id.tv_card_secondary_desc)
+        val btnEdit: Button = itemView.findViewById(R.id.btn_card_main_action)
+        val btnDelete: Button = itemView.findViewById(R.id.btn_card_secondary_action)
+
+        init {
+            card.expandDuration = EXPAND_ANIMATION_DURATION
+        }
 
         @SuppressLint("SetTextI18n")
         fun bind(match: Match) {

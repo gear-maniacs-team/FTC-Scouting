@@ -1,27 +1,27 @@
 package net.gearmaniacs.tournament.ui.adapter
 
-import android.transition.TransitionManager
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import net.gearmaniacs.core.model.PreferredLocation
 import net.gearmaniacs.core.model.Team
+import net.gearmaniacs.core.view.ExpandableLayout
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.utils.DataRecyclerViewListener
 
 internal class TeamAdapter(
-    private val recyclerView: RecyclerView,
     private val listener: DataRecyclerViewListener
 ) : RecyclerView.Adapter<TeamAdapter.TeamViewHolder>() {
 
     companion object {
+        private const val EXPAND_ANIMATION_DURATION = 280L
+
         private val DIFF_CALLBACK: DiffUtil.ItemCallback<Team> = object : DiffUtil.ItemCallback<Team>() {
             override fun areItemsTheSame(oldTeam: Team, newTeam: Team) = oldTeam.key == newTeam.key
 
@@ -46,22 +46,11 @@ internal class TeamAdapter(
     override fun getItemId(position: Int) = getItem(position).key.hashCode().toLong()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TeamViewHolder {
-        val holder = TeamViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_team, parent, false))
-
-        holder.itemView.setOnClickListener {
-            val expanded = holder.btnEdit.isVisible
-
-            holder.ivExpand.animate()
-                .setDuration(300L)
-                .rotation(if (expanded) 0f else 180f)
-                .start()
-
-            TransitionManager.beginDelayedTransition(recyclerView)
-
-            holder.tvDescription.isVisible = !expanded
-            holder.btnEdit.isVisible = !expanded
-            holder.btnDelete.isVisible = !expanded
+        val view = ExpandableLayout(parent.context).apply {
+            layoutParams =
+                FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         }
+        val holder = TeamViewHolder(view)
 
         holder.btnEdit.setOnClickListener {
             val pos = holder.adapterPosition
@@ -86,19 +75,20 @@ internal class TeamAdapter(
     }
 
     override fun onViewRecycled(holder: TeamViewHolder) {
-        holder.ivExpand.rotation = 0f
-        holder.tvDescription.isVisible = false
-        holder.btnEdit.isVisible = false
-        holder.btnDelete.isVisible = false
+        holder.card.collapse(false)
     }
 
     class TeamViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val tvName: TextView = itemView.findViewById(R.id.tv_team_name)
-        val ivExpand: ImageView = itemView.findViewById(R.id.iv_team_expand)
-        private val tvScore: TextView = itemView.findViewById(R.id.tv_team_predicted_score)
-        val tvDescription: TextView = itemView.findViewById(R.id.tv_team_description)
-        val btnEdit: Button = itemView.findViewById(R.id.btn_edit)
-        val btnDelete: Button = itemView.findViewById(R.id.btn_delete)
+        val card = itemView as ExpandableLayout
+        private val tvName: TextView = itemView.findViewById(R.id.tv_card_title)
+        private val tvScore: TextView = itemView.findViewById(R.id.tv_card_primary_desc)
+        private val tvDescription: TextView = itemView.findViewById(R.id.tv_card_secondary_desc)
+        val btnEdit: Button = itemView.findViewById(R.id.btn_card_main_action)
+        val btnDelete: Button = itemView.findViewById(R.id.btn_card_secondary_action)
+
+        init {
+            card.expandDuration = EXPAND_ANIMATION_DURATION
+        }
 
         fun bind(team: Team) {
             val context = itemView.context

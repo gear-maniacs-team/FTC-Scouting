@@ -27,7 +27,7 @@ import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.ui.fragment.AnalyticsFragment
 import net.gearmaniacs.tournament.ui.fragment.InfoFragment
 import net.gearmaniacs.tournament.ui.fragment.MatchFragment
-import net.gearmaniacs.tournament.ui.fragment.TeamsFragment
+import net.gearmaniacs.tournament.ui.fragment.TeamFragment
 import net.gearmaniacs.tournament.ui.fragment.TournamentDialogFragment
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 import net.theluckycoder.materialchooser.Chooser
@@ -37,9 +37,8 @@ class TournamentActivity : AppCompatActivity() {
 
     private val viewModel by viewModels<TournamentViewModel>()
 
-    private val fragments = listOf(InfoFragment(), TeamsFragment(), MatchFragment(), AnalyticsFragment())
+    private val fragments = listOf(InfoFragment(), TeamFragment(), MatchFragment(), AnalyticsFragment())
     private var activeFragment = fragments.first()
-    private var tournamentKey = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,9 +48,8 @@ class TournamentActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Make sure the data from the intent is not null
-        tournamentKey = intent.getStringExtra(ARG_TOURNAMENT_KEY)
+        viewModel.tournamentKey = intent.getStringExtra(ARG_TOURNAMENT_KEY)
             ?: throw IllegalArgumentException(ARG_TOURNAMENT_KEY)
-        viewModel.tournamentKey = tournamentKey
         val tournamentName = intent.getStringExtra(ARG_TOURNAMENT_NAME)
             ?: throw IllegalArgumentException(ARG_TOURNAMENT_NAME)
 
@@ -188,6 +186,7 @@ class TournamentActivity : AppCompatActivity() {
         fabAnimation.interpolator = AccelerateInterpolator()
         fabAnimation.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation) = Unit
+
             override fun onAnimationRepeat(animation: Animation) = Unit
 
             override fun onAnimationEnd(animation: Animation) {

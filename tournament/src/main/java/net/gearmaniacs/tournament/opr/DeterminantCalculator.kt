@@ -100,7 +100,7 @@ internal class DeterminantCalculator(private val matrix: Array<DoubleArray>) {
         }
     }
 
-    //replace row1 with row2
+    // Replace row1 with row2
     private fun replaceRow(row1: Int, row2: Int) {
         if (row1 != row2)
             sign *= -1

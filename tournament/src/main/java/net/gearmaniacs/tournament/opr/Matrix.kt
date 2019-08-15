@@ -30,17 +30,17 @@ internal object Matrix {
         val inverse = Array(matrix.size) { DoubleArray(matrix.size) }
 
         // minors and cofactors
-        val jobs = ArrayList<Job>(matrix.size)
+        val jobs = ArrayList<Job>(2)
 
-        for (i in matrix.indices)
-            jobs += launch(Dispatchers.Default) {
-                val minorCacheResult = Array(matrix.size - 1) { DoubleArray(matrix.size - 1) }
+        jobs += launch(Dispatchers.Default) {
+            for (i in 0 until matrix.size / 2)
+                minorAndCofactors(matrix, i, inverse)
+        }
 
-                for (j in matrix[i].indices) {
-                    val determinant = DeterminantCalculator(minor(matrix, i, j, minorCacheResult)).determinant()
-                    inverse[i][j] = (-1.0).pow((i + j).toDouble()) * determinant
-                }
-            }
+        jobs += launch(Dispatchers.Default) {
+            for (i in matrix.size / 2 until matrix.size)
+                minorAndCofactors(matrix, i, inverse)
+        }
 
         jobs.joinAll()
 
@@ -55,6 +55,15 @@ internal object Matrix {
         }
 
         inverse
+    }
+
+    private fun minorAndCofactors(matrix: Array<DoubleArray>, index: Int, inverse: Array<DoubleArray>) {
+        val minorCacheResult = Array(matrix.size - 1) { DoubleArray(matrix.size - 1) }
+
+        for (j in matrix[index].indices) {
+            val determinant = DeterminantCalculator(minor(matrix, index, j, minorCacheResult)).determinant()
+            inverse[index][j] = (-1.0).pow((index + j).toDouble()) * determinant
+        }
     }
 
     private fun minor(

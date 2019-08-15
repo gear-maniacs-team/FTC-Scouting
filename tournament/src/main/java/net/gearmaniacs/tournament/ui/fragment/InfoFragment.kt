@@ -3,6 +3,7 @@ package net.gearmaniacs.tournament.ui.fragment
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.activity_tournament.*
 import kotlinx.android.synthetic.main.fragment_recycler_view.view.*
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.core.model.User
@@ -21,6 +22,7 @@ internal class InfoFragment : TournamentFragment(R.layout.fragment_recycler_view
 
     override fun onInflateView(view: View) {
         val activity = activity ?: return
+        activity.fab.hide()
 
         val adapter = InfoAdapter()
         
@@ -32,8 +34,7 @@ internal class InfoFragment : TournamentFragment(R.layout.fragment_recycler_view
         val user = activity.intent.getParcelableExtra<User>(TournamentActivity.ARG_USER) ?: return
 
         activity.observeNonNull(viewModel.matchesData) {
-            adapter.matchList = it.filter { match -> match.containsTeam(user.id) }
-            adapter.notifyDataSetChanged()
+            adapter.submitList(it.filter { match -> match.containsTeam(user.id) })
         }
     }
 

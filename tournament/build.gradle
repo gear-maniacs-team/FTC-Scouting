@@ -14,7 +14,7 @@ android {
 }
 
 dependencies {
-    api project(Modules.core)
+    implementation project(Modules.core)
 
     api Libs.firebase_database
     api Libs.firebase_auth
