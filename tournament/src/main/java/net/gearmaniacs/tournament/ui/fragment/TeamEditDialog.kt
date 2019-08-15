@@ -100,7 +100,7 @@ internal class TeamEditDialog : DialogFragment() {
                 }
             }
 
-            val comments = view.et_comments.getTextOrEmpty()
+            val notesText = view.et_notes.getTextOrEmpty()
             val parsedTeam = Team(
                 id = view.et_team_number.getTextOrEmpty().toIntOrDefault(0),
                 name = view.et_team_name.getTextOrEmpty(),
@@ -108,7 +108,7 @@ internal class TeamEditDialog : DialogFragment() {
                 teleOpData = if (teleOpData.isNotEmpty) teleOpData else null,
                 endGame = endGame,
                 preferredLocation = preferredLocation,
-                comments = if (comments.isNotBlank()) comments else null
+                comments = if (notesText.isNotBlank()) notesText else null
             )
 
             parsedTeam.key = team?.key
@@ -146,7 +146,7 @@ internal class TeamEditDialog : DialogFragment() {
                 radioLocation?.isChecked = true
             }
 
-            et_comments.setText(team.comments)
+            et_notes.setText(team.comments)
         }
     }
 }

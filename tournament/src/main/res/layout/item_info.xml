@@ -24,13 +24,22 @@
             tools:text="#1" />
 
         <TextView
-            android:id="@+id/tv_match_basic_info"
+            android:id="@+id/tv_match_red_alliance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:paddingBottom="4dp"
+            android:paddingTop="8dp"
+            android:textColor="@color/redAlliance"
             android:textSize="17sp"
-            tools:text="@string/match_basic_info" />
+            tools:text="@string/match_info_red_alliance" />
+
+        <TextView
+            android:id="@+id/tv_match_blue_alliance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="4dp"
+            android:textColor="@color/blueAlliance"
+            android:textSize="17sp"
+            tools:text="@string/match_info_blue_alliance" />
 
         <TextView
             android:id="@+id/tv_match_detailed_info"

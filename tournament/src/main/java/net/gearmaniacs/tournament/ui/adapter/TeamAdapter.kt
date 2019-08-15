@@ -103,7 +103,7 @@ internal class TeamAdapter(
             }
             val description = context.getString(
                 R.string.team_description, team.autonomousScore, team.teleOpScore,
-                team.endGameScore, context.getString(preferredLocation), team.comments ?: ""
+                team.endGameScore, context.getString(preferredLocation), team.comments.orEmpty()
             )
             tvDescription.text = description
         }

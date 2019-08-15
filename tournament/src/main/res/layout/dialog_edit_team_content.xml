@@ -306,10 +306,10 @@
             app:layout_constraintTop_toBottomOf="@+id/toggle_preferred_location">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_comments"
+                android:id="@+id/et_notes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/team_comments"
+                android:hint="@string/team_notes"
                 android:inputType="textImeMultiLine" />
         </com.google.android.material.textfield.TextInputLayout>
 

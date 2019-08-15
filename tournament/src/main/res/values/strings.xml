@@ -17,8 +17,8 @@
     <string name="team_preferred_crater">Crater</string>
     <string name="team_id_name">#%d - %s</string>
     <string name="team_predicted_score">Predicted Score: %d</string>
-    <string name="team_description"><b>Autonomous Score:</b> %d\n<b>TeleOp Score:</b> %d\n<b>End Game Score:</b> %d\n<b>Preferred Location: %s</b>\n<b>Comments:</b> %s</string>
-    <string name="team_comments">Comments</string>
+    <string name="team_description"><b>Autonomous Score:</b> %d\n<b>TeleOp Score:</b> %d\n<b>End Game Score:</b> %d\n<b>Preferred Location: %s</b>\n<b>Notes:</b> %s</string>
+    <string name="team_notes">Notes</string>
     <string name="delete_team">Delete this team?</string>
     <string name="delete_team_desc">If deleted, the team will also be removed from all other devices!</string>
     <string name="period_autonomous">Autonomous</string>
@@ -53,12 +53,16 @@
     <string name="match_draw">Draw</string>
     <string name="match_basic_info">R%d &#8211; B%d: %s</string>
     <string name="match_detailed_info">Red Alliance: %d and %d\nBlue Alliance: %d and %d</string>
+    <string name="match_info_red_alliance">Red Alliance: %d and %d</string>
+    <string name="match_info_blue_alliance">Blue Alliance: %d and %d</string>
     <string name="add_teams_from_matches">Add teams from matches</string>
     <string name="add_teams_from_matches_desc">Are you sure you want to add all the teams from the Matches?</string>
 
     <!-- Strings related to OPR -->
     <string name="opr_error_no_matches">No matches found</string>
     <string name="opr_error_data">Something went wrong. Please check the input data</string>
+    <string name="opr_info">Analytics Algorithm</string>
+    <string name="opr_info_desc">The analytics page takes the results of the matches and uses the Offensive Power Ranking Power algorithm to rank the teams accordingly.</string>
 
     <!-- Strings related to Spreadsheet -->
     <string name="spreadsheet_empty">No content found to export</string>

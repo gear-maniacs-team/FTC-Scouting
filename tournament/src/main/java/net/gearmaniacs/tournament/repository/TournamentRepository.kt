@@ -6,7 +6,10 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import net.gearmaniacs.core.architecture.MutexLiveData
+import net.gearmaniacs.core.architecture.NonNullLiveData
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.FirebaseChildListener
 import net.gearmaniacs.core.firebase.FirebaseDatabaseRepositoryCallback
@@ -14,11 +17,7 @@ import net.gearmaniacs.core.firebase.FirebaseSingleValueListener
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
 
-internal class TournamentRepository(
-    private val coroutineScope: CoroutineScope,
-    private val teamsData: MutexLiveData<List<Team>>,
-    private val matchesData: MutexLiveData<List<Match>>
-) {
+internal class TournamentRepository(private val coroutineScope: CoroutineScope) {
 
     private val currentUserReference by lazy {
         FirebaseDatabase.getInstance()
@@ -41,14 +40,23 @@ internal class TournamentRepository(
         }
     }
 
-    private val teamsListener =
-        FirebaseChildListener(Team::class.java, teamsData, coroutineScope)
-    private val matchesListener =
-        FirebaseChildListener(Match::class.java, matchesData, coroutineScope)
+    val teamsData = MutexLiveData(emptyList<Team>())
+    val filteredTeamsData = NonNullLiveData(emptyList<Team>())
+    val matchesData = MutexLiveData(emptyList<Match>())
+
+    private val teamsListener = FirebaseChildListener(Team::class.java, teamsData, coroutineScope)
+    private val matchesListener = FirebaseChildListener(Match::class.java, matchesData, coroutineScope)
 
     private var initialized = false
 
     var nameCallback: FirebaseDatabaseRepositoryCallback<String?>? = null
+    private var lastTeamQuery = ""
+
+    init {
+        teamsData.observeForever {
+            performTeamsSearch(lastTeamQuery)
+        }
+    }
 
     fun addTeam(tournamentKey: String, team: Team) {
         currentUserReference
@@ -86,6 +94,30 @@ internal class TournamentRepository(
             .child(DatabasePaths.KEY_TEAMS)
             .child(teamKey)
             .removeValue()
+    }
+
+    fun performTeamsSearch(query: String) {
+        lastTeamQuery = query
+        val teamList = teamsData.value
+
+        if (teamList.isEmpty() || query.isEmpty()) {
+            filteredTeamsData.value = teamList
+            return
+        }
+
+        coroutineScope.launch(Dispatchers.Default) {
+            val filteredList = ArrayList<Team>(teamList.size)
+
+            val pattern = "(?i).*($query).*".toPattern()
+
+            teamList.asSequence()
+                .filter { pattern.matcher(it.name.orEmpty()).matches() }
+                .forEach { filteredList.add(it) }
+
+            launch(Dispatchers.Main) {
+                filteredTeamsData.value = filteredList
+            }
+        }
     }
 
 

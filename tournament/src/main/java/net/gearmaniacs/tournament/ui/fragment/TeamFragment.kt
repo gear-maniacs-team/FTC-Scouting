@@ -46,7 +46,7 @@ internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view
             }
         })
 
-        activity.observeNonNull(viewModel.teamsData) {
+        activity.observeNonNull(viewModel.getTeamsLiveData()) {
             adapter.submitList(it)
         }
     }

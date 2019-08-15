@@ -2,6 +2,7 @@ package net.gearmaniacs.tournament.ui.activity
 
 import android.Manifest
 import android.app.Activity
+import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -14,6 +15,8 @@ import android.view.animation.ScaleAnimation
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.core.content.getSystemService
 import kotlinx.android.synthetic.main.activity_tournament.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -33,7 +36,7 @@ import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 import net.theluckycoder.materialchooser.Chooser
 import java.io.File
 
-class TournamentActivity : AppCompatActivity() {
+class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     private val viewModel by viewModels<TournamentViewModel>()
 
@@ -69,6 +72,7 @@ class TournamentActivity : AppCompatActivity() {
                     .replace(R.id.layout_fragment, newFragment, newFragment.getFragmentTag())
                     .commit()
                 activeFragment = newFragment
+                invalidateOptionsMenu()
 
                 true
             } else false
@@ -104,12 +108,40 @@ class TournamentActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_tournament, menu)
+        val activeTag = activeFragment.getFragmentTag()
+
+        menu.findItem(R.id.action_opr_info).isVisible = activeTag == AnalyticsFragment.TAG
+
+        val isSearchVisible = activeTag == TeamFragment.TAG
+        val searchViewItem = menu.findItem(R.id.action_search)
+        searchViewItem.isVisible = isSearchVisible
+
+        if (isSearchVisible) {
+            val searchView = searchViewItem.actionView as SearchView
+
+            getSystemService<SearchManager>()?.let { searchManager ->
+                searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+            }
+
+            searchView.setIconifiedByDefault(false)
+            searchView.queryHint = getString(R.string.action_search)
+            searchView.setOnQueryTextListener(this)
+        }
+
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> finish()
+            R.id.action_opr_info -> {
+                AlertDialog.Builder(this)
+                    .setTitle(R.string.opr_info)
+                    .setMessage(R.string.opr_info_desc)
+                    .setIcon(R.drawable.ic_info)
+                    .setNeutralButton(android.R.string.ok, null)
+                    .show()
+            }
             R.id.action_tournament_edit -> changeTournamentName()
             R.id.action_tournament_delete -> deleteTournament()
             R.id.action_add_teams -> {
@@ -155,6 +187,15 @@ class TournamentActivity : AppCompatActivity() {
             val path = data?.getStringExtra(Chooser.RESULT_PATH) ?: return
             viewModel.importFromSpreadSheet(File(path))
         }
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        viewModel.performTeamsSearch(query)
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        return onQueryTextSubmit(newText)
     }
 
     private fun updateFab(oldFragmentTag: String, newFragmentTag: String) {

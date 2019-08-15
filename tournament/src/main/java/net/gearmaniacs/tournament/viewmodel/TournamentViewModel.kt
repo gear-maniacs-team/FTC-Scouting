@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import net.gearmaniacs.core.architecture.MutexLiveData
 import net.gearmaniacs.core.architecture.NonNullLiveData
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.core.firebase.FirebaseDatabaseRepositoryCallback
@@ -34,12 +33,9 @@ class TournamentViewModel : ViewModel() {
         }
 
     val nameData = MutableLiveData("")
-    val teamsData = MutexLiveData(emptyList<Team>())
-    val matchesData = MutexLiveData(emptyList<Match>())
     val analyticsData = NonNullLiveData(emptyList<TeamPower>())
 
-    private val repository =
-        TournamentRepository(viewModelScope, teamsData, matchesData)
+    private val repository = TournamentRepository(viewModelScope)
 
     init {
         repository.nameCallback = object :
@@ -54,6 +50,10 @@ class TournamentViewModel : ViewModel() {
         }
     }
 
+    fun getTeamsLiveData(): NonNullLiveData<List<Team>> = repository.filteredTeamsData
+
+    fun getMatchLiveData(): NonNullLiveData<List<Match>> = repository.matchesData
+
     fun setDefaultName(defaultName: String) {
         if (nameData.value.isNullOrEmpty())
             nameData.value = defaultName
@@ -61,9 +61,13 @@ class TournamentViewModel : ViewModel() {
 
     // region Teams Management
 
+    fun performTeamsSearch(query: String?) {
+        repository.performTeamsSearch(query.orEmpty().trim().toLowerCase())
+    }
+
     fun addTeamsFromMatches() {
-        val existingTeamsList = teamsData.value.map { it.id }
-        val matchesList = matchesData.value
+        val existingTeamsList = repository.teamsData.value.map { it.id }
+        val matchesList = repository.matchesData.value
 
         viewModelScope.launch(Dispatchers.Default) {
             val teamIds = HashSet<Int>(matchesList.size)
@@ -132,8 +136,8 @@ class TournamentViewModel : ViewModel() {
     // endregion
 
     fun calculateOpr(appContext: Context) {
-        val teams = teamsData.value
-        val matches = matchesData.value
+        val teams = repository.teamsData.value
+        val matches = repository.matchesData.value
 
         if (matches.isEmpty()) {
             appContext.toast(R.string.opr_error_no_matches)
@@ -162,8 +166,8 @@ class TournamentViewModel : ViewModel() {
     }
 
     fun exportToSpreadsheet(appContext: Context) {
-        val teams = teamsData.value
-        val matches = matchesData.value
+        val teams = repository.teamsData.value
+        val matches = repository.matchesData.value
 
         if (teams.isEmpty() && matches.isEmpty()) {
             appContext.toast(R.string.opr_error_no_matches)
@@ -205,8 +209,8 @@ class TournamentViewModel : ViewModel() {
     }
 
     fun importFromSpreadSheet(file: File) {
-        val currentTeams = teamsData.value
-        val currentMatches = matchesData.value
+        val currentTeams = repository.teamsData.value
+        val currentMatches = repository.matchesData.value
 
         viewModelScope.launch(Dispatchers.IO) {
             val import = ImportFromSpreadsheet(file)

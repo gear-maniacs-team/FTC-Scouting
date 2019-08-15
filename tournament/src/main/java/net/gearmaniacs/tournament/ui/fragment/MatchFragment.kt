@@ -46,7 +46,7 @@ internal class MatchFragment : TournamentFragment(R.layout.fragment_recycler_vie
             }
         })
 
-        activity.observeNonNull(viewModel.matchesData) {
+        activity.observeNonNull(viewModel.getMatchLiveData()) {
             adapter.submitList(it)
         }
     }
