@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.core.model.Tournament
-import net.gearmaniacs.tournament.utils.DataRecyclerViewListener
+import net.gearmaniacs.tournament.utils.RecyclerViewItemListener
 
 class TournamentAdapter(
-    private val listener: DataRecyclerViewListener
+    private val listener: RecyclerViewItemListener
 ) : RecyclerView.Adapter<TournamentAdapter.TournamentViewHolder>() {
 
     companion object {
@@ -47,7 +47,16 @@ class TournamentAdapter(
             val pos = holder.adapterPosition
 
             if (pos != -1)
-                listener.onEditItem(pos)
+                listener.onClickListener(pos)
+        }
+
+        holder.itemView.setOnLongClickListener {
+            val pos = holder.adapterPosition
+
+            if (pos != -1)
+                listener.onLongClickListener(pos)
+
+            true
         }
 
         return holder

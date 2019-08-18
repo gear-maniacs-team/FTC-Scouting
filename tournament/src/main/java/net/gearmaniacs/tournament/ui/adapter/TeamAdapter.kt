@@ -4,7 +4,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
@@ -13,10 +12,10 @@ import net.gearmaniacs.core.model.PreferredLocation
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.view.ExpandableLayout
 import net.gearmaniacs.tournament.R
-import net.gearmaniacs.tournament.utils.DataRecyclerViewListener
+import net.gearmaniacs.tournament.utils.RecyclerViewItemListener
 
 internal class TeamAdapter(
-    private val listener: DataRecyclerViewListener
+    private val listener: RecyclerViewItemListener
 ) : RecyclerView.Adapter<TeamAdapter.TeamViewHolder>() {
 
     companion object {
@@ -56,14 +55,14 @@ internal class TeamAdapter(
             val pos = holder.adapterPosition
 
             if (pos != -1)
-                listener.onEditItem(pos)
+                listener.onClickListener(pos)
         }
 
         holder.btnDelete.setOnClickListener {
             val pos = holder.adapterPosition
 
             if (pos != -1)
-                listener.onDeleteItem(pos)
+                listener.onLongClickListener(pos)
         }
 
         return holder

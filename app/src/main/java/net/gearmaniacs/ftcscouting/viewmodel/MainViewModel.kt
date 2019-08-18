@@ -13,14 +13,13 @@ class MainViewModel : ViewModel() {
     private val repository = MainRepository(viewModelScope)
     private var listening = false
 
-    val tournamentListData = NonNullLiveData(emptyList<Tournament>())
+    val tournamentData = NonNullLiveData(emptyList<Tournament>())
     var currentUser: User? = null
 
     init {
-        repository.tournamentsCallback = object :
-            FirebaseDatabaseRepositoryCallback<List<Tournament>> {
+        repository.tournamentsCallback = object : FirebaseDatabaseRepositoryCallback<List<Tournament>> {
             override fun onSuccess(result: List<Tournament>) {
-                tournamentListData.value = result
+                tournamentData.value = result
             }
 
             override fun onError(e: Exception) {
@@ -58,6 +57,12 @@ class MainViewModel : ViewModel() {
     fun createNewTournament(tournamentName: String) {
         currentUser?.let {
             repository.createNewTournament(it, tournamentName)
+        }
+    }
+
+    fun deleteTournament(tournament: Tournament) {
+        tournament.key?.let {
+            repository.deleteTournament(it)
         }
     }
 

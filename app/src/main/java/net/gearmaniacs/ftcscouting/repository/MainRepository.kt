@@ -74,7 +74,7 @@ class MainRepository(coroutineScope: CoroutineScope) {
     }
 
     fun removeListeners() {
-        currentUserReference.addValueEventListener(userListener)
+        currentUserReference.removeEventListener(userListener)
 
         currentUserReference
             .child(DatabasePaths.KEY_TOURNAMENTS)
@@ -97,5 +97,17 @@ class MainRepository(coroutineScope: CoroutineScope) {
             .child(DatabasePaths.KEY_TEAMS)
             .push()
             .setValue(team)
+    }
+
+    fun deleteTournament(tournamentKey: String) {
+        currentUserReference
+            .child(DatabasePaths.KEY_TOURNAMENTS)
+            .child(tournamentKey)
+            .removeValue()
+
+        currentUserReference
+            .child(DatabasePaths.KEY_DATA)
+            .child(tournamentKey)
+            .removeValue()
     }
 }

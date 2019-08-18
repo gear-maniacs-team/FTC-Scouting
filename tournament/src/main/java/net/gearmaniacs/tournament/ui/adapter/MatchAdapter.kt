@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.view.ExpandableLayout
 import net.gearmaniacs.tournament.R
-import net.gearmaniacs.tournament.utils.DataRecyclerViewListener
+import net.gearmaniacs.tournament.utils.RecyclerViewItemListener
 
 internal class MatchAdapter(
-    private val listener: DataRecyclerViewListener
+    private val listener: RecyclerViewItemListener
 ) : RecyclerView.Adapter<MatchAdapter.MatchViewHolder>() {
 
     companion object {
@@ -55,14 +55,14 @@ internal class MatchAdapter(
             val pos = holder.adapterPosition
 
             if (pos != -1)
-                listener.onEditItem(pos)
+                listener.onClickListener(pos)
         }
 
         holder.btnDelete.setOnClickListener {
             val pos = holder.adapterPosition
 
             if (pos != -1)
-                listener.onDeleteItem(pos)
+                listener.onLongClickListener(pos)
         }
 
         return holder

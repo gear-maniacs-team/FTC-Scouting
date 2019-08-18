@@ -11,10 +11,10 @@ import kotlinx.android.synthetic.main.fragment_recycler_view.view.*
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.ui.adapter.TeamAdapter
-import net.gearmaniacs.tournament.utils.DataRecyclerViewListener
+import net.gearmaniacs.tournament.utils.RecyclerViewItemListener
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
-internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view), DataRecyclerViewListener {
+internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view), RecyclerViewItemListener {
 
     companion object {
         const val TAG = "TeamFragment"
@@ -61,7 +61,7 @@ internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view
 
     override fun getFragmentTag() = TAG
 
-    override fun onEditItem(position: Int) {
+    override fun onClickListener(position: Int) {
         val activity = activity ?: return
         val team = adapter.getItem(position)
 
@@ -70,7 +70,7 @@ internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view
         dialog.show(transaction, null)
     }
 
-    override fun onDeleteItem(position: Int) {
+    override fun onLongClickListener(position: Int) {
         val activity = activity ?: return
         val key = adapter.getItem(position).key ?: return
 

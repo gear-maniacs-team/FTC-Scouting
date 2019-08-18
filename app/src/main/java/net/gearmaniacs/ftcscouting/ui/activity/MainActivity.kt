@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
@@ -21,9 +23,9 @@ import net.gearmaniacs.ftcscouting.ui.adapter.TournamentAdapter
 import net.gearmaniacs.ftcscouting.viewmodel.MainViewModel
 import net.gearmaniacs.tournament.ui.activity.TournamentActivity
 import net.gearmaniacs.tournament.ui.fragment.TournamentDialogFragment
-import net.gearmaniacs.tournament.utils.DataRecyclerViewListener
+import net.gearmaniacs.tournament.utils.RecyclerViewItemListener
 
-class MainActivity : AppCompatActivity(), DataRecyclerViewListener {
+class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
 
     private val viewModel by lazyFast { getViewModel<MainViewModel>() }
     private val adapter by lazyFast { TournamentAdapter(this) }
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity(), DataRecyclerViewListener {
         rv_tournament.adapter = adapter
         rv_tournament.setHasFixedSize(true)
         rv_tournament.layoutManager = LinearLayoutManager(this)
+        rv_tournament.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
 
         fab_new_tournament.setOnClickListener {
             val dialogFragment = TournamentDialogFragment()
@@ -54,7 +57,7 @@ class MainActivity : AppCompatActivity(), DataRecyclerViewListener {
             }
         }
 
-        observeNonNull(viewModel.tournamentListData) {
+        observeNonNull(viewModel.tournamentData) {
             adapter.submitList(it)
         }
     }
@@ -94,7 +97,7 @@ class MainActivity : AppCompatActivity(), DataRecyclerViewListener {
         viewModel.stopListening()
     }
 
-    override fun onEditItem(position: Int) {
+    override fun onClickListener(position: Int) {
         try {
             val item = adapter.getItem(position)
             val user = viewModel.currentUser ?: return
@@ -103,5 +106,19 @@ class MainActivity : AppCompatActivity(), DataRecyclerViewListener {
         }
     }
 
-    override fun onDeleteItem(position: Int) = Unit
+    override fun onLongClickListener(position: Int) {
+        try {
+            val item = adapter.getItem(position)
+
+            AlertDialog.Builder(this)
+                .setTitle(R.string.delete_tournament)
+                .setMessage(R.string.delete_tournament_desc)
+                .setPositiveButton(R.string.action_delete) { _, _ ->
+                    viewModel.deleteTournament(item)
+                }
+                .setNegativeButton(android.R.string.cancel, null)
+                .show()
+        } catch (e: IndexOutOfBoundsException) {
+        }
+    }
 }
