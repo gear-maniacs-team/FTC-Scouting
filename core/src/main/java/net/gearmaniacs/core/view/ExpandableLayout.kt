@@ -7,15 +7,15 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.core.view.ViewCompat
-import com.google.android.material.textview.MaterialTextView
 import net.gearmaniacs.core.R
 
 open class ExpandableLayout : FrameLayout {
 
-    private val tvTitle by bind<MaterialTextView>(R.id.tv_card_title)
+    private val tvTitle by bind<TextView>(R.id.tv_card_title)
     private val ivArrow by bind<ImageView>(R.id.iv_card_expand)
     private val hiddenLayout by bind<View>(R.id.layout_hidden)
 

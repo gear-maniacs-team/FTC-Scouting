@@ -27,10 +27,12 @@ internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view
         val activity = activity ?: return
 
         val fab = activity.fab
+        view.empty_view.setText(R.string.empty_tab_teams)
         val recyclerView = view.recycler_view
 
         adapter = TeamAdapter(this)
 
+        recyclerView.emptyView = view.empty_view
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter

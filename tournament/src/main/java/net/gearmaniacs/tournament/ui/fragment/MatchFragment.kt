@@ -27,10 +27,12 @@ internal class MatchFragment : TournamentFragment(R.layout.fragment_recycler_vie
         val activity = activity ?: return
 
         val fab = activity.fab
+        view.empty_view.setText(R.string.empty_tab_matches)
         val recyclerView = view.recycler_view
 
         adapter = MatchAdapter(this)
 
+        recyclerView.emptyView = view.empty_view
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter

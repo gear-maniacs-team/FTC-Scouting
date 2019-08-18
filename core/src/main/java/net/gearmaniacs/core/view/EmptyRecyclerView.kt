@@ -10,6 +10,14 @@ class EmptyRecyclerView : RecyclerView {
     var emptyView: View? = null
 
     private val emptyObserver = object : RecyclerView.AdapterDataObserver() {
+        override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+            onChanged()
+        }
+
+        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            onChanged()
+        }
+
         override fun onChanged() {
             val adapter = adapter
             val emptyView = emptyView

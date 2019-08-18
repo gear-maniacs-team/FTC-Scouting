@@ -22,11 +22,14 @@ internal class InfoFragment : TournamentFragment(R.layout.fragment_recycler_view
 
     override fun onInflateView(view: View) {
         val activity = activity ?: return
+
         activity.fab.hide()
+        view.empty_view.setText(R.string.empty_tab_info)
+        val recyclerView = view.recycler_view
 
         val adapter = InfoAdapter()
-        
-        val recyclerView = view.recycler_view
+
+        recyclerView.emptyView = view.empty_view
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter

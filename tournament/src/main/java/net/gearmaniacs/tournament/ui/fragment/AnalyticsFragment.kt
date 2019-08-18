@@ -23,10 +23,12 @@ internal class AnalyticsFragment : TournamentFragment(R.layout.fragment_recycler
         val activity = activity ?: return
 
         val fab = activity.fab
+        view.empty_view.setText(R.string.empty_tab_analytics)
         val recyclerView = view.recycler_view
 
         val adapter = AnalyticsAdapter()
 
+        recyclerView.emptyView = view.empty_view
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter

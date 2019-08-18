@@ -12,6 +12,11 @@
     <string name="title_analytics">Analytics</string>
     <string name="export_finished">Finished Exporting Tournament</string>
 
+    <string name="empty_tab_info">Here you will be able to see the matches in which you play</string>
+    <string name="empty_tab_teams">You can add each team manually or add them from the matches</string>
+    <string name="empty_tab_matches">Add the matches and their results here in order </string>
+    <string name="empty_tab_analytics">Ranking could not be computed</string>
+
     <!-- Strings related to the team -->
     <string name="team_preferred_depot">Depot</string>
     <string name="team_preferred_crater">Crater</string>
