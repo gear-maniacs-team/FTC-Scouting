@@ -51,20 +51,17 @@ class PowerRanking(
         return result
     }
 
-    private fun generateMatrix(): Array<IntArray> {
-        val matrix = Array(teamPowerList.size + 1) { IntArray(teamPowerList.size + 1) }
+    /*
+     * Generates a Matrix which specifies which teams played as an alliance
+     */
+    private fun generateMatchesMatrix(): Array<DoubleArray> {
+        val matrix = Array(teamPowerList.size) { DoubleArray(teamPowerList.size) }
 
-        // Set team number on first row and column
-        teamPowerList.forEachIndexed { index, team ->
-            matrix[0][index + 1] = team.id
-            matrix[index + 1][0] = team.id
-        }
-
-        for (i in 1 until matrix.size) {
-            for (j in 1 until matrix[i].size) {
-                val verticalTeam = matrix[0][j]
-                val horizontalTeam = matrix[i][0]
-                var count = 0
+        for (i in matrix.indices) {
+            for (j in matrix[i].indices) {
+                val horizontalTeam = teamPowerList[i].id
+                val verticalTeam = teamPowerList[j].id
+                var count = 0.0
 
                 redAlliances.forEach {
                     if (it.containsTeam(verticalTeam) && it.containsTeam(horizontalTeam))
@@ -81,19 +78,6 @@ class PowerRanking(
         }
 
         return matrix
-    }
-
-    private fun getMatchesTable(): Array<DoubleArray> {
-        val matrix = generateMatrix()
-        val array = Array(teamPowerList.size) { DoubleArray(teamPowerList.size) }
-
-        // Remove the team numbers from the first row and column
-        // and convert the IntArray to a DoubleArray
-        for (i in 1 until matrix.size)
-            for (j in 1 until matrix[i].size)
-                array[i - 1][j - 1] = matrix[i][j].toDouble()
-
-        return array
     }
 
     private fun getScoreArray(): DoubleArray {
@@ -117,7 +101,7 @@ class PowerRanking(
     }
 
     suspend fun generatePowerRankings(): List<TeamPower> = coroutineScope {
-        val matches = async { Matrix.invert(getMatchesTable()) }
+        val matches = async { Matrix.invert(generateMatchesMatrix()) }
         val scores = getScoreArray()
 
         val powerArray = Matrix.multiply(matches.await(), scores)

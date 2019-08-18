@@ -7,6 +7,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import net.gearmaniacs.core.architecture.MutexLiveData
 import net.gearmaniacs.core.architecture.NonNullLiveData
@@ -47,10 +48,11 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
     private val teamsListener = FirebaseChildListener(Team::class.java, teamsData, coroutineScope)
     private val matchesListener = FirebaseChildListener(Match::class.java, matchesData, coroutineScope)
 
-    private var initialized = false
+    private var listenersInitialized = false
 
     var nameCallback: FirebaseDatabaseRepositoryCallback<String?>? = null
     private var lastTeamQuery = ""
+    private var teamSearchJob: Job? = null // Last launched search job
 
     init {
         teamsData.observeForever {
@@ -105,9 +107,10 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
             return
         }
 
-        coroutineScope.launch(Dispatchers.Default) {
+        // Cancel the last running job and start a new one
+        teamSearchJob?.cancel()
+        teamSearchJob = coroutineScope.launch(Dispatchers.Default) {
             val filteredList = ArrayList<Team>(teamList.size)
-
             val pattern = "(?i).*($query).*".toPattern()
 
             teamList.asSequence()
@@ -191,7 +194,7 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
         val teamsRef = tournamentRef.child(DatabasePaths.KEY_TEAMS)
         val matchesRef = tournamentRef.child(DatabasePaths.KEY_MATCHES)
 
-        if (!initialized) {
+        if (!listenersInitialized) {
             teamsRef.addListenerForSingleValueEvent(
                 FirebaseSingleValueListener(
                     Team::class.java,
@@ -206,7 +209,7 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
                     coroutineScope
                 )
             )
-            initialized = true
+            listenersInitialized = true
         }
 
         teamsRef.addChildEventListener(teamsListener)

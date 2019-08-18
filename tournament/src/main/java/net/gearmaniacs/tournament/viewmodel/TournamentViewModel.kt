@@ -38,8 +38,7 @@ class TournamentViewModel : ViewModel() {
     private val repository = TournamentRepository(viewModelScope)
 
     init {
-        repository.nameCallback = object :
-            FirebaseDatabaseRepositoryCallback<String?> {
+        repository.nameCallback = object : FirebaseDatabaseRepositoryCallback<String?> {
             override fun onSuccess(result: String?) {
                 nameData.value = result
             }
@@ -66,7 +65,7 @@ class TournamentViewModel : ViewModel() {
     }
 
     fun addTeamsFromMatches() {
-        val existingTeamsList = repository.teamsData.value.map { it.id }
+        val existingTeamIds = repository.teamsData.value.map { it.id }
         val matchesList = repository.matchesData.value
 
         viewModelScope.launch(Dispatchers.Default) {
@@ -79,7 +78,7 @@ class TournamentViewModel : ViewModel() {
                 teamIds.add(it.blueAlliance.secondTeam)
             }
 
-            teamIds.removeAll(existingTeamsList)
+            teamIds.removeAll(existingTeamIds)
 
             val newTeamsList = teamIds.asSequence()
                 .filter { it != 0 }
