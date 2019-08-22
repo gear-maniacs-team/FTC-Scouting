@@ -1,12 +1,9 @@
 package net.gearmaniacs.tournament.opr
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-import java.util.ArrayList
 import kotlin.math.pow
+import kotlin.math.abs
 
 internal object Matrix {
 
@@ -26,26 +23,57 @@ internal object Matrix {
         return result
     }
 
+    private fun determinant(matrix: Array<DoubleArray>): Double {
+        val size = matrix.size
+        var determinant = 1.0
+
+        for (i in matrix.indices) {
+            var pivotElement = matrix[i][i]
+            var pivotRow = i
+
+            for (row in i + 1 until size) {
+                if (abs(matrix[row][i]) > abs(pivotElement)) {
+                    pivotElement = matrix[row][i]
+                    pivotRow = row
+                }
+            }
+
+            if (pivotElement == 0.0)
+                return 0.0
+
+            if (pivotRow != i) {
+                val temp = matrix[i]
+                matrix[i] = matrix[pivotRow]
+                matrix[pivotRow] = temp
+
+                determinant *= -1.0
+            }
+            determinant *= pivotElement
+
+            for (row in i + 1 until size)
+                for (col in i + 1 until size)
+                    matrix[row][col] -= matrix[row][i] * matrix[i][col] / pivotElement
+        }
+
+        return determinant
+    }
+
     suspend fun invert(matrix: Array<DoubleArray>): Array<DoubleArray> = coroutineScope {
-        val inverse = Array(matrix.size) { DoubleArray(matrix.size) }
+        val size = matrix.size
+        val inverse = Array(size) { DoubleArray(size) }
 
-        // minors and cofactors
-        val jobs = ArrayList<Job>(2)
-
-        jobs += launch(Dispatchers.Default) {
-            for (i in 0 until matrix.size / 2)
+        val firstHalf = launch {
+            for (i in 0 until size / 2)
                 minorAndCofactors(matrix, i, inverse)
         }
 
-        jobs += launch(Dispatchers.Default) {
-            for (i in matrix.size / 2 until matrix.size)
-                minorAndCofactors(matrix, i, inverse)
-        }
+        for (i in matrix.size / 2 until size)
+            minorAndCofactors(matrix, i, inverse)
 
-        jobs.joinAll()
+        firstHalf.join()
 
         // adjugate and determinant
-        val det = 1.0 / DeterminantCalculator(matrix).determinant()
+        val det = 1.0 / determinant(matrix)
         for (i in inverse.indices) {
             for (j in 0..i) {
                 val temp = inverse[i][j]
@@ -61,7 +89,7 @@ internal object Matrix {
         val minorCacheResult = Array(matrix.size - 1) { DoubleArray(matrix.size - 1) }
 
         for (j in matrix[index].indices) {
-            val determinant = DeterminantCalculator(minor(matrix, index, j, minorCacheResult)).determinant()
+            val determinant = determinant(minor(matrix, index, j, minorCacheResult))
             inverse[index][j] = (-1.0).pow((index + j).toDouble()) * determinant
         }
     }

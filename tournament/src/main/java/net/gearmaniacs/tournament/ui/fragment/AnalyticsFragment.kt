@@ -43,7 +43,7 @@ internal class AnalyticsFragment : TournamentFragment(R.layout.fragment_recycler
             }
         })
 
-        viewModel.calculateOpr(activity.applicationContext)
+        viewModel.refreshAnalyticsData(activity.applicationContext)
 
         activity.observeNonNull(viewModel.analyticsData) {
             adapter.submitList(it)
@@ -51,7 +51,7 @@ internal class AnalyticsFragment : TournamentFragment(R.layout.fragment_recycler
     }
 
     override fun fabClickListener() {
-        context?.applicationContext?.let { viewModel.calculateOpr(it) }
+        context?.applicationContext?.let { viewModel.refreshAnalyticsData(it) }
     }
 
     override fun getFragmentTag() = TAG

@@ -1,7 +1,6 @@
 package net.gearmaniacs.tournament.viewmodel
 
 import android.content.Context
-import android.os.Environment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,12 +9,10 @@ import kotlinx.coroutines.launch
 import net.gearmaniacs.core.architecture.NonNullLiveData
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.core.firebase.FirebaseDatabaseRepositoryCallback
-import net.gearmaniacs.core.model.Alliance
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeamPower
 import net.gearmaniacs.tournament.R
-import net.gearmaniacs.tournament.opr.PowerRanking
 import net.gearmaniacs.tournament.repository.TournamentRepository
 import net.gearmaniacs.tournament.spreadsheet.ExportToSpreadsheet
 import net.gearmaniacs.tournament.spreadsheet.ImportFromSpreadsheet
@@ -78,10 +75,9 @@ class TournamentViewModel : ViewModel() {
                 teamIds.add(it.blueAlliance.secondTeam)
             }
 
-            teamIds.removeAll(existingTeamIds)
-
             val newTeamsList = teamIds.asSequence()
-                .filter { it != 0 }
+                .filterNot { it > 0 }
+                .filterNot { existingTeamIds.contains(it) }
                 .map { Team(it, null) }
                 .toList()
 
@@ -134,8 +130,7 @@ class TournamentViewModel : ViewModel() {
 
     // endregion
 
-    fun calculateOpr(appContext: Context) {
-        val teams = repository.teamsData.value
+    fun refreshAnalyticsData(appContext: Context) {
         val matches = repository.matchesData.value
 
         if (matches.isEmpty()) {
@@ -144,62 +139,39 @@ class TournamentViewModel : ViewModel() {
         }
 
         viewModelScope.launch(Dispatchers.Default) {
-            val redAlliances = ArrayList<Alliance>(matches.size)
-            val blueAlliances = ArrayList<Alliance>(matches.size)
+            val powerRankings = repository.generateOprList()
 
-            matches.forEach {
-                redAlliances.add(it.redAlliance)
-                blueAlliances.add(it.blueAlliance)
-            }
-
-            try {
-                val powerRankings = PowerRanking(teams, redAlliances, blueAlliances).generatePowerRankings()
-
-                analyticsData.postValue(powerRankings)
-            } catch (e: Exception) {
-                launch(Dispatchers.Main) {
+            launch(Dispatchers.Main) {
+                analyticsData.value = if (powerRankings.isEmpty()) {
+                    powerRankings
+                } else {
                     appContext.toast(R.string.opr_error_data)
+                    emptyList()
                 }
             }
         }
     }
 
-    fun exportToSpreadsheet(appContext: Context) {
+    fun exportToSpreadsheet(appContext: Context, folderDestination: File) {
         val teams = repository.teamsData.value
         val matches = repository.matchesData.value
 
-        if (teams.isEmpty() && matches.isEmpty()) {
-            appContext.toast(R.string.opr_error_no_matches)
-            return
-        }
-
         viewModelScope.launch(Dispatchers.IO) {
-            val redAlliances = ArrayList<Alliance>(matches.size)
-            val blueAlliances = ArrayList<Alliance>(matches.size)
-
-            matches.forEach {
-                redAlliances.add(it.redAlliance)
-                blueAlliances.add(it.blueAlliance)
-            }
-
-            val powerRankings: List<TeamPower> = try {
-                PowerRanking(teams, redAlliances, blueAlliances).generatePowerRankings()
-            } catch (e: Exception) {
-                emptyList()
-            }
+            val powerRankings = repository.generateOprList()
 
             try {
                 val export = ExportToSpreadsheet()
                 export.export(teams, matches, powerRankings)
 
                 val name = nameData.value
-                val file = File(Environment.getExternalStorageDirectory(), "FTCScouting/$name.xls")
+                val file = File(folderDestination, "$name.xls")
                 export.saveToFile(file)
 
                 launch(Dispatchers.Main) {
                     appContext.toast(appContext.getString(R.string.spreadsheet_saved_successfully, name))
                 }
             } catch (e: Exception) {
+                e.printStackTrace()
                 launch(Dispatchers.Main) {
                     appContext.toast(R.string.spreadsheet_error)
                 }

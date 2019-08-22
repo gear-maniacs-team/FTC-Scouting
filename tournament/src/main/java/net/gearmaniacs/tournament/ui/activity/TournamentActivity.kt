@@ -1,6 +1,5 @@
 package net.gearmaniacs.tournament.ui.activity
 
-import android.Manifest
 import android.app.Activity
 import android.app.SearchManager
 import android.content.Context
@@ -155,13 +154,17 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                     .show()
             }
             R.id.action_export -> {
-                checkRuntimePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                viewModel.exportToSpreadsheet(applicationContext)
+                Chooser(
+                    activity = this,
+                    chooserType = Chooser.FOLDER_CHOOSER,
+                    requestCode = SPREADSHEET_SAVE_REQUEST_CODE,
+                    useNightTheme = true
+                ).start()
             }
             R.id.action_import -> {
                 Chooser(
                     activity = this,
-                    requestCode = SPREADSHEET_REQUEST_CODE,
+                    requestCode = SPREADSHEET_LOAD_REQUEST_CODE,
                     fileExtension = "xls",
                     useNightTheme = true
                 ).start()
@@ -183,9 +186,14 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == SPREADSHEET_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == SPREADSHEET_LOAD_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val path = data?.getStringExtra(Chooser.RESULT_PATH) ?: return
             viewModel.importFromSpreadSheet(File(path))
+        }
+
+        if (requestCode == SPREADSHEET_SAVE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val path = data?.getStringExtra(Chooser.RESULT_PATH) ?: return
+            viewModel.exportToSpreadsheet(this, File(path))
         }
     }
 
@@ -278,7 +286,8 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         private const val SAVED_FRAGMENT_INDEX = "tournament_key"
 
-        private const val SPREADSHEET_REQUEST_CODE = 1
+        private const val SPREADSHEET_LOAD_REQUEST_CODE = 1
+        private const val SPREADSHEET_SAVE_REQUEST_CODE = 2
 
         fun startActivity(context: Context, user: User, tournament: Tournament) {
             val intent = Intent(context, TournamentActivity::class.java)

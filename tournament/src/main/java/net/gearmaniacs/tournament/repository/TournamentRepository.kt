@@ -15,8 +15,11 @@ import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.FirebaseChildListener
 import net.gearmaniacs.core.firebase.FirebaseDatabaseRepositoryCallback
 import net.gearmaniacs.core.firebase.FirebaseSingleValueListener
+import net.gearmaniacs.core.model.Alliance
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
+import net.gearmaniacs.core.model.TeamPower
+import net.gearmaniacs.tournament.opr.PowerRanking
 
 internal class TournamentRepository(private val coroutineScope: CoroutineScope) {
 
@@ -180,6 +183,26 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .removeValue()
+    }
+
+    suspend fun generateOprList(): List<TeamPower> {
+        val teams = teamsData.value
+        val matches = matchesData.value
+
+        val redAlliances = ArrayList<Alliance>(matches.size)
+        val blueAlliances = ArrayList<Alliance>(matches.size)
+
+        matches.forEach {
+            redAlliances.add(it.redAlliance)
+            blueAlliances.add(it.blueAlliance)
+        }
+
+        return try {
+            PowerRanking(teams, redAlliances, blueAlliances).generatePowerRankings()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
     }
 
     fun addListeners(tournamentKey: String) {
