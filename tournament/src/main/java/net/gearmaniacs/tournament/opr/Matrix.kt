@@ -62,6 +62,16 @@ internal object Matrix {
         val size = matrix.size
         val inverse = Array(size) { DoubleArray(size) }
 
+        fun minorAndCofactors(matrix: Array<DoubleArray>, index: Int, inverse: Array<DoubleArray>) {
+            // Create an array which is used for all calculations to avoid extra allocations
+            val minorCacheResult = Array(matrix.size - 1) { DoubleArray(matrix.size - 1) }
+
+            for (j in matrix[index].indices) {
+                val determinant = determinant(minor(matrix, index, j, minorCacheResult))
+                inverse[index][j] = (-1.0).pow((index + j).toDouble()) * determinant
+            }
+        }
+
         val firstHalf = launch {
             for (i in 0 until size / 2)
                 minorAndCofactors(matrix, i, inverse)
@@ -83,15 +93,6 @@ internal object Matrix {
         }
 
         inverse
-    }
-
-    private fun minorAndCofactors(matrix: Array<DoubleArray>, index: Int, inverse: Array<DoubleArray>) {
-        val minorCacheResult = Array(matrix.size - 1) { DoubleArray(matrix.size - 1) }
-
-        for (j in matrix[index].indices) {
-            val determinant = determinant(minor(matrix, index, j, minorCacheResult))
-            inverse[index][j] = (-1.0).pow((index + j).toDouble()) * determinant
-        }
     }
 
     private fun minor(

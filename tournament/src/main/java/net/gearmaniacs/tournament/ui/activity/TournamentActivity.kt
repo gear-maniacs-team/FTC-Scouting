@@ -21,7 +21,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import net.gearmaniacs.core.extensions.checkRuntimePermission
 import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.User

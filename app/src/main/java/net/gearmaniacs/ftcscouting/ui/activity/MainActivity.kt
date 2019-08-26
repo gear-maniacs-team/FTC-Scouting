@@ -38,7 +38,6 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
         rv_tournament.adapter = adapter
         rv_tournament.setHasFixedSize(true)
         rv_tournament.layoutManager = LinearLayoutManager(this)
-        rv_tournament.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
 
         fab_new_tournament.setOnClickListener {
             val dialogFragment = TournamentDialogFragment()

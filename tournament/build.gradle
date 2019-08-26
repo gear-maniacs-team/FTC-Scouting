@@ -9,7 +9,7 @@ android {
         minSdkVersion Versions.min_sdk
         targetSdkVersion Versions.target_sdk
 
-        consumerProguardFiles 'proguard-rules-spreadsheet.pro'
+        consumerProguardFiles 'proguard-rules-tournament.pro'
     }
 }
 

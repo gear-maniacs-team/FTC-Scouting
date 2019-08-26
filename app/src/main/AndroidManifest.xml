@@ -35,8 +35,7 @@
         <activity
             android:name=".ui.activity.AccountActivity"
             android:label="@string/title_account"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustNothing" />
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"

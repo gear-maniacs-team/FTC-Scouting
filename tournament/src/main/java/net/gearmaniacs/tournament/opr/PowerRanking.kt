@@ -1,5 +1,6 @@
 package net.gearmaniacs.tournament.opr
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import net.gearmaniacs.core.model.Alliance
@@ -38,14 +39,10 @@ class PowerRanking(
         val result = ArrayList<TeamPower>(allTeams.size)
 
         allTeams.forEach { teamId ->
-            val foundTeam = teamsList.find { it.id == teamId }
+            val foundTeamName = teamsList.find { it.id == teamId }?.name
 
             // If available add the name to the team
-            if (foundTeam == null) {
-                result.add(TeamPower(teamId, ""))
-            } else {
-                result.add(TeamPower(teamId, foundTeam.name.orEmpty()))
-            }
+            result.add(TeamPower(teamId, foundTeamName.orEmpty()))
         }
 
         return result
@@ -80,19 +77,24 @@ class PowerRanking(
         return matrix
     }
 
+    /*
+     * Returns an Array containing the sum of all the alliances score each team played in per team
+     */
     private fun getScoreArray(): DoubleArray {
         val array = DoubleArray(teamPowerList.size)
 
         teamPowerList.forEachIndexed { index, team ->
             var value = 0
 
-            redAlliances.asSequence()
-                .filter { it.containsTeam(team.id) }
-                .forEach { value += it.score }
+            redAlliances.forEach {
+                if (it.containsTeam(team.id))
+                    value += it.score
+            }
 
-            blueAlliances.asSequence()
-                .filter { it.containsTeam(team.id) }
-                .forEach { value += it.score }
+            blueAlliances.forEach {
+                if (it.containsTeam(team.id))
+                    value += it.score
+            }
 
             array[index] = value.toDouble()
         }
@@ -101,10 +103,10 @@ class PowerRanking(
     }
 
     suspend fun generatePowerRankings(): List<TeamPower> = coroutineScope {
-        val matches = async { Matrix.invert(generateMatchesMatrix()) }
+        val invertedMatches = async { Matrix.invert(generateMatchesMatrix()) }
         val scores = getScoreArray()
 
-        val powerArray = Matrix.multiply(matches.await(), scores)
+        val powerArray = Matrix.multiply(invertedMatches.await(), scores)
 
         val decimalFormat = DecimalFormat("#.##")
         decimalFormat.decimalFormatSymbols = DecimalFormatSymbols().apply {

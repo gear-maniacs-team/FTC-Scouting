@@ -103,6 +103,9 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
 
     fun performTeamsSearch(query: String) {
         lastTeamQuery = query
+        // Cancel the last running job
+        teamSearchJob?.cancel()
+
         val teamList = teamsData.value
 
         if (teamList.isEmpty() || query.isEmpty()) {
@@ -110,8 +113,6 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
             return
         }
 
-        // Cancel the last running job and start a new one
-        teamSearchJob?.cancel()
         teamSearchJob = coroutineScope.launch(Dispatchers.Default) {
             val filteredList = ArrayList<Team>(teamList.size)
             val pattern = "(?i).*($query).*".toPattern()
@@ -131,7 +132,7 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
         currentUserReference
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
-            .child("matches")
+            .child(DatabasePaths.KEY_MATCHES)
             .push()
             .setValue(match)
     }

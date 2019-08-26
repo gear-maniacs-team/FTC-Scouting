@@ -21,7 +21,7 @@ object Libs {
     // Firebase
     const val firebase_core = "com.google.firebase:firebase-core:17.1.0"
     const val firebase_database = "com.google.firebase:firebase-database:19.0.0"
-    const val firebase_auth = "com.google.firebase:firebase-auth:18.1.0"
+    const val firebase_auth = "com.google.firebase:firebase-auth:19.0.0"
     const val firebase_crashlytics = "com.crashlytics.sdk.android:crashlytics:2.10.1"
 
     // Other Libraries

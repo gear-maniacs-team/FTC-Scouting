@@ -5,7 +5,16 @@
     android:fitsSystemWindows="true"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.bottomappbar.BottomAppBar
+        style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
+        android:id="@+id/bottom_app_bar"
+        android:layout_gravity="bottom"
+        app:fabAlignmentMode="end"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -17,8 +26,7 @@
             android:id="@+id/layout_team_number"
             style="@style/TextInputLayoutTheme"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_team_number"
@@ -37,8 +45,7 @@
             style="@style/TextInputLayoutTheme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:layout_constraintTop_toBottomOf="@id/layout_team_number">
+            android:layout_marginTop="12dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_team_name"
@@ -50,16 +57,16 @@
                 android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_update_account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
+        app:layout_anchor="@id/bottom_app_bar"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:text="Update Team Info"
-        app:icon="@drawable/ic_upload" />
+        android:text="@string/action_update_team_info"
+        app:srcCompat="@drawable/ic_upload" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
