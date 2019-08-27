@@ -66,7 +66,7 @@ class AccountActivity : AppCompatActivity() {
                     count++
 
                     if (count == 2) {
-                        toast(R.string.account_updated)
+                        toast(R.string.team_updated)
                         finish()
                     }
                 }

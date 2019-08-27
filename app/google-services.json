@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "824774994590-slphg75he3ibklos5nn17qfqbb7n1nve.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "net.gearmaniacs.ftcscouting",
+            "certificate_hash": "1fe46d5fdc6c08d6075356efe7d54334a8e330f8"
+          }
+        },
+        {
           "client_id": "824774994590-pbnrt6ccaltd5epl126t8l3bl8omms86.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -25,15 +33,13 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
+          "other_platform_oauth_client": [
+            {
+              "client_id": "824774994590-pbnrt6ccaltd5epl126t8l3bl8omms86.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

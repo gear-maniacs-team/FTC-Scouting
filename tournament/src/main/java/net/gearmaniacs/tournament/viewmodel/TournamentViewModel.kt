@@ -142,12 +142,10 @@ class TournamentViewModel : ViewModel() {
             val powerRankings = repository.generateOprList()
 
             launch(Dispatchers.Main) {
-                analyticsData.value = if (powerRankings.isEmpty()) {
-                    powerRankings
-                } else {
+                analyticsData.value = powerRankings
+
+                if (powerRankings.isEmpty())
                     appContext.toast(R.string.opr_error_data)
-                    emptyList()
-                }
             }
         }
     }

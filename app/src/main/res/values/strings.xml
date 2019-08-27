@@ -18,7 +18,8 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_incorrect_confirm_password">The two passwords are not the same</string>
     <string name="error_field_required">This field is required</string>
-    <string name="title_account">Account</string>
-    <string name="account_updated">Account Info Updated</string>
+
+    <string name="title_team_info">Team Info</string>
+    <string name="team_updated">Team Info Updated</string>
 
 </resources>

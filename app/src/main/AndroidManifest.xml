@@ -34,8 +34,8 @@
             android:theme="@style/AppTheme.AboutActivity" />
         <activity
             android:name=".ui.activity.AccountActivity"
-            android:label="@string/title_account"
-            android:windowSoftInputMode="adjustNothing" />
+            android:label="@string/title_team_info"
+            android:windowSoftInputMode="adjustPan" />
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"

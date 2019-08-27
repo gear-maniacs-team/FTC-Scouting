@@ -14,7 +14,7 @@ import net.gearmaniacs.tournament.R
 internal class AnalyticsAdapter : RecyclerView.Adapter<AnalyticsAdapter.AnalyticsViewHolder>() {
 
     companion object {
-        private val DIFF_CALLBACK: DiffUtil.ItemCallback<TeamPower> = object : DiffUtil.ItemCallback<TeamPower>() {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TeamPower>() {
             override fun areItemsTheSame(old: TeamPower, new: TeamPower) = old.id == new.id
 
             override fun areContentsTheSame(old: TeamPower, new: TeamPower) = old == new
@@ -31,7 +31,8 @@ internal class AnalyticsAdapter : RecyclerView.Adapter<AnalyticsAdapter.Analytic
     fun getItem(position: Int): TeamPower = differ.currentList[position]
 
     fun submitList(list: List<TeamPower>) {
-        highestScore = list[0].power.toInt()
+        highestScore = if (list.isNotEmpty()) list[0].power.toInt() else 0
+
         differ.submitList(list)
     }
 

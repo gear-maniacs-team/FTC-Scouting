@@ -2,6 +2,8 @@
     package="net.gearmaniacs.tournament">
 
     <application>
-        <activity android:name=".ui.activity.TournamentActivity" />
+        <activity
+            android:name=".ui.activity.TournamentActivity"
+            android:windowSoftInputMode="adjustNothing" />
     </application>
 </manifest>

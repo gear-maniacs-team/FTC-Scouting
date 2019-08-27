@@ -1,6 +1,5 @@
 package net.gearmaniacs.tournament.opr
 
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import net.gearmaniacs.core.model.Alliance
@@ -8,7 +7,8 @@ import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeamPower
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
-import java.util.HashSet
+import java.util.*
+import kotlin.collections.ArrayList
 
 class PowerRanking(
     teamsList: List<Team>,
