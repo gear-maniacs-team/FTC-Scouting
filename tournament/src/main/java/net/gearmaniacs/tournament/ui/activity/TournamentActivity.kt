@@ -38,7 +38,8 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     private val viewModel by viewModels<TournamentViewModel>()
 
-    private val fragments = listOf(InfoFragment(), TeamFragment(), MatchFragment(), AnalyticsFragment())
+    private val fragments =
+        listOf(InfoFragment(), TeamFragment(), MatchFragment(), AnalyticsFragment())
     private var activeFragment = fragments.first()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,7 +81,8 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         savedInstanceState?.let { bundle ->
             val restoredTag = bundle.getString(SAVED_FRAGMENT_INDEX)
 
-            activeFragment = fragments.find { it.getFragmentTag() == restoredTag } ?: fragments.first()
+            activeFragment =
+                fragments.find { it.getFragmentTag() == restoredTag } ?: fragments.first()
         }
 
         supportFragmentManager.beginTransaction()
@@ -108,9 +110,10 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         menuInflater.inflate(R.menu.menu_tournament, menu)
         val activeTag = activeFragment.getFragmentTag()
 
+        val isSearchVisible = activeTag == TeamFragment.TAG
+
         menu.findItem(R.id.action_opr_info).isVisible = activeTag == AnalyticsFragment.TAG
 
-        val isSearchVisible = activeTag == TeamFragment.TAG
         val searchViewItem = menu.findItem(R.id.action_search)
         searchViewItem.isVisible = isSearchVisible
 
@@ -121,9 +124,11 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
             }
 
-            searchView.setIconifiedByDefault(false)
+            searchView.setIconifiedByDefault(true)
             searchView.queryHint = getString(R.string.action_search)
             searchView.setOnQueryTextListener(this)
+
+            menu.findItem(R.id.action_tournament_edit).isVisible = false
         }
 
         return super.onCreateOptionsMenu(menu)
@@ -228,8 +233,16 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         val animationDuration = 150L
 
-        val fabAnimation =
-            ScaleAnimation(1f, 0f, 1f, 0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+        val fabAnimation = ScaleAnimation(
+            1f,
+            0f,
+            1f,
+            0f,
+            Animation.RELATIVE_TO_SELF,
+            0.5f,
+            Animation.RELATIVE_TO_SELF,
+            0.5f
+        )
         fabAnimation.duration = animationDuration
         fabAnimation.interpolator = AccelerateInterpolator()
         fabAnimation.setAnimationListener(object : Animation.AnimationListener {
@@ -238,8 +251,16 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             override fun onAnimationRepeat(animation: Animation) = Unit
 
             override fun onAnimationEnd(animation: Animation) {
-                val expand =
-                    ScaleAnimation(0f, 1f, 0f, 1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+                val expand = ScaleAnimation(
+                    0f,
+                    1f,
+                    0f,
+                    1f,
+                    Animation.RELATIVE_TO_SELF,
+                    0.5f,
+                    Animation.RELATIVE_TO_SELF,
+                    0.5f
+                )
                 expand.duration = animationDuration
                 expand.interpolator = DecelerateInterpolator()
                 fab.startAnimation(expand)

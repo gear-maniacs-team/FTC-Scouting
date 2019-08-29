@@ -42,16 +42,19 @@ internal class TeamEditDialog : DialogFragment() {
         setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater.inflate(R.layout.dialog_edit_team, container, false)
 
-        view.toolbar.setNavigationIcon(R.drawable.ic_close)
-        view.toolbar.setNavigationOnClickListener { dismiss() }
-        view.toolbar.title = null
+        view.bottom_bar.setNavigationIcon(R.drawable.ic_close)
+        view.bottom_bar.setNavigationOnClickListener { dismiss() }
 
-        view.toolbar.doOnPreDraw { toolbar ->
-            view.layout_content.updatePadding(bottom = (toolbar.height * 1.6f).toInt())
+        view.bottom_bar.doOnPreDraw { bottom_bar ->
+            view.layout_content.updatePadding(bottom = (bottom_bar.height * 1.6f).toInt())
         }
 
         return view
@@ -142,7 +145,8 @@ internal class TeamEditDialog : DialogFragment() {
             }
 
             if (team.preferredLocation != 0) {
-                val radioLocation = toggle_preferred_location[team.preferredLocation] as MaterialButton?
+                val radioLocation =
+                    toggle_preferred_location[team.preferredLocation] as MaterialButton?
                 radioLocation?.isChecked = true
             }
 

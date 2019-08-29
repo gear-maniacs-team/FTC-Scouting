@@ -17,6 +17,8 @@ import net.gearmaniacs.tournament.repository.TournamentRepository
 import net.gearmaniacs.tournament.spreadsheet.ExportToSpreadsheet
 import net.gearmaniacs.tournament.spreadsheet.ImportFromSpreadsheet
 import java.io.File
+import java.util.*
+import kotlin.collections.HashSet
 
 class TournamentViewModel : ViewModel() {
 
@@ -58,7 +60,7 @@ class TournamentViewModel : ViewModel() {
     // region Teams Management
 
     fun performTeamsSearch(query: String?) {
-        repository.performTeamsSearch(query.orEmpty().trim().toLowerCase())
+        repository.performTeamsSearch(query.orEmpty().trim().toLowerCase(Locale.ROOT))
     }
 
     fun addTeamsFromMatches() {
@@ -166,7 +168,9 @@ class TournamentViewModel : ViewModel() {
                 export.saveToFile(file)
 
                 launch(Dispatchers.Main) {
-                    appContext.toast(appContext.getString(R.string.spreadsheet_saved_successfully, name))
+                    appContext.toast(
+                        appContext.getString(R.string.spreadsheet_saved_successfully, name)
+                    )
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -187,7 +191,9 @@ class TournamentViewModel : ViewModel() {
             val importMatches = import.getMatches()
 
             repository.addTeams(tournamentKey, importTeams.filterNot { currentTeams.contains(it) })
-            repository.addMatches(tournamentKey, importMatches.filterNot { currentMatches.contains(it) })
+            repository.addMatches(
+                tournamentKey,
+                importMatches.filterNot { currentMatches.contains(it) })
         }
     }
 

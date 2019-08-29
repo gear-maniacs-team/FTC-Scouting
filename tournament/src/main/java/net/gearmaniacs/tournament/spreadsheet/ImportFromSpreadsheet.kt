@@ -67,10 +67,10 @@ class ImportFromSpreadsheet(spreadsheetFile: File) {
             }
         }
 
-        if (id == -1)
-            throw IllegalArgumentException("number == -1")
+        require(id != -1) { "number == -1" }
 
-        val autonomousData = AutonomousData(autoLatching, autoSampling, autoMarker, autoParking, autoMinerals)
+        val autonomousData =
+            AutonomousData(autoLatching, autoSampling, autoMarker, autoParking, autoMinerals)
         val teleOpData = TeleOpData(depotMinerals, landerMinerals)
 
         val endGame = when (endGameString) {
@@ -133,8 +133,7 @@ class ImportFromSpreadsheet(spreadsheetFile: File) {
             }
         }
 
-        if (number == -1)
-            throw IllegalArgumentException("number == -1")
+        require(number != -1) { "number == -1" }
 
         return Match(
             number,

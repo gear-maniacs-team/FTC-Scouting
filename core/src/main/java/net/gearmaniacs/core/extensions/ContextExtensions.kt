@@ -9,7 +9,8 @@ import androidx.annotation.StringRes
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
-inline fun <reified T : Activity> Context.startActivity() = startActivity(Intent(this, T::class.java))
+inline fun <reified T : Activity> Context.startActivity() =
+    startActivity(Intent(this, T::class.java))
 
 fun Context.toast(text: CharSequence) {
     Toast.makeText(this, text, Toast.LENGTH_SHORT).show()

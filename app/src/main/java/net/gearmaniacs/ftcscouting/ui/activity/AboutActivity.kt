@@ -152,29 +152,6 @@ class AboutActivity : MaterialAboutActivity() {
         )
         .build()
 
-    /*
-        val view = AboutBuilder.with(this)
-            .setPhoto(R.drawable.developer_picture)
-            .setName("TheLuckyCoder")
-            .setSubTitle("Mobile Developer")
-            .addGooglePlayStoreLink("7253118641640283145")
-            .addGitHubLink("TheLuckyCoder")
-            .addWebsiteLink("http://theluckycoder.net")
-            .addEmailLink("mail@theluckycoder.net")
-            .setLinksColumnsCount(4)
-            // Team
-            .setAppName("Gear Maniacs - FTC Scouting")
-            .setAppTitle("Made with love by the Gear Maniacs Team")
-            .addFiveStarsAction()
-            .addShareAction(R.string.app_name)
-            //.addLink(com.vansuita.materialabout.R.drawable.website, "Team Website", "gearmaniacs.net")
-            .addFeedbackAction("app@gearmaniacs.net", "FTC Scouting App")
-            .addPrivacyPolicyAction("") // TODO: Add Privacy Policy
-            .setWrapScrollView(true)
-            .setLinksAnimated(true)
-            .build()
-        */
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
             finish()

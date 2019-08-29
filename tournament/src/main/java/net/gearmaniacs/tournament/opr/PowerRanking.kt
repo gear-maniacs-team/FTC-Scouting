@@ -39,10 +39,12 @@ class PowerRanking(
         val result = ArrayList<TeamPower>(allTeams.size)
 
         allTeams.forEach { teamId ->
-            val foundTeamName = teamsList.find { it.id == teamId }?.name
+            if (teamId > 0) {
+                val foundTeamName = teamsList.find { it.id == teamId }?.name
 
-            // If available add the name to the team
-            result.add(TeamPower(teamId, foundTeamName.orEmpty()))
+                // If available add the name to the team
+                result.add(TeamPower(teamId, foundTeamName.orEmpty()))
+            }
         }
 
         return result

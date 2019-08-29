@@ -1,7 +1,6 @@
 package net.gearmaniacs.tournament.ui.adapter
 
 import android.annotation.SuppressLint
-import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,8 +15,9 @@ import net.gearmaniacs.tournament.R
 internal class InfoAdapter : RecyclerView.Adapter<InfoAdapter.InfoViewHolder>() {
 
     companion object {
-        private val DIFF_CALLBACK: DiffUtil.ItemCallback<Match> = object : DiffUtil.ItemCallback<Match>() {
-            override fun areItemsTheSame(oldMatch: Match, newMatch: Match) = oldMatch.key == newMatch.key
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Match>() {
+            override fun areItemsTheSame(oldMatch: Match, newMatch: Match) =
+                oldMatch.key == newMatch.key
 
             override fun areContentsTheSame(oldMatch: Match, newMatch: Match) = oldMatch == newMatch
         }

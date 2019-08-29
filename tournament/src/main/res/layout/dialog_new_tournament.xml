@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:background="@null"
-        android:hint="Name"
+        android:hint="@string/name"
         android:importantForAutofill="no"
         android:inputType="textCapWords"
         android:maxLines="1"

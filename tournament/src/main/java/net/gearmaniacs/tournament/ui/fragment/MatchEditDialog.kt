@@ -10,10 +10,10 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import kotlinx.android.synthetic.main.dialog_edit_match.view.*
 import kotlinx.android.synthetic.main.dialog_edit_match_content.view.*
-import net.gearmaniacs.core.model.Alliance
-import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.extensions.getTextOrEmpty
 import net.gearmaniacs.core.extensions.toIntOrDefault
+import net.gearmaniacs.core.model.Alliance
+import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
@@ -37,16 +37,19 @@ internal class MatchEditDialog : DialogFragment() {
         setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater.inflate(R.layout.dialog_edit_match, container, false)
 
-        view.toolbar.setNavigationIcon(R.drawable.ic_close)
-        view.toolbar.setNavigationOnClickListener { dismiss() }
-        view.toolbar.title = null
+        view.bottom_bar.setNavigationIcon(R.drawable.ic_close)
+        view.bottom_bar.setNavigationOnClickListener { dismiss() }
 
-        view.toolbar.doOnPreDraw { toolbar ->
-            view.layout_content.updatePadding(bottom = (toolbar.height * 1.6f).toInt())
+        view.bottom_bar.doOnPreDraw { bottom_bar ->
+            view.layout_content.updatePadding(bottom = (bottom_bar.height * 1.6f).toInt())
         }
 
         return view

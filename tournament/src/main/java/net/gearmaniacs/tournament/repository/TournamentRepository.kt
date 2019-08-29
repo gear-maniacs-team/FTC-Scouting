@@ -48,8 +48,10 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
     val filteredTeamsData = NonNullLiveData(emptyList<Team>())
     val matchesData = MutexLiveData(emptyList<Match>())
 
-    private val teamsListener = FirebaseChildListener(Team::class.java, teamsData, coroutineScope)
-    private val matchesListener = FirebaseChildListener(Match::class.java, matchesData, coroutineScope)
+    private val teamsListener =
+        FirebaseChildListener(Team::class.java, teamsData, coroutineScope)
+    private val matchesListener =
+        FirebaseChildListener(Match::class.java, matchesData, coroutineScope)
 
     private var listenersInitialized = false
 
@@ -114,12 +116,11 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
         }
 
         teamSearchJob = coroutineScope.launch(Dispatchers.Default) {
-            val filteredList = ArrayList<Team>(teamList.size)
             val pattern = "(?i).*($query).*".toPattern()
 
-            teamList.asSequence()
+            val filteredList = teamList.asSequence()
                 .filter { pattern.matcher(it.name.orEmpty()).matches() }
-                .forEach { filteredList.add(it) }
+                .toList()
 
             launch(Dispatchers.Main) {
                 filteredTeamsData.value = filteredList

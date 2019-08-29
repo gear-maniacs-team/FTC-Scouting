@@ -6,29 +6,22 @@
     android:fitsSystemWindows="true"
     android:theme="@style/AppTheme">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <include layout="@layout/dialog_edit_team_content" />
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottom_bar"
+        style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorBackground">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="0dp"
-            app:layout_scrollFlags="scroll|enterAlwaysCollapsed" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <include layout="@layout/dialog_edit_team_content" />
+        android:layout_gravity="bottom"
+        app:fabAlignmentMode="end"
+        app:hideOnScroll="true" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_edit_team_done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/activity_vertical_margin"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:src="@drawable/ic_done" />
+        android:src="@drawable/ic_done"
+        app:layout_anchor="@id/bottom_bar" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

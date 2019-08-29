@@ -9,12 +9,12 @@ import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_account.*
-import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.core.model.User
 import net.gearmaniacs.core.extensions.getTextOrEmpty
 import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.core.firebase.DatabasePaths
+import net.gearmaniacs.core.model.User
+import net.gearmaniacs.ftcscouting.R
 
 class AccountActivity : AppCompatActivity() {
 
@@ -35,7 +35,8 @@ class AccountActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val user = intent.getParcelableExtra<User>(ARG_USER) ?: throw IllegalArgumentException(ARG_USER)
+        val user = intent.getParcelableExtra<User>(ARG_USER)
+            ?: throw IllegalArgumentException(ARG_USER)
 
         et_team_number.setText(user.id.toString())
         et_team_name.setText(user.teamName)
@@ -72,8 +73,15 @@ class AccountActivity : AppCompatActivity() {
                 }
             }
 
-            currentUserRef.child(User::id.name).setValue(number).addOnSuccessListener(listener)
-            currentUserRef.child(User::teamName.name).setValue(teamName).addOnSuccessListener(listener)
+            currentUserRef
+                .child(User::id.name)
+                .setValue(number)
+                .addOnSuccessListener(listener)
+
+            currentUserRef
+                .child(User::teamName.name)
+                .setValue(teamName)
+                .addOnSuccessListener(listener)
         }
     }
 
