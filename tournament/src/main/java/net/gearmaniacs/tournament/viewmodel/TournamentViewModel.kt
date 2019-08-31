@@ -17,8 +17,7 @@ import net.gearmaniacs.tournament.repository.TournamentRepository
 import net.gearmaniacs.tournament.spreadsheet.ExportToSpreadsheet
 import net.gearmaniacs.tournament.spreadsheet.ImportFromSpreadsheet
 import java.io.File
-import java.util.*
-import kotlin.collections.HashSet
+import java.util.Locale
 
 class TournamentViewModel : ViewModel() {
 
@@ -50,7 +49,7 @@ class TournamentViewModel : ViewModel() {
 
     fun getTeamsLiveData(): NonNullLiveData<List<Team>> = repository.filteredTeamsData
 
-    fun getMatchLiveData(): NonNullLiveData<List<Match>> = repository.matchesData
+    fun getMatchesLiveData(): NonNullLiveData<List<Match>> = repository.matchesData
 
     fun setDefaultName(defaultName: String) {
         if (nameData.value.isNullOrEmpty())

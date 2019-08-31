@@ -2,7 +2,7 @@
 object Libs {
     // Kotlin
     const val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin_version}"
-    const val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.2"
+    const val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.0"
 
     // KTX
     const val ktx_core = "androidx.core:core-ktx:1.2.0-alpha02"
@@ -19,7 +19,7 @@ object Libs {
     const val androidx_swipe_refresh_layout = "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
     // Firebase
-    const val firebase_core = "com.google.firebase:firebase-core:17.1.0"
+    const val firebase_core = "com.google.firebase:firebase-core:17.2.0"
     const val firebase_database = "com.google.firebase:firebase-database:19.0.0"
     const val firebase_auth = "com.google.firebase:firebase-auth:19.0.0"
     const val firebase_crashlytics = "com.crashlytics.sdk.android:crashlytics:2.10.1"

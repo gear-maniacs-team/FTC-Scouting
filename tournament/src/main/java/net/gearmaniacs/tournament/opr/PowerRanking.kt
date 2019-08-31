@@ -2,18 +2,13 @@ package net.gearmaniacs.tournament.opr
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import net.gearmaniacs.core.model.Alliance
+import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeamPower
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.*
-import kotlin.collections.ArrayList
 
 class PowerRanking(
     teamsList: List<Team>,
-    private val redAlliances: List<Alliance>,
-    private val blueAlliances: List<Alliance>
+    private val matchesList: List<Match>
 ) {
 
     private val teamPowerList = populateTeamPowerList(teamsList)
@@ -24,16 +19,16 @@ class PowerRanking(
      * @param teamsList Combines the extracted team numbers with the team names from this list
      */
     private fun populateTeamPowerList(teamsList: List<Team>): List<TeamPower> {
-        val allTeams = HashSet<Int>(redAlliances.size)
+        val allTeams = HashSet<Int>(matchesList.size)
 
-        redAlliances.forEach {
-            allTeams.add(it.firstTeam)
-            allTeams.add(it.secondTeam)
-        }
+        matchesList.forEach {
+            with(allTeams) {
+                add(it.redAlliance.firstTeam)
+                add(it.redAlliance.secondTeam)
 
-        blueAlliances.forEach {
-            allTeams.add(it.firstTeam)
-            allTeams.add(it.secondTeam)
+                add(it.blueAlliance.firstTeam)
+                add(it.blueAlliance.secondTeam)
+            }
         }
 
         val result = ArrayList<TeamPower>(allTeams.size)
@@ -62,14 +57,18 @@ class PowerRanking(
                 val verticalTeam = teamPowerList[j].id
                 var count = 0.0
 
-                redAlliances.forEach {
-                    if (it.containsTeam(verticalTeam) && it.containsTeam(horizontalTeam))
+                matchesList.forEach {
+                    if (it.redAlliance.containsTeam(verticalTeam) &&
+                        it.redAlliance.containsTeam(horizontalTeam)
+                    ) {
                         count++
-                }
+                    }
 
-                blueAlliances.forEach {
-                    if (it.containsTeam(verticalTeam) && it.containsTeam(horizontalTeam))
+                    if (it.blueAlliance.containsTeam(verticalTeam) &&
+                        it.blueAlliance.containsTeam(horizontalTeam)
+                    ) {
                         count++
+                    }
                 }
 
                 matrix[i][j] = count
@@ -86,19 +85,18 @@ class PowerRanking(
         val array = DoubleArray(teamPowerList.size)
 
         teamPowerList.forEachIndexed { index, team ->
-            var value = 0
+            val id = team.id
+            var value = 0.0
 
-            redAlliances.forEach {
-                if (it.containsTeam(team.id))
-                    value += it.score
+            matchesList.forEach {
+                if (it.redAlliance.containsTeam(id))
+                    value += it.redAlliance.score
+
+                if (it.blueAlliance.containsTeam(id))
+                    value += it.blueAlliance.score
             }
 
-            blueAlliances.forEach {
-                if (it.containsTeam(team.id))
-                    value += it.score
-            }
-
-            array[index] = value.toDouble()
+            array[index] = value
         }
 
         return array
@@ -110,13 +108,8 @@ class PowerRanking(
 
         val powerArray = Matrix.multiply(invertedMatches.await(), scores)
 
-        val decimalFormat = DecimalFormat("#.##")
-        decimalFormat.decimalFormatSymbols = DecimalFormatSymbols().apply {
-            decimalSeparator = '.'
-        }
-
         powerArray.forEachIndexed { index, power ->
-            teamPowerList[index].power = decimalFormat.format(power).toFloat()
+            teamPowerList[index].power = power.toFloat()
         }
 
         teamPowerList.sortedByDescending { it.power }

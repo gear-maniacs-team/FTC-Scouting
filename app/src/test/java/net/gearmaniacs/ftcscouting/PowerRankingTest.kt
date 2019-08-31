@@ -2,6 +2,7 @@ package net.gearmaniacs.ftcscouting
 
 import kotlinx.coroutines.runBlocking
 import net.gearmaniacs.core.model.Alliance
+import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.TeamPower
 import net.gearmaniacs.tournament.opr.PowerRanking
 import org.junit.Test
@@ -106,12 +107,23 @@ class PowerRankingTest {
 
     @Test
     fun checkPowerRanking_firstAndLastTeam() {
-        val firstResult = TeamPower(id = 77, name = "", power = 232.49f)
-        val lastResult = TeamPower(id = 44, name = "", power = -2.61f)
+        val firstResult = TeamPower(id = 77, name = "", power = 232.48538f)
+        val lastResult = TeamPower(id = 44, name = "", power = -2.6085517f)
 
-        val powerRanking = PowerRanking(emptyList(), redAlliances, blueAlliances)
+        val matches = ArrayList<Match>(redAlliances.size)
+
+        for (i in redAlliances.indices) {
+            matches.add(Match(i, redAlliances[i], blueAlliances[i]))
+        }
+
+        val powerRanking = PowerRanking(emptyList(), matches)
         runBlocking {
             val results = powerRanking.generatePowerRankings()
+
+            results.forEach {
+                println(it.power)
+            }
+
             assert(results.first() == firstResult)
             assert(results.last() == lastResult)
         }

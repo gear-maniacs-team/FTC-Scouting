@@ -15,11 +15,12 @@ import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.FirebaseChildListener
 import net.gearmaniacs.core.firebase.FirebaseDatabaseRepositoryCallback
 import net.gearmaniacs.core.firebase.FirebaseSingleValueListener
-import net.gearmaniacs.core.model.Alliance
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeamPower
 import net.gearmaniacs.tournament.opr.PowerRanking
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 
 internal class TournamentRepository(private val coroutineScope: CoroutineScope) {
 
@@ -191,16 +192,16 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
         val teams = teamsData.value
         val matches = matchesData.value
 
-        val redAlliances = ArrayList<Alliance>(matches.size)
-        val blueAlliances = ArrayList<Alliance>(matches.size)
-
-        matches.forEach {
-            redAlliances.add(it.redAlliance)
-            blueAlliances.add(it.blueAlliance)
-        }
-
         return try {
-            PowerRanking(teams, redAlliances, blueAlliances).generatePowerRankings()
+            val decimalFormat = DecimalFormat("#.##")
+            decimalFormat.decimalFormatSymbols = DecimalFormatSymbols().apply {
+                decimalSeparator = '.'
+            }
+
+            PowerRanking(teams, matches).generatePowerRankings().apply {
+                // Format the power of each Team to only keep the first to decimals
+                forEach { it.power = decimalFormat.format(it.power).toFloat() }
+            }
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()

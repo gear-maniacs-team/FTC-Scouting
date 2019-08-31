@@ -36,7 +36,7 @@ internal class InfoFragment : TournamentFragment(R.layout.fragment_recycler_view
 
         val user = activity.intent.getParcelableExtra<User>(TournamentActivity.ARG_USER) ?: return
 
-        activity.observeNonNull(viewModel.getMatchLiveData()) {
+        activity.observeNonNull(viewModel.getMatchesLiveData()) {
             adapter.submitList(it.filter { match -> match.containsTeam(user.id) })
         }
     }
