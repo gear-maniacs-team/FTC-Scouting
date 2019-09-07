@@ -17,15 +17,16 @@ class MainViewModel : ViewModel() {
     var currentUser: User? = null
 
     init {
-        repository.tournamentsCallback = object : FirebaseDatabaseRepositoryCallback<List<Tournament>> {
-            override fun onSuccess(result: List<Tournament>) {
-                tournamentData.value = result
-            }
+        repository.tournamentsCallback =
+            object : FirebaseDatabaseRepositoryCallback<List<Tournament>> {
+                override fun onSuccess(result: List<Tournament>) {
+                    tournamentData.value = result
+                }
 
-            override fun onError(e: Exception) {
-                e.printStackTrace()
+                override fun onError(e: Exception) {
+                    e.printStackTrace()
+                }
             }
-        }
 
         repository.userCallback = object : FirebaseDatabaseRepositoryCallback<User> {
             override fun onSuccess(result: User) {

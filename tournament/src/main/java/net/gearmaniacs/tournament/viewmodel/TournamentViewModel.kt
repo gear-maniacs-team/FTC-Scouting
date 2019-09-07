@@ -189,10 +189,14 @@ class TournamentViewModel : ViewModel() {
             val importTeams = import.getTeams()
             val importMatches = import.getMatches()
 
-            repository.addTeams(tournamentKey, importTeams.filterNot { currentTeams.contains(it) })
+            repository.addTeams(
+                tournamentKey,
+                importTeams.filterNot { currentTeams.contains(it) }
+            )
             repository.addMatches(
                 tournamentKey,
-                importMatches.filterNot { currentMatches.contains(it) })
+                importMatches.filterNot { currentMatches.contains(it) }
+            )
         }
     }
 

@@ -8,11 +8,11 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import net.gearmaniacs.core.firebase.DatabasePaths
+import net.gearmaniacs.core.firebase.FirebaseDatabaseRepositoryCallback
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.User
-import net.gearmaniacs.core.firebase.DatabasePaths
-import net.gearmaniacs.core.firebase.FirebaseDatabaseRepositoryCallback
 
 class MainRepository(coroutineScope: CoroutineScope) {
 
@@ -49,7 +49,8 @@ class MainRepository(coroutineScope: CoroutineScope) {
         override fun onDataChange(snapshot: DataSnapshot) {
             try {
                 val id = snapshot.child(User::id.name).getValue(Int::class.java) ?: return
-                val teamName = snapshot.child(User::teamName.name).getValue(String::class.java).orEmpty()
+                val teamName =
+                    snapshot.child(User::teamName.name).getValue(String::class.java).orEmpty()
 
                 userCallback?.onSuccess(User(id, teamName))
             } catch (e: Exception) {

@@ -54,16 +54,14 @@
         android:text="@string/action_sign_in"
         android:textSize="16sp" />
 
-    <TextView
-        android:id="@+id/tv_no_account"
-        style="?android:textAppearanceSmall"
+    <Button
+        android:id="@+id/btn_no_account"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:gravity="center_horizontal"
-        android:padding="12dp"
+        android:textAllCaps="false"
         android:text="@string/action_no_account"
-        android:textColor="@color/colorAccent"
-        android:textStyle="bold" />
+        android:textColor="@color/colorAccent" />
 
 </LinearLayout>

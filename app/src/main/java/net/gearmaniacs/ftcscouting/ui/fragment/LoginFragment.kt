@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_login.view.*
-import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.core.extensions.isValidEmail
+import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.utils.LoginCallback
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
@@ -31,7 +31,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 loginCallback?.onLogin(email, password)
         }
 
-        view.tv_no_account.setOnClickListener {
+        view.btn_no_account.setOnClickListener {
             loginCallback?.switchFragment()
         }
     }

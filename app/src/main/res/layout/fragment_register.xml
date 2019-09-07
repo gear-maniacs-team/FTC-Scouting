@@ -48,7 +48,7 @@
         style="@style/TextInputLayoutTheme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="@dimen/view_margin">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_email"
@@ -101,16 +101,14 @@
         android:text="@string/action_register"
         android:textSize="16sp" />
 
-    <TextView
-        android:id="@+id/tv_already_own_account"
-        style="?android:textAppearanceSmall"
+    <Button
+        android:id="@+id/btn_already_own_account"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:gravity="center_horizontal"
-        android:padding="12dp"
+        android:textAllCaps="false"
         android:text="@string/action_already_own_account"
-        android:textColor="@color/colorAccent"
-        android:textStyle="bold" />
+        android:textColor="@color/colorAccent" />
 
 </LinearLayout>

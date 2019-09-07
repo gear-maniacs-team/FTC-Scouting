@@ -119,9 +119,8 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
         teamSearchJob = coroutineScope.launch(Dispatchers.Default) {
             val pattern = "(?i).*($query).*".toPattern()
 
-            val filteredList = teamList.asSequence()
+            val filteredList = teamList
                 .filter { pattern.matcher(it.name.orEmpty()).matches() }
-                .toList()
 
             launch(Dispatchers.Main) {
                 filteredTeamsData.value = filteredList

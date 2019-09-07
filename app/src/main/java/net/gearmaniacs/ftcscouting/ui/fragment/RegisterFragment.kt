@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_register.view.*
-import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.core.model.User
 import net.gearmaniacs.core.extensions.getTextOrEmpty
 import net.gearmaniacs.core.extensions.isValidEmail
+import net.gearmaniacs.core.model.User
+import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.utils.LoginCallback
 
 class RegisterFragment : Fragment(R.layout.fragment_register) {
@@ -54,7 +54,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             ) loginCallback?.onRegister(User(id.toInt(), name), email, password)
         }
 
-        view.tv_already_own_account.setOnClickListener {
+        view.btn_already_own_account.setOnClickListener {
             loginCallback?.switchFragment()
         }
     }

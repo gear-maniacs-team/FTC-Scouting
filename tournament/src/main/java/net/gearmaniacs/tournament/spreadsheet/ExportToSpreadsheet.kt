@@ -110,6 +110,7 @@ class ExportToSpreadsheet {
     @Throws(IOException::class)
     fun saveToFile(file: File) {
         file.parentFile?.mkdirs()
+
         file.outputStream().use {
             workBook.write(it)
         }

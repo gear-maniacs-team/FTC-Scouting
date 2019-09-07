@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
 import java.io.File
+import java.util.Locale
 
 class ImportFromSpreadsheet(spreadsheetFile: File) {
 
@@ -42,7 +43,7 @@ class ImportFromSpreadsheet(spreadsheetFile: File) {
         var landerMinerals = 0
         var endGameString: String? = null
         var preferredLocationString: String? = null
-        var comments: String? = null
+        var notes: String? = null
 
         var autoLatching = false
         var autoSampling = false
@@ -58,7 +59,7 @@ class ImportFromSpreadsheet(spreadsheetFile: File) {
                 3 -> landerMinerals = cell.numericCellValue.toInt()
                 4 -> endGameString = cell.stringCellValue
                 5 -> preferredLocationString = cell.stringCellValue
-                6 -> comments = cell.stringCellValue
+                6 -> notes = cell.stringCellValue
                 7 -> autoLatching = cell.booleanCellValue
                 8 -> autoSampling = cell.booleanCellValue
                 9 -> autoMarker = cell.booleanCellValue
@@ -67,22 +68,22 @@ class ImportFromSpreadsheet(spreadsheetFile: File) {
             }
         }
 
-        require(id != -1) { "number == -1" }
+        check(id == -1) { "Team id == -1" }
 
         val autonomousData =
             AutonomousData(autoLatching, autoSampling, autoMarker, autoParking, autoMinerals)
         val teleOpData = TeleOpData(depotMinerals, landerMinerals)
 
-        val endGame = when (endGameString) {
-            "Robot Latched" -> EndGame.ROBOT_LATCHED
-            "Partially Parked" -> EndGame.PARTIALLY_PARKED
-            "Completely Parked" -> EndGame.COMPLETELY_PARKED
+        val endGame = when (endGameString?.toLowerCase(Locale.ROOT)) {
+            "robot latched" -> EndGame.ROBOT_LATCHED
+            "partially parked" -> EndGame.PARTIALLY_PARKED
+            "completely parked" -> EndGame.COMPLETELY_PARKED
             else -> 0
         }
 
-        val preferredLocation = when (preferredLocationString) {
-            "Crater" -> PreferredLocation.CRATER
-            "Depot" -> PreferredLocation.DEPOT
+        val preferredLocation = when (preferredLocationString?.toLowerCase(Locale.ROOT)) {
+            "crater" -> PreferredLocation.CRATER
+            "depot" -> PreferredLocation.DEPOT
             else -> PreferredLocation.NONE
         }
 
@@ -93,7 +94,7 @@ class ImportFromSpreadsheet(spreadsheetFile: File) {
             teleOpData.takeIf { it.isNotEmpty },
             endGame,
             preferredLocation,
-            comments
+            notes
         )
     }
 
@@ -133,7 +134,7 @@ class ImportFromSpreadsheet(spreadsheetFile: File) {
             }
         }
 
-        require(number != -1) { "number == -1" }
+        check(number == -1) { "Match number == -1" }
 
         return Match(
             number,
