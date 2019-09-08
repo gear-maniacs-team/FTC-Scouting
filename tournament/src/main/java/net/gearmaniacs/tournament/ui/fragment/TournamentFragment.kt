@@ -15,9 +15,13 @@ internal abstract class TournamentFragment : Fragment {
 
     private var inflatedView: View? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         if (inflatedView == null) {
-            inflatedView = inflatedView ?: super.onCreateView(inflater, container, savedInstanceState)
+            inflatedView = super.onCreateView(inflater, container, savedInstanceState)
 
             inflatedView?.let {
                 onInflateView(it)

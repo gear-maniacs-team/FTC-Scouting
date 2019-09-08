@@ -70,7 +70,7 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
         currentUserReference
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
-            .child(DatabasePaths.KEY_MATCHES)
+            .child(DatabasePaths.KEY_TEAMS)
             .push()
             .setValue(team)
     }
@@ -199,7 +199,9 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
 
             PowerRanking(teams, matches).generatePowerRankings().apply {
                 // Format the power of each Team to only keep the first to decimals
-                forEach { it.power = decimalFormat.format(it.power).toFloat() }
+                forEach {
+                    it.power = decimalFormat.format(it.power).toFloat()
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
