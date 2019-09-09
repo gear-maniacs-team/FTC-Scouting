@@ -2,7 +2,7 @@
 object Libs {
     // Kotlin
     const val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin_version}"
-    const val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.0"
+    const val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.1"
 
     // KTX
     const val ktx_core = "androidx.core:core-ktx:1.2.0-alpha02"
@@ -10,7 +10,7 @@ object Libs {
     const val ktx_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0-rc01"
 
     // AndroidX
-    const val google_material = "com.google.android.material:material:1.1.0-alpha09"
+    const val google_material = "com.google.android.material:material:1.1.0-alpha10"
     const val androidx_appcompat = "androidx.appcompat:appcompat:1.1.0-rc01"
     const val androidx_recycler_view = "androidx.recyclerview:recyclerview:1.0.0"
     const val androidx_card_view = "androidx.cardview:cardview:1.0.0"

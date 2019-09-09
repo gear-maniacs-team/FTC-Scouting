@@ -6,73 +6,95 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class AutonomousData(
-    val latching: Boolean,
-    val sampling: Boolean,
-    val marker: Boolean,
-    val parking: Boolean,
-    val minerals: Int
+    val repositionFoundation: Boolean,
+    val deliveredSkystones: Int,
+    val deliveredStones: Int,
+    val placedStones: Int,
+    val parked: Boolean
 ) : Parcelable {
 
-    constructor() : this(false, false, false, false, 0)
+    constructor() : this(false, 0, 0, 0, false)
 
     val isEmpty: Boolean
         @Exclude
-        get() = !latching && !sampling && !marker && !parking && minerals == 0
+        get() = !repositionFoundation && deliveredSkystones == 0 && deliveredStones == 0
+                && placedStones == 0 && !parked
 
     val isNotEmpty: Boolean
         @Exclude
         get() = !isEmpty
 
     fun calculateScore(): Int {
-        var result = 0
+        var score = 0
 
-        if (latching) result += 30
-        if (sampling) result += 25
-        if (marker) result += 15
-        if (parking) result += 10
-        result += minerals * 5
+        if (repositionFoundation) score += 10
 
-        return result
+        score += if (deliveredSkystones > 2)
+            (deliveredSkystones - 2) * 2 + 20
+        else
+            deliveredSkystones * 10
+
+        score += deliveredStones * 2
+        score += placedStones * 4
+        if (parked) score += 5
+
+        return score
     }
 }
 
 @Parcelize
 data class TeleOpData(
-    val depotMinerals: Int,
-    val landerMinerals: Int
+    val deliveredStones: Int,
+    val placedStones: Int
 ) : Parcelable {
 
     constructor() : this(0, 0)
 
     val isEmpty: Boolean
         @Exclude
-        get() = depotMinerals == 0 && landerMinerals == 0
+        get() = deliveredStones == 0 && placedStones == 0
 
     val isNotEmpty: Boolean
         @Exclude
         get() = !isEmpty
 
     fun calculateScore(): Int {
-        var result = 0
+        return deliveredStones + placedStones
+    }
+}
 
-        result += depotMinerals * 2
-        result += landerMinerals * 5
+@Parcelize
+data class EndGame(
+    val capPlaced: Boolean,
+    val moveFoundation: Boolean,
+    val parked: Boolean
+) : Parcelable {
 
-        return result
+    constructor() : this(false, false, false)
+
+    val isEmpty: Boolean
+        @Exclude
+        get() = !capPlaced && !moveFoundation && !parked
+
+    val isNotEmpty: Boolean
+        @Exclude
+        get() = !isEmpty
+
+    fun calculateScore(): Int {
+        var score = 0
+
+        if (capPlaced) score += 5
+        if (moveFoundation) score += 15
+        if (parked) score += 5
+
+        return score
     }
 }
 
 object PreferredLocation {
     const val NONE = 0
-    const val DEPOT = 1
-    const val CRATER = 2
-}
-
-object EndGame {
-    const val NONE = 0
-    const val ROBOT_LATCHED = 1
-    const val PARTIALLY_PARKED = 2
-    const val COMPLETELY_PARKED = 3
+    const val BUILDING = 1
+    const val LOADING = 2
 }
 
 @Parcelize
@@ -81,7 +103,7 @@ data class Team(
     val name: String? = null,
     val autonomousData: AutonomousData? = null,
     val teleOpData: TeleOpData? = null,
-    val endGame: Int = EndGame.NONE,
+    val endGame: EndGame? = null,
     val preferredLocation: Int = PreferredLocation.NONE,
     val comments: String? = null
 ) : DatabaseClass<Team>(), Parcelable {
@@ -97,12 +119,7 @@ data class Team(
         @Exclude get() = teleOpData?.calculateScore() ?: 0
 
     val endGameScore: Int
-        @Exclude get() = when (endGame) {
-            EndGame.ROBOT_LATCHED -> 50
-            EndGame.PARTIALLY_PARKED -> 15
-            EndGame.COMPLETELY_PARKED -> 25
-            else -> 0
-        }
+        @Exclude get() = endGame?.calculateScore() ?: 0
 
     val score: Int
         @Exclude get() = autonomousScore + teleOpScore + endGameScore

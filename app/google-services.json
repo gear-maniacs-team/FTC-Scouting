@@ -1,42 +1,34 @@
 {
   "project_info": {
-    "project_number": "824774994590",
-    "firebase_url": "https://ftc-scouting-rover-ruckus.firebaseio.com",
-    "project_id": "ftc-scouting-rover-ruckus",
-    "storage_bucket": "ftc-scouting-rover-ruckus.appspot.com"
+    "project_number": "267665391288",
+    "firebase_url": "https://ftc-scouting-d2cf9.firebaseio.com",
+    "project_id": "ftc-scouting-d2cf9",
+    "storage_bucket": "ftc-scouting-d2cf9.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:824774994590:android:aff139b500efcb7d",
+        "mobilesdk_app_id": "1:267665391288:android:9d1a4cbc522c3325e47e4d",
         "android_client_info": {
           "package_name": "net.gearmaniacs.ftcscouting"
         }
       },
       "oauth_client": [
         {
-          "client_id": "824774994590-slphg75he3ibklos5nn17qfqbb7n1nve.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "net.gearmaniacs.ftcscouting",
-            "certificate_hash": "1fe46d5fdc6c08d6075356efe7d54334a8e330f8"
-          }
-        },
-        {
-          "client_id": "824774994590-pbnrt6ccaltd5epl126t8l3bl8omms86.apps.googleusercontent.com",
+          "client_id": "267665391288-hedsccd61atd8miijf4sab8m3jtkomot.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA3egNCurC99zykinx1iQFokZ-dTSjKpkA"
+          "current_key": "AIzaSyAR4VKwLYRwiJTQ_O1oV7xEj5Vqm63Qjco"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "824774994590-pbnrt6ccaltd5epl126t8l3bl8omms86.apps.googleusercontent.com",
+              "client_id": "267665391288-hedsccd61atd8miijf4sab8m3jtkomot.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
