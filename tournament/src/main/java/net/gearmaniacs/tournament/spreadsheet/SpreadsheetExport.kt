@@ -1,9 +1,9 @@
 package net.gearmaniacs.tournament.spreadsheet
 
 import net.gearmaniacs.core.model.AutonomousData
-import net.gearmaniacs.core.model.EndGame
+import net.gearmaniacs.core.model.EndGameData
 import net.gearmaniacs.core.model.Match
-import net.gearmaniacs.core.model.PreferredLocation
+import net.gearmaniacs.core.model.PreferredZone
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeamPower
 import net.gearmaniacs.core.model.TeleOpData
@@ -11,7 +11,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import java.io.File
 import java.io.IOException
 
-class ExportToSpreadsheet {
+class SpreadsheetExport {
 
     private val workBook = HSSFWorkbook()
 
@@ -20,11 +20,13 @@ class ExportToSpreadsheet {
 
         val headerRow = sheet.createRow(0)
 
+        // Create the titles for each column
         SpreadsheetFields.TEAM_COLUMNS.forEachIndexed { index, field ->
             val cell = headerRow.createCell(index)
             cell.setCellValue(field)
         }
 
+        // Write the data for each team
         teamList.forEachIndexed { index, team ->
             val row = sheet.createRow(index + 1)
             var column = 0
@@ -32,33 +34,32 @@ class ExportToSpreadsheet {
             row.createCell(column++).setCellValue(team.id.toDouble())
             row.createCell(column++).setCellValue(team.name)
 
+            val preferredZone = when (team.preferredZone) {
+                PreferredZone.LOADING -> "Loading"
+                PreferredZone.BUILDING -> "Building"
+                else -> "None"
+            }
+            row.createCell(column++).setCellValue(preferredZone)
+            row.createCell(column++).setCellValue(team.notes.orEmpty())
+
+            // TeleOp
             val teleOp = team.teleOpData ?: TeleOpData()
-            row.createCell(column++).setCellValue(teleOp.depotMinerals.toDouble())
-            row.createCell(column++).setCellValue(teleOp.landerMinerals.toDouble())
-
-            val endGameString = when (team.endGame) {
-                EndGame.ROBOT_LATCHED -> "Robot Latched"
-                EndGame.PARTIALLY_PARKED -> "Partially Parked"
-                EndGame.COMPLETELY_PARKED -> "Completely Parked"
-                else -> "None"
-            }
-            row.createCell(column++).setCellValue(endGameString)
-
-            val preferredLocation = when (team.preferredLocation) {
-                PreferredLocation.CRATER -> "Crater"
-                PreferredLocation.DEPOT -> "Depot"
-                else -> "None"
-            }
-            row.createCell(column++).setCellValue(preferredLocation)
-            row.createCell(column++).setCellValue(team.comments.orEmpty())
+            row.createCell(column++).setCellValue(teleOp.deliveredStones.toDouble())
+            row.createCell(column++).setCellValue(teleOp.placedStones.toDouble())
 
             // Autonomous
             val autonomous = team.autonomousData ?: AutonomousData()
-            row.createCell(column++).setCellValue(autonomous.latching)
-            row.createCell(column++).setCellValue(autonomous.sampling)
-            row.createCell(column++).setCellValue(autonomous.marker)
-            row.createCell(column++).setCellValue(autonomous.parking)
-            row.createCell(column).setCellValue(autonomous.minerals.toDouble())
+            row.createCell(column++).setCellValue(autonomous.repositionFoundation)
+            row.createCell(column++).setCellValue(autonomous.navigated)
+            row.createCell(column++).setCellValue(autonomous.deliveredSkystones.toDouble())
+            row.createCell(column++).setCellValue(autonomous.deliveredStones.toDouble())
+            row.createCell(column++).setCellValue(autonomous.placedStones.toDouble())
+
+            // End Game
+            val endGame = team.endGameData ?: EndGameData()
+            row.createCell(column++).setCellValue(endGame.moveFoundation)
+            row.createCell(column++).setCellValue(endGame.parked)
+            row.createCell(column).setCellValue(endGame.capLevel.toDouble())
         }
     }
 

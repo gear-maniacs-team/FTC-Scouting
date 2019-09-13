@@ -10,7 +10,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import kotlinx.android.synthetic.main.dialog_edit_match.view.*
 import kotlinx.android.synthetic.main.dialog_edit_match_content.view.*
-import net.gearmaniacs.core.extensions.getTextOrEmpty
+import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.model.Alliance
 import net.gearmaniacs.core.model.Match
@@ -70,19 +70,19 @@ internal class MatchEditDialog : DialogFragment() {
         view.fab_edit_match_done.setOnClickListener {
             // Parse Match data
             val redAlliance = Alliance(
-                firstTeam = view.et_alliance_red_first.getTextOrEmpty().toIntOrDefault(),
-                secondTeam = view.et_alliance_red_second.getTextOrEmpty().toIntOrDefault(),
-                score = view.et_alliance_red_score.getTextOrEmpty().toIntOrDefault()
+                firstTeam = view.et_alliance_red_first.getTextString().toIntOrDefault(),
+                secondTeam = view.et_alliance_red_second.getTextString().toIntOrDefault(),
+                score = view.et_alliance_red_score.getTextString().toIntOrDefault()
             )
 
             val blueAlliance = Alliance(
-                firstTeam = view.et_alliance_blue_first.getTextOrEmpty().toIntOrDefault(),
-                secondTeam = view.et_alliance_blue_second.getTextOrEmpty().toIntOrDefault(),
-                score = view.et_alliance_blue_score.getTextOrEmpty().toIntOrDefault()
+                firstTeam = view.et_alliance_blue_first.getTextString().toIntOrDefault(),
+                secondTeam = view.et_alliance_blue_second.getTextString().toIntOrDefault(),
+                score = view.et_alliance_blue_score.getTextString().toIntOrDefault()
             )
 
             val parsedMatch = Match(
-                id = view.et_match_number.getTextOrEmpty().toIntOrDefault(),
+                id = view.et_match_number.getTextString().toIntOrDefault(),
                 redAlliance = redAlliance,
                 blueAlliance = blueAlliance
             )

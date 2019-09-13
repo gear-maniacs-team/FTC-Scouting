@@ -28,7 +28,7 @@ internal class AnalyticsAdapter : RecyclerView.Adapter<AnalyticsAdapter.Analytic
         setHasStableIds(true)
     }
 
-    fun getItem(position: Int): TeamPower = differ.currentList[position]
+    private fun getItem(position: Int): TeamPower = differ.currentList[position]
 
     fun submitList(list: List<TeamPower>) {
         highestScore = if (list.isNotEmpty()) list[0].power.toInt() else 0

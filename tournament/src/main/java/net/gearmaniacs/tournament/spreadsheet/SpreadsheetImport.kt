@@ -3,9 +3,9 @@ package net.gearmaniacs.tournament.spreadsheet
 import net.gearmaniacs.core.extensions.justTry
 import net.gearmaniacs.core.model.Alliance
 import net.gearmaniacs.core.model.AutonomousData
-import net.gearmaniacs.core.model.EndGame
+import net.gearmaniacs.core.model.EndGameData
 import net.gearmaniacs.core.model.Match
-import net.gearmaniacs.core.model.PreferredLocation
+import net.gearmaniacs.core.model.PreferredZone
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeleOpData
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
@@ -15,7 +15,7 @@ import org.apache.poi.ss.usermodel.Workbook
 import java.io.File
 import java.util.Locale
 
-class ImportFromSpreadsheet(spreadsheetFile: File) {
+class SpreadsheetImport(spreadsheetFile: File) {
 
     private val workbook = readSpreadsheet(spreadsheetFile)
 
@@ -39,52 +39,57 @@ class ImportFromSpreadsheet(spreadsheetFile: File) {
     private fun processTeam(row: Row): Team {
         var id = -1
         var name: String? = null
-        var depotMinerals = 0
-        var landerMinerals = 0
-        var endGameString: String? = null
-        var preferredLocationString: String? = null
+        var preferredZoneString: String? = null
         var notes: String? = null
 
-        var autoLatching = false
-        var autoSampling = false
-        var autoMarker = false
-        var autoParking = false
-        var autoMinerals = 0
+        var depotMinerals = 0
+        var landerMinerals = 0
+
+        var autoRepositionFoundation = false
+        var autoNavigated = false
+        var autoDeliveredSkystones = 0
+        var autoDeliveredStones = 0
+        var autoPlacedStones = 0
+
+        var endMoveFoundation = false
+        var endParked = false
+        var endCapLevel = 0
 
         row.forEachIndexed { cellIndex, cell ->
             when (cellIndex) {
                 0 -> id = cell.numericCellValue.toInt()
                 1 -> name = cell.stringCellValue
-                2 -> depotMinerals = cell.numericCellValue.toInt()
-                3 -> landerMinerals = cell.numericCellValue.toInt()
-                4 -> endGameString = cell.stringCellValue
-                5 -> preferredLocationString = cell.stringCellValue
-                6 -> notes = cell.stringCellValue
-                7 -> autoLatching = cell.booleanCellValue
-                8 -> autoSampling = cell.booleanCellValue
-                9 -> autoMarker = cell.booleanCellValue
-                10 -> autoParking = cell.booleanCellValue
-                11 -> autoMinerals = cell.numericCellValue.toInt()
+                2 -> preferredZoneString = cell.stringCellValue
+                3 -> notes = cell.stringCellValue.takeIf { it.isNotEmpty() }
+                4 -> depotMinerals = cell.numericCellValue.toInt()
+                5 -> landerMinerals = cell.numericCellValue.toInt()
+                7 -> autoRepositionFoundation = cell.booleanCellValue
+                8 -> autoNavigated = cell.booleanCellValue
+                9 -> autoDeliveredSkystones = cell.numericCellValue.toInt()
+                10 -> autoDeliveredStones = cell.numericCellValue.toInt()
+                11 -> autoPlacedStones = cell.numericCellValue.toInt()
+                12 -> endMoveFoundation = cell.booleanCellValue
+                13 -> endParked = cell.booleanCellValue
+                14 -> endCapLevel = cell.numericCellValue.toInt()
             }
         }
 
-        check(id == -1) { "Team id == -1" }
+        check(id < 0) { "Invalid Team id on row ${row.rowNum}" }
 
-        val autonomousData =
-            AutonomousData(autoLatching, autoSampling, autoMarker, autoParking, autoMinerals)
+        val autonomousData = AutonomousData(
+            autoRepositionFoundation,
+            autoNavigated,
+            autoDeliveredSkystones,
+            autoDeliveredStones,
+            autoPlacedStones
+        )
         val teleOpData = TeleOpData(depotMinerals, landerMinerals)
+        val endGameData = EndGameData(endMoveFoundation, endParked, endCapLevel)
 
-        val endGame = when (endGameString?.toLowerCase(Locale.ROOT)) {
-            "robot latched" -> EndGame.ROBOT_LATCHED
-            "partially parked" -> EndGame.PARTIALLY_PARKED
-            "completely parked" -> EndGame.COMPLETELY_PARKED
-            else -> 0
-        }
-
-        val preferredLocation = when (preferredLocationString?.toLowerCase(Locale.ROOT)) {
-            "crater" -> PreferredLocation.CRATER
-            "depot" -> PreferredLocation.DEPOT
-            else -> PreferredLocation.NONE
+        val preferredZone = when (preferredZoneString?.toLowerCase(Locale.ROOT)) {
+            "crater" -> PreferredZone.LOADING
+            "depot" -> PreferredZone.BUILDING
+            else -> PreferredZone.NONE
         }
 
         return Team(
@@ -92,8 +97,8 @@ class ImportFromSpreadsheet(spreadsheetFile: File) {
             name,
             autonomousData.takeIf { it.isNotEmpty },
             teleOpData.takeIf { it.isNotEmpty },
-            endGame,
-            preferredLocation,
+            endGameData.takeIf { it.isNotEmpty },
+            preferredZone,
             notes
         )
     }
@@ -134,7 +139,7 @@ class ImportFromSpreadsheet(spreadsheetFile: File) {
             }
         }
 
-        check(number == -1) { "Match number == -1" }
+        check(number == -1) { "Invalid Match number on row ${row.rowNum}" }
 
         return Match(
             number,

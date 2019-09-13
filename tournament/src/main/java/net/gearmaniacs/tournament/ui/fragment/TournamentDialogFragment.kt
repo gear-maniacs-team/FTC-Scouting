@@ -12,7 +12,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.dialog_new_tournament.*
 import kotlinx.android.synthetic.main.dialog_new_tournament.view.*
-import net.gearmaniacs.core.extensions.getTextOrEmpty
+import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.tournament.R
 
 class TournamentDialogFragment : RoundedBottomSheetDialogFragment() {
@@ -34,7 +34,11 @@ class TournamentDialogFragment : RoundedBottomSheetDialogFragment() {
         super.setupDialog(dialog, style)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.dialog_new_tournament, container)
     }
 
@@ -44,7 +48,7 @@ class TournamentDialogFragment : RoundedBottomSheetDialogFragment() {
         view.et_tournament_name.requestFocus()
 
         view.btn_tournament_action.setOnClickListener {
-            val name = et_tournament_name.getTextOrEmpty()
+            val name = et_tournament_name.getTextString()
             actionButtonListener?.invoke(name)
             dismiss()
         }

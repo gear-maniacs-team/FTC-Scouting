@@ -4,8 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_register.view.*
-import net.gearmaniacs.core.extensions.getTextOrEmpty
+import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.isValidEmail
+import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.model.User
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.utils.LoginCallback
@@ -22,27 +23,28 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             val etPassword = view.et_password
             val etConfirmPassword = view.et_confirm_password
 
-            val id = etId.getTextOrEmpty()
-            val name = etName.getTextOrEmpty()
-            val email = etEmail.getTextOrEmpty()
-            val password = etPassword.getTextOrEmpty()
-            val confirmPassword = etConfirmPassword.getTextOrEmpty()
+            val id = etId.getTextString().toIntOrDefault(-1)
+            val name = etName.getTextString()
+            val email = etEmail.getTextString()
+            val password = etPassword.getTextString()
+            val confirmPassword = etConfirmPassword.getTextString()
 
             etEmail.error = null
             etPassword.error = null
             etConfirmPassword.error = null
 
-            if (id.isEmpty())
-                etId.error = getString(R.string.error_empty_team_number)
-            else if (id.toInt() < 1)
+            if (id < 1)
                 etId.error = getString(R.string.error_invalid_team_number)
 
             if (name.isEmpty())
                 etName.error = getString(R.string.error_invalid_team_number)
+
             if (!email.isValidEmail())
                 etEmail.error = getString(R.string.error_invalid_email)
+
             if (password.length < 6)
                 etPassword.error = getString(R.string.error_invalid_password)
+
             if (confirmPassword != password)
                 etConfirmPassword.error = getString(R.string.error_incorrect_confirm_password)
 
@@ -51,7 +53,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                 etEmail.error == null &&
                 etPassword.error == null &&
                 etConfirmPassword.error == null
-            ) loginCallback?.onRegister(User(id.toInt(), name), email, password)
+            ) loginCallback?.onRegister(User(id, name), email, password)
         }
 
         view.btn_already_own_account.setOnClickListener {

@@ -14,8 +14,8 @@ import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeamPower
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.repository.TournamentRepository
-import net.gearmaniacs.tournament.spreadsheet.ExportToSpreadsheet
-import net.gearmaniacs.tournament.spreadsheet.ImportFromSpreadsheet
+import net.gearmaniacs.tournament.spreadsheet.SpreadsheetExport
+import net.gearmaniacs.tournament.spreadsheet.SpreadsheetImport
 import java.io.File
 import java.util.Locale
 
@@ -159,7 +159,7 @@ class TournamentViewModel : ViewModel() {
             val powerRankings = repository.generateOprList()
 
             try {
-                val export = ExportToSpreadsheet()
+                val export = SpreadsheetExport()
                 export.export(teams, matches, powerRankings)
 
                 val name = nameData.value
@@ -185,7 +185,7 @@ class TournamentViewModel : ViewModel() {
         val currentMatches = repository.matchesData.value
 
         viewModelScope.launch(Dispatchers.IO) {
-            val import = ImportFromSpreadsheet(file)
+            val import = SpreadsheetImport(file)
             val importTeams = import.getTeams()
             val importMatches = import.getMatches()
 

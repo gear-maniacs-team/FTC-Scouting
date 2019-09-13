@@ -5,23 +5,26 @@ internal object SpreadsheetFields {
     const val MATCHES_SHEET = "Matches"
     const val OPR_SHEET = "OPR"
 
-    val TEAM_COLUMNS = listOf(
+    val TEAM_COLUMNS = arrayOf(
         "Number",
         "Name",
-        "Depot Minerals",
-        "Lander Minerals",
-        "Endgame",
-        "Preferred Location",
+        "Preferred Zone",
         "Notes",
-        "Auto - Latching",
-        "Auto - Sampling",
-        "Auto - Marker",
-        "Auto - Parking",
-        "Auto - Minerals"
+        "Delivered Stones",
+        "Placed Stones",
+        "Auto - Repositioned",
+        "Auto - Navigated",
+        "Auto - Delivered Skystones",
+        "Auto - Delivered Stones",
+        "Auto - PlacedStones",
+        "End - Foundation Moved",
+        "End - Parked",
+        "End - Cap Level",
+        "Predicted Score"
     )
 
     val MATCHES_COLUMNS =
-        listOf("Number", "Red 1", "Red 2", "Red Score", "Blue 1", "Blue 2", "Blue Score")
+        arrayOf("Number", "Red 1", "Red 2", "Red Score", "Blue 1", "Blue 2", "Blue Score")
 
-    val OPR_COLUMNS = listOf("Number", "Name", "Points")
+    val OPR_COLUMNS = arrayOf("Number", "Name", "Points")
 }

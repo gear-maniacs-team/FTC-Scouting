@@ -22,5 +22,5 @@ fun String.toIntOrDefault(default: Int = 0): Int = try {
     default
 }
 
-fun EditText.getTextOrEmpty(): String =
+fun EditText.getTextString(): String =
     text?.toString() ?: ""

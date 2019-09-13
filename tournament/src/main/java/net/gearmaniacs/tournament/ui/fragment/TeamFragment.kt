@@ -14,7 +14,8 @@ import net.gearmaniacs.tournament.ui.adapter.TeamAdapter
 import net.gearmaniacs.tournament.utils.RecyclerViewItemListener
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
-internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view), RecyclerViewItemListener {
+internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view),
+    RecyclerViewItemListener {
 
     companion object {
         const val TAG = "TeamFragment"

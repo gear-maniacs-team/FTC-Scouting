@@ -5,11 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_account.*
-import net.gearmaniacs.core.extensions.getTextOrEmpty
+import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.core.firebase.DatabasePaths
@@ -42,10 +41,10 @@ class AccountActivity : AppCompatActivity() {
         et_team_name.setText(user.teamName)
 
         btn_update_account.setOnClickListener {
-            val number = et_team_number.getTextOrEmpty().toIntOrDefault(-1)
-            val teamName = et_team_name.getTextOrEmpty()
+            val number = et_team_number.getTextString().toIntOrDefault(-1)
+            val teamName = et_team_name.getTextString()
 
-            if (number == -1) {
+            if (number < 0) {
                 et_team_number.error = getString(R.string.error_invalid_team_number)
                 return@setOnClickListener
             }
@@ -55,33 +54,19 @@ class AccountActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val currentUserRef = FirebaseDatabase.getInstance()
-                .reference
+            FirebaseDatabase.getInstance()
+                .getReference(DatabasePaths.KEY_SKYSTONE)
                 .child(DatabasePaths.KEY_USERS)
                 .child(FirebaseAuth.getInstance().currentUser!!.uid)
-
-            val listener = object : OnSuccessListener<Void> {
-                var count = 0
-
-                override fun onSuccess(void: Void?) {
-                    count++
-
-                    if (count == 2) {
+                .child(DatabasePaths.KEY_TEAM_INFO)
+                .setValue(user)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
                         toast(R.string.team_updated)
-                        finish()
+                    } else {
+                        toast(R.string.team_update_error)
                     }
                 }
-            }
-
-            currentUserRef
-                .child(User::id.name)
-                .setValue(number)
-                .addOnSuccessListener(listener)
-
-            currentUserRef
-                .child(User::teamName.name)
-                .setValue(teamName)
-                .addOnSuccessListener(listener)
         }
     }
 

@@ -10,8 +10,7 @@
     <string name="action_no_account">You don\'t have a team account?</string>
     <string name="action_already_own_account">I already own an account</string>
     <string name="action_sign_out">Sign Out</string>
-    <string name="error_empty_team_number">Invalid Team Number</string>
-    <string name="error_invalid_team_number">Team Number can\'t be empty</string>
+    <string name="error_invalid_team_number">Team Number is invalid</string>
     <string name="error_invalid_team_name">Team Name can\'t be empty</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
@@ -21,5 +20,6 @@
 
     <string name="title_team_info">Team Info</string>
     <string name="team_updated">Team Info Updated</string>
+    <string name="team_update_error">Team Info could not be updated</string>
 
 </resources>

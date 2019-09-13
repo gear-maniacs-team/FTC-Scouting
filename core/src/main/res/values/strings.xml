@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- More General Strings -->
-    <string name="action_add">Add</string>
     <string name="action_add_teams">Add Teams</string>
     <string name="action_create">Create</string>
     <string name="action_update">Update</string>

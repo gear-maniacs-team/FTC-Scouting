@@ -18,7 +18,7 @@ class MainRepository(coroutineScope: CoroutineScope) {
 
     private val currentUserReference by lazy {
         FirebaseDatabase.getInstance()
-            .reference
+            .getReference(DatabasePaths.KEY_SKYSTONE)
             .child(DatabasePaths.KEY_USERS)
             .child(FirebaseAuth.getInstance().currentUser!!.uid)
     }
@@ -67,7 +67,9 @@ class MainRepository(coroutineScope: CoroutineScope) {
     var userCallback: FirebaseDatabaseRepositoryCallback<User>? = null
 
     fun addListeners() {
-        currentUserReference.addValueEventListener(userListener)
+        currentUserReference
+            .child(DatabasePaths.KEY_TEAM_INFO)
+            .addValueEventListener(userListener)
 
         currentUserReference
             .child(DatabasePaths.KEY_TOURNAMENTS)
@@ -75,7 +77,9 @@ class MainRepository(coroutineScope: CoroutineScope) {
     }
 
     fun removeListeners() {
-        currentUserReference.removeEventListener(userListener)
+        currentUserReference
+            .child(DatabasePaths.KEY_TEAM_INFO)
+            .removeEventListener(userListener)
 
         currentUserReference
             .child(DatabasePaths.KEY_TOURNAMENTS)

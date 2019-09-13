@@ -10,11 +10,13 @@
         <item name="android:windowNoTitle">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorBackgroundDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorSecondary">@color/colorAccent</item>
+        <item name="android:windowBackground">?attr/colorSurface</item>
 
         <item name="android:windowFullscreen">false</item>
         <item name="android:windowIsFloating">false</item>
 
-        <item name="android:windowBackground">@color/colorBackground</item>
         <item name="android:windowEnterAnimation">@anim/slide_up</item>
         <item name="android:windowExitAnimation">@anim/slide_down</item>
     </style>

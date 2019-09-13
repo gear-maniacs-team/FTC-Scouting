@@ -4,19 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
 import androidx.core.view.doOnPreDraw
-import androidx.core.view.forEachIndexed
-import androidx.core.view.get
+import androidx.core.view.isInvisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.dialog_edit_team.view.*
+import kotlinx.android.synthetic.main.dialog_edit_team_content.*
 import kotlinx.android.synthetic.main.dialog_edit_team_content.view.*
-import net.gearmaniacs.core.extensions.getTextOrEmpty
+import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.model.AutonomousData
+import net.gearmaniacs.core.model.EndGameData
+import net.gearmaniacs.core.model.PreferredZone
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeleOpData
 import net.gearmaniacs.tournament.R
@@ -72,46 +72,48 @@ internal class TeamEditDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val team = arguments?.getParcelable<Team>(ARG_TEAM)
 
+        view.cb_cap_placed.setOnCheckedChangeListener { _, isChecked ->
+            layout_cap_level.isInvisible = !isChecked
+        }
+
         view.fab_edit_team_done.setOnClickListener {
             // Parse Team data
             val autonomousData = AutonomousData(
-                latching = view.cb_latching.isChecked,
-                sampling = view.cb_sampling.isChecked,
-                marker = view.cb_marker.isChecked,
-                parking = view.cb_parking.isChecked,
-                minerals = view.et_minerals_collected.getTextOrEmpty().toIntOrDefault(0)
+                view.cb_reposition_foundation.isChecked,
+                view.cb_navigated.isChecked,
+                view.et_auto_delivered_skystones.getTextString().toIntOrDefault(),
+                view.et_auto_delivered_stones.getTextString().toIntOrDefault(),
+                view.et_auto_placed_stones.getTextString().toIntOrDefault()
             )
 
             val teleOpData = TeleOpData(
-                depotMinerals = view.et_minerals_depot.getTextOrEmpty().toIntOrDefault(0),
-                landerMinerals = view.et_minerals_lander.getTextOrEmpty().toIntOrDefault(0)
+                view.et_delivered_stones.getTextString().toIntOrDefault(),
+                view.et_placed_stones.getTextString().toIntOrDefault()
             )
 
-            var endGame = 0
-            view.rg_end_game.forEachIndexed { index, child ->
-                if (child is RadioButton && child.isChecked) {
-                    endGame = index
-                    return@forEachIndexed
-                }
+            val capLevel =
+                if (view.cb_cap_placed.isChecked) view.et_cap_level.getTextString().toIntOrDefault() else 0
+            val endGameData = EndGameData(
+                view.cb_move_foundation.isChecked,
+                view.cb_parking.isChecked,
+                capLevel
+            )
+
+            val preferredZone = when {
+                rb_zone_building.isChecked -> PreferredZone.BUILDING
+                rb_zone_loading.isChecked -> PreferredZone.LOADING
+                else -> PreferredZone.NONE
             }
 
-            var preferredLocation = 0
-            view.toggle_preferred_location.forEachIndexed { index, child: View? ->
-                if (child is MaterialButton && child.isChecked) {
-                    preferredLocation = index
-                    return@forEachIndexed
-                }
-            }
-
-            val notesText = view.et_notes.getTextOrEmpty()
+            val notesText = view.et_notes.getTextString()
             val parsedTeam = Team(
-                id = view.et_team_number.getTextOrEmpty().toIntOrDefault(0),
-                name = view.et_team_name.getTextOrEmpty(),
-                autonomousData = if (autonomousData.isNotEmpty) autonomousData else null,
-                teleOpData = if (teleOpData.isNotEmpty) teleOpData else null,
-                endGame = endGame,
-                preferredLocation = preferredLocation,
-                comments = if (notesText.isNotBlank()) notesText else null
+                id = view.et_team_number.getTextString().toIntOrDefault(),
+                name = view.et_team_name.getTextString(),
+                autonomousData = autonomousData.takeIf { it.isNotEmpty },
+                teleOpData = teleOpData.takeIf { it.isNotEmpty },
+                endGameData = endGameData.takeIf { it.isNotEmpty },
+                preferredZone = preferredZone,
+                notes = notesText.takeIf { it.isNotBlank() }
             )
 
             parsedTeam.key = team?.key
@@ -127,30 +129,34 @@ internal class TeamEditDialog : DialogFragment() {
             et_team_name.setText(team.name)
 
             team.autonomousData?.let {
-                cb_latching.isChecked = it.latching
-                cb_sampling.isChecked = it.sampling
-                cb_marker.isChecked = it.marker
-                cb_parking.isChecked = it.parking
-                et_minerals_collected.setText(it.minerals.toString())
+                cb_reposition_foundation.isChecked = it.repositionFoundation
+                cb_navigated.isChecked = it.navigated
+                et_auto_delivered_skystones.setText(it.deliveredSkystones.toString())
+                et_auto_delivered_stones.setText(it.deliveredStones.toString())
+                et_auto_placed_stones.setText(it.placedStones.toString())
             }
 
             team.teleOpData?.let {
-                et_minerals_depot.setText(it.depotMinerals.toString())
-                et_minerals_lander.setText(it.landerMinerals.toString())
+                et_delivered_stones.setText(it.deliveredStones.toString())
+                et_placed_stones.setText(it.placedStones.toString())
             }
 
-            if (team.endGame != 0) {
-                val radioEndGame = rg_end_game[team.endGame] as RadioButton?
-                radioEndGame?.isChecked = true
+            team.endGameData?.let {
+                cb_move_foundation.isChecked = it.moveFoundation
+                cb_parking.isChecked = it.parked
+
+                if (it.capLevel > 0) {
+                    cb_cap_placed.isChecked = true
+                    et_cap_level.setText(it.capLevel.toString())
+                }
             }
 
-            if (team.preferredLocation != 0) {
-                val radioLocation =
-                    toggle_preferred_location[team.preferredLocation] as MaterialButton?
-                radioLocation?.isChecked = true
+            when (team.preferredZone) {
+                PreferredZone.BUILDING -> rb_zone_building.isChecked = true
+                PreferredZone.LOADING -> rb_zone_loading.isChecked = true
             }
 
-            et_notes.setText(team.comments)
+            et_notes.setText(team.notes)
         }
     }
 }

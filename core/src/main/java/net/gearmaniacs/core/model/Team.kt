@@ -7,18 +7,19 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class AutonomousData(
     val repositionFoundation: Boolean,
+    val navigated: Boolean,
     val deliveredSkystones: Int,
     val deliveredStones: Int,
-    val placedStones: Int,
-    val parked: Boolean
+    val placedStones: Int
 ) : Parcelable {
 
-    constructor() : this(false, 0, 0, 0, false)
+    @Suppress("unused") // Needed for Firebase
+    constructor() : this(false, false, 0, 0, 0)
 
     val isEmpty: Boolean
         @Exclude
         get() = !repositionFoundation && deliveredSkystones == 0 && deliveredStones == 0
-                && placedStones == 0 && !parked
+                && placedStones == 0 && !navigated
 
     val isNotEmpty: Boolean
         @Exclude
@@ -36,7 +37,7 @@ data class AutonomousData(
 
         score += deliveredStones * 2
         score += placedStones * 4
-        if (parked) score += 5
+        if (navigated) score += 5
 
         return score
     }
@@ -48,6 +49,7 @@ data class TeleOpData(
     val placedStones: Int
 ) : Parcelable {
 
+    @Suppress("unused") // Needed for Firebase
     constructor() : this(0, 0)
 
     val isEmpty: Boolean
@@ -58,23 +60,22 @@ data class TeleOpData(
         @Exclude
         get() = !isEmpty
 
-    fun calculateScore(): Int {
-        return deliveredStones + placedStones
-    }
+    fun calculateScore(): Int = deliveredStones + placedStones
 }
 
 @Parcelize
-data class EndGame(
-    val capPlaced: Boolean,
+data class EndGameData(
     val moveFoundation: Boolean,
-    val parked: Boolean
+    val parked: Boolean,
+    val capLevel: Int
 ) : Parcelable {
 
-    constructor() : this(false, false, false)
+    @Suppress("unused") // Needed for Firebase
+    constructor() : this(false, false, 0)
 
     val isEmpty: Boolean
         @Exclude
-        get() = !capPlaced && !moveFoundation && !parked
+        get() = !moveFoundation && !parked && capLevel == 0
 
     val isNotEmpty: Boolean
         @Exclude
@@ -83,7 +84,8 @@ data class EndGame(
     fun calculateScore(): Int {
         var score = 0
 
-        if (capPlaced) score += 5
+        // TODO: Score
+        //if (capPlaced) score += 5
         if (moveFoundation) score += 15
         if (parked) score += 5
 
@@ -91,7 +93,7 @@ data class EndGame(
     }
 }
 
-object PreferredLocation {
+object PreferredZone {
     const val NONE = 0
     const val BUILDING = 1
     const val LOADING = 2
@@ -103,9 +105,9 @@ data class Team(
     val name: String? = null,
     val autonomousData: AutonomousData? = null,
     val teleOpData: TeleOpData? = null,
-    val endGame: EndGame? = null,
-    val preferredLocation: Int = PreferredLocation.NONE,
-    val comments: String? = null
+    val endGameData: EndGameData? = null,
+    val preferredZone: Int = PreferredZone.NONE,
+    val notes: String? = null
 ) : DatabaseClass<Team>(), Parcelable {
 
     constructor() : this(0)
@@ -119,7 +121,7 @@ data class Team(
         @Exclude get() = teleOpData?.calculateScore() ?: 0
 
     val endGameScore: Int
-        @Exclude get() = endGame?.calculateScore() ?: 0
+        @Exclude get() = endGameData?.calculateScore() ?: 0
 
     val score: Int
         @Exclude get() = autonomousScore + teleOpScore + endGameScore

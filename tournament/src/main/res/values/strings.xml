@@ -2,7 +2,6 @@
 <resources>
     <!-- Strings related to the tournament -->
     <string name="action_delete_tournament">Delete tournament</string>
-    <string name="action_export_excel">Export to Excel</string>
     <string name="delete_tournament">Delete this tournament?</string>
     <string name="delete_tournament_desc">If deleted, the tournament will also be removed from all other devices!</string>
     <string name="title_tournaments">Tournaments</string>
@@ -10,7 +9,6 @@
     <string name="title_teams">Teams</string>
     <string name="title_matches">Matches</string>
     <string name="title_analytics">Analytics</string>
-    <string name="export_finished">Finished Exporting Tournament</string>
 
     <string name="empty_tab_info">Here you will be able to see the matches in which you play</string>
     <string name="empty_tab_teams">You can add each team manually or add them from the matches</string>
@@ -18,11 +16,11 @@
     <string name="empty_tab_analytics">Ranking could not be computed</string>
 
     <!-- Strings related to the team -->
-    <string name="team_preferred_depot">Depot</string>
-    <string name="team_preferred_crater">Crater</string>
+    <string name="team_preferred_building">Building</string>
+    <string name="team_preferred_loading">Loading</string>
     <string name="team_id_name">#%d - %s</string>
     <string name="team_predicted_score">Predicted Score: %d</string>
-    <string name="team_description"><b>Autonomous Score:</b> %d\n<b>TeleOp Score:</b> %d\n<b>End Game Score:</b> %d\n<b>Preferred Location: %s</b>\n<b>Notes:</b> %s</string>
+    <string name="team_description"><b>Autonomous Score:</b> %d\n<b>TeleOp Score:</b> %d\n<b>End Game Score:</b> %d\n<b>Preferred Zone: %s</b>\n<b>Notes:</b> %s</string>
     <string name="team_notes">Notes</string>
     <string name="delete_team">Delete this team?</string>
     <string name="delete_team_desc">If deleted, the team will also be removed from all other devices!</string>
@@ -31,17 +29,16 @@
     <string name="period_end_game">End Game</string>
     <string name="prompt_team_number">Team Number</string>
     <string name="prompt_team_name">Team Name</string>
-    <string name="prompt_minerals_collected">Minerals Collected</string>
-    <string name="prompt_minerals_depot">Minerals in Depot</string>
-    <string name="prompt_minerals_lander">Minerals in Lander</string>
-    <string name="latching">Latching</string>
-    <string name="sampling">Sampling</string>
-    <string name="marker_claimed">Marker Claimed</string>
-    <string name="parking">Parking</string>
-    <string name="robot_latched">Robot Latched</string>
-    <string name="partially_parked">Partially Parked</string>
-    <string name="completely_parked">Completely Parked</string>
-    <string name="preferred_location">Preferred Location:</string>
+    <string name="prompt_reposition_foundation">Reposition Foundation</string>
+    <string name="prompt_navigation">Navigation</string>
+    <string name="prompt_delivered_skystones">Delivered Skystones</string>
+    <string name="prompt_delivered_stones">Delivered Stones</string>
+    <string name="prompt_placed_stones">Placed Stones</string>
+    <string name="prompt_parking">Parking</string>
+    <string name="prompt_move_foundation">Move Foundation</string>
+    <string name="prompt_cap_placed">Cap Placed</string>
+    <string name="prompt_cap_level">Cap Level</string>
+    <string name="preferred_zone">Preferred Zone:</string>
 
     <!-- Strings related to the match -->
     <string name="delete_match">Delete this match?</string>
@@ -70,8 +67,7 @@
     <string name="opr_info_desc">The analytics page takes the results of the matches and uses the Offensive Power Ranking Power algorithm to rank the teams accordingly.</string>
 
     <!-- Strings related to Spreadsheet -->
-    <string name="spreadsheet_empty">No content found to export</string>
-    <string name="spreadsheet_error">Couldn\'t export data</string>
+    <string name="spreadsheet_error">Could not export data</string>
     <string name="spreadsheet_saved_successfully">File saved in sdcard/FtcScouting/%s.xls</string>
     <string name="spreadsheet_export">Export to Spreadsheet</string>
     <string name="spreadsheet_import">Import from Spreadsheet</string>

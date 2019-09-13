@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/dialog_edit_team">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_content"
@@ -68,76 +70,92 @@
             app:layout_constraintTop_toBottomOf="@+id/layout_team_number" />
 
         <CheckBox
-            android:id="@+id/cb_latching"
+            android:id="@+id/cb_reposition_foundation"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/latching"
+            android:text="@string/prompt_reposition_foundation"
             android:textSize="15sp"
-            app:layout_constraintEnd_toStartOf="@+id/cb_sampling"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toStartOf="@+id/cb_navigated"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_autonomous" />
 
         <CheckBox
-            android:id="@+id/cb_sampling"
+            android:id="@+id/cb_navigated"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/sampling"
+            android:text="@string/prompt_navigation"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/cb_latching"
+            app:layout_constraintStart_toEndOf="@+id/cb_reposition_foundation"
             app:layout_constraintTop_toBottomOf="@+id/tv_autonomous" />
-
-        <CheckBox
-            android:id="@+id/cb_marker"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/marker_claimed"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toStartOf="@+id/cb_parking"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cb_latching" />
-
-        <CheckBox
-            android:id="@+id/cb_parking"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/parking"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/cb_marker"
-            app:layout_constraintTop_toBottomOf="@+id/cb_sampling" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_minerals_collected"
+            android:id="@+id/layout_auto_delivered_skystones"
             style="@style/TextInputLayoutTheme"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/layout_auto_delivered_stones"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cb_marker">
+            app:layout_constraintTop_toBottomOf="@+id/cb_reposition_foundation">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_minerals_collected"
-                android:layout_width="wrap_content"
+                android:id="@+id/et_auto_delivered_skystones"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="9"
-                android:hint="@string/prompt_minerals_collected"
+                android:digits="012"
+                android:hint="@string/prompt_delivered_skystones"
                 android:inputType="number"
-                android:maxLength="3"
+                android:maxLength="2"
                 android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_auto_delivered_stones"
+            style="@style/TextInputLayoutTheme"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintEnd_toStartOf="@+id/layout_auto_placed_stones"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_auto_delivered_skystones">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_auto_delivered_stones"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_delivered_stones"
+                android:inputType="number"
+                android:maxLength="2"
+                android:nextFocusDown="@id/et_auto_placed_stones" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_auto_placed_stones"
+            style="@style/TextInputLayoutTheme"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/layout_auto_delivered_stones"
+            app:layout_constraintTop_toBottomOf="@+id/layout_auto_delivered_skystones">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_auto_placed_stones"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_placed_stones"
+                android:inputType="number"
+                android:maxLength="2" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/tv_teleop"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/period_teleop"
@@ -145,49 +163,47 @@
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layout_minerals_collected" />
+            app:layout_constraintTop_toBottomOf="@+id/layout_auto_delivered_stones" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_minerals_depot"
+            android:id="@+id/layout_delivered_stones"
             style="@style/TextInputLayoutTheme"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="4dp"
-            app:layout_constraintEnd_toStartOf="@+id/layout_minerals_lander"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toStartOf="@+id/layout_placed_stones"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_teleop">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_minerals_depot"
+                android:id="@+id/et_delivered_stones"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_minerals_depot"
+                android:hint="@string/prompt_delivered_stones"
                 android:inputType="number"
-                android:maxLength="3"
-                android:nextFocusDown="@id/et_minerals_lander" />
+                android:maxLength="2"
+                android:nextFocusDown="@id/et_placed_stones" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_minerals_lander"
+            android:id="@+id/layout_placed_stones"
             style="@style/TextInputLayoutTheme"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/layout_minerals_depot"
+            app:layout_constraintStart_toEndOf="@+id/layout_delivered_stones"
             app:layout_constraintTop_toBottomOf="@+id/tv_teleop">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_minerals_lander"
+                android:id="@+id/et_placed_stones"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_minerals_lander"
+                android:hint="@string/prompt_placed_stones"
                 android:inputType="number"
-                android:maxLength="3" />
+                android:maxLength="2" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -200,45 +216,64 @@
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layout_minerals_depot" />
+            app:layout_constraintTop_toBottomOf="@+id/layout_delivered_stones" />
 
-        <RadioGroup
-            android:id="@+id/rg_end_game"
-            android:layout_width="match_parent"
+        <CheckBox
+            android:id="@+id/cb_parking"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/prompt_parking"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toStartOf="@+id/cb_move_foundation"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_endgame">
+            app:layout_constraintTop_toBottomOf="@+id/tv_endgame" />
 
-            <RadioButton
-                android:id="@+id/rb_parking_none"
+        <CheckBox
+            android:id="@+id/cb_move_foundation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/prompt_move_foundation"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/cb_parking"
+            app:layout_constraintTop_toBottomOf="@+id/tv_endgame" />
+
+        <CheckBox
+            android:id="@+id/cb_cap_placed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/prompt_cap_placed"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@+id/layout_cap_level"
+            app:layout_constraintEnd_toStartOf="@+id/layout_cap_level"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cb_parking" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_cap_level"
+            style="@style/TextInputLayoutTheme"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/cb_cap_placed"
+            app:layout_constraintTop_toBottomOf="@+id/cb_parking"
+            tools:visibility="visible">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_cap_level"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/none"
-                android:textSize="15sp" />
-
-            <RadioButton
-                android:id="@+id/rb_parking_latched"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/robot_latched"
-                android:textSize="15sp" />
-
-            <RadioButton
-                android:id="@+id/rb_parking_partial"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/partially_parked"
-                android:textSize="15sp" />
-
-            <RadioButton
-                android:id="@+id/rb_parking_complete"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/completely_parked"
-                android:textSize="15sp" />
-
-        </RadioGroup>
+                android:hint="@string/prompt_cap_level"
+                android:inputType="number"
+                android:maxLength="2"
+                android:text="1" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/tv_other"
@@ -250,28 +285,28 @@
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rg_end_game" />
+            app:layout_constraintTop_toBottomOf="@+id/cb_cap_placed" />
 
         <TextView
-            android:id="@+id/tv_preferred_location"
+            android:id="@+id/tv_preferred_zone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/preferred_location"
+            android:text="@string/preferred_zone"
             android:textColor="@color/colorAccent"
             app:layout_constraintTop_toBottomOf="@+id/tv_other" />
 
         <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/toggle_preferred_location"
+            android:id="@+id/toggle_preferred_zone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            app:checkedButton="@id/rb_location_none"
-            app:layout_constraintTop_toBottomOf="@+id/tv_preferred_location"
+            app:checkedButton="@id/rb_zone_none"
+            app:layout_constraintTop_toBottomOf="@+id/tv_preferred_zone"
             app:singleSelection="true">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/rb_location_none"
+                android:id="@+id/rb_zone_none"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -279,31 +314,31 @@
                 android:textSize="16sp" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/rb_location_depot"
+                android:id="@+id/rb_zone_building"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/team_preferred_depot"
+                android:text="@string/team_preferred_building"
                 android:textSize="16sp" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/rb_location_crater"
+                android:id="@+id/rb_zone_loading"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/team_preferred_crater"
+                android:text="@string/team_preferred_loading"
                 android:textSize="16sp" />
 
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_comments"
+            android:id="@+id/layout_notes"
             style="@style/TextInputLayoutTheme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toggle_preferred_location">
+            app:layout_constraintTop_toBottomOf="@+id/toggle_preferred_zone">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_notes"

@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.gearmaniacs.core.architecture.MutexLiveData
 import net.gearmaniacs.core.architecture.NonNullLiveData
 import net.gearmaniacs.core.firebase.DatabasePaths
@@ -26,7 +27,7 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
 
     private val currentUserReference by lazy {
         FirebaseDatabase.getInstance()
-            .reference
+            .getReference(DatabasePaths.KEY_SKYSTONE)
             .child(DatabasePaths.KEY_USERS)
             .child(FirebaseAuth.getInstance().currentUser!!.uid)
     }
@@ -116,15 +117,16 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
             return
         }
 
-        teamSearchJob = coroutineScope.launch(Dispatchers.Default) {
-            val pattern = "(?i).*($query).*".toPattern()
+        teamSearchJob = coroutineScope.launch(Dispatchers.Main.immediate) {
+            val filteredList = withContext(Dispatchers.Default) {
+                val pattern = "(?i).*($query).*".toPattern()
 
-            val filteredList = teamList
-                .filter { pattern.matcher(it.name.orEmpty()).matches() }
-
-            launch(Dispatchers.Main) {
-                filteredTeamsData.value = filteredList
+                teamList.filter {
+                    pattern.matcher(it.name.orEmpty()).matches()
+                }
             }
+
+            filteredTeamsData.value = filteredList
         }
     }
 

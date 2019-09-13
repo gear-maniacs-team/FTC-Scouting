@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import net.gearmaniacs.core.model.PreferredLocation
+import net.gearmaniacs.core.model.PreferredZone
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.view.ExpandableLayout
 import net.gearmaniacs.tournament.R
@@ -21,11 +21,13 @@ internal class TeamAdapter(
     companion object {
         private const val EXPAND_ANIMATION_DURATION = 280L
 
-        private val DIFF_CALLBACK: DiffUtil.ItemCallback<Team> = object : DiffUtil.ItemCallback<Team>() {
-            override fun areItemsTheSame(oldTeam: Team, newTeam: Team) = oldTeam.key == newTeam.key
+        private val DIFF_CALLBACK: DiffUtil.ItemCallback<Team> =
+            object : DiffUtil.ItemCallback<Team>() {
+                override fun areItemsTheSame(oldTeam: Team, newTeam: Team) =
+                    oldTeam.key == newTeam.key
 
-            override fun areContentsTheSame(oldTeam: Team, newTeam: Team) = oldTeam == newTeam
-        }
+                override fun areContentsTheSame(oldTeam: Team, newTeam: Team) = oldTeam == newTeam
+            }
     }
 
     private val differ = AsyncListDiffer(this, DIFF_CALLBACK)
@@ -46,8 +48,10 @@ internal class TeamAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TeamViewHolder {
         val view = ExpandableLayout(parent.context).apply {
-            layoutParams =
-                FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+            layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT
+            )
         }
         val holder = TeamViewHolder(view)
 
@@ -95,14 +99,14 @@ internal class TeamAdapter(
             tvName.text = context.getString(R.string.team_id_name, team.id, team.name.orEmpty())
             tvScore.text = context.getString(R.string.team_predicted_score, team.score)
 
-            val preferredLocation = when (team.preferredLocation) {
-                PreferredLocation.DEPOT -> R.string.team_preferred_depot
-                PreferredLocation.CRATER -> R.string.team_preferred_crater
+            val preferredLocation = when (team.preferredZone) {
+                PreferredZone.BUILDING -> R.string.team_preferred_building
+                PreferredZone.LOADING -> R.string.team_preferred_loading
                 else -> R.string.none
             }
             val description = context.getString(
                 R.string.team_description, team.autonomousScore, team.teleOpScore,
-                team.endGameScore, context.getString(preferredLocation), team.comments.orEmpty()
+                team.endGameScore, context.getString(preferredLocation), team.notes.orEmpty()
             )
             tvDescription.text = description
         }

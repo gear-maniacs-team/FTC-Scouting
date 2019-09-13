@@ -6,14 +6,15 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_login.*
-import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.core.model.User
-import net.gearmaniacs.ftcscouting.utils.LoginCallback
-import net.gearmaniacs.ftcscouting.ui.fragment.LoginFragment
-import net.gearmaniacs.ftcscouting.ui.fragment.RegisterFragment
 import net.gearmaniacs.core.extensions.lazyFast
 import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.extensions.startActivity
+import net.gearmaniacs.core.firebase.DatabasePaths
+import net.gearmaniacs.core.model.User
+import net.gearmaniacs.ftcscouting.R
+import net.gearmaniacs.ftcscouting.ui.fragment.LoginFragment
+import net.gearmaniacs.ftcscouting.ui.fragment.RegisterFragment
+import net.gearmaniacs.ftcscouting.utils.LoginCallback
 
 class LoginActivity : AppCompatActivity(), LoginCallback {
 
@@ -23,7 +24,7 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     }
 
     private lateinit var auth: FirebaseAuth
-    private val loginFragment by lazyFast { LoginFragment() }
+    private val loginFragment = LoginFragment()
     private val registerFragment by lazyFast { RegisterFragment() }
     private var isLoginFragmentActive = true
 
@@ -32,7 +33,7 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
         setContentView(R.layout.activity_login)
 
         auth = FirebaseAuth.getInstance()
-        pb_login.isEnabled = false
+        //pb_login.isEnabled = false
         pb_login.setColorSchemeResources(R.color.colorPrimary)
 
         if (auth.currentUser == null) {
@@ -81,9 +82,10 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
 
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
+                pb_login.isRefreshing = false
+
                 if (task.isSuccessful) {
                     Log.d(TAG, "registerWithEmail:success")
-
                     registerUser(user)
                 } else {
                     pb_login.isRefreshing = false
@@ -101,9 +103,11 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     }
 
     private fun registerUser(user: User) {
-        FirebaseDatabase.getInstance().reference
-            .child("users")
+        FirebaseDatabase.getInstance()
+            .getReference(DatabasePaths.KEY_SKYSTONE)
+            .child(DatabasePaths.KEY_USERS)
             .child(auth.currentUser!!.uid)
+            .child(DatabasePaths.KEY_TEAM_INFO)
             .setValue(user) { error, _ ->
                 if (error == null) {
                     Log.d(TAG, "registerInDatabase:success")

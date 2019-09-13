@@ -21,8 +21,9 @@ internal class MatchAdapter(
     companion object {
         private const val EXPAND_ANIMATION_DURATION = 280L
 
-        private val DIFF_CALLBACK: DiffUtil.ItemCallback<Match> = object : DiffUtil.ItemCallback<Match>() {
-            override fun areItemsTheSame(oldMatch: Match, newMatch: Match) = oldMatch.key == newMatch.key
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Match>() {
+            override fun areItemsTheSame(oldMatch: Match, newMatch: Match) =
+                oldMatch.key == newMatch.key
 
             override fun areContentsTheSame(oldMatch: Match, newMatch: Match) = oldMatch == newMatch
         }
@@ -46,8 +47,10 @@ internal class MatchAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MatchViewHolder {
         val view = ExpandableLayout(parent.context).apply {
-            layoutParams =
-                FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+            layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT
+            )
         }
         val holder = MatchViewHolder(view)
 
@@ -106,7 +109,12 @@ internal class MatchAdapter(
 
             tvMatchId.text = "#${match.id}"
             tvBasicInfo.text =
-                context.getString(R.string.match_basic_info, match.redAlliance.score, match.blueAlliance.score, winner)
+                context.getString(
+                    R.string.match_basic_info,
+                    match.redAlliance.score,
+                    match.blueAlliance.score,
+                    winner
+                )
             tvDetailedInfo.text = context.getString(
                 R.string.match_detailed_info,
                 match.redAlliance.firstTeam,
