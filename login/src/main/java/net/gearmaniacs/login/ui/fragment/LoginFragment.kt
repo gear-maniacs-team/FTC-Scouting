@@ -1,12 +1,12 @@
-package net.gearmaniacs.ftcscouting.ui.fragment
+package net.gearmaniacs.login.ui.fragment
 
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_login.view.*
 import net.gearmaniacs.core.extensions.isValidEmail
-import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.ftcscouting.utils.LoginCallback
+import net.gearmaniacs.login.R
+import net.gearmaniacs.login.utils.LoginCallback
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
 

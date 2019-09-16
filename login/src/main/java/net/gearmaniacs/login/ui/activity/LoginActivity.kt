@@ -1,5 +1,6 @@
-package net.gearmaniacs.ftcscouting.ui.activity
+package net.gearmaniacs.login.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -8,17 +9,18 @@ import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_login.*
 import net.gearmaniacs.core.extensions.lazyFast
 import net.gearmaniacs.core.extensions.longToast
-import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.model.User
-import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.ftcscouting.ui.fragment.LoginFragment
-import net.gearmaniacs.ftcscouting.ui.fragment.RegisterFragment
-import net.gearmaniacs.ftcscouting.utils.LoginCallback
+import net.gearmaniacs.login.R
+import net.gearmaniacs.login.ui.fragment.LoginFragment
+import net.gearmaniacs.login.ui.fragment.RegisterFragment
+import net.gearmaniacs.login.utils.LoginCallback
 
 class LoginActivity : AppCompatActivity(), LoginCallback {
 
     companion object {
+        private const val MAIN_ACTIVITY_PACKAGE =
+            "net.gearmaniacs.ftcscouting.ui.activity.MainActivity"
         private const val TAG = "LoginActivity"
         const val BUNDLE_IS_LOGIN_ACTIVE = "login_fragment_active"
     }
@@ -141,7 +143,10 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     }
 
     private fun startMainActivity() {
-        startActivity<MainActivity>()
+        val mainActivityClass = Class.forName(MAIN_ACTIVITY_PACKAGE)
+        val intent = Intent(this, mainActivityClass)
+
+        startActivity(intent)
         finish()
     }
 }

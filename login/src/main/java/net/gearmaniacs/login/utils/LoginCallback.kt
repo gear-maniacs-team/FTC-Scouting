@@ -1,4 +1,4 @@
-package net.gearmaniacs.ftcscouting.utils
+package net.gearmaniacs.login.utils
 
 import net.gearmaniacs.core.model.User
 

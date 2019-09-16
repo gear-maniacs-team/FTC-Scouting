@@ -1,4 +1,4 @@
-package net.gearmaniacs.ftcscouting.ui.fragment
+package net.gearmaniacs.login.ui.fragment
 
 import android.os.Bundle
 import android.view.View
@@ -8,8 +8,8 @@ import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.isValidEmail
 import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.model.User
-import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.ftcscouting.utils.LoginCallback
+import net.gearmaniacs.login.R
+import net.gearmaniacs.login.utils.LoginCallback
 
 class RegisterFragment : Fragment(R.layout.fragment_register) {
 

@@ -9,7 +9,7 @@ android {
         minSdkVersion Versions.min_sdk
         targetSdkVersion Versions.target_sdk
 
-        consumerProguardFiles 'proguard-rules-core.pro'
+        consumerProguardFiles 'core-rules.pro'
     }
 }
 
@@ -34,5 +34,6 @@ dependencies {
     api Libs.androidx_swipe_refresh_layout
 
     api Libs.firebase_core
+    api Libs.firebase_auth
     api Libs.firebase_database
 }

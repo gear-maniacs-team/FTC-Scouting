@@ -9,13 +9,10 @@ android {
         minSdkVersion Versions.min_sdk
         targetSdkVersion Versions.target_sdk
 
-        consumerProguardFiles 'tournament-rules.pro'
+        consumerProguardFiles 'login-rules.pro'
     }
 }
 
 dependencies {
     implementation project(Modules.core)
-
-    implementation Libs.material_chooser
-    implementation Libs.apache_poi
 }

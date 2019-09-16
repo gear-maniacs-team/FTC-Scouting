@@ -37,7 +37,7 @@ android {
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'app-rules.pro'
         }
     }
 }
@@ -48,6 +48,7 @@ androidExtensions {
 
 dependencies {
     implementation project(Modules.core)
+    implementation project(Modules.login)
     implementation project(Modules.tournament)
 
     implementation Libs.firebase_crashlytics

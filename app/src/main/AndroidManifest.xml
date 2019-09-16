@@ -16,14 +16,6 @@
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name=".ui.activity.LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
         <activity
             android:name=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
@@ -32,6 +24,7 @@
             android:name=".ui.activity.AboutActivity"
             android:label="@string/title_about"
             android:theme="@style/AppTheme.AboutActivity" />
+
         <activity
             android:name=".ui.activity.AccountActivity"
             android:label="@string/title_team_info"

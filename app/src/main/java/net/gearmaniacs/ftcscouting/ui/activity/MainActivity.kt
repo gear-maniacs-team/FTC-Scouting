@@ -20,6 +20,7 @@ import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.ui.adapter.TournamentAdapter
 import net.gearmaniacs.ftcscouting.viewmodel.MainViewModel
+import net.gearmaniacs.login.ui.activity.LoginActivity
 import net.gearmaniacs.tournament.ui.activity.TournamentActivity
 import net.gearmaniacs.tournament.ui.fragment.TournamentDialogFragment
 import net.gearmaniacs.tournament.utils.RecyclerViewItemListener
