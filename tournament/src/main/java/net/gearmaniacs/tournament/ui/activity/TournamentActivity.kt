@@ -127,8 +127,6 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             searchView.setIconifiedByDefault(true)
             searchView.queryHint = getString(R.string.action_search)
             searchView.setOnQueryTextListener(this)
-
-            menu.findItem(R.id.action_tournament_edit).isVisible = false
         }
 
         return super.onCreateOptionsMenu(menu)

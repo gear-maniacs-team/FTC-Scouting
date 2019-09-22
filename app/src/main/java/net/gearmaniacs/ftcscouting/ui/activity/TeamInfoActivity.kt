@@ -7,7 +7,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.android.synthetic.main.activity_account.*
+import kotlinx.android.synthetic.main.activity_team_info.*
 import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.extensions.toast
@@ -15,13 +15,13 @@ import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.model.User
 import net.gearmaniacs.ftcscouting.R
 
-class AccountActivity : AppCompatActivity() {
+class TeamInfoActivity : AppCompatActivity() {
 
     companion object {
         private const val ARG_USER = "user"
 
         fun startActivity(context: Context, user: User) {
-            val intent = Intent(context, AccountActivity::class.java)
+            val intent = Intent(context, TeamInfoActivity::class.java)
             intent.putExtra(ARG_USER, user)
             context.startActivity(intent)
         }
@@ -29,7 +29,7 @@ class AccountActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_account)
+        setContentView(R.layout.activity_team_info)
         setSupportActionBar(bottom_app_bar)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

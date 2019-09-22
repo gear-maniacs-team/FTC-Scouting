@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
         }
         R.id.action_account -> {
             viewModel.currentUser?.let {
-                AccountActivity.startActivity(this, it)
+                TeamInfoActivity.startActivity(this, it)
             }
             true
         }

@@ -10,6 +10,7 @@ import com.danielstone.materialaboutlibrary.items.MaterialAboutItemOnClickAction
 import com.danielstone.materialaboutlibrary.items.MaterialAboutTitleItem
 import com.danielstone.materialaboutlibrary.model.MaterialAboutCard
 import com.danielstone.materialaboutlibrary.model.MaterialAboutList
+import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.ftcscouting.BuildConfig
 import net.gearmaniacs.ftcscouting.R
 
@@ -81,7 +82,7 @@ class AboutActivity : MaterialAboutActivity() {
         )
         .addItem(
             MaterialAboutActionItem(
-                "Privacy Policy",
+                getString(R.string.about_privacy_policy),
                 PRIVACY_POLICY,
                 getDrawable(R.drawable.ic_about_privacy_policy),
                 OpenUrlAction(this, PRIVACY_POLICY)
@@ -89,13 +90,20 @@ class AboutActivity : MaterialAboutActivity() {
         )
         .addItem(
             MaterialAboutActionItem(
-                "App Feedback",
+                getString(R.string.about_app_feedback),
                 APP_EMAIL,
                 getDrawable(R.drawable.ic_about_email),
                 OpenEmailAction(this, APP_EMAIL, getString(R.string.app_name))
             )
         )
-        // TODO Licenses
+        .addItem(
+            MaterialAboutActionItem(
+                getString(R.string.about_licenses),
+                null,
+                getDrawable(R.drawable.ic_about_licenses),
+                MaterialAboutItemOnClickAction { startActivity<LicensesActivity>() }
+            )
+        )
         .build()
 
     private fun getTeamCard() = MaterialAboutCard.Builder()
@@ -109,7 +117,7 @@ class AboutActivity : MaterialAboutActivity() {
         )
         .addItem(
             MaterialAboutActionItem(
-                "Visit Website",
+                getString(R.string.about_visit_website),
                 GEAR_MANIACS_WEBSITE,
                 getDrawable(R.drawable.ic_about_website),
                 OpenUrlAction(this, GEAR_MANIACS_WEBSITE)
@@ -118,7 +126,7 @@ class AboutActivity : MaterialAboutActivity() {
         .build()
 
     private fun getAuthorCard() = MaterialAboutCard.Builder()
-        .title("Author")
+        .title(getString(R.string.about_author))
         .addItem(
             MaterialAboutActionItem(
                 "Filea Răzvan",
@@ -128,7 +136,7 @@ class AboutActivity : MaterialAboutActivity() {
         )
         .addItem(
             MaterialAboutActionItem(
-                "Visit Website",
+                getString(R.string.about_visit_website),
                 AUTHOR_WEBSITE,
                 getDrawable(R.drawable.ic_about_website),
                 OpenUrlAction(this, AUTHOR_WEBSITE)
@@ -136,7 +144,7 @@ class AboutActivity : MaterialAboutActivity() {
         )
         .addItem(
             MaterialAboutActionItem(
-                "Contact",
+                getString(R.string.about_contact),
                 DEVELOPER_EMAIL,
                 getDrawable(R.drawable.ic_about_email),
                 OpenEmailAction(this, DEVELOPER_EMAIL, getString(R.string.app_name))

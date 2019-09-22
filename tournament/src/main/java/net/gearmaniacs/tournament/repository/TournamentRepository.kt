@@ -8,6 +8,7 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.gearmaniacs.core.architecture.MutexLiveData
@@ -107,7 +108,7 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
 
     fun performTeamsSearch(query: String) {
         lastTeamQuery = query
-        // Cancel the last running job
+        // Cancel the last running search
         teamSearchJob?.cancel()
 
         val teamList = teamsData.value
@@ -123,9 +124,12 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
 
                 teamList.filter {
                     pattern.matcher(it.name.orEmpty()).matches()
+                            || pattern.matcher(it.id.toString()).matches()
                 }
             }
 
+            // Don't update the data if the job was canceled
+            ensureActive()
             filteredTeamsData.value = filteredList
         }
     }
@@ -199,12 +203,14 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
                 decimalSeparator = '.'
             }
 
-            PowerRanking(teams, matches).generatePowerRankings().apply {
-                // Format the power of each Team to only keep the first to decimals
-                forEach {
-                    it.power = decimalFormat.format(it.power).toFloat()
-                }
+            val rankings = PowerRanking(teams, matches).generatePowerRankings()
+
+            // Format the power of each Team to only keep the first to decimals
+            rankings.forEach {
+                it.power = decimalFormat.format(it.power).toFloat()
             }
+
+            rankings
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()

@@ -2,4 +2,12 @@
     <string name="title_team_info">Team Info</string>
     <string name="team_updated">Team Info Updated</string>
     <string name="team_update_error">Team Info could not be updated</string>
+
+    <!-- About Screen -->
+    <string name="about_privacy_policy">Privacy Policy</string>
+    <string name="about_app_feedback">App Feedback</string>
+    <string name="about_visit_website">Visit Website</string>
+    <string name="about_author">Author</string>
+    <string name="about_contact">Contact</string>
+    <string name="about_licenses">Licenses</string>
 </resources>

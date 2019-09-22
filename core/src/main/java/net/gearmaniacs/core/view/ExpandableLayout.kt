@@ -87,14 +87,27 @@ open class ExpandableLayout : FrameLayout {
     }
 
     private fun animate(from: Int, to: Int) {
-        val valuesHolder: PropertyValuesHolder = PropertyValuesHolder.ofInt("prop", from, to)
+        val alphaValues = if (from > to) {
+            floatArrayOf(1f, 0f)
+        } else {
+            floatArrayOf(0f, 1f)
+        }
 
-        val animator = ValueAnimator.ofPropertyValuesHolder(valuesHolder)
+        val heightValuesHolder = PropertyValuesHolder.ofInt("height", from, to)
+        val alphaValuesHolder = PropertyValuesHolder.ofFloat("alpha", *alphaValues)
+
+        val animator = ValueAnimator.ofPropertyValuesHolder(heightValuesHolder, alphaValuesHolder)
         animator.duration = expandDuration
         animator.addUpdateListener {
-            val value = animator.getAnimatedValue("prop") as Int? ?: 0
-            hiddenLayout.layoutParams.height = value
-            hiddenLayout.requestLayout()
+            val newHeight = animator.getAnimatedValue("height") as Int? ?: 0
+            val newAlpha = animator.getAnimatedValue("alpha") as Float? ?: 0f
+
+            with(hiddenLayout) {
+                layoutParams.height = newHeight
+                alpha = newAlpha
+                requestLayout()
+            }
+
             invalidate()
         }
         animator.start()

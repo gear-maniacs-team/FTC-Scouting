@@ -4,11 +4,6 @@ object Libs {
     const val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin_version}"
     const val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.1"
 
-    // KTX
-    const val ktx_core = "androidx.core:core-ktx:1.1.0"
-    const val ktx_fragment = "androidx.fragment:fragment-ktx:1.1.0"
-    const val ktx_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0"
-
     // AndroidX
     const val google_material = "com.google.android.material:material:1.1.0-alpha10"
     const val androidx_appcompat = "androidx.appcompat:appcompat:1.1.0"
@@ -17,6 +12,11 @@ object Libs {
     const val androidx_constraint_layout = "androidx.constraintlayout:constraintlayout:2.0.0-beta2"
     const val androidx_lifecycle = "androidx.lifecycle:lifecycle-extensions:2.1.0"
     const val androidx_swipe_refresh_layout = "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+
+    // KTX
+    const val ktx_core = "androidx.core:core-ktx:1.1.0"
+    const val ktx_fragment = "androidx.fragment:fragment-ktx:1.1.0"
+    const val ktx_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0"
 
     // Firebase
     const val firebase_core = "com.google.firebase:firebase-core:17.2.0"
@@ -27,6 +27,7 @@ object Libs {
     // Other Libraries
     const val material_about = "com.github.daniel-stoneuk:material-about-library:2.4.2"
     const val material_chooser = "net.theluckycoder.materialchooser:materialchooser:1.2.1"
+    const val licenser = "com.github.marcoscgdev:Licenser:1.0.5"
     const val apache_poi = "org.apache.poi:poi:3.17"
 
     // Tests

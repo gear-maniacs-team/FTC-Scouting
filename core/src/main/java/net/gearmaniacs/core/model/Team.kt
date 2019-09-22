@@ -84,10 +84,10 @@ data class EndGameData(
     fun calculateScore(): Int {
         var score = 0
 
-        // TODO: Score
-        //if (capPlaced) score += 5
         if (moveFoundation) score += 15
         if (parked) score += 5
+        if (capLevel > 0)
+            score += 5 + capLevel // Add 1 point per-level
 
         return score
     }
