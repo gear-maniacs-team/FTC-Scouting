@@ -92,7 +92,7 @@ class TournamentViewModel : ViewModel() {
         if (key == null)
             repository.addTeam(tournamentKey, team)
         else
-            repository.updatedTeam(tournamentKey, team)
+            repository.updateTeam(tournamentKey, team)
     }
 
     fun deleteTeam(teamKey: String) {
@@ -186,16 +186,16 @@ class TournamentViewModel : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO) {
             val import = SpreadsheetImport(file)
-            val importTeams = import.getTeams()
-            val importMatches = import.getMatches()
+            val importedTeams = import.getTeams()
+            val importedMatches = import.getMatches()
 
             repository.addTeams(
                 tournamentKey,
-                importTeams.filterNot { currentTeams.contains(it) }
+                importedTeams.filterNot { currentTeams.contains(it) }
             )
             repository.addMatches(
                 tournamentKey,
-                importMatches.filterNot { currentMatches.contains(it) }
+                importedMatches.filterNot { currentMatches.contains(it) }
             )
         }
     }

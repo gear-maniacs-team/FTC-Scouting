@@ -10,7 +10,7 @@
     <string name="title_matches">Matches</string>
     <string name="title_analytics">Analytics</string>
 
-    <string name="empty_tab_info">Here you will be able to see the matches in which you play</string>
+    <string name="empty_tab_info">The matches in which you play will appear here</string>
     <string name="empty_tab_teams">You can add each team manually or add them from the matches</string>
     <string name="empty_tab_matches">Add the matches and their results here</string>
     <string name="empty_tab_analytics">Ranking could not be computed</string>
@@ -27,8 +27,6 @@
     <string name="period_autonomous">Autonomous</string>
     <string name="period_teleop">TeleOp</string>
     <string name="period_end_game">End Game</string>
-    <string name="prompt_team_number">Team Number</string>
-    <string name="prompt_team_name">Team Name</string>
     <string name="prompt_reposition_foundation">Reposition Foundation</string>
     <string name="prompt_navigation">Navigation</string>
     <string name="prompt_delivered_skystones">Delivered Skystones</string>
@@ -40,7 +38,7 @@
     <string name="prompt_cap_level">Cap Level</string>
     <string name="preferred_zone">Preferred Zone:</string>
 
-    <!-- Strings related to the match -->
+    <!-- Strings related to matches -->
     <string name="delete_match">Delete this match?</string>
     <string name="delete_match_desc">If deleted, the match will also be removed from all other devices!</string>
     <string name="prompt_match_number">Match Number</string>

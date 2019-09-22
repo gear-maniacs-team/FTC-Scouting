@@ -11,7 +11,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import java.io.File
 import java.io.IOException
 
-class SpreadsheetExport {
+internal class SpreadsheetExport {
 
     private val workBook = HSSFWorkbook()
 
@@ -59,7 +59,10 @@ class SpreadsheetExport {
             val endGame = team.endGameData ?: EndGameData()
             row.createCell(column++).setCellValue(endGame.moveFoundation)
             row.createCell(column++).setCellValue(endGame.parked)
-            row.createCell(column).setCellValue(endGame.capLevel.toDouble())
+            row.createCell(column++).setCellValue(endGame.capLevel.toDouble())
+
+            // Predicted Score
+            row.createCell(column).setCellValue(team.score.toDouble())
         }
     }
 

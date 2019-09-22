@@ -1,8 +1,5 @@
 <resources>
-    <string name="app_name">FTC Scouting</string>
-
     <string name="title_team_info">Team Info</string>
     <string name="team_updated">Team Info Updated</string>
     <string name="team_update_error">Team Info could not be updated</string>
-
 </resources>

@@ -15,7 +15,7 @@ import org.apache.poi.ss.usermodel.Workbook
 import java.io.File
 import java.util.Locale
 
-class SpreadsheetImport(spreadsheetFile: File) {
+internal class SpreadsheetImport(spreadsheetFile: File) {
 
     private val workbook = readSpreadsheet(spreadsheetFile)
 
@@ -42,16 +42,16 @@ class SpreadsheetImport(spreadsheetFile: File) {
         var preferredZoneString: String? = null
         var notes: String? = null
 
-        var depotMinerals = 0
-        var landerMinerals = 0
+        var deliveredStones = 0
+        var placedStones = 0
 
-        var autoRepositionFoundation = false
+        var autoReposition = false
         var autoNavigated = false
         var autoDeliveredSkystones = 0
         var autoDeliveredStones = 0
         var autoPlacedStones = 0
 
-        var endMoveFoundation = false
+        var endFoundationMoved = false
         var endParked = false
         var endCapLevel = 0
 
@@ -61,30 +61,30 @@ class SpreadsheetImport(spreadsheetFile: File) {
                 1 -> name = cell.stringCellValue
                 2 -> preferredZoneString = cell.stringCellValue
                 3 -> notes = cell.stringCellValue.takeIf { it.isNotEmpty() }
-                4 -> depotMinerals = cell.numericCellValue.toInt()
-                5 -> landerMinerals = cell.numericCellValue.toInt()
-                7 -> autoRepositionFoundation = cell.booleanCellValue
-                8 -> autoNavigated = cell.booleanCellValue
-                9 -> autoDeliveredSkystones = cell.numericCellValue.toInt()
-                10 -> autoDeliveredStones = cell.numericCellValue.toInt()
-                11 -> autoPlacedStones = cell.numericCellValue.toInt()
-                12 -> endMoveFoundation = cell.booleanCellValue
-                13 -> endParked = cell.booleanCellValue
-                14 -> endCapLevel = cell.numericCellValue.toInt()
+                4 -> deliveredStones = cell.numericCellValue.toInt()
+                5 -> placedStones = cell.numericCellValue.toInt()
+                6 -> autoReposition = cell.booleanCellValue
+                7 -> autoNavigated = cell.booleanCellValue
+                8 -> autoDeliveredSkystones = cell.numericCellValue.toInt()
+                9 -> autoDeliveredStones = cell.numericCellValue.toInt()
+                10 -> autoPlacedStones = cell.numericCellValue.toInt()
+                11 -> endFoundationMoved = cell.booleanCellValue
+                12 -> endParked = cell.booleanCellValue
+                13 -> endCapLevel = cell.numericCellValue.toInt()
             }
         }
 
-        check(id < 0) { "Invalid Team id on row ${row.rowNum}" }
+        check(id > 0) { "Invalid Team id on row ${row.rowNum}" }
 
         val autonomousData = AutonomousData(
-            autoRepositionFoundation,
+            autoReposition,
             autoNavigated,
             autoDeliveredSkystones,
             autoDeliveredStones,
             autoPlacedStones
         )
-        val teleOpData = TeleOpData(depotMinerals, landerMinerals)
-        val endGameData = EndGameData(endMoveFoundation, endParked, endCapLevel)
+        val teleOpData = TeleOpData(deliveredStones, placedStones)
+        val endGameData = EndGameData(endFoundationMoved, endParked, endCapLevel)
 
         val preferredZone = when (preferredZoneString?.toLowerCase(Locale.ROOT)) {
             "crater" -> PreferredZone.LOADING
@@ -139,7 +139,7 @@ class SpreadsheetImport(spreadsheetFile: File) {
             }
         }
 
-        check(number == -1) { "Invalid Match number on row ${row.rowNum}" }
+        check(number > 0) { "Invalid Match number on row ${row.rowNum}" }
 
         return Match(
             number,

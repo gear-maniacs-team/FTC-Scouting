@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- More General Strings -->
+    <string name="app_name">FTC Scouting</string>
+
     <string name="action_add_teams">Add Teams</string>
     <string name="action_create">Create</string>
     <string name="action_update">Update</string>
@@ -14,4 +15,7 @@
     <string name="title_about">About</string>
     <string name="version">Version</string>
     <string name="name">Name</string>
+
+    <string name="prompt_team_number">Team Number</string>
+    <string name="prompt_team_name">Team Name</string>
 </resources>

@@ -87,7 +87,7 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
         }
     }
 
-    fun updatedTeam(tournamentKey: String, team: Team) {
+    fun updateTeam(tournamentKey: String, team: Team) {
         currentUserReference
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)

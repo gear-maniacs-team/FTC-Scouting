@@ -16,7 +16,7 @@ internal object SpreadsheetFields {
         "Auto - Navigated",
         "Auto - Delivered Skystones",
         "Auto - Delivered Stones",
-        "Auto - PlacedStones",
+        "Auto - Placed Stones",
         "End - Foundation Moved",
         "End - Parked",
         "End - Cap Level",
