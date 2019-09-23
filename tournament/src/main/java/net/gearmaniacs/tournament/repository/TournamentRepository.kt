@@ -1,22 +1,11 @@
 package net.gearmaniacs.tournament.repository
 
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.ensureActive
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import net.gearmaniacs.core.architecture.MutexLiveData
-import net.gearmaniacs.core.architecture.NonNullLiveData
 import net.gearmaniacs.core.firebase.DatabasePaths
-import net.gearmaniacs.core.firebase.FirebaseChildListener
 import net.gearmaniacs.core.firebase.FirebaseDatabaseRepositoryCallback
-import net.gearmaniacs.core.firebase.FirebaseSingleValueListener
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeamPower
@@ -24,179 +13,44 @@ import net.gearmaniacs.tournament.opr.PowerRanking
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
-internal class TournamentRepository(private val coroutineScope: CoroutineScope) {
-
-    private val currentUserReference by lazy {
-        FirebaseDatabase.getInstance()
-            .getReference(DatabasePaths.KEY_SKYSTONE)
-            .child(DatabasePaths.KEY_USERS)
-            .child(FirebaseAuth.getInstance().currentUser!!.uid)
-    }
+internal class TournamentRepository(private val currentUserRef: DatabaseReference) {
 
     private val nameChangeListener = object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
             try {
-                nameCallback?.onSuccess(snapshot.getValue(String::class.java))
+                nameChangeCallback?.onSuccess(snapshot.getValue(String::class.java))
             } catch (e: Exception) {
-                nameCallback?.onError(e)
+                nameChangeCallback?.onError(e)
             }
         }
 
         override fun onCancelled(error: DatabaseError) {
-            nameCallback?.onError(error.toException())
+            nameChangeCallback?.onError(error.toException())
         }
     }
 
-    val teamsData = MutexLiveData(emptyList<Team>())
-    val filteredTeamsData = NonNullLiveData(emptyList<Team>())
-    val matchesData = MutexLiveData(emptyList<Match>())
-
-    private val teamsListener =
-        FirebaseChildListener(Team::class.java, teamsData, coroutineScope)
-    private val matchesListener =
-        FirebaseChildListener(Match::class.java, matchesData, coroutineScope)
-
-    private var listenersInitialized = false
-
-    var nameCallback: FirebaseDatabaseRepositoryCallback<String?>? = null
-    private var lastTeamQuery = ""
-    private var teamSearchJob: Job? = null // Last launched search job
-
-    init {
-        teamsData.observeForever {
-            performTeamsSearch(lastTeamQuery)
-        }
-    }
-
-    fun addTeam(tournamentKey: String, team: Team) {
-        currentUserReference
-            .child(DatabasePaths.KEY_DATA)
-            .child(tournamentKey)
-            .child(DatabasePaths.KEY_TEAMS)
-            .push()
-            .setValue(team)
-    }
-
-    fun addTeams(tournamentKey: String, teamIds: List<Team>) {
-        val ref = currentUserReference
-            .child(DatabasePaths.KEY_DATA)
-            .child(tournamentKey)
-            .child(DatabasePaths.KEY_TEAMS)
-
-        teamIds.forEach {
-            ref.push().setValue(it)
-        }
-    }
-
-    fun updateTeam(tournamentKey: String, team: Team) {
-        currentUserReference
-            .child(DatabasePaths.KEY_DATA)
-            .child(tournamentKey)
-            .child(DatabasePaths.KEY_TEAMS)
-            .child(team.key!!)
-            .setValue(team)
-    }
-
-    fun deleteTeam(tournamentKey: String, teamKey: String) {
-        currentUserReference
-            .child(DatabasePaths.KEY_DATA)
-            .child(tournamentKey)
-            .child(DatabasePaths.KEY_TEAMS)
-            .child(teamKey)
-            .removeValue()
-    }
-
-    fun performTeamsSearch(query: String) {
-        lastTeamQuery = query
-        // Cancel the last running search
-        teamSearchJob?.cancel()
-
-        val teamList = teamsData.value
-
-        if (teamList.isEmpty() || query.isEmpty()) {
-            filteredTeamsData.value = teamList
-            return
-        }
-
-        teamSearchJob = coroutineScope.launch(Dispatchers.Main.immediate) {
-            val filteredList = withContext(Dispatchers.Default) {
-                val pattern = "(?i).*($query).*".toPattern()
-
-                teamList.filter {
-                    pattern.matcher(it.name.orEmpty()).matches()
-                            || pattern.matcher(it.id.toString()).matches()
-                }
-            }
-
-            // Don't update the data if the job was canceled
-            ensureActive()
-            filteredTeamsData.value = filteredList
-        }
-    }
-
-
-    fun addMatch(tournamentKey: String, match: Match) {
-        currentUserReference
-            .child(DatabasePaths.KEY_DATA)
-            .child(tournamentKey)
-            .child(DatabasePaths.KEY_MATCHES)
-            .push()
-            .setValue(match)
-    }
-
-    fun addMatches(tournamentKey: String, matches: List<Match>) {
-        val ref = currentUserReference
-            .child(DatabasePaths.KEY_DATA)
-            .child(tournamentKey)
-            .child(DatabasePaths.KEY_MATCHES)
-
-        matches.forEach {
-            ref.push().setValue(it)
-        }
-    }
-
-    fun updatedMatch(tournamentKey: String, match: Match) {
-        currentUserReference
-            .child(DatabasePaths.KEY_DATA)
-            .child(tournamentKey)
-            .child(DatabasePaths.KEY_MATCHES)
-            .child(match.key!!)
-            .setValue(match)
-    }
-
-    fun deleteMatch(tournamentKey: String, matchKey: String) {
-        currentUserReference
-            .child(DatabasePaths.KEY_DATA)
-            .child(tournamentKey)
-            .child(DatabasePaths.KEY_MATCHES)
-            .child(matchKey)
-            .removeValue()
-    }
-
+    var nameChangeCallback: FirebaseDatabaseRepositoryCallback<String?>? = null
 
     fun updateTournamentName(tournamentKey: String, newName: String) {
-        currentUserReference
+        currentUserRef
             .child(DatabasePaths.KEY_TOURNAMENTS)
             .child(tournamentKey)
             .setValue(newName)
     }
 
     fun deleteTournament(tournamentKey: String) {
-        currentUserReference
+        currentUserRef
             .child(DatabasePaths.KEY_TOURNAMENTS)
             .child(tournamentKey)
             .removeValue()
 
-        currentUserReference
+        currentUserRef
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .removeValue()
     }
 
-    suspend fun generateOprList(): List<TeamPower> {
-        val teams = teamsData.value
-        val matches = matchesData.value
-
+    suspend fun generateOprList(teams: List<Team>, matches: List<Match>): List<TeamPower> {
         return try {
             val decimalFormat = DecimalFormat("#.##")
             decimalFormat.decimalFormatSymbols = DecimalFormatSymbols().apply {
@@ -218,55 +72,15 @@ internal class TournamentRepository(private val coroutineScope: CoroutineScope) 
     }
 
     fun addListeners(tournamentKey: String) {
-        currentUserReference.child(DatabasePaths.KEY_TOURNAMENTS)
+        currentUserRef.child(DatabasePaths.KEY_TOURNAMENTS)
             .child(tournamentKey)
             .addValueEventListener(nameChangeListener)
-
-        val tournamentRef = currentUserReference
-            .child(DatabasePaths.KEY_DATA)
-            .child(tournamentKey)
-
-        val teamsRef = tournamentRef.child(DatabasePaths.KEY_TEAMS)
-        val matchesRef = tournamentRef.child(DatabasePaths.KEY_MATCHES)
-
-        if (!listenersInitialized) {
-            teamsRef.addListenerForSingleValueEvent(
-                FirebaseSingleValueListener(
-                    Team::class.java,
-                    teamsData,
-                    coroutineScope
-                )
-            )
-            matchesRef.addListenerForSingleValueEvent(
-                FirebaseSingleValueListener(
-                    Match::class.java,
-                    matchesData,
-                    coroutineScope
-                )
-            )
-            listenersInitialized = true
-        }
-
-        teamsRef.addChildEventListener(teamsListener)
-        matchesRef.addChildEventListener(matchesListener)
     }
 
     fun removeListeners(tournamentKey: String) {
-        currentUserReference
+        currentUserRef
             .child(DatabasePaths.KEY_TOURNAMENTS)
             .child(tournamentKey)
             .removeEventListener(nameChangeListener)
-
-        currentUserReference
-            .child(DatabasePaths.KEY_DATA)
-            .child(tournamentKey)
-            .child(DatabasePaths.KEY_TEAMS)
-            .removeEventListener(teamsListener)
-
-        currentUserReference
-            .child(DatabasePaths.KEY_DATA)
-            .child(tournamentKey)
-            .child(DatabasePaths.KEY_MATCHES)
-            .removeEventListener(matchesListener)
     }
 }

@@ -3,20 +3,19 @@ package net.gearmaniacs.core.firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import net.gearmaniacs.core.model.DatabaseClass
 import net.gearmaniacs.core.architecture.MutexLiveData
+import net.gearmaniacs.core.model.DatabaseClass
 
 class FirebaseSingleValueListener<T : DatabaseClass<T>>(
     private val clazz: Class<T>,
-    private val liveData: MutexLiveData<List<T>>,
-    private val coroutineScope: CoroutineScope
+    private val liveData: MutexLiveData<List<T>>
 ) : ValueEventListener {
 
     override fun onDataChange(snapshot: DataSnapshot) {
-        coroutineScope.launch(Dispatchers.IO) {
+        GlobalScope.launch(Dispatchers.IO) {
             liveData.lock()
 
             val list = snapshot.children.asSequence()
