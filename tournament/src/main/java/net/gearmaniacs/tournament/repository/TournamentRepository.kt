@@ -5,7 +5,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import net.gearmaniacs.core.firebase.DatabasePaths
-import net.gearmaniacs.core.firebase.FirebaseDatabaseRepositoryCallback
+import net.gearmaniacs.core.firebase.FirebaseDatabaseCallback
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeamPower
@@ -29,7 +29,7 @@ internal class TournamentRepository(private val currentUserRef: DatabaseReferenc
         }
     }
 
-    var nameChangeCallback: FirebaseDatabaseRepositoryCallback<String?>? = null
+    var nameChangeCallback: FirebaseDatabaseCallback<String?>? = null
 
     fun updateTournamentName(tournamentKey: String, newName: String) {
         currentUserRef
@@ -71,13 +71,13 @@ internal class TournamentRepository(private val currentUserRef: DatabaseReferenc
         }
     }
 
-    fun addListeners(tournamentKey: String) {
+    fun addListener(tournamentKey: String) {
         currentUserRef.child(DatabasePaths.KEY_TOURNAMENTS)
             .child(tournamentKey)
             .addValueEventListener(nameChangeListener)
     }
 
-    fun removeListeners(tournamentKey: String) {
+    fun removeListener(tournamentKey: String) {
         currentUserRef
             .child(DatabasePaths.KEY_TOURNAMENTS)
             .child(tournamentKey)

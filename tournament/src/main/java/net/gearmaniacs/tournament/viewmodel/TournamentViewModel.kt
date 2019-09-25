@@ -8,11 +8,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import net.gearmaniacs.core.architecture.NonNullLiveData
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.core.firebase.DatabasePaths
-import net.gearmaniacs.core.firebase.FirebaseDatabaseRepositoryCallback
+import net.gearmaniacs.core.firebase.FirebaseDatabaseCallback
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeamPower
@@ -34,7 +33,7 @@ class TournamentViewModel : ViewModel() {
             .child(FirebaseAuth.getInstance().currentUser!!.uid)
     }
 
-    private val repository = TournamentRepository(currentUserReference)
+    private val tournamentRepository = TournamentRepository(currentUserReference)
     private val teamsRepository = TeamsRepository(currentUserReference)
     private val matchesRepository = MatchesRepository(currentUserReference)
     private var listening = false
@@ -50,7 +49,7 @@ class TournamentViewModel : ViewModel() {
     val analyticsData = NonNullLiveData(emptyList<TeamPower>())
 
     init {
-        repository.nameChangeCallback = object : FirebaseDatabaseRepositoryCallback<String?> {
+        tournamentRepository.nameChangeCallback = object : FirebaseDatabaseCallback<String?> {
             override fun onSuccess(result: String?) {
                 nameData.value = result
             }
@@ -73,9 +72,7 @@ class TournamentViewModel : ViewModel() {
     // region Teams Management
 
     fun performTeamsSearch(query: String?) {
-        runBlocking {
-            teamsRepository.performTeamsSearch(query.orEmpty().trim().toLowerCase(Locale.ROOT))
-        }
+        teamsRepository.performTeamsSearch(query.orEmpty().trim().toLowerCase(Locale.ROOT))
     }
 
     fun addTeamsFromMatches() {
@@ -138,11 +135,11 @@ class TournamentViewModel : ViewModel() {
 
     fun updateTournamentName(newName: String) {
         if (newName.isNotBlank())
-            repository.updateTournamentName(tournamentKey, newName)
+            tournamentRepository.updateTournamentName(tournamentKey, newName)
     }
 
     fun deleteTournament() {
-        repository.deleteTournament(tournamentKey)
+        tournamentRepository.deleteTournament(tournamentKey)
     }
 
     // endregion
@@ -157,7 +154,7 @@ class TournamentViewModel : ViewModel() {
         }
 
         viewModelScope.launch(Dispatchers.Default) {
-            val powerRankings = repository.generateOprList(teams, matches)
+            val powerRankings = tournamentRepository.generateOprList(teams, matches)
 
             launch(Dispatchers.Main) {
                 analyticsData.value = powerRankings
@@ -173,7 +170,7 @@ class TournamentViewModel : ViewModel() {
         val matches = matchesRepository.liveData.value
 
         viewModelScope.launch(Dispatchers.IO) {
-            val powerRankings = repository.generateOprList(teams, matches)
+            val powerRankings = tournamentRepository.generateOprList(teams, matches)
 
             try {
                 val export = SpreadsheetExport()
@@ -221,8 +218,8 @@ class TournamentViewModel : ViewModel() {
     fun startListening() {
         if (listening) return
 
-        repository.addListeners(tournamentKey)
-        teamsRepository.addListeners(tournamentKey)
+        tournamentRepository.addListener(tournamentKey)
+        teamsRepository.addListener(tournamentKey)
         matchesRepository.addListeners(tournamentKey)
 
         listening = true
@@ -231,8 +228,8 @@ class TournamentViewModel : ViewModel() {
     fun stopListening() {
         if (!listening) return
 
-        repository.removeListeners(tournamentKey)
-        teamsRepository.removeListeners(tournamentKey)
+        tournamentRepository.removeListener(tournamentKey)
+        teamsRepository.removeListener(tournamentKey)
         matchesRepository.removeListeners(tournamentKey)
 
         listening = false

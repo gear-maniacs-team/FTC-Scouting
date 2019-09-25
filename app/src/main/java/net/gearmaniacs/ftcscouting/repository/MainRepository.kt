@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.gearmaniacs.core.firebase.DatabasePaths
-import net.gearmaniacs.core.firebase.FirebaseDatabaseRepositoryCallback
+import net.gearmaniacs.core.firebase.FirebaseDatabaseCallback
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.User
@@ -63,8 +63,8 @@ class MainRepository(coroutineScope: CoroutineScope) {
         }
     }
 
-    var tournamentsCallback: FirebaseDatabaseRepositoryCallback<List<Tournament>>? = null
-    var userCallback: FirebaseDatabaseRepositoryCallback<User>? = null
+    var tournamentsCallback: FirebaseDatabaseCallback<List<Tournament>>? = null
+    var userCallback: FirebaseDatabaseCallback<User>? = null
 
     fun addListeners() {
         currentUserReference

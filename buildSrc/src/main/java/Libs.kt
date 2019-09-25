@@ -2,7 +2,7 @@
 object Libs {
     // Kotlin
     const val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin_version}"
-    const val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.1"
+    const val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2"
 
     // AndroidX
     const val google_material = "com.google.android.material:material:1.1.0-alpha10"
@@ -21,7 +21,7 @@ object Libs {
     // Firebase
     const val firebase_core = "com.google.firebase:firebase-core:17.2.0"
     const val firebase_database = "com.google.firebase:firebase-database:19.1.0"
-    const val firebase_auth = "com.google.firebase:firebase-auth:19.0.0"
+    const val firebase_auth = "com.google.firebase:firebase-auth:19.1.0"
     const val firebase_crashlytics = "com.crashlytics.sdk.android:crashlytics:2.10.1"
 
     // Other Libraries
