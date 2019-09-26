@@ -15,7 +15,7 @@ import net.gearmaniacs.core.firebase.FirebaseChildListener
 import net.gearmaniacs.core.firebase.FirebaseSingleValueListener
 import net.gearmaniacs.core.model.Team
 
-class TeamsRepository(private val currentUserRef: DatabaseReference) {
+class TeamsRepository(private val tournamentReference: DatabaseReference) {
 
     val liveData = MutexLiveData(emptyList<Team>())
     val queriedLiveData = NonNullLiveData(emptyList<Team>())
@@ -30,7 +30,7 @@ class TeamsRepository(private val currentUserRef: DatabaseReference) {
     private var teamSearchJob: Job? = null // Last launched search job
 
     fun addTeam(tournamentKey: String, team: Team) {
-        currentUserRef
+        tournamentReference
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .child(DatabasePaths.KEY_TEAMS)
@@ -39,7 +39,7 @@ class TeamsRepository(private val currentUserRef: DatabaseReference) {
     }
 
     fun addTeams(tournamentKey: String, teamIds: List<Team>) {
-        val ref = currentUserRef
+        val ref = tournamentReference
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .child(DatabasePaths.KEY_TEAMS)
@@ -50,7 +50,7 @@ class TeamsRepository(private val currentUserRef: DatabaseReference) {
     }
 
     fun updateTeam(tournamentKey: String, team: Team) {
-        currentUserRef
+        tournamentReference
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .child(DatabasePaths.KEY_TEAMS)
@@ -59,7 +59,7 @@ class TeamsRepository(private val currentUserRef: DatabaseReference) {
     }
 
     fun deleteTeam(tournamentKey: String, teamKey: String) {
-        currentUserRef
+        tournamentReference
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .child(DatabasePaths.KEY_TEAMS)
@@ -96,11 +96,11 @@ class TeamsRepository(private val currentUserRef: DatabaseReference) {
     }
 
     fun addListener(tournamentKey: String) {
-        val tournamentRef = currentUserRef
+        val tournamentsListRef = tournamentReference
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
 
-        val teamsRef = tournamentRef.child(DatabasePaths.KEY_TEAMS)
+        val teamsRef = tournamentsListRef.child(DatabasePaths.KEY_TEAMS)
 
         if (!listenersInitialized) {
             teamsRef.addListenerForSingleValueEvent(
@@ -115,7 +115,7 @@ class TeamsRepository(private val currentUserRef: DatabaseReference) {
     }
 
     fun removeListener(tournamentKey: String) {
-        currentUserRef
+        tournamentReference
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .child(DatabasePaths.KEY_TEAMS)

@@ -16,10 +16,14 @@ import net.gearmaniacs.core.model.User
 
 class MainRepository(coroutineScope: CoroutineScope) {
 
-    private val currentUserReference by lazy {
+    private val tournamentReference by lazy {
         FirebaseDatabase.getInstance()
             .getReference(DatabasePaths.KEY_SKYSTONE)
-            .child(DatabasePaths.KEY_USERS)
+            .child(FirebaseAuth.getInstance().currentUser!!.uid)
+    }
+    private val userReference by lazy {
+        FirebaseDatabase.getInstance()
+            .getReference(DatabasePaths.KEY_USERS)
             .child(FirebaseAuth.getInstance().currentUser!!.uid)
     }
 
@@ -67,27 +71,23 @@ class MainRepository(coroutineScope: CoroutineScope) {
     var userCallback: FirebaseDatabaseCallback<User>? = null
 
     fun addListeners() {
-        currentUserReference
-            .child(DatabasePaths.KEY_TEAM_INFO)
-            .addValueEventListener(userListener)
+        userReference.addValueEventListener(userListener)
 
-        currentUserReference
+        tournamentReference
             .child(DatabasePaths.KEY_TOURNAMENTS)
             .addValueEventListener(tournamentsListener)
     }
 
     fun removeListeners() {
-        currentUserReference
-            .child(DatabasePaths.KEY_TEAM_INFO)
-            .removeEventListener(userListener)
+        userReference.removeEventListener(userListener)
 
-        currentUserReference
+        tournamentReference
             .child(DatabasePaths.KEY_TOURNAMENTS)
             .removeEventListener(tournamentsListener)
     }
 
     fun createNewTournament(user: User, tournamentName: String) {
-        val newTournament = currentUserReference
+        val newTournament = tournamentReference
             .child(DatabasePaths.KEY_TOURNAMENTS)
             .push()
 
@@ -96,7 +96,7 @@ class MainRepository(coroutineScope: CoroutineScope) {
         val key = newTournament.key ?: return
         val team = Team(user.id, user.teamName)
 
-        currentUserReference
+        tournamentReference
             .child(DatabasePaths.KEY_DATA)
             .child(key)
             .child(DatabasePaths.KEY_TEAMS)
@@ -105,12 +105,12 @@ class MainRepository(coroutineScope: CoroutineScope) {
     }
 
     fun deleteTournament(tournamentKey: String) {
-        currentUserReference
+        tournamentReference
             .child(DatabasePaths.KEY_TOURNAMENTS)
             .child(tournamentKey)
             .removeValue()
 
-        currentUserReference
+        tournamentReference
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .removeValue()

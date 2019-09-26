@@ -26,16 +26,13 @@ import java.util.Locale
 
 class TournamentViewModel : ViewModel() {
 
-    private val currentUserReference by lazy {
-        FirebaseDatabase.getInstance()
-            .getReference(DatabasePaths.KEY_SKYSTONE)
-            .child(DatabasePaths.KEY_USERS)
-            .child(FirebaseAuth.getInstance().currentUser!!.uid)
-    }
+    private val tournamentReference = FirebaseDatabase.getInstance()
+        .getReference(DatabasePaths.KEY_SKYSTONE)
+        .child(FirebaseAuth.getInstance().currentUser!!.uid)
 
-    private val tournamentRepository = TournamentRepository(currentUserReference)
-    private val teamsRepository = TeamsRepository(currentUserReference)
-    private val matchesRepository = MatchesRepository(currentUserReference)
+    private val tournamentRepository = TournamentRepository(tournamentReference)
+    private val teamsRepository = TeamsRepository(tournamentReference)
+    private val matchesRepository = MatchesRepository(tournamentReference)
     private var listening = false
 
     var tournamentKey = ""

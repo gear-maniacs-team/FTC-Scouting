@@ -13,7 +13,7 @@ import net.gearmaniacs.tournament.opr.PowerRanking
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
-internal class TournamentRepository(private val currentUserRef: DatabaseReference) {
+internal class TournamentRepository(private val tournamentReference: DatabaseReference) {
 
     private val nameChangeListener = object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
@@ -32,19 +32,19 @@ internal class TournamentRepository(private val currentUserRef: DatabaseReferenc
     var nameChangeCallback: FirebaseDatabaseCallback<String?>? = null
 
     fun updateTournamentName(tournamentKey: String, newName: String) {
-        currentUserRef
+        tournamentReference
             .child(DatabasePaths.KEY_TOURNAMENTS)
             .child(tournamentKey)
             .setValue(newName)
     }
 
     fun deleteTournament(tournamentKey: String) {
-        currentUserRef
+        tournamentReference
             .child(DatabasePaths.KEY_TOURNAMENTS)
             .child(tournamentKey)
             .removeValue()
 
-        currentUserRef
+        tournamentReference
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .removeValue()
@@ -72,13 +72,13 @@ internal class TournamentRepository(private val currentUserRef: DatabaseReferenc
     }
 
     fun addListener(tournamentKey: String) {
-        currentUserRef.child(DatabasePaths.KEY_TOURNAMENTS)
+        tournamentReference.child(DatabasePaths.KEY_TOURNAMENTS)
             .child(tournamentKey)
             .addValueEventListener(nameChangeListener)
     }
 
     fun removeListener(tournamentKey: String) {
-        currentUserRef
+        tournamentReference
             .child(DatabasePaths.KEY_TOURNAMENTS)
             .child(tournamentKey)
             .removeEventListener(nameChangeListener)

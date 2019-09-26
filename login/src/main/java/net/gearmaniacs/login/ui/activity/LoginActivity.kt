@@ -106,10 +106,8 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
 
     private fun registerUser(user: User) {
         FirebaseDatabase.getInstance()
-            .getReference(DatabasePaths.KEY_SKYSTONE)
-            .child(DatabasePaths.KEY_USERS)
+            .getReference(DatabasePaths.KEY_USERS)
             .child(auth.currentUser!!.uid)
-            .child(DatabasePaths.KEY_TEAM_INFO)
             .setValue(user) { error, _ ->
                 if (error == null) {
                     Log.d(TAG, "registerInDatabase:success")

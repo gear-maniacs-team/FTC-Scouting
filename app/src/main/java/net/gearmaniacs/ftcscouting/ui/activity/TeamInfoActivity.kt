@@ -55,10 +55,8 @@ class TeamInfoActivity : AppCompatActivity() {
             }
 
             FirebaseDatabase.getInstance()
-                .getReference(DatabasePaths.KEY_SKYSTONE)
-                .child(DatabasePaths.KEY_USERS)
+                .getReference(DatabasePaths.KEY_USERS)
                 .child(FirebaseAuth.getInstance().currentUser!!.uid)
-                .child(DatabasePaths.KEY_TEAM_INFO)
                 .setValue(user)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {

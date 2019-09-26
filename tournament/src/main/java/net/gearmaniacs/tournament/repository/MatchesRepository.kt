@@ -7,7 +7,7 @@ import net.gearmaniacs.core.firebase.FirebaseChildListener
 import net.gearmaniacs.core.firebase.FirebaseSingleValueListener
 import net.gearmaniacs.core.model.Match
 
-internal class MatchesRepository(private val currentUserRef: DatabaseReference) {
+internal class MatchesRepository(private val tournamentReference: DatabaseReference) {
 
     val liveData = MutexLiveData(emptyList<Match>())
 
@@ -15,7 +15,7 @@ internal class MatchesRepository(private val currentUserRef: DatabaseReference) 
     private var listenersInitialized = false
 
     fun addMatch(tournamentKey: String, match: Match) {
-        currentUserRef
+        tournamentReference
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .child(DatabasePaths.KEY_MATCHES)
@@ -24,7 +24,7 @@ internal class MatchesRepository(private val currentUserRef: DatabaseReference) 
     }
 
     fun addMatches(tournamentKey: String, matches: List<Match>) {
-        val ref = currentUserRef
+        val ref = tournamentReference
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .child(DatabasePaths.KEY_MATCHES)
@@ -35,7 +35,7 @@ internal class MatchesRepository(private val currentUserRef: DatabaseReference) 
     }
 
     fun updateMatch(tournamentKey: String, match: Match) {
-        currentUserRef
+        tournamentReference
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .child(DatabasePaths.KEY_MATCHES)
@@ -44,7 +44,7 @@ internal class MatchesRepository(private val currentUserRef: DatabaseReference) 
     }
 
     fun deleteMatch(tournamentKey: String, matchKey: String) {
-        currentUserRef
+        tournamentReference
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .child(DatabasePaths.KEY_MATCHES)
@@ -53,7 +53,7 @@ internal class MatchesRepository(private val currentUserRef: DatabaseReference) 
     }
 
     fun addListeners(tournamentKey: String) {
-        val tournamentRef = currentUserRef
+        val tournamentRef = tournamentReference
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
 
@@ -70,7 +70,7 @@ internal class MatchesRepository(private val currentUserRef: DatabaseReference) 
     }
 
     fun removeListeners(tournamentKey: String) {
-        currentUserRef
+        tournamentReference
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .child(DatabasePaths.KEY_MATCHES)
