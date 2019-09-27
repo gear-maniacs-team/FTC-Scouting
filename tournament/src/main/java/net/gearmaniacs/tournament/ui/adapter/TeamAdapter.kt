@@ -104,6 +104,7 @@ internal class TeamAdapter(
                 PreferredZone.LOADING -> R.string.team_preferred_loading
                 else -> R.string.none
             }
+
             val description = context.getString(
                 R.string.team_description, team.autonomousScore, team.teleOpScore,
                 team.endGameScore, context.getString(preferredLocation), team.notes.orEmpty()

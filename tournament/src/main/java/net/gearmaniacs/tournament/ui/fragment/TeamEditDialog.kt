@@ -39,20 +39,19 @@ internal class TeamEditDialog : DialogFragment() {
     }
 
     private class DataChangeListener(
-        private val view: View,
-        private val listener: (view: View) -> Unit
+        private val listener: () -> Unit
     ) : RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener, TextWatcher {
 
         override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) {
-            listener(view)
+            listener()
         }
 
         override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-            listener(view)
+            listener()
         }
 
         override fun afterTextChanged(s: Editable?) {
-            listener(view)
+            listener()
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
@@ -62,6 +61,10 @@ internal class TeamEditDialog : DialogFragment() {
 
     private val viewModel by activityViewModels<TournamentViewModel>()
     private var transitionPlayed = false
+
+    private var autonomousScore = 0
+    private var teleOpScore = 0
+    private var endGameScore = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -131,27 +134,47 @@ internal class TeamEditDialog : DialogFragment() {
             dismiss()
         }
 
-        with(view) {
-            val autonomousListener = DataChangeListener(view, ::updateAutonomousScore)
-            val teleOpListener = DataChangeListener(view, ::updateTeleOpScore)
-            val endGameListener = DataChangeListener(view, ::updateEndGameScore)
+        setupListeners(view)
 
-            cb_reposition_foundation.setOnCheckedChangeListener(autonomousListener)
-            cb_navigated.setOnCheckedChangeListener(autonomousListener)
-            et_auto_delivered_skystones.addTextChangedListener(autonomousListener)
-            et_auto_delivered_stones.addTextChangedListener(autonomousListener)
-            et_auto_placed_stones.addTextChangedListener(autonomousListener)
+        if (team != null)
+            restoreTeamData(view, team)
 
-            et_delivered_stones.addTextChangedListener(teleOpListener)
-            et_placed_stones.addTextChangedListener(teleOpListener)
+        updateAutonomousScore(view, autonomousScore)
+        updateTeleOpScore(view, teleOpScore)
+        updateEndGameScore(view, endGameScore)
+        updateTotalScore(view)
+    }
 
-            cb_move_foundation.setOnCheckedChangeListener(endGameListener)
-            cb_parking.setOnCheckedChangeListener(endGameListener)
-            et_cap_level.addTextChangedListener(endGameListener)
+    private fun setupListeners(view: View) {
+        val autonomousListener = DataChangeListener {
+            updateAutonomousScore(view)
+            updateTotalScore(view)
+        }
+        val teleOpListener = DataChangeListener {
+            updateTeleOpScore(view)
+            updateTotalScore(view)
+        }
+        val endGameListener = DataChangeListener {
+            updateEndGameScore(view)
+            updateTotalScore(view)
         }
 
-        team ?: return
+        view.cb_reposition_foundation.setOnCheckedChangeListener(autonomousListener)
+        view.cb_navigated.setOnCheckedChangeListener(autonomousListener)
+        view.et_auto_delivered_skystones.addTextChangedListener(autonomousListener)
+        view.et_auto_delivered_stones.addTextChangedListener(autonomousListener)
+        view.et_auto_placed_stones.addTextChangedListener(autonomousListener)
 
+        view.et_delivered_stones.addTextChangedListener(teleOpListener)
+        view.et_placed_stones.addTextChangedListener(teleOpListener)
+
+        view.cb_move_foundation.setOnCheckedChangeListener(endGameListener)
+        view.cb_parking.setOnCheckedChangeListener(endGameListener)
+        view.cb_cap_placed.setOnCheckedChangeListener(endGameListener)
+        view.et_cap_level.addTextChangedListener(endGameListener)
+    }
+
+    private fun restoreTeamData(view: View, team: Team) {
         with(view) {
             et_team_number.setText(team.id.toString())
             et_team_name.setText(team.name)
@@ -162,11 +185,15 @@ internal class TeamEditDialog : DialogFragment() {
                 et_auto_delivered_skystones.setText(it.deliveredSkystones.toString())
                 et_auto_delivered_stones.setText(it.deliveredStones.toString())
                 et_auto_placed_stones.setText(it.placedStones.toString())
+
+                autonomousScore = it.calculateScore()
             }
 
             team.teleOpData?.let {
                 et_delivered_stones.setText(it.deliveredStones.toString())
                 et_placed_stones.setText(it.placedStones.toString())
+
+                teleOpScore = it.calculateScore()
             }
 
             team.endGameData?.let {
@@ -177,6 +204,8 @@ internal class TeamEditDialog : DialogFragment() {
                     cb_cap_placed.isChecked = true
                     et_cap_level.setText(it.capLevel.toString())
                 }
+
+                endGameScore = it.calculateScore()
             }
 
             when (team.preferredZone) {
@@ -212,21 +241,30 @@ internal class TeamEditDialog : DialogFragment() {
         )
     }
 
-    private fun updateAutonomousScore(view: View) {
-        val score = parseAutonomousData(view).calculateScore()
+    private fun updateAutonomousScore(view: View, score: Int = -1) {
+        val newScore = if (score == -1) parseAutonomousData(view).calculateScore() else score
 
-        tv_autonomous_score.text = getString(R.string.autonomous_score, score)
+        autonomousScore = newScore
+        view.tv_autonomous_score.text = getString(R.string.autonomous_score, newScore)
     }
 
-    private fun updateTeleOpScore(view: View) {
-        val score = parseTeleOpData(view).calculateScore()
+    private fun updateTeleOpScore(view: View, score: Int = -1) {
+        val newScore = if (score == -1) parseTeleOpData(view).calculateScore() else score
 
-        tv_teleop_score.text = getString(R.string.autonomous_score, score)
+        teleOpScore = newScore
+        view.tv_teleop_score.text = getString(R.string.teleop_score, newScore)
     }
 
-    private fun updateEndGameScore(view: View) {
-        val score = parseEndGameData(view).calculateScore()
+    private fun updateEndGameScore(view: View, score: Int = -1) {
+        val newScore = if (score == -1) parseEndGameData(view).calculateScore() else score
 
-        tv_endgame_score.text = getString(R.string.autonomous_score, score)
+        endGameScore = newScore
+        view.tv_endgame_score.text = getString(R.string.endgame_score, newScore)
+    }
+
+    private fun updateTotalScore(view: View) {
+        val totalScore = autonomousScore + teleOpScore + endGameScore
+
+        view.tv_total_score.text = getString(R.string.total_score, totalScore)
     }
 }

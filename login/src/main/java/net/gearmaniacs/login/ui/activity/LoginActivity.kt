@@ -35,7 +35,7 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
         setContentView(R.layout.activity_login)
 
         auth = FirebaseAuth.getInstance()
-        //pb_login.isEnabled = false
+        pb_login.isEnabled = false
         pb_login.setColorSchemeResources(R.color.colorPrimary)
 
         if (auth.currentUser == null) {

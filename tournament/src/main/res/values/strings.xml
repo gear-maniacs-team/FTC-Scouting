@@ -23,7 +23,8 @@
     <string name="autonomous_score">Autonomous Score: %d</string>
     <string name="teleop_score">TeleOp Score: %d</string>
     <string name="endgame_score">End Game Score: %d</string>
-    <string name="team_description"><b>Autonomous Score:</b> %d\n<b>TeleOp Score:</b> %d\n<b>End Game Score:</b> %d\n<b>Preferred Zone: %s</b>\n<b>Notes:</b> %s</string>
+    <string name="total_score">Total Score: %d</string>
+    <string name="team_description">Autonomous Score: %d\nTeleOp Score: %d\nEnd Game Score: %d\nPreferred Zone: %s\nNotes: %s</string>
     <string name="team_notes">Notes</string>
     <string name="delete_team">Delete this team?</string>
     <string name="delete_team_desc">If deleted, the team will also be removed from all other devices!</string>

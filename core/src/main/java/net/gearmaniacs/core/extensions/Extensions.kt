@@ -1,5 +1,8 @@
 package net.gearmaniacs.core.extensions
 
+import android.os.Build
+import android.text.Html
+import android.text.Spanned
 import android.util.Patterns
 import android.widget.EditText
 
@@ -23,4 +26,12 @@ fun String.toIntOrDefault(default: Int = 0): Int = try {
 }
 
 fun EditText.getTextString(): String =
-    text?.toString() ?: ""
+    text?.toString().orEmpty()
+
+@Suppress("DEPRECATION")
+fun String.fromHtmlCompat(): Spanned {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) Html.fromHtml(
+        this,
+        Html.FROM_HTML_MODE_LEGACY
+    ) else Html.fromHtml(this)
+}

@@ -157,6 +157,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="15.5sp"
             app:layout_constraintTop_toBottomOf="@+id/layout_auto_delivered_stones"
             tools:text="@string/autonomous_score" />
 
@@ -169,7 +171,6 @@
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_autonomous_score" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -218,6 +219,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="15.5sp"
             app:layout_constraintTop_toBottomOf="@+id/layout_delivered_stones"
             tools:text="@string/teleop_score" />
 
@@ -230,7 +233,6 @@
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_teleop_score" />
 
         <CheckBox
@@ -295,8 +297,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="15.5sp"
             app:layout_constraintTop_toBottomOf="@id/cb_cap_placed"
             tools:text="@string/endgame_score" />
+
+        <TextView
+            android:id="@+id/tv_total_score"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textSize="17sp"
+            app:layout_constraintTop_toBottomOf="@id/tv_endgame_score"
+            tools:text="@string/total_score" />
 
         <TextView
             android:id="@+id/tv_other"
@@ -307,8 +320,7 @@
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_endgame_score" />
+            app:layout_constraintTop_toBottomOf="@id/tv_total_score" />
 
         <TextView
             android:id="@+id/tv_preferred_zone"

@@ -25,6 +25,7 @@ object Libs {
     const val firebase_crashlytics = "com.crashlytics.sdk.android:crashlytics:2.10.1"
 
     // Other Libraries
+    const val material_intro = "com.heinrichreimersoftware:material-intro:2.0.0"
     const val material_about = "com.github.daniel-stoneuk:material-about-library:2.4.2"
     const val material_chooser = "net.theluckycoder.materialchooser:materialchooser:1.2.1"
     const val licenser = "com.github.marcoscgdev:Licenser:1.0.5"
