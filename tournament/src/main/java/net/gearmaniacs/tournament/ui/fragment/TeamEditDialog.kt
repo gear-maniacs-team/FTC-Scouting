@@ -1,9 +1,13 @@
 package net.gearmaniacs.tournament.ui.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
+import android.widget.RadioGroup
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isInvisible
 import androidx.core.view.updatePadding
@@ -32,6 +36,28 @@ internal class TeamEditDialog : DialogFragment() {
             bundle.putParcelable(ARG_TEAM, team)
             arguments = bundle
         }
+    }
+
+    private class DataChangeListener(
+        private val view: View,
+        private val listener: (view: View) -> Unit
+    ) : RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener, TextWatcher {
+
+        override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) {
+            listener(view)
+        }
+
+        override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+            listener(view)
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+            listener(view)
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
     }
 
     private val viewModel by activityViewModels<TournamentViewModel>()
@@ -78,26 +104,9 @@ internal class TeamEditDialog : DialogFragment() {
 
         view.fab_edit_team_done.setOnClickListener {
             // Parse Team data
-            val autonomousData = AutonomousData(
-                view.cb_reposition_foundation.isChecked,
-                view.cb_navigated.isChecked,
-                view.et_auto_delivered_skystones.getTextString().toIntOrDefault(),
-                view.et_auto_delivered_stones.getTextString().toIntOrDefault(),
-                view.et_auto_placed_stones.getTextString().toIntOrDefault()
-            )
-
-            val teleOpData = TeleOpData(
-                view.et_delivered_stones.getTextString().toIntOrDefault(),
-                view.et_placed_stones.getTextString().toIntOrDefault()
-            )
-
-            val capLevel =
-                if (view.cb_cap_placed.isChecked) view.et_cap_level.getTextString().toIntOrDefault() else 0
-            val endGameData = EndGameData(
-                view.cb_move_foundation.isChecked,
-                view.cb_parking.isChecked,
-                capLevel
-            )
+            val autonomousData = parseAutonomousData(view)
+            val teleOpData = parseTeleOpData(view)
+            val endGameData = parseEndGameData(view)
 
             val preferredZone = when {
                 rb_zone_building.isChecked -> PreferredZone.BUILDING
@@ -122,9 +131,28 @@ internal class TeamEditDialog : DialogFragment() {
             dismiss()
         }
 
+        with(view) {
+            val autonomousListener = DataChangeListener(view, ::updateAutonomousScore)
+            val teleOpListener = DataChangeListener(view, ::updateTeleOpScore)
+            val endGameListener = DataChangeListener(view, ::updateEndGameScore)
+
+            cb_reposition_foundation.setOnCheckedChangeListener(autonomousListener)
+            cb_navigated.setOnCheckedChangeListener(autonomousListener)
+            et_auto_delivered_skystones.addTextChangedListener(autonomousListener)
+            et_auto_delivered_stones.addTextChangedListener(autonomousListener)
+            et_auto_placed_stones.addTextChangedListener(autonomousListener)
+
+            et_delivered_stones.addTextChangedListener(teleOpListener)
+            et_placed_stones.addTextChangedListener(teleOpListener)
+
+            cb_move_foundation.setOnCheckedChangeListener(endGameListener)
+            cb_parking.setOnCheckedChangeListener(endGameListener)
+            et_cap_level.addTextChangedListener(endGameListener)
+        }
+
         team ?: return
 
-        view.apply {
+        with(view) {
             et_team_number.setText(team.id.toString())
             et_team_name.setText(team.name)
 
@@ -158,5 +186,47 @@ internal class TeamEditDialog : DialogFragment() {
 
             et_notes.setText(team.notes)
         }
+    }
+
+    private fun parseAutonomousData(view: View) = AutonomousData(
+        view.cb_reposition_foundation.isChecked,
+        view.cb_navigated.isChecked,
+        view.et_auto_delivered_skystones.getTextString().toIntOrDefault(),
+        view.et_auto_delivered_stones.getTextString().toIntOrDefault(),
+        view.et_auto_placed_stones.getTextString().toIntOrDefault()
+    )
+
+    private fun parseTeleOpData(view: View) = TeleOpData(
+        view.et_delivered_stones.getTextString().toIntOrDefault(),
+        view.et_placed_stones.getTextString().toIntOrDefault()
+    )
+
+    private fun parseEndGameData(view: View): EndGameData {
+        val capLevel =
+            if (view.cb_cap_placed.isChecked) view.et_cap_level.getTextString().toIntOrDefault() else 0
+
+        return EndGameData(
+            view.cb_move_foundation.isChecked,
+            view.cb_parking.isChecked,
+            capLevel
+        )
+    }
+
+    private fun updateAutonomousScore(view: View) {
+        val score = parseAutonomousData(view).calculateScore()
+
+        tv_autonomous_score.text = getString(R.string.autonomous_score, score)
+    }
+
+    private fun updateTeleOpScore(view: View) {
+        val score = parseTeleOpData(view).calculateScore()
+
+        tv_teleop_score.text = getString(R.string.autonomous_score, score)
+    }
+
+    private fun updateEndGameScore(view: View) {
+        val score = parseEndGameData(view).calculateScore()
+
+        tv_endgame_score.text = getString(R.string.autonomous_score, score)
     }
 }

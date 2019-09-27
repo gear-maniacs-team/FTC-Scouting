@@ -20,6 +20,9 @@
     <string name="team_preferred_loading">Loading</string>
     <string name="team_id_name">#%d - %s</string>
     <string name="team_predicted_score">Predicted Score: %d</string>
+    <string name="autonomous_score">Autonomous Score: %d</string>
+    <string name="teleop_score">TeleOp Score: %d</string>
+    <string name="endgame_score">End Game Score: %d</string>
     <string name="team_description"><b>Autonomous Score:</b> %d\n<b>TeleOp Score:</b> %d\n<b>End Game Score:</b> %d\n<b>Preferred Zone: %s</b>\n<b>Notes:</b> %s</string>
     <string name="team_notes">Notes</string>
     <string name="delete_team">Delete this team?</string>
