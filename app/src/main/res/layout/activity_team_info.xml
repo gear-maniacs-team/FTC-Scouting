@@ -28,7 +28,8 @@
             android:id="@+id/layout_team_number"
             style="@style/TextInputLayoutTheme"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_team_number"
@@ -65,8 +66,6 @@
         android:id="@+id/btn_update_account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginBottom="@dimen/fab_margin"
         app:layout_anchor="@id/bottom_app_bar"
         app:srcCompat="@drawable/ic_done" />
 

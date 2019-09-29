@@ -33,7 +33,7 @@ android {
             versionNameSuffix "-debug"
         }
         release {
-            manifestPlaceholders = [enableCrashlytics: false] // TODO: Change this to true on proper release
+            manifestPlaceholders = [enableCrashlytics: true]
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true

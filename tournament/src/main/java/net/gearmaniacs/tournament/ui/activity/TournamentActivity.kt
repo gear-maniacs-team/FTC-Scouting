@@ -36,8 +36,26 @@ import java.io.File
 
 class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
-    private val viewModel by viewModels<TournamentViewModel>()
+    companion object {
+        private const val ARG_TOURNAMENT_KEY = "tournament_key"
+        const val ARG_USER = "user"
+        private const val ARG_TOURNAMENT_NAME = "tournament_name"
 
+        private const val SAVED_FRAGMENT_INDEX = "tournament_key"
+
+        private const val SPREADSHEET_LOAD_REQUEST_CODE = 1
+        private const val SPREADSHEET_SAVE_REQUEST_CODE = 2
+
+        fun startActivity(context: Context, user: User?, tournament: Tournament) {
+            val intent = Intent(context, TournamentActivity::class.java)
+            intent.putExtra(ARG_USER, user)
+            intent.putExtra(ARG_TOURNAMENT_KEY, tournament.key)
+            intent.putExtra(ARG_TOURNAMENT_NAME, tournament.name)
+            context.startActivity(intent)
+        }
+    }
+
+    private val viewModel by viewModels<TournamentViewModel>()
     private val fragments =
         listOf(InfoFragment(), TeamFragment(), MatchFragment(), AnalyticsFragment())
     private var activeFragment = fragments.first()
@@ -295,24 +313,5 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
-    }
-
-    companion object {
-        private const val ARG_TOURNAMENT_KEY = "tournament_key"
-        const val ARG_USER = "user"
-        private const val ARG_TOURNAMENT_NAME = "tournament_name"
-
-        private const val SAVED_FRAGMENT_INDEX = "tournament_key"
-
-        private const val SPREADSHEET_LOAD_REQUEST_CODE = 1
-        private const val SPREADSHEET_SAVE_REQUEST_CODE = 2
-
-        fun startActivity(context: Context, user: User, tournament: Tournament) {
-            val intent = Intent(context, TournamentActivity::class.java)
-            intent.putExtra(ARG_TOURNAMENT_KEY, tournament.key)
-            intent.putExtra(ARG_USER, user)
-            intent.putExtra(ARG_TOURNAMENT_NAME, tournament.name)
-            context.startActivity(intent)
-        }
     }
 }

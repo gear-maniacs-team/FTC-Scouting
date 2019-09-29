@@ -73,4 +73,8 @@
     <string name="spreadsheet_saved_successfully">File saved in sdcard/FtcScouting/%s.xls</string>
     <string name="spreadsheet_export">Export to Spreadsheet</string>
     <string name="spreadsheet_import">Import from Spreadsheet</string>
+
+    <!-- Team Info -->
+    <string name="team_info_not_found">No team information found</string>
+    <string name="team_info_previous_not_found">No previous team information found</string>
 </resources>

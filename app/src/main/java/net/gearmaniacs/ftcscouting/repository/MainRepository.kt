@@ -8,24 +8,24 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import net.gearmaniacs.core.architecture.NonNullLiveData
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.FirebaseDatabaseCallback
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.User
 
-class MainRepository(coroutineScope: CoroutineScope) {
+class MainRepository(
+    coroutineScope: CoroutineScope,
+    val userCallback: FirebaseDatabaseCallback<User>
+) {
 
-    private val tournamentReference by lazy {
-        FirebaseDatabase.getInstance()
-            .getReference(DatabasePaths.KEY_SKYSTONE)
-            .child(FirebaseAuth.getInstance().currentUser!!.uid)
-    }
-    private val userReference by lazy {
-        FirebaseDatabase.getInstance()
-            .getReference(DatabasePaths.KEY_USERS)
-            .child(FirebaseAuth.getInstance().currentUser!!.uid)
-    }
+    private val tournamentReference = FirebaseDatabase.getInstance()
+        .getReference(DatabasePaths.KEY_SKYSTONE)
+        .child(FirebaseAuth.getInstance().currentUser!!.uid)
+    private val userReference = FirebaseDatabase.getInstance()
+        .getReference(DatabasePaths.KEY_USERS)
+        .child(FirebaseAuth.getInstance().currentUser!!.uid)
 
     private val tournamentsListener = object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
@@ -39,36 +39,33 @@ class MainRepository(coroutineScope: CoroutineScope) {
                 list.sort()
 
                 launch(Dispatchers.Main) {
-                    tournamentsCallback?.onSuccess(list)
+                    tournamentData.value = list
                 }
             }
         }
 
         override fun onCancelled(error: DatabaseError) {
-            tournamentsCallback?.onError(error.toException())
+            error.toException().printStackTrace()
         }
     }
 
     private val userListener = object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
             try {
-                val id = snapshot.child(User::id.name).getValue(Int::class.java) ?: return
-                val teamName =
-                    snapshot.child(User::teamName.name).getValue(String::class.java).orEmpty()
+                val user = snapshot.getValue(User::class.java)!!
 
-                userCallback?.onSuccess(User(id, teamName))
+                userCallback.onSuccess(user)
             } catch (e: Exception) {
-                userCallback?.onError(e)
+                userCallback.onError(e)
             }
         }
 
         override fun onCancelled(error: DatabaseError) {
-            userCallback?.onError(error.toException())
+            userCallback.onError(error.toException())
         }
     }
 
-    var tournamentsCallback: FirebaseDatabaseCallback<List<Tournament>>? = null
-    var userCallback: FirebaseDatabaseCallback<User>? = null
+    val tournamentData = NonNullLiveData(emptyList<Tournament>())
 
     fun addListeners() {
         userReference.addValueEventListener(userListener)
@@ -86,22 +83,24 @@ class MainRepository(coroutineScope: CoroutineScope) {
             .removeEventListener(tournamentsListener)
     }
 
-    fun createNewTournament(user: User, tournamentName: String) {
+    fun createNewTournament(user: User?, tournamentName: String) {
         val newTournament = tournamentReference
             .child(DatabasePaths.KEY_TOURNAMENTS)
             .push()
 
         newTournament.setValue(tournamentName)
 
-        val key = newTournament.key ?: return
-        val team = Team(user.id, user.teamName)
+        if (user != null) {
+            val key = newTournament.key ?: return
+            val team = Team(user.id, user.teamName)
 
-        tournamentReference
-            .child(DatabasePaths.KEY_DATA)
-            .child(key)
-            .child(DatabasePaths.KEY_TEAMS)
-            .push()
-            .setValue(team)
+            tournamentReference
+                .child(DatabasePaths.KEY_DATA)
+                .child(key)
+                .child(DatabasePaths.KEY_TEAMS)
+                .push()
+                .setValue(team)
+        }
     }
 
     fun deleteTournament(tournamentKey: String) {

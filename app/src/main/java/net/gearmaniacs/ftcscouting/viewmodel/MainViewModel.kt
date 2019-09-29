@@ -2,7 +2,6 @@ package net.gearmaniacs.ftcscouting.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import net.gearmaniacs.core.architecture.NonNullLiveData
 import net.gearmaniacs.core.firebase.FirebaseDatabaseCallback
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.User
@@ -10,25 +9,8 @@ import net.gearmaniacs.ftcscouting.repository.MainRepository
 
 class MainViewModel : ViewModel() {
 
-    private val repository = MainRepository(viewModelScope)
-    private var listening = false
-
-    val tournamentData = NonNullLiveData(emptyList<Tournament>())
-    var currentUser: User? = null
-
-    init {
-        repository.tournamentsCallback =
-            object : FirebaseDatabaseCallback<List<Tournament>> {
-                override fun onSuccess(result: List<Tournament>) {
-                    tournamentData.value = result
-                }
-
-                override fun onError(e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
-        repository.userCallback = object : FirebaseDatabaseCallback<User> {
+    private val repository = MainRepository(viewModelScope,
+        object : FirebaseDatabaseCallback<User> {
             override fun onSuccess(result: User) {
                 currentUser = result
             }
@@ -37,7 +19,11 @@ class MainViewModel : ViewModel() {
                 e.printStackTrace()
             }
         }
-    }
+    )
+    private var listening = false
+    var currentUser: User? = null
+
+    fun getTournamentsData() = repository.tournamentData
 
     fun startListening() {
         if (listening) return
@@ -56,9 +42,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun createNewTournament(tournamentName: String) {
-        currentUser?.let {
-            repository.createNewTournament(it, tournamentName)
-        }
+        repository.createNewTournament(currentUser, tournamentName)
     }
 
     fun deleteTournament(tournament: Tournament) {

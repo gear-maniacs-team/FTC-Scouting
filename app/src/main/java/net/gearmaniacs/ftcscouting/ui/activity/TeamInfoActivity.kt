@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_team_info.*
 import net.gearmaniacs.core.extensions.getTextString
+import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.core.firebase.DatabasePaths
@@ -20,7 +21,7 @@ class TeamInfoActivity : AppCompatActivity() {
     companion object {
         private const val ARG_USER = "user"
 
-        fun startActivity(context: Context, user: User) {
+        fun startActivity(context: Context, user: User?) {
             val intent = Intent(context, TeamInfoActivity::class.java)
             intent.putExtra(ARG_USER, user)
             context.startActivity(intent)
@@ -35,10 +36,13 @@ class TeamInfoActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val user = intent.getParcelableExtra<User>(ARG_USER)
-            ?: throw IllegalArgumentException(ARG_USER)
 
-        et_team_number.setText(user.id.toString())
-        et_team_name.setText(user.teamName)
+        if (user != null) {
+            et_team_number.setText(user.id.toString())
+            et_team_name.setText(user.teamName)
+        } else {
+            longToast(R.string.team_info_previous_not_found)
+        }
 
         btn_update_account.setOnClickListener {
             val number = et_team_number.getTextString().toIntOrDefault(-1)
@@ -54,15 +58,16 @@ class TeamInfoActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            val appContext = applicationContext
             FirebaseDatabase.getInstance()
                 .getReference(DatabasePaths.KEY_USERS)
                 .child(FirebaseAuth.getInstance().currentUser!!.uid)
                 .setValue(user)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
-                        toast(R.string.team_updated)
+                        appContext.toast(R.string.team_updated)
                     } else {
-                        toast(R.string.team_update_error)
+                        appContext.toast(R.string.team_update_error)
                     }
                 }
         }

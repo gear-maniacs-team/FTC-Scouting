@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
             }
         }
 
-        observeNonNull(viewModel.tournamentData) {
+        observeNonNull(viewModel.getTournamentsData()) {
             adapter.submitList(it)
         }
     }
@@ -72,9 +72,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
             true
         }
         R.id.action_account -> {
-            viewModel.currentUser?.let {
-                TeamInfoActivity.startActivity(this, it)
-            }
+            TeamInfoActivity.startActivity(this, viewModel.currentUser)
             true
         }
         R.id.action_sign_out -> {
@@ -88,6 +86,11 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
 
     override fun onStart() {
         super.onStart()
+        if (FirebaseAuth.getInstance().currentUser == null) {
+            startActivity<LoginActivity>()
+            finish()
+            return
+        }
         viewModel.startListening()
     }
 
@@ -98,22 +101,21 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
 
     override fun onClickListener(position: Int) {
         try {
-            val item = adapter.getItem(position)
-            val user = viewModel.currentUser ?: return
-            TournamentActivity.startActivity(this, user, item)
+            val tournament = adapter.getItem(position)
+            TournamentActivity.startActivity(this, viewModel.currentUser, tournament)
         } catch (e: IndexOutOfBoundsException) {
         }
     }
 
     override fun onLongClickListener(position: Int) {
         try {
-            val item = adapter.getItem(position)
+            val tournament = adapter.getItem(position)
 
             AlertDialog.Builder(this)
                 .setTitle(R.string.delete_tournament)
                 .setMessage(R.string.delete_tournament_desc)
                 .setPositiveButton(R.string.action_delete) { _, _ ->
-                    viewModel.deleteTournament(item)
+                    viewModel.deleteTournament(tournament)
                 }
                 .setNegativeButton(android.R.string.cancel, null)
                 .show()

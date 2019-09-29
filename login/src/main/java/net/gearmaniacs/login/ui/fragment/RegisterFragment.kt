@@ -29,6 +29,8 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             val password = etPassword.getTextString()
             val confirmPassword = etConfirmPassword.getTextString()
 
+            etId.error = null
+            etName.error = null
             etEmail.error = null
             etPassword.error = null
             etConfirmPassword.error = null
@@ -37,7 +39,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                 etId.error = getString(R.string.error_invalid_team_number)
 
             if (name.isEmpty())
-                etName.error = getString(R.string.error_invalid_team_number)
+                etName.error = getString(R.string.error_invalid_team_name)
 
             if (!email.isValidEmail())
                 etEmail.error = getString(R.string.error_invalid_email)
