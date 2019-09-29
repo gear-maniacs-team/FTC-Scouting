@@ -103,6 +103,8 @@ internal class TeamEditDialog : DialogFragment() {
 
         view.cb_cap_placed.setOnCheckedChangeListener { _, isChecked ->
             layout_cap_level.isInvisible = !isChecked
+            updateEndGameScore(view)
+            updateTotalScore(view)
         }
 
         view.fab_edit_team_done.setOnClickListener {
@@ -170,7 +172,6 @@ internal class TeamEditDialog : DialogFragment() {
 
         view.cb_move_foundation.setOnCheckedChangeListener(endGameListener)
         view.cb_parking.setOnCheckedChangeListener(endGameListener)
-        view.cb_cap_placed.setOnCheckedChangeListener(endGameListener)
         view.et_cap_level.addTextChangedListener(endGameListener)
     }
 

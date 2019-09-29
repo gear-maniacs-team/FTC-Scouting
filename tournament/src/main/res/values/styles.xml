@@ -6,7 +6,7 @@
         <item name="bottomSheetStyle">@style/BottomSheet</item>
     </style>
 
-    <style name="FullScreenDialogStyle" parent="Theme.MaterialComponents.DayNight.Dialog">
+    <style name="FullScreenDialogStyle" parent="Theme.MaterialComponents.Dialog">
         <item name="android:windowNoTitle">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorBackgroundDark</item>
@@ -22,7 +22,7 @@
     </style>
 
     <!-- Override the MaterialChooserTheme -->
-    <style name="FileChooserTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="FileChooserTheme" parent="Theme.MaterialComponents">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>

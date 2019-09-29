@@ -1,7 +1,6 @@
 package net.gearmaniacs.ftcscouting
 
 import android.app.Application
-import androidx.appcompat.app.AppCompatDelegate
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.google.firebase.database.FirebaseDatabase
@@ -20,7 +19,5 @@ class ScoutingApp : Application() {
 
         // Initialize Fabric with the debug-disabled crashlytics.
         Fabric.with(this, crashlyticsKit)
-
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     }
 }
