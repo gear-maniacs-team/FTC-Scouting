@@ -32,6 +32,7 @@ dependencies {
     api Libs.androidx_constraint_layout
     api Libs.androidx_lifecycle
     api Libs.androidx_swipe_refresh_layout
+    api Libs.androidx_preference
 
     api Libs.firebase_core
     api Libs.firebase_auth

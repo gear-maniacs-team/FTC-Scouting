@@ -2,7 +2,7 @@
 object Libs {
     // Kotlin
     val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin_version}"
-    val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2"
+    val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.1"
 
     // AndroidX
     val google_material = "com.google.android.material:material:1.1.0-alpha10"
@@ -12,6 +12,7 @@ object Libs {
     val androidx_constraint_layout = "androidx.constraintlayout:constraintlayout:2.0.0-beta2"
     val androidx_lifecycle = "androidx.lifecycle:lifecycle-extensions:2.1.0"
     val androidx_swipe_refresh_layout = "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+    val androidx_preference = "androidx.preference:preference:1.1.0"
 
     // KTX
     val ktx_core = "androidx.core:core-ktx:1.1.0"

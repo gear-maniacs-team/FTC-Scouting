@@ -3,6 +3,18 @@
     <string name="team_updated">Team Info Updated</string>
     <string name="team_update_error">Team Info could not be updated</string>
 
+    <!-- Intro -->
+    <string name="intro_title_1">Manage Teams &amp; Matches</string>
+    <string name="intro_title_2">Instant Synchronization</string>
+    <string name="intro_title_3">Team Rankings</string>
+    <string name="intro_title_4">Terms and Conditions</string>
+    <string name="intro_desc_1">Calculate the predicted score of teams and see easily in which matches you have to play</string>
+    <string name="intro_desc_2">Allows instant synchronization of all data between all the users using the same account</string>
+    <string name="intro_desc_3">Powerful and more accurate rankings for semi-finals using the OPR Algorithm</string>
+    <string name="intro_desc_4">I agree to the Terms and Conditions</string>
+    <string name="read_terms_and_conditions">Read the Terms and Conditions</string>
+    <string name="accept_terms_and_conditions">Please accept the Terms and Conditions</string>
+
     <!-- About Screen -->
     <string name="about_privacy_policy">Privacy Policy</string>
     <string name="about_app_feedback">App Feedback</string>

@@ -1,9 +1,11 @@
 package net.gearmaniacs.login.ui.activity
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_login.*
@@ -11,6 +13,7 @@ import net.gearmaniacs.core.extensions.lazyFast
 import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.model.User
+import net.gearmaniacs.core.utils.PreferencesKeys
 import net.gearmaniacs.login.R
 import net.gearmaniacs.login.ui.fragment.LoginFragment
 import net.gearmaniacs.login.ui.fragment.RegisterFragment
@@ -19,18 +22,31 @@ import net.gearmaniacs.login.utils.LoginCallback
 class LoginActivity : AppCompatActivity(), LoginCallback {
 
     companion object {
-        private const val MAIN_ACTIVITY_PACKAGE =
+        private const val MAIN_ACTIVITY_CLASS =
             "net.gearmaniacs.ftcscouting.ui.activity.MainActivity"
+        private const val INTRO_ACTIVITY_CLASS =
+            "net.gearmaniacs.ftcscouting.ui.activity.IntroActivity"
         private const val TAG = "LoginActivity"
         const val BUNDLE_IS_LOGIN_ACTIVE = "login_fragment_active"
+
+        private const val REQUEST_CODE_INTRO = 10
     }
 
+    private lateinit var preferenceManager: SharedPreferences
     private lateinit var auth: FirebaseAuth
     private val loginFragment = LoginFragment()
     private val registerFragment by lazyFast { RegisterFragment() }
     private var isLoginFragmentActive = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        preferenceManager = PreferenceManager.getDefaultSharedPreferences(this)
+
+        if (!preferenceManager.getBoolean(PreferencesKeys.KEY_SEEN_INTRO, false)) {
+            val introActivityClass = Class.forName(INTRO_ACTIVITY_CLASS)
+            val intent = Intent(this, introActivityClass)
+            startActivityForResult(intent, REQUEST_CODE_INTRO)
+        }
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
@@ -62,6 +78,17 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
             startMainActivity()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_INTRO) {
+            if (resultCode == RESULT_OK) {
+                preferenceManager.edit().putBoolean(PreferencesKeys.KEY_SEEN_INTRO, true).apply()
+            } else {
+                finish()
+            }
+        }
+    }
+
     override fun onLogin(email: String, password: String) {
         pb_login.isRefreshing = true
 
@@ -90,7 +117,6 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
                     Log.d(TAG, "registerWithEmail:success")
                     registerUser(user)
                 } else {
-                    pb_login.isRefreshing = false
                     Log.w(TAG, "registerWithEmail:failure")
                     longToast("Registration failed.")
                 }
@@ -141,7 +167,7 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     }
 
     private fun startMainActivity() {
-        val mainActivityClass = Class.forName(MAIN_ACTIVITY_PACKAGE)
+        val mainActivityClass = Class.forName(MAIN_ACTIVITY_CLASS)
         val intent = Intent(this, mainActivityClass)
 
         startActivity(intent)

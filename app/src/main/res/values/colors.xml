@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="color_intro_1">#039BE5</color>
+    <color name="color_intro_2">#EC407A</color>
+    <color name="color_intro_3">#6A1B9A</color>
+    <color name="color_intro_4">#FFEB3B</color>
+
+    <color name="color_dark_intro_1">#0277BD</color>
+    <color name="color_dark_intro_2">#D81B60</color>
+    <color name="color_dark_intro_3">#4A148C</color>
+    <color name="color_dark_intro_4">#FBC02D</color>
+</resources>

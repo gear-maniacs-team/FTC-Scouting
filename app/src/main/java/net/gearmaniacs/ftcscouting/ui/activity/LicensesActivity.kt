@@ -46,6 +46,11 @@ class LicensesActivity : AppCompatActivity() {
                 License.APACHE
             )
             .setLibrary(
+                "Material Intro",
+                "https://github.com/heinrichreimer/material-intro",
+                License.MIT
+            )
+            .setLibrary(
                 "Licenser",
                 "https://github.com/marcoscgdev/Licenser",
                 License.MIT

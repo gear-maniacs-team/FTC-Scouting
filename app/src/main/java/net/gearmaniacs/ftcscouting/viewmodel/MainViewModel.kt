@@ -12,7 +12,7 @@ class MainViewModel : ViewModel() {
     private val repository = MainRepository(viewModelScope,
         object : FirebaseDatabaseCallback<User> {
             override fun onSuccess(result: User) {
-                currentUser = result
+                userData = result
             }
 
             override fun onError(e: Exception) {
@@ -21,7 +21,7 @@ class MainViewModel : ViewModel() {
         }
     )
     private var listening = false
-    var currentUser: User? = null
+    var userData: User? = null
 
     fun getTournamentsData() = repository.tournamentData
 
@@ -42,7 +42,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun createNewTournament(tournamentName: String) {
-        repository.createNewTournament(currentUser, tournamentName)
+        repository.createNewTournament(userData, tournamentName)
     }
 
     fun deleteTournament(tournament: Tournament) {

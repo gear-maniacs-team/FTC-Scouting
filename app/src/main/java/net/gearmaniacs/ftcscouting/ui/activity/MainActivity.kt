@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
             true
         }
         R.id.action_account -> {
-            TeamInfoActivity.startActivity(this, viewModel.currentUser)
+            TeamInfoActivity.startActivity(this, viewModel.userData)
             true
         }
         R.id.action_sign_out -> {
@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
     override fun onClickListener(position: Int) {
         try {
             val tournament = adapter.getItem(position)
-            TournamentActivity.startActivity(this, viewModel.currentUser, tournament)
+            TournamentActivity.startActivity(this, viewModel.userData, tournament)
         } catch (e: IndexOutOfBoundsException) {
         }
     }

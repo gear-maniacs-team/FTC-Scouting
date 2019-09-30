@@ -53,6 +53,7 @@ dependencies {
 
     implementation Libs.firebase_crashlytics
 
+    implementation Libs.material_intro
     implementation Libs.material_about
     implementation Libs.licenser
 
