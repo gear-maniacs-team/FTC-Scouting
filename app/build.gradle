@@ -3,6 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.fabric'
 
+ext {
+    versionMajor = 1
+    versionMinor = 0
+    versionPatch = 0
+}
+
 android {
     compileSdkVersion Versions.compile_sdk
 
@@ -10,8 +16,8 @@ android {
         applicationId "net.gearmaniacs.ftcscouting"
         minSdkVersion Versions.min_sdk
         targetSdkVersion Versions.target_sdk
-        versionCode 2
-        versionName "Beta 2"
+        versionCode versionMajor * 100 + versionMinor * 10 + versionPatch
+        versionName "$versionMajor.$versionMinor.$versionPatch"
         resConfigs "en"
     }
 

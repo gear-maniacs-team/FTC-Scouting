@@ -7,6 +7,9 @@
     <string name="action_no_account">You don\'t have a team account?</string>
     <string name="action_already_own_account">I already own an account</string>
     <string name="action_sign_out">Sign Out</string>
+    <string name="action_forgot_password">Forgot your password?</string>
+    <string name="action_reset_password">Reset Password</string>
+
     <string name="error_invalid_team_number">Team Number is invalid</string>
     <string name="error_invalid_team_name">Team Name can\'t be empty</string>
     <string name="error_invalid_email">This email address is invalid</string>
@@ -14,4 +17,5 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_incorrect_confirm_password">The two passwords do not match</string>
     <string name="error_field_required">This field is required</string>
+    <string name="error_register_failed">Registration failed</string>
 </resources>

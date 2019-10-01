@@ -36,10 +36,9 @@ class IntroActivity : IntroActivity() {
             cbAcceptedTerms = view.findViewById(R.id.mi_description)
             view.findViewById<TextView>(R.id.tv_open_link).setOnClickListener {
                 try {
-                    // TODO: Update the url
-                    val url = "http://gearmaniacs.net/terms-conditions"
-                    val myIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    startActivity(myIntent)
+                    val url = "http://gearmaniacs.net/terms-and-conditions"
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    startActivity(intent)
                 } catch (e: ActivityNotFoundException) {
                     context?.longToast("No application can handle this request. Please install a web browser")
                     e.printStackTrace()

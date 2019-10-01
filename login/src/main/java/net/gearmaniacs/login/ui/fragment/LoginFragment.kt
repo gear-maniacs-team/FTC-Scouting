@@ -5,7 +5,9 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_login.view.*
 import net.gearmaniacs.core.extensions.isValidEmail
+import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.login.R
+import net.gearmaniacs.login.ui.activity.ResetPasswordActivity
 import net.gearmaniacs.login.utils.LoginCallback
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
@@ -33,6 +35,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
         view.btn_no_account.setOnClickListener {
             loginCallback?.switchFragment()
+        }
+
+        view.btn_forgot_password.setOnClickListener {
+            context?.startActivity<ResetPasswordActivity>()
         }
     }
 

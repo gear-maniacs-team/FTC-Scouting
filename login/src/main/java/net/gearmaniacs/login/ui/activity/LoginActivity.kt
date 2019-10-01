@@ -135,13 +135,14 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
             .getReference(DatabasePaths.KEY_USERS)
             .child(auth.currentUser!!.uid)
             .setValue(user) { error, _ ->
+                pb_login.isRefreshing = false
+
                 if (error == null) {
                     Log.d(TAG, "registerInDatabase:success")
                     startMainActivity()
                 } else {
                     Log.w(TAG, "registerInDatabase:failure")
-                    longToast("Registration failed.")
-                    pb_login.isRefreshing = false
+                    longToast(R.string.error_register_failed)
                 }
             }
     }
