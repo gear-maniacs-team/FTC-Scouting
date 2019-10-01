@@ -124,11 +124,16 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     }
 
     override fun switchFragment() {
+        // Don't allow fragment switching while processing a request
+        if (pb_login.isRefreshing) return
+
         if (!isLoginFragmentActive)
             setLoginFragment()
         else
             setRegisterFragment()
     }
+
+    override fun isWorking(): Boolean = pb_login.isRefreshing
 
     private fun registerUser(user: User) {
         FirebaseDatabase.getInstance()

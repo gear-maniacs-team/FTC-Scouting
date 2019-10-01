@@ -248,17 +248,10 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         if (oldFragmentTag != AnalyticsFragment.TAG && newFragmentTag != AnalyticsFragment.TAG) return
 
         val animationDuration = 150L
+        val relativeToSelfAnim = Animation.RELATIVE_TO_SELF
 
-        val fabAnimation = ScaleAnimation(
-            1f,
-            0f,
-            1f,
-            0f,
-            Animation.RELATIVE_TO_SELF,
-            0.5f,
-            Animation.RELATIVE_TO_SELF,
-            0.5f
-        )
+        val fabAnimation =
+            ScaleAnimation(1f, 0f, 1f, 0f, relativeToSelfAnim, 0.5f, relativeToSelfAnim, 0.5f)
         fabAnimation.duration = animationDuration
         fabAnimation.interpolator = AccelerateInterpolator()
         fabAnimation.setAnimationListener(object : Animation.AnimationListener {

@@ -37,7 +37,7 @@ class ResetPasswordActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            appContext.toast("Sending reset email")
+            appContext.toast(R.string.reset_password_sending)
             startLoading()
 
             auth.sendPasswordResetEmail(email)
@@ -46,10 +46,10 @@ class ResetPasswordActivity : AppCompatActivity() {
 
                     if (task.isSuccessful) {
                         Log.d(TAG, "Password Reset Email sent.")
-                        appContext.longToast("Email has been sent!")
+                        appContext.longToast(R.string.reset_password_email_sent)
                     } else {
                         Log.w(TAG, "Error sending Password Reset Email")
-                        appContext.longToast("The email could not be sent!")
+                        appContext.longToast(R.string.reset_password_email_not_sent)
                     }
                 }
         }

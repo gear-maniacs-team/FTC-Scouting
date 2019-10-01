@@ -18,4 +18,8 @@
     <string name="error_incorrect_confirm_password">The two passwords do not match</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_register_failed">Registration failed</string>
+
+    <string name="reset_password_sending">Sending reset email</string>
+    <string name="reset_password_email_sent">Email has been sent!</string>
+    <string name="reset_password_email_not_sent">The email could not be sent!</string>
 </resources>

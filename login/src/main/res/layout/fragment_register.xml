@@ -48,7 +48,7 @@
         style="@style/TextInputLayoutTheme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/view_margin">
+        android:layout_marginTop="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_email"
@@ -97,9 +97,9 @@
         android:id="@+id/btn_email_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="18dp"
         android:text="@string/action_register"
-        android:textSize="16sp" />
+        android:textSize="17sp" />
 
     <Button
         android:id="@+id/btn_already_own_account"
@@ -107,6 +107,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        android:textSize="15sp"
         android:textAllCaps="false"
         android:text="@string/action_already_own_account"
         android:textColor="@color/colorAccent" />

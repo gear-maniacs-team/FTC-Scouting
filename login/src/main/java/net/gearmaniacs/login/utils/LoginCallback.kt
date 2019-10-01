@@ -9,4 +9,6 @@ interface LoginCallback {
     fun onRegister(user: User, email: String, password: String)
 
     fun switchFragment()
+
+    fun isWorking(): Boolean
 }

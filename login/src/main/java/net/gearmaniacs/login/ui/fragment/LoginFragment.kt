@@ -38,7 +38,8 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         }
 
         view.btn_forgot_password.setOnClickListener {
-            context?.startActivity<ResetPasswordActivity>()
+            if (loginCallback?.isWorking() == false)
+                context?.startActivity<ResetPasswordActivity>()
         }
     }
 

@@ -20,7 +20,7 @@
         <TextView
             android:id="@+id/tv_card_title"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:textColor="?android:textColorPrimary"
             android:textSize="19sp"
             android:textStyle="bold"
