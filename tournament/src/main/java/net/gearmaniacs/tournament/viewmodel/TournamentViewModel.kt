@@ -87,7 +87,7 @@ class TournamentViewModel : ViewModel() {
             }
 
             val newTeamsList = teamIds.asSequence()
-                .filterNot { it > 0 }
+                .filter { it > 0 }
                 .filterNot { existingTeamIds.contains(it) }
                 .map { Team(it, null) }
                 .toList()

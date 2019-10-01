@@ -38,13 +38,13 @@ class TeamsRepository(private val tournamentReference: DatabaseReference) {
             .setValue(team)
     }
 
-    fun addTeams(tournamentKey: String, teamIds: List<Team>) {
+    fun addTeams(tournamentKey: String, teams: List<Team>) {
         val ref = tournamentReference
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .child(DatabasePaths.KEY_TEAMS)
 
-        teamIds.forEach {
+        teams.forEach {
             ref.push().setValue(it)
         }
     }
