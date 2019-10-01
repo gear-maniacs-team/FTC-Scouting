@@ -14,14 +14,6 @@ import net.gearmaniacs.core.architecture.NonNullLiveData
 
 inline val AndroidViewModel.app get() = getApplication<Application>()
 
-inline fun <reified T : ViewModel> FragmentActivity.getViewModel(): T {
-    return ViewModelProviders.of(this)[T::class.java]
-}
-
-inline fun <reified T : ViewModel> Fragment.getViewModel(): T {
-    return ViewModelProviders.of(this)[T::class.java]
-}
-
 inline fun <reified T : ViewModel> FragmentActivity.getViewModel(crossinline factory: () -> T): T {
     @Suppress("UNCHECKED_CAST")
     val vmFactory = object : ViewModelProvider.Factory {

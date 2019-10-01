@@ -6,7 +6,7 @@ apply plugin: 'io.fabric'
 ext {
     versionMajor = 1
     versionMinor = 0
-    versionPatch = 0
+    versionPatch = 1
 }
 
 android {
@@ -43,7 +43,7 @@ android {
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'app-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'app-rules.pro'
         }
     }
 }

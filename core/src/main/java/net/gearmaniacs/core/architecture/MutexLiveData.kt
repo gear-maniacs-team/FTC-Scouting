@@ -1,9 +1,11 @@
 package net.gearmaniacs.core.architecture
 
-import kotlinx.coroutines.*
-import kotlinx.coroutines.sync.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.withContext
 
-class MutexLiveData<T>(defaultValue: T) : NonNullLiveData<T>(defaultValue) {
+class MutexLiveData<T : Any>(defaultValue: T) : NonNullLiveData<T>(defaultValue) {
 
     private val mutex = Mutex()
 
@@ -22,7 +24,7 @@ class MutexLiveData<T>(defaultValue: T) : NonNullLiveData<T>(defaultValue) {
     fun unlock() = mutex.unlock()
 
     suspend fun postValueAndUnlock(newValue: T) = coroutineScope {
-        withContext(Dispatchers.Main) {
+        withContext(Dispatchers.Main.immediate) {
             value = newValue
         }
         mutex.unlock()
