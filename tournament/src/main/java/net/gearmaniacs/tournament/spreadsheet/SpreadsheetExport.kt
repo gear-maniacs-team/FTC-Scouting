@@ -10,6 +10,7 @@ import net.gearmaniacs.core.model.TeleOpData
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import java.io.File
 import java.io.IOException
+import java.io.OutputStream
 
 internal class SpreadsheetExport {
 
@@ -112,7 +113,14 @@ internal class SpreadsheetExport {
     }
 
     @Throws(IOException::class)
-    fun saveToFile(file: File) {
+    fun writeToStream(outputStream: OutputStream) {
+        outputStream.use {
+            workBook.write(it)
+        }
+    }
+
+    @Throws(IOException::class)
+    fun writeToFile(file: File) {
         file.parentFile?.mkdirs()
 
         file.outputStream().use {

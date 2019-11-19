@@ -31,8 +31,6 @@ import net.gearmaniacs.tournament.ui.fragment.MatchFragment
 import net.gearmaniacs.tournament.ui.fragment.TeamFragment
 import net.gearmaniacs.tournament.ui.fragment.TournamentDialogFragment
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
-import net.theluckycoder.materialchooser.Chooser
-import java.io.File
 
 class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
@@ -174,20 +172,21 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                     .show()
             }
             R.id.action_export -> {
-                Chooser(
-                    activity = this,
-                    chooserType = Chooser.FOLDER_CHOOSER,
-                    requestCode = SPREADSHEET_SAVE_REQUEST_CODE,
-                    useNightTheme = true
-                ).start()
+                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                    type = "application/vnd.ms-excel"
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                    flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    putExtra(Intent.EXTRA_TITLE, viewModel.nameData.value)
+                }
+                startActivityForResult(intent, SPREADSHEET_SAVE_REQUEST_CODE)
             }
             R.id.action_import -> {
-                Chooser(
-                    activity = this,
-                    requestCode = SPREADSHEET_LOAD_REQUEST_CODE,
-                    fileExtension = "xls",
-                    useNightTheme = true
-                ).start()
+                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                    type = "application/vnd.ms-excel"
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                    flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                }
+                startActivityForResult(intent, SPREADSHEET_LOAD_REQUEST_CODE)
             }
         }
         return true
@@ -203,17 +202,19 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         viewModel.stopListening()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
+        super.onActivityResult(requestCode, resultCode, resultData)
 
         if (requestCode == SPREADSHEET_LOAD_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val path = data?.getStringExtra(Chooser.RESULT_PATH) ?: return
-            viewModel.importFromSpreadSheet(File(path))
+            resultData?.data?.also { documentUri ->
+                viewModel.importFromSpreadSheet(applicationContext, documentUri)
+            }
         }
 
         if (requestCode == SPREADSHEET_SAVE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val path = data?.getStringExtra(Chooser.RESULT_PATH) ?: return
-            viewModel.exportToSpreadsheet(this, File(path))
+            resultData?.data?.also { documentUri ->
+                viewModel.exportToSpreadsheet(this.applicationContext, documentUri)
+            }
         }
     }
 

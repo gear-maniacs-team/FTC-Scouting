@@ -52,13 +52,13 @@ class IntroActivity : IntroActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
         val preferenceManager = PreferenceManager.getDefaultSharedPreferences(this)
         if (preferenceManager.getBoolean(PreferencesKeys.KEY_SEEN_INTRO, false)) {
             finish()
             return
         }
-
-        super.onCreate(savedInstanceState)
 
         isButtonBackVisible = true
         isButtonNextVisible = true

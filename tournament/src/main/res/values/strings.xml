@@ -69,8 +69,8 @@
     <string name="opr_info_desc">The analytics page takes the results of the matches and uses the Offensive Power Ranking Power algorithm to rank the teams accordingly.</string>
 
     <!-- Strings related to Spreadsheet -->
-    <string name="spreadsheet_error">Could not export data</string>
-    <string name="spreadsheet_saved_successfully">File saved in sdcard/FtcScouting/%s.xls</string>
+    <string name="spreadsheet_error">Could not export to spreadsheet</string>
+    <string name="spreadsheet_saved_successfully">Tournament successfully exported</string>
     <string name="spreadsheet_export">Export to Spreadsheet</string>
     <string name="spreadsheet_import">Import from Spreadsheet</string>
 

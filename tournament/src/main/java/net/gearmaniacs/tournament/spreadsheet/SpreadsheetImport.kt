@@ -11,17 +11,12 @@ import net.gearmaniacs.core.model.TeleOpData
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Sheet
-import org.apache.poi.ss.usermodel.Workbook
-import java.io.File
+import java.io.InputStream
 import java.util.Locale
 
-internal class SpreadsheetImport(spreadsheetFile: File) {
+internal class SpreadsheetImport(inputStream: InputStream) {
 
-    private val workbook = readSpreadsheet(spreadsheetFile)
-
-    private fun readSpreadsheet(spreadsheetFile: File): Workbook {
-        return HSSFWorkbook(spreadsheetFile.inputStream())
-    }
+    private val workbook = HSSFWorkbook(inputStream)
 
     private fun extractTeams(sheet: Sheet): List<Team> {
         val result = ArrayList<Team>(50)

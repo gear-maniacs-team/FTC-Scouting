@@ -16,6 +16,5 @@ android {
 dependencies {
     implementation project(Modules.core)
 
-    implementation Libs.material_chooser
     implementation Libs.apache_poi
 }

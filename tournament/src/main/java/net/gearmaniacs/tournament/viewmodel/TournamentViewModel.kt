@@ -1,6 +1,7 @@
 package net.gearmaniacs.tournament.viewmodel
 
 import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,7 +22,6 @@ import net.gearmaniacs.tournament.repository.TeamsRepository
 import net.gearmaniacs.tournament.repository.TournamentRepository
 import net.gearmaniacs.tournament.spreadsheet.SpreadsheetExport
 import net.gearmaniacs.tournament.spreadsheet.SpreadsheetImport
-import java.io.File
 import java.util.Locale
 
 class TournamentViewModel : ViewModel() {
@@ -162,7 +162,7 @@ class TournamentViewModel : ViewModel() {
         }
     }
 
-    fun exportToSpreadsheet(appContext: Context, folderDestination: File) {
+    fun exportToSpreadsheet(appContext: Context, fileUri: Uri) {
         val teams = teamsRepository.liveData.value
         val matches = matchesRepository.liveData.value
 
@@ -173,14 +173,12 @@ class TournamentViewModel : ViewModel() {
                 val export = SpreadsheetExport()
                 export.export(teams, matches, powerRankings)
 
-                val name = nameData.value
-                val file = File(folderDestination, "$name.xls")
-                export.saveToFile(file)
+                appContext.contentResolver.openOutputStream(fileUri)!!.use {
+                    export.writeToStream(it)
+                }
 
                 launch(Dispatchers.Main) {
-                    appContext.toast(
-                        appContext.getString(R.string.spreadsheet_saved_successfully, name)
-                    )
+                    appContext.toast(R.string.spreadsheet_saved_successfully)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -192,23 +190,25 @@ class TournamentViewModel : ViewModel() {
         }
     }
 
-    fun importFromSpreadSheet(file: File) {
+    fun importFromSpreadSheet(appContext: Context, fileUri: Uri) {
         val currentTeams = teamsRepository.liveData.value
         val currentMatches = matchesRepository.liveData.value
 
         viewModelScope.launch(Dispatchers.IO) {
-            val import = SpreadsheetImport(file)
-            val importedTeams = import.getTeams()
-            val importedMatches = import.getMatches()
+            appContext.contentResolver.openInputStream(fileUri)?.use { inputStream ->
+                val import = SpreadsheetImport(inputStream)
+                val importedTeams = import.getTeams()
+                val importedMatches = import.getMatches()
 
-            teamsRepository.addTeams(
-                tournamentKey,
-                importedTeams.filterNot { currentTeams.contains(it) }
-            )
-            matchesRepository.addMatches(
-                tournamentKey,
-                importedMatches.filterNot { currentMatches.contains(it) }
-            )
+                teamsRepository.addTeams(
+                    tournamentKey,
+                    importedTeams.filterNot { currentTeams.contains(it) }
+                )
+                matchesRepository.addMatches(
+                    tournamentKey,
+                    importedMatches.filterNot { currentMatches.contains(it) }
+                )
+            }
         }
     }
 
