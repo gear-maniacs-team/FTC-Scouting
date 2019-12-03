@@ -6,7 +6,7 @@ apply plugin: 'io.fabric'
 ext {
     versionMajor = 1
     versionMinor = 0
-    versionPatch = 1
+    versionPatch = 2
 }
 
 android {
@@ -46,10 +46,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'app-rules.pro'
         }
     }
-}
-
-androidExtensions {
-    experimental = true
 }
 
 dependencies {
