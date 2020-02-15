@@ -46,21 +46,22 @@ data class AutonomousData(
 @Parcelize
 data class TeleOpData(
     val deliveredStones: Int,
-    val placedStones: Int
+    val placedStones: Int,
+    val skyscraperHeight: Int
 ) : Parcelable {
 
     @Suppress("unused") // Needed for Firebase
-    constructor() : this(0, 0)
+    constructor() : this(0, 0, 0)
 
     val isEmpty: Boolean
         @Exclude
-        get() = deliveredStones == 0 && placedStones == 0
+        get() = deliveredStones == 0 && placedStones == 0 && skyscraperHeight == 0
 
     val isNotEmpty: Boolean
         @Exclude
         get() = !isEmpty
 
-    fun calculateScore(): Int = deliveredStones + placedStones
+    fun calculateScore(): Int = deliveredStones + placedStones + skyscraperHeight * 2
 }
 
 @Parcelize

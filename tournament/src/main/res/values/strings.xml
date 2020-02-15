@@ -35,6 +35,7 @@
     <string name="prompt_navigation">Navigation</string>
     <string name="prompt_delivered_skystones">Delivered Skystones</string>
     <string name="prompt_delivered_stones">Delivered Stones</string>
+    <string name="prompt_skyscraper_height">Skyscraper Height</string>
     <string name="prompt_placed_stones">Placed Stones</string>
     <string name="prompt_parking">Parking</string>
     <string name="prompt_move_foundation">Move Foundation</string>

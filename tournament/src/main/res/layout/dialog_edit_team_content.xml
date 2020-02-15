@@ -211,6 +211,27 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_placed_stones"
                 android:inputType="number"
+                android:maxLength="2"
+                android:nextFocusDown="@id/et_skyscraper_height" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_skyscraper_height"
+            style="@style/TextInputLayoutTheme"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/layout_placed_stones"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_delivered_stones">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_skyscraper_height"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_skyscraper_height"
+                android:inputType="number"
                 android:maxLength="2" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -221,7 +242,7 @@
             android:layout_marginTop="8dp"
             android:textColor="@color/colorAccent"
             android:textSize="15.5sp"
-            app:layout_constraintTop_toBottomOf="@+id/layout_delivered_stones"
+            app:layout_constraintTop_toBottomOf="@+id/layout_skyscraper_height"
             tools:text="@string/teleop_score" />
 
         <TextView

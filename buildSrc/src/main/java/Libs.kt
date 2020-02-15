@@ -5,7 +5,7 @@ object Libs {
     val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.1"
 
     // AndroidX
-    val google_material = "com.google.android.material:material:1.1.0-beta01"
+    val google_material = "com.google.android.material:material:1.1.0"
     val androidx_appcompat = "androidx.appcompat:appcompat:1.1.0"
     val androidx_recycler_view = "androidx.recyclerview:recyclerview:1.1.0"
     val androidx_card_view = "androidx.cardview:cardview:1.0.0"

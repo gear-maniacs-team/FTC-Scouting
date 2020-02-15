@@ -169,6 +169,7 @@ internal class TeamEditDialog : DialogFragment() {
 
         view.et_delivered_stones.addTextChangedListener(teleOpListener)
         view.et_placed_stones.addTextChangedListener(teleOpListener)
+        view.et_skyscraper_height.addTextChangedListener(teleOpListener)
 
         view.cb_move_foundation.setOnCheckedChangeListener(endGameListener)
         view.cb_parking.setOnCheckedChangeListener(endGameListener)
@@ -193,6 +194,7 @@ internal class TeamEditDialog : DialogFragment() {
             team.teleOpData?.let {
                 et_delivered_stones.setText(it.deliveredStones.toString())
                 et_placed_stones.setText(it.placedStones.toString())
+                et_skyscraper_height.setText(it.skyscraperHeight.toString())
 
                 teleOpScore = it.calculateScore()
             }
@@ -228,7 +230,8 @@ internal class TeamEditDialog : DialogFragment() {
 
     private fun parseTeleOpData(view: View) = TeleOpData(
         view.et_delivered_stones.getTextString().toIntOrDefault(),
-        view.et_placed_stones.getTextString().toIntOrDefault()
+        view.et_placed_stones.getTextString().toIntOrDefault(),
+        view.et_skyscraper_height.getTextString().toIntOrDefault()
     )
 
     private fun parseEndGameData(view: View): EndGameData {

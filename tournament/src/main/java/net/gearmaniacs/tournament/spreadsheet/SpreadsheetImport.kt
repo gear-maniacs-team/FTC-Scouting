@@ -39,6 +39,7 @@ internal class SpreadsheetImport(inputStream: InputStream) {
 
         var deliveredStones = 0
         var placedStones = 0
+        var skyscraperHeight = 0
 
         var autoReposition = false
         var autoNavigated = false
@@ -58,14 +59,15 @@ internal class SpreadsheetImport(inputStream: InputStream) {
                 3 -> notes = cell.stringCellValue.takeIf { it.isNotEmpty() }
                 4 -> deliveredStones = cell.numericCellValue.toInt()
                 5 -> placedStones = cell.numericCellValue.toInt()
-                6 -> autoReposition = cell.booleanCellValue
-                7 -> autoNavigated = cell.booleanCellValue
-                8 -> autoDeliveredSkystones = cell.numericCellValue.toInt()
-                9 -> autoDeliveredStones = cell.numericCellValue.toInt()
-                10 -> autoPlacedStones = cell.numericCellValue.toInt()
-                11 -> endFoundationMoved = cell.booleanCellValue
-                12 -> endParked = cell.booleanCellValue
-                13 -> endCapLevel = cell.numericCellValue.toInt()
+                6 -> skyscraperHeight = cell.numericCellValue.toInt()
+                7 -> autoReposition = cell.booleanCellValue
+                8 -> autoNavigated = cell.booleanCellValue
+                9 -> autoDeliveredSkystones = cell.numericCellValue.toInt()
+                10 -> autoDeliveredStones = cell.numericCellValue.toInt()
+                11 -> autoPlacedStones = cell.numericCellValue.toInt()
+                12 -> endFoundationMoved = cell.booleanCellValue
+                13 -> endParked = cell.booleanCellValue
+                14 -> endCapLevel = cell.numericCellValue.toInt()
             }
         }
 
@@ -78,7 +80,7 @@ internal class SpreadsheetImport(inputStream: InputStream) {
             autoDeliveredStones,
             autoPlacedStones
         )
-        val teleOpData = TeleOpData(deliveredStones, placedStones)
+        val teleOpData = TeleOpData(deliveredStones, placedStones, skyscraperHeight)
         val endGameData = EndGameData(endFoundationMoved, endParked, endCapLevel)
 
         val preferredZone = when (preferredZoneString?.toLowerCase(Locale.ROOT)) {
