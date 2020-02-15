@@ -2,26 +2,26 @@
 object Libs {
     // Kotlin
     val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin_version}"
-    val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.1"
+    val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.3"
 
     // AndroidX
     val google_material = "com.google.android.material:material:1.1.0"
     val androidx_appcompat = "androidx.appcompat:appcompat:1.1.0"
     val androidx_recycler_view = "androidx.recyclerview:recyclerview:1.1.0"
     val androidx_card_view = "androidx.cardview:cardview:1.0.0"
-    val androidx_constraint_layout = "androidx.constraintlayout:constraintlayout:2.0.0-beta3"
-    val androidx_lifecycle = "androidx.lifecycle:lifecycle-extensions:2.1.0"
+    val androidx_constraint_layout = "androidx.constraintlayout:constraintlayout:2.0.0-beta4"
+    val androidx_lifecycle = "androidx.lifecycle:lifecycle-extensions:2.2.0"
     val androidx_swipe_refresh_layout = "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     val androidx_preference = "androidx.preference:preference:1.1.0"
 
     // KTX
-    val ktx_core = "androidx.core:core-ktx:1.1.0"
-    val ktx_fragment = "androidx.fragment:fragment-ktx:1.1.0"
-    val ktx_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0"
+    val ktx_core = "androidx.core:core-ktx:1.2.0"
+    val ktx_fragment = "androidx.fragment:fragment-ktx:1.2.1"
+    val ktx_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
 
     // Firebase
-    val firebase_core = "com.google.firebase:firebase-core:17.2.1"
-    val firebase_database = "com.google.firebase:firebase-database:19.2.0"
+    val firebase_core = "com.google.firebase:firebase-core:17.2.2"
+    val firebase_database = "com.google.firebase:firebase-database:19.2.1"
     val firebase_auth = "com.google.firebase:firebase-auth:19.2.0"
     val firebase_crashlytics = "com.crashlytics.sdk.android:crashlytics:2.10.1"
 
@@ -32,7 +32,7 @@ object Libs {
     val apache_poi = "org.apache.poi:poi:4.0.1"
 
     // Tests
-    private val tests_junit = "junit:junit:4.12"
+    private val tests_junit = "junit:junit:4.13"
     private val tests_androidx = "androidx.test:core:1.2.0"
     val tests = arrayOf(tests_junit, tests_androidx)
 }

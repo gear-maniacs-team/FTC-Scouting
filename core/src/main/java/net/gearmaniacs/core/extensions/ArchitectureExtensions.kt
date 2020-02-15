@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import net.gearmaniacs.core.architecture.NonNullLiveData
 
 inline val AndroidViewModel.app get() = getApplication<Application>()
@@ -20,7 +19,7 @@ inline fun <reified T : ViewModel> FragmentActivity.getViewModel(crossinline fac
         override fun <U : ViewModel> create(modelClass: Class<U>): U = factory() as U
     }
 
-    return ViewModelProviders.of(this, vmFactory)[T::class.java]
+    return ViewModelProvider(this, vmFactory)[T::class.java]
 }
 
 inline fun <reified T : ViewModel> Fragment.getViewModel(crossinline factory: () -> T): T {
@@ -29,7 +28,7 @@ inline fun <reified T : ViewModel> Fragment.getViewModel(crossinline factory: ()
         override fun <U : ViewModel> create(modelClass: Class<U>): U = factory() as U
     }
 
-    return ViewModelProviders.of(this, vmFactory)[T::class.java]
+    return ViewModelProvider(this, vmFactory)[T::class.java]
 }
 
 fun <T : Any, L : MutableLiveData<T>> LifecycleOwner.observe(liveData: L, body: (T?) -> Unit) {
