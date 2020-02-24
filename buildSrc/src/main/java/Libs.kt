@@ -16,7 +16,7 @@ object Libs {
 
     // KTX
     val ktx_core = "androidx.core:core-ktx:1.2.0"
-    val ktx_fragment = "androidx.fragment:fragment-ktx:1.2.1"
+    val ktx_fragment = "androidx.fragment:fragment-ktx:1.2.2"
     val ktx_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
 
     // Firebase
@@ -28,7 +28,7 @@ object Libs {
     // Other Libraries
     val material_intro = "com.heinrichreimersoftware:material-intro:2.0.0"
     val material_about = "com.github.daniel-stoneuk:material-about-library:2.4.2"
-    val licenser = "com.github.marcoscgdev:Licenser:1.0.5"
+    val licenser = "com.github.marcoscgdev:Licenser:1.0.6"
     val apache_poi = "org.apache.poi:poi:4.0.1"
 
     // Tests

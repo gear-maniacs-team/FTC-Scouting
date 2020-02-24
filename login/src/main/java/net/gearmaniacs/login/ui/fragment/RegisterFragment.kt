@@ -1,42 +1,54 @@
 package net.gearmaniacs.login.ui.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_register.view.*
 import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.isValidEmail
 import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.model.User
 import net.gearmaniacs.login.R
+import net.gearmaniacs.login.databinding.FragmentRegisterBinding
 import net.gearmaniacs.login.utils.LoginCallback
 
 class RegisterFragment : Fragment(R.layout.fragment_register) {
 
+    private var _binding: FragmentRegisterBinding? = null
+    private val binding get() = _binding!!
+
     var loginCallback: LoginCallback? = null
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.btn_email_register.setOnClickListener {
-            val etId = view.et_team_number
-            val etName = view.et_team_name
-            val etEmail = view.et_email
-            val etPassword = view.et_password
-            val etConfirmPassword = view.et_confirm_password
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentRegisterBinding.inflate(inflater, container, false)
+        val view = binding.root
 
-            val id = etId.getTextString().toIntOrDefault(-1)
+        binding.btnEmailRegister.setOnClickListener {
+            val etNumber = binding.etTeamNumber
+            val etName = binding.etTeamName
+            val etEmail = binding.etEmail
+            val etPassword = binding.etPassword
+            val etConfirmPassword = binding.etConfirmPassword
+
+            val number = etNumber.getTextString().toIntOrDefault(-1)
             val name = etName.getTextString()
             val email = etEmail.getTextString()
             val password = etPassword.getTextString()
             val confirmPassword = etConfirmPassword.getTextString()
 
-            etId.error = null
+            etNumber.error = null
             etName.error = null
             etEmail.error = null
             etPassword.error = null
             etConfirmPassword.error = null
 
-            if (id < 1)
-                etId.error = getString(R.string.error_invalid_team_number)
+            if (number < 1)
+                etNumber.error = getString(R.string.error_invalid_team_number)
 
             if (name.isEmpty())
                 etName.error = getString(R.string.error_invalid_team_name)
@@ -50,16 +62,24 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             if (confirmPassword != password)
                 etConfirmPassword.error = getString(R.string.error_incorrect_confirm_password)
 
-            if (etId.error == null &&
+            if (etNumber.error == null &&
                 etName.error == null &&
                 etEmail.error == null &&
                 etPassword.error == null &&
                 etConfirmPassword.error == null
-            ) loginCallback?.onRegister(User(id, name), email, password)
+            ) loginCallback?.onRegister(User(number, name), email, password)
         }
 
-        view.btn_already_own_account.setOnClickListener {
+        binding.btnAlreadyOwnAccount.setOnClickListener {
             loginCallback?.switchFragment()
         }
+
+        return view
+    }
+
+    override fun onDestroy() {
+        loginCallback = null
+        _binding = null
+        super.onDestroy()
     }
 }

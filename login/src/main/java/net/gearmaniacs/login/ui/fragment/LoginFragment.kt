@@ -1,25 +1,37 @@
 package net.gearmaniacs.login.ui.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_login.view.*
 import net.gearmaniacs.core.extensions.isValidEmail
 import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.login.R
+import net.gearmaniacs.login.databinding.FragmentLoginBinding
 import net.gearmaniacs.login.ui.activity.ResetPasswordActivity
 import net.gearmaniacs.login.utils.LoginCallback
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
 
+    private var _binding: FragmentLoginBinding? = null
+    private val binding get() = _binding!!
+
     var loginCallback: LoginCallback? = null
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.btn_email_sign_in.setOnClickListener {
-            val etEmail = view.et_email
-            val etPassword = view.et_password
-            val email = etEmail.text?.toString().orEmpty()
-            val password = etPassword.text?.toString().orEmpty()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        val view = binding.root
+
+        binding.btnEmailSignIn.setOnClickListener {
+            val etEmail = binding.etEmail
+            val etPassword = binding.etPassword
+            val email = etEmail.text.toString()
+            val password = etPassword.text.toString()
 
             etEmail.error = null
             etPassword.error = null
@@ -33,18 +45,21 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 loginCallback?.onLogin(email, password)
         }
 
-        view.btn_no_account.setOnClickListener {
+        binding.btnNoAccount.setOnClickListener {
             loginCallback?.switchFragment()
         }
 
-        view.btn_forgot_password.setOnClickListener {
+        binding.btnForgotPassword.setOnClickListener {
             if (loginCallback?.isWorking() == false)
                 context?.startActivity<ResetPasswordActivity>()
         }
+
+        return view
     }
 
     override fun onDestroy() {
         loginCallback = null
+        _binding = null
         super.onDestroy()
     }
 }

@@ -5,35 +5,34 @@ import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_reset_password.*
 import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.isValidEmail
 import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.login.R
+import net.gearmaniacs.login.databinding.ActivityResetPasswordBinding
 
 class ResetPasswordActivity : AppCompatActivity() {
 
-    private companion object {
-        private const val TAG = "ResetPasswordActivity"
-    }
+    private lateinit var binding: ActivityResetPasswordBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_reset_password)
+        binding = ActivityResetPasswordBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        setSupportActionBar(bottom_app_bar)
+        setSupportActionBar(binding.bottomAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        pb_reset_password.isEnabled = false
+        binding.pbResetPassword.isEnabled = false
 
-        btn_reset_password.setOnClickListener {
+        binding.btnResetPassword.setOnClickListener {
             val auth = FirebaseAuth.getInstance()
-            val email = et_email.getTextString()
+            val email = binding.etEmail.getTextString()
             val appContext = applicationContext
 
             if (!email.isValidEmail()) {
-                et_email.error = getString(R.string.error_invalid_email)
+                binding.etEmail.error = getString(R.string.error_invalid_email)
                 return@setOnClickListener
             }
 
@@ -56,13 +55,13 @@ class ResetPasswordActivity : AppCompatActivity() {
     }
 
     private fun startLoading() {
-        btn_reset_password.isEnabled = false
-        pb_reset_password.isRefreshing = true
+        binding.btnResetPassword.isEnabled = false
+        binding.pbResetPassword.isRefreshing = true
     }
 
     private fun stopLoading() {
-        btn_reset_password.isEnabled = true
-        pb_reset_password.isRefreshing = false
+        binding.btnResetPassword.isEnabled = true
+        binding.pbResetPassword.isRefreshing = false
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -71,5 +70,9 @@ class ResetPasswordActivity : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private companion object {
+        private const val TAG = "ResetPasswordActivity"
     }
 }

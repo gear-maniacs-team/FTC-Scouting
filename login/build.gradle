@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion Versions.compile_sdk
@@ -10,6 +9,10 @@ android {
         targetSdkVersion Versions.target_sdk
 
         consumerProguardFiles 'login-rules.pro'
+    }
+
+    viewBinding {
+        enabled = true
     }
 
     compileOptions {

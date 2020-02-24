@@ -4,5 +4,8 @@
 -allowaccessmodification
 -dontpreverify
 
+# Remove Kotlin Null-Checks
+-assumenosideeffects class kotlin.jvm.internal.Intrinsics { *; }
+
 # Crshlythics
 -keepattributes SourceFile,LineNumberTable

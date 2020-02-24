@@ -8,34 +8,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.android.synthetic.main.activity_login.*
-import net.gearmaniacs.core.extensions.lazyFast
 import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.model.User
 import net.gearmaniacs.core.utils.PreferencesKeys
 import net.gearmaniacs.login.R
+import net.gearmaniacs.login.databinding.ActivityLoginBinding
 import net.gearmaniacs.login.ui.fragment.LoginFragment
 import net.gearmaniacs.login.ui.fragment.RegisterFragment
 import net.gearmaniacs.login.utils.LoginCallback
 
 class LoginActivity : AppCompatActivity(), LoginCallback {
 
-    companion object {
-        private const val MAIN_ACTIVITY_CLASS =
-            "net.gearmaniacs.ftcscouting.ui.activity.MainActivity"
-        private const val INTRO_ACTIVITY_CLASS =
-            "net.gearmaniacs.ftcscouting.ui.activity.IntroActivity"
-        private const val TAG = "LoginActivity"
-        const val BUNDLE_IS_LOGIN_ACTIVE = "login_fragment_active"
-
-        private const val REQUEST_CODE_INTRO = 10
-    }
-
+    private lateinit var binding: ActivityLoginBinding
     private lateinit var preferenceManager: SharedPreferences
     private lateinit var auth: FirebaseAuth
-    private val loginFragment = LoginFragment()
-    private val registerFragment by lazyFast { RegisterFragment() }
     private var isLoginFragmentActive = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,16 +35,24 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
         }
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         auth = FirebaseAuth.getInstance()
-        pb_login.isEnabled = false
-        pb_login.setColorSchemeResources(R.color.colorPrimary)
+        with(binding.pbLogin) {
+            isEnabled = false
+            setColorSchemeResources(R.color.colorPrimary)
+        }
 
-        if (auth.currentUser == null) {
-            savedInstanceState?.let {
-                isLoginFragmentActive = it.getBoolean(BUNDLE_IS_LOGIN_ACTIVE, true)
-            }
+        if (auth.currentUser != null) {
+            // If the user is logged in the MainActivity will be launched in onStart
+            return
+        }
+
+        if (savedInstanceState == null) {
+            setLoginFragment()
+        } else {
+            isLoginFragmentActive = savedInstanceState.getBoolean(BUNDLE_IS_LOGIN_ACTIVE, true)
 
             if (isLoginFragmentActive)
                 setLoginFragment()
@@ -90,11 +85,11 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     }
 
     override fun onLogin(email: String, password: String) {
-        pb_login.isRefreshing = true
+        binding.pbLogin.isRefreshing = true
 
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
-                pb_login.isRefreshing = false
+                binding.pbLogin.isRefreshing = false
 
                 if (task.isSuccessful) {
                     Log.d(TAG, "signInWithEmail:success")
@@ -107,11 +102,11 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     }
 
     override fun onRegister(user: User, email: String, password: String) {
-        pb_login.isRefreshing = true
+        binding.pbLogin.isRefreshing = true
 
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
-                pb_login.isRefreshing = false
+                binding.pbLogin.isRefreshing = false
 
                 if (task.isSuccessful) {
                     Log.d(TAG, "registerWithEmail:success")
@@ -125,7 +120,7 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
 
     override fun switchFragment() {
         // Don't allow fragment switching while processing a request
-        if (pb_login.isRefreshing) return
+        if (binding.pbLogin.isRefreshing) return
 
         if (!isLoginFragmentActive)
             setLoginFragment()
@@ -133,14 +128,14 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
             setRegisterFragment()
     }
 
-    override fun isWorking(): Boolean = pb_login.isRefreshing
+    override fun isWorking(): Boolean = binding.pbLogin.isRefreshing
 
     private fun registerUser(user: User) {
         FirebaseDatabase.getInstance()
             .getReference(DatabasePaths.KEY_USERS)
             .child(auth.currentUser!!.uid)
             .setValue(user) { error, _ ->
-                pb_login.isRefreshing = false
+                binding.pbLogin.isRefreshing = false
 
                 if (error == null) {
                     Log.d(TAG, "registerInDatabase:success")
@@ -153,21 +148,27 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     }
 
     private fun setLoginFragment() {
+        val fragment = supportFragmentManager
+            .findFragmentByTag(TAG_LOGIN_FRAGMENT) as? LoginFragment ?: LoginFragment()
+
         isLoginFragmentActive = true
-        loginFragment.loginCallback = this
+        fragment.loginCallback = this
 
         supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragment_placeholder, loginFragment)
+            replace(R.id.fragment_placeholder, fragment, TAG_LOGIN_FRAGMENT)
             commit()
         }
     }
 
     private fun setRegisterFragment() {
+        val fragment = supportFragmentManager
+            .findFragmentByTag(TAG_FRAGMENT_REGISTER) as? RegisterFragment ?: RegisterFragment()
+
         isLoginFragmentActive = false
-        registerFragment.loginCallback = this
+        fragment.loginCallback = this
 
         supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragment_placeholder, registerFragment)
+            replace(R.id.fragment_placeholder, fragment, TAG_FRAGMENT_REGISTER)
             commit()
         }
     }
@@ -178,5 +179,20 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
 
         startActivity(intent)
         finish()
+    }
+
+    private companion object {
+        private const val MAIN_ACTIVITY_CLASS =
+            "net.gearmaniacs.ftcscouting.ui.activity.MainActivity"
+        private const val INTRO_ACTIVITY_CLASS =
+            "net.gearmaniacs.ftcscouting.ui.activity.IntroActivity"
+
+        private const val TAG = "LoginActivity"
+        private const val TAG_LOGIN_FRAGMENT = "LOGIN_FRAGMENT"
+        private const val TAG_FRAGMENT_REGISTER = "REGISTER_FRAGMENT"
+
+        private const val BUNDLE_IS_LOGIN_ACTIVE = "login_fragment_active"
+
+        private const val REQUEST_CODE_INTRO = 10
     }
 }
