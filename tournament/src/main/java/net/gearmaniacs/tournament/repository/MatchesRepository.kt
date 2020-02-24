@@ -1,6 +1,11 @@
 package net.gearmaniacs.tournament.repository
 
+import androidx.lifecycle.Observer
 import com.google.firebase.database.DatabaseReference
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.gearmaniacs.core.architecture.MutexLiveData
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.FirebaseChildListener
@@ -9,10 +14,25 @@ import net.gearmaniacs.core.model.Match
 
 internal class MatchesRepository(private val tournamentReference: DatabaseReference) {
 
-    val liveData = MutexLiveData(emptyList<Match>())
+    val matchesLiveData = MutexLiveData(emptyList<Match>())
+    val infoLiveData = MutexLiveData(emptyList<Match>())
 
-    private val matchesListener = FirebaseChildListener(Match::class.java, liveData)
+    private val infoObserver = Observer<List<Match>>(::updateInfoData)
+    private val matchesListener = FirebaseChildListener(Match::class.java, matchesLiveData)
     private var listenersInitialized = false
+    private var userTeamNumber = -1
+
+    private fun updateInfoData(list: List<Match>) {
+        if (userTeamNumber == -1)
+            infoLiveData.value = emptyList()
+
+        GlobalScope.launch(Dispatchers.Main.immediate) {
+            val filtered = withContext(Dispatchers.Default) {
+                list.filter { match -> match.containsTeam(userTeamNumber) }
+            }
+            infoLiveData.value = filtered
+        }
+    }
 
     fun addMatch(tournamentKey: String, match: Match) {
         tournamentReference
@@ -52,6 +72,10 @@ internal class MatchesRepository(private val tournamentReference: DatabaseRefere
             .removeValue()
     }
 
+    fun setUserTeamNumber(number: Int) {
+        userTeamNumber = number
+    }
+
     fun addListeners(tournamentKey: String) {
         val tournamentRef = tournamentReference
             .child(DatabasePaths.KEY_DATA)
@@ -61,12 +85,14 @@ internal class MatchesRepository(private val tournamentReference: DatabaseRefere
 
         if (!listenersInitialized) {
             matchesRef.addListenerForSingleValueEvent(
-                FirebaseSingleValueListener(Match::class.java, liveData)
+                FirebaseSingleValueListener(Match::class.java, matchesLiveData)
             )
             listenersInitialized = true
         }
 
         matchesRef.addChildEventListener(matchesListener)
+
+        matchesLiveData.observeForever(infoObserver)
     }
 
     fun removeListeners(tournamentKey: String) {
@@ -75,5 +101,7 @@ internal class MatchesRepository(private val tournamentReference: DatabaseRefere
             .child(tournamentKey)
             .child(DatabasePaths.KEY_MATCHES)
             .removeEventListener(matchesListener)
+
+        matchesLiveData.removeObserver(infoObserver)
     }
 }

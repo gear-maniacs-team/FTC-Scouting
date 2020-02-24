@@ -13,7 +13,7 @@ import net.gearmaniacs.tournament.R
 
 internal class AnalyticsAdapter : RecyclerView.Adapter<AnalyticsAdapter.AnalyticsViewHolder>() {
 
-    companion object {
+    private companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TeamPower>() {
             override fun areItemsTheSame(old: TeamPower, new: TeamPower) = old.id == new.id
 
@@ -23,6 +23,7 @@ internal class AnalyticsAdapter : RecyclerView.Adapter<AnalyticsAdapter.Analytic
 
     private val differ = AsyncListDiffer(this, DIFF_CALLBACK)
     private var highestScore = 0
+    private var lowestScore = 0
 
     init {
         setHasStableIds(true)
@@ -31,7 +32,13 @@ internal class AnalyticsAdapter : RecyclerView.Adapter<AnalyticsAdapter.Analytic
     private fun getItem(position: Int): TeamPower = differ.currentList[position]
 
     fun submitList(list: List<TeamPower>) {
-        highestScore = if (list.isNotEmpty()) list[0].power.toInt() else 0
+        if (list.isEmpty()) {
+            highestScore = 0
+            lowestScore = 0
+        } else {
+            highestScore = list.first().power.toInt()
+            lowestScore = list.last().power.toInt()
+        }
 
         differ.submitList(list)
     }
@@ -55,8 +62,8 @@ internal class AnalyticsAdapter : RecyclerView.Adapter<AnalyticsAdapter.Analytic
         holder.tvName.text = context.getString(R.string.team_id_name, team.id, team.name)
         holder.tvScore.text = team.power.toString()
 
-        holder.pbScore.max = highestScore
-        holder.pbScore.progress = team.power.toInt()
+        holder.pbScore.max = highestScore - lowestScore
+        holder.pbScore.progress = team.power.toInt() - lowestScore
     }
 
     class AnalyticsViewHolder(view: View) : RecyclerView.ViewHolder(view) {

@@ -7,7 +7,6 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.android.synthetic.main.activity_team_info.*
 import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.extensions.toIntOrDefault
@@ -15,6 +14,7 @@ import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.model.User
 import net.gearmaniacs.ftcscouting.R
+import net.gearmaniacs.ftcscouting.databinding.ActivityTeamInfoBinding
 
 class TeamInfoActivity : AppCompatActivity() {
 
@@ -30,31 +30,33 @@ class TeamInfoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_team_info)
-        setSupportActionBar(bottom_app_bar)
+
+        val binding = ActivityTeamInfoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.bottomAppBar)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val user = intent.getParcelableExtra<User>(ARG_USER)
 
         if (user != null) {
-            et_team_number.setText(user.id.toString())
-            et_team_name.setText(user.teamName)
+            binding.etTeamNumber.setText(user.id.toString())
+            binding.etTeamName.setText(user.teamName)
         } else {
             longToast(R.string.team_info_previous_not_found)
         }
 
-        btn_update_account.setOnClickListener {
-            val number = et_team_number.getTextString().toIntOrDefault(-1)
-            val teamName = et_team_name.getTextString()
+        binding.btnUpdateAccount.setOnClickListener {
+            val number = binding.etTeamNumber.getTextString().toIntOrDefault(-1)
+            val teamName = binding.etTeamName.getTextString()
 
             if (number < 0) {
-                et_team_number.error = getString(R.string.error_invalid_team_number)
+                binding.etTeamNumber.error = getString(R.string.error_invalid_team_number)
                 return@setOnClickListener
             }
 
             if (teamName.isEmpty()) {
-                et_team_name.error = getString(R.string.error_invalid_team_name)
+                binding.etTeamName.error = getString(R.string.error_invalid_team_name)
                 return@setOnClickListener
             }
 

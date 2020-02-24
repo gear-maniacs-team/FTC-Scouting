@@ -16,6 +16,7 @@ import net.gearmaniacs.core.firebase.FirebaseDatabaseCallback
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeamPower
+import net.gearmaniacs.core.model.User
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.repository.MatchesRepository
 import net.gearmaniacs.tournament.repository.TeamsRepository
@@ -57,9 +58,14 @@ class TournamentViewModel : ViewModel() {
         }
     }
 
+    fun getInfoLiveData(user: User): NonNullLiveData<List<Match>> {
+        matchesRepository.setUserTeamNumber(user.id)
+        return matchesRepository.infoLiveData
+    }
+
     fun getTeamsLiveData(): NonNullLiveData<List<Team>> = teamsRepository.queriedLiveData
 
-    fun getMatchesLiveData(): NonNullLiveData<List<Match>> = matchesRepository.liveData
+    fun getMatchesLiveData(): NonNullLiveData<List<Match>> = matchesRepository.matchesLiveData
 
     fun setDefaultName(defaultName: String) {
         if (nameData.value.isNullOrEmpty())
@@ -74,7 +80,7 @@ class TournamentViewModel : ViewModel() {
 
     fun addTeamsFromMatches() {
         val existingTeamIds = teamsRepository.liveData.value.map { it.id }
-        val matchesList = matchesRepository.liveData.value
+        val matchesList = matchesRepository.matchesLiveData.value
 
         viewModelScope.launch(Dispatchers.Default) {
             val teamIds = HashSet<Int>(matchesList.size)
@@ -143,7 +149,7 @@ class TournamentViewModel : ViewModel() {
 
     fun refreshAnalyticsData(appContext: Context) {
         val teams = teamsRepository.liveData.value
-        val matches = matchesRepository.liveData.value
+        val matches = matchesRepository.matchesLiveData.value
 
         if (matches.isEmpty()) {
             appContext.toast(R.string.opr_error_no_matches)
@@ -164,7 +170,7 @@ class TournamentViewModel : ViewModel() {
 
     fun exportToSpreadsheet(appContext: Context, fileUri: Uri) {
         val teams = teamsRepository.liveData.value
-        val matches = matchesRepository.liveData.value
+        val matches = matchesRepository.matchesLiveData.value
 
         viewModelScope.launch(Dispatchers.IO) {
             val powerRankings = tournamentRepository.generateOprList(teams, matches)
@@ -192,7 +198,7 @@ class TournamentViewModel : ViewModel() {
 
     fun importFromSpreadSheet(appContext: Context, fileUri: Uri) {
         val currentTeams = teamsRepository.liveData.value
-        val currentMatches = matchesRepository.liveData.value
+        val currentMatches = matchesRepository.matchesLiveData.value
 
         viewModelScope.launch(Dispatchers.IO) {
             appContext.contentResolver.openInputStream(fileUri)?.use { inputStream ->

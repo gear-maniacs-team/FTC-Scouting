@@ -12,13 +12,13 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
 import net.gearmaniacs.core.extensions.lazyFast
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.ftcscouting.R
+import net.gearmaniacs.ftcscouting.databinding.ActivityMainBinding
 import net.gearmaniacs.ftcscouting.ui.adapter.TournamentAdapter
 import net.gearmaniacs.ftcscouting.viewmodel.MainViewModel
 import net.gearmaniacs.login.ui.activity.LoginActivity
@@ -28,22 +28,26 @@ import net.gearmaniacs.tournament.utils.RecyclerViewItemListener
 
 class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
 
+    private lateinit var binding: ActivityMainBinding
     private val viewModel by viewModels<MainViewModel>()
     private val adapter by lazyFast { TournamentAdapter(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(bottom_app_bar)
 
-        rv_tournament.adapter = adapter
-        rv_tournament.setHasFixedSize(true)
-        rv_tournament.layoutManager = LinearLayoutManager(this)
-        rv_tournament.addItemDecoration(
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.bottomAppBar)
+
+        val recyclerView = binding.root.findViewById<RecyclerView>(R.id.rv_tournament)
+        recyclerView.adapter = adapter
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.addItemDecoration(
             DividerItemDecoration(this, LinearLayoutManager.VERTICAL)
         )
 
-        fab_new_tournament.setOnClickListener {
+        binding.fabNewTournament.setOnClickListener {
             val dialogFragment = TournamentDialogFragment()
             dialogFragment.actionButtonStringRes = R.string.action_create
 
@@ -55,8 +59,8 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
             dialogFragment.show(supportFragmentManager, dialogFragment.tag)
         }
 
-        bottom_app_bar.doOnPreDraw { appBar ->
-            rv_tournament.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+        binding.bottomAppBar.doOnPreDraw { appBar ->
+            recyclerView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 updateMargins(bottom = appBar.height)
             }
         }

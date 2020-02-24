@@ -122,7 +122,6 @@ internal class MatchAdapter(
                 match.blueAlliance.firstTeam,
                 match.blueAlliance.secondTeam
             )
-
         }
     }
 }

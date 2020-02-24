@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.fabric'
 
 ext {
@@ -19,6 +18,10 @@ android {
         versionCode versionMajor * 100 + versionMinor * 10 + versionPatch
         versionName "$versionMajor.$versionMinor.$versionPatch"
         resConfigs "en"
+    }
+
+    viewBinding {
+        enabled = true
     }
 
     compileOptions {
