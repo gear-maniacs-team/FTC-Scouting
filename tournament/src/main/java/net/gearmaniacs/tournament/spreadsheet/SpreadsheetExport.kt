@@ -47,6 +47,7 @@ internal class SpreadsheetExport {
             val teleOp = team.teleOpData ?: TeleOpData()
             row.createCell(column++).setCellValue(teleOp.deliveredStones.toDouble())
             row.createCell(column++).setCellValue(teleOp.placedStones.toDouble())
+            row.createCell(column++).setCellValue(teleOp.skyscraperHeight.toDouble())
 
             // Autonomous
             val autonomous = team.autonomousData ?: AutonomousData()

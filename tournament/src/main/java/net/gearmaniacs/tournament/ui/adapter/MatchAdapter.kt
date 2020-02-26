@@ -107,14 +107,12 @@ internal class MatchAdapter(
                 }
             )
 
-            tvMatchId.text = "#${match.id}"
-            tvBasicInfo.text =
-                context.getString(
-                    R.string.match_basic_info,
-                    match.redAlliance.score,
-                    match.blueAlliance.score,
-                    winner
-                )
+            tvMatchId.text = "#${match.id}: $winner"
+            tvBasicInfo.text = context.getString(
+                R.string.match_score_details,
+                match.redAlliance.score,
+                match.blueAlliance.score
+            )
             tvDetailedInfo.text = context.getString(
                 R.string.match_detailed_info,
                 match.redAlliance.firstTeam,

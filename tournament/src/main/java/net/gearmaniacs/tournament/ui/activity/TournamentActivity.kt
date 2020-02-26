@@ -45,10 +45,12 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         private const val SPREADSHEET_SAVE_REQUEST_CODE = 2
 
         fun startActivity(context: Context, user: User?, tournament: Tournament) {
-            val intent = Intent(context, TournamentActivity::class.java)
-            intent.putExtra(ARG_USER, user)
-            intent.putExtra(ARG_TOURNAMENT_KEY, tournament.key)
-            intent.putExtra(ARG_TOURNAMENT_NAME, tournament.name)
+            val intent = Intent(context, TournamentActivity::class.java).apply {
+                putExtra(ARG_USER, user)
+                putExtra(ARG_TOURNAMENT_KEY, tournament.key)
+                putExtra(ARG_TOURNAMENT_NAME, tournament.name)
+            }
+
             context.startActivity(intent)
         }
     }

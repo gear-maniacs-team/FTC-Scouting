@@ -12,9 +12,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import net.gearmaniacs.core.extensions.lazyFast
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.ftcscouting.R
@@ -30,7 +28,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel by viewModels<MainViewModel>()
-    private val adapter by lazyFast { TournamentAdapter(this) }
+    private val adapter = TournamentAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +37,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
         setContentView(binding.root)
         setSupportActionBar(binding.bottomAppBar)
 
-        val recyclerView = binding.root.findViewById<RecyclerView>(R.id.rv_tournament)
+        val recyclerView = binding.content.rvTournament
         recyclerView.adapter = adapter
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(this)

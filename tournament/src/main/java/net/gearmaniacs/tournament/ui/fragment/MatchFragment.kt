@@ -23,6 +23,7 @@ internal class MatchFragment
 
     private val viewModel by activityViewModels<TournamentViewModel>()
     private lateinit var adapter: MatchAdapter
+    private var nextMatchId = 1
 
     override fun onInflateView(view: View) {
         val activity = activity ?: return
@@ -51,13 +52,14 @@ internal class MatchFragment
 
         activity.observeNonNull(viewModel.getMatchesLiveData()) {
             adapter.submitList(it)
+            nextMatchId = (it.maxBy { match -> match.id }?.id ?: 0) + 1
         }
     }
 
     override fun fabClickListener() {
         val activity = activity ?: return
 
-        val dialog = MatchEditDialog()
+        val dialog = MatchEditDialog.newInstance(nextMatchId)
         val transaction = activity.supportFragmentManager.beginTransaction()
         dialog.show(transaction, null)
     }

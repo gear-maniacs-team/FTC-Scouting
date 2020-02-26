@@ -31,6 +31,8 @@ internal class TeamEditDialog : DialogFragment() {
     companion object {
         private const val ARG_TEAM = "team"
 
+        fun newInstance() = TeamEditDialog()
+
         fun newInstance(team: Team) = TeamEditDialog().apply {
             val bundle = Bundle()
             bundle.putParcelable(ARG_TEAM, team)

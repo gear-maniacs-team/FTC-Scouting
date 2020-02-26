@@ -20,7 +20,14 @@ import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 internal class MatchEditDialog : DialogFragment() {
 
     companion object {
+        private const val ARG_NEXT_MATCH_ID = "next_match_id"
         private const val ARG_MATCH = "match"
+
+        fun newInstance(nextMatchId: Int) = MatchEditDialog().apply {
+            val bundle = Bundle()
+            bundle.putInt(ARG_NEXT_MATCH_ID, nextMatchId)
+            arguments = bundle
+        }
 
         fun newInstance(match: Match) = MatchEditDialog().apply {
             val bundle = Bundle()
@@ -65,7 +72,10 @@ internal class MatchEditDialog : DialogFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val nextMatchId = arguments?.getInt(ARG_NEXT_MATCH_ID, 1) ?: 1
         val match = arguments?.getParcelable<Match>(ARG_MATCH)
+
+        view.et_match_number.setText(nextMatchId.toString())
 
         view.fab_edit_match_done.setOnClickListener {
             // Parse Match data

@@ -57,6 +57,7 @@
     <string name="match_not_played">Not played</string>
     <string name="match_draw">Draw</string>
     <string name="match_basic_info">R%d &#8211; B%d: %s</string>
+    <string name="match_score_details">Red: %d &#8211; Blue: %d</string>
     <string name="match_detailed_info">Red Alliance: %d and %d\nBlue Alliance: %d and %d</string>
     <string name="match_info_red_alliance">Red Alliance: %d and %d</string>
     <string name="match_info_blue_alliance">Blue Alliance: %d and %d</string>

@@ -29,10 +29,10 @@ internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view
 
         val fab = activity.fab
         view.empty_view.setText(R.string.empty_tab_teams)
-        val recyclerView = view.recycler_view
 
         adapter = TeamAdapter(this)
 
+        val recyclerView = view.recycler_view
         recyclerView.emptyView = view.empty_view
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -57,7 +57,7 @@ internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view
     override fun fabClickListener() {
         val activity = activity ?: return
 
-        val dialog = TeamEditDialog()
+        val dialog = TeamEditDialog.newInstance()
         val transaction = activity.supportFragmentManager.beginTransaction()
         dialog.show(transaction, null)
     }
