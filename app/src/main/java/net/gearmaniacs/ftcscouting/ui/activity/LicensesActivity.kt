@@ -23,27 +23,27 @@ class LicensesActivity : AppCompatActivity() {
             .setLibrary(
                 "Kotlin",
                 "https://kotlinlang.org/",
-                License.APACHE
+                License.APACHE2
             )
             .setLibrary(
                 "Android Support Libraries",
                 "https://developer.android.com/topic/libraries/support-library",
-                License.APACHE
+                License.APACHE2
             )
             .setLibrary(
                 "Firebase",
                 "https://github.com/firebase/firebase-android-sdk",
-                License.APACHE
+                License.APACHE2
             )
             .setLibrary(
                 "Material Chooser",
                 "https://github.com/TheLuckyCoder/MaterialChooser",
-                License.APACHE
+                License.APACHE2
             )
             .setLibrary(
                 "POI",
                 "https://poi.apache.org/",
-                License.APACHE
+                License.APACHE2
             )
             .setLibrary(
                 "Material Intro",

@@ -12,7 +12,7 @@
 
     <item
         android:id="@+id/action_opr_info"
-        android:icon="@drawable/ic_info"
+        android:icon="@drawable/ic_info_outline"
         android:title="@string/opr_info"
         android:visible="false"
         app:showAsAction="ifRoom" />

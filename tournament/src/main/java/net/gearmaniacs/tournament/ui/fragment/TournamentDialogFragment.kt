@@ -10,12 +10,15 @@ import android.widget.FrameLayout
 import androidx.annotation.StringRes
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlinx.android.synthetic.main.dialog_new_tournament.*
-import kotlinx.android.synthetic.main.dialog_new_tournament.view.*
 import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.tournament.R
+import net.gearmaniacs.tournament.databinding.DialogNewTournamentBinding
 
 class TournamentDialogFragment : RoundedBottomSheetDialogFragment() {
+
+    private var _binding: DialogNewTournamentBinding? = null
+    private val binding
+        get() = _binding!!
 
     @StringRes
     var actionButtonStringRes = R.string.action_create
@@ -25,32 +28,36 @@ class TournamentDialogFragment : RoundedBottomSheetDialogFragment() {
     override fun setupDialog(dialog: Dialog, style: Int) {
         dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         dialog.setOnShowListener {
-            val bottomSheetDialog = dialog as BottomSheetDialog
-            bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            val bottomSheetDialog = dialog as? BottomSheetDialog
+            bottomSheetDialog?.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
                 ?.let { bottomSheet ->
                     BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
                 }
         }
-        super.setupDialog(dialog, style)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.dialog_new_tournament, container)
-    }
+    ): View {
+        _binding = DialogNewTournamentBinding.inflate(layoutInflater, container, false)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.btn_tournament_action.setText(actionButtonStringRes)
-        view.et_tournament_name.setText(defaultName)
-        view.et_tournament_name.requestFocus()
+        binding.btnTournamentAction.setText(actionButtonStringRes)
+        binding.etTournamentName.setText(defaultName)
+        binding.etTournamentName.requestFocus()
 
-        view.btn_tournament_action.setOnClickListener {
-            val name = et_tournament_name.getTextString()
+        binding.btnTournamentAction.setOnClickListener {
+            val name = binding.etTournamentName.getTextString()
             actionButtonListener?.invoke(name)
             dismiss()
         }
+
+        return binding.root
+    }
+
+    override fun onDestroy() {
+        _binding = null
+        super.onDestroy()
     }
 }

@@ -1,12 +1,13 @@
 package net.gearmaniacs.tournament.ui.fragment
 
 import android.view.View
+import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.activity_tournament.*
-import kotlinx.android.synthetic.main.fragment_recycler_view.view.*
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import net.gearmaniacs.core.extensions.observeNonNull
+import net.gearmaniacs.core.view.EmptyRecyclerView
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.ui.adapter.AnalyticsAdapter
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
@@ -22,13 +23,15 @@ internal class AnalyticsFragment : TournamentFragment(R.layout.fragment_recycler
     override fun onInflateView(view: View) {
         val activity = activity ?: return
 
-        val fab = activity.fab
-        view.empty_view.setText(R.string.empty_tab_analytics)
-        val recyclerView = view.recycler_view
+        val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
+        val emptyView = view.findViewById<TextView>(R.id.empty_view)
+        val recyclerView = view.findViewById<EmptyRecyclerView>(R.id.recycler_view)
+
+        emptyView.setText(R.string.empty_tab_analytics)
 
         val adapter = AnalyticsAdapter()
 
-        recyclerView.emptyView = view.empty_view
+        recyclerView.emptyView = emptyView
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter

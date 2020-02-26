@@ -8,13 +8,12 @@ import androidx.core.view.doOnPreDraw
 import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import kotlinx.android.synthetic.main.dialog_edit_match.view.*
-import kotlinx.android.synthetic.main.dialog_edit_match_content.view.*
 import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.model.Alliance
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.tournament.R
+import net.gearmaniacs.tournament.databinding.DialogEditMatchBinding
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 internal class MatchEditDialog : DialogFragment() {
@@ -36,6 +35,9 @@ internal class MatchEditDialog : DialogFragment() {
         }
     }
 
+    private var _binding: DialogEditMatchBinding? = null
+    private val binding get() = _binding!!
+
     private val viewModel by activityViewModels<TournamentViewModel>()
     private var transitionPlayed = false
 
@@ -49,14 +51,14 @@ internal class MatchEditDialog : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        super.onCreateView(inflater, container, savedInstanceState)
-        val view = inflater.inflate(R.layout.dialog_edit_match, container, false)
+        _binding = DialogEditMatchBinding.inflate(inflater, container, false)
+        val view = binding.root
 
-        view.bottom_bar.setNavigationIcon(R.drawable.ic_close)
-        view.bottom_bar.setNavigationOnClickListener { dismiss() }
+        binding.bottomBar.setNavigationIcon(R.drawable.ic_close)
+        binding.bottomBar.setNavigationOnClickListener { dismiss() }
 
-        view.bottom_bar.doOnPreDraw { bottom_bar ->
-            view.layout_content.updatePadding(bottom = (bottom_bar.height * 1.6f).toInt())
+        binding.bottomBar.doOnPreDraw { bottom_bar ->
+            binding.content.layoutContent.updatePadding(bottom = (bottom_bar.height * 1.6f).toInt())
         }
 
         return view
@@ -74,25 +76,26 @@ internal class MatchEditDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val nextMatchId = arguments?.getInt(ARG_NEXT_MATCH_ID, 1) ?: 1
         val match = arguments?.getParcelable<Match>(ARG_MATCH)
+        val content = binding.content
 
-        view.et_match_number.setText(nextMatchId.toString())
+        content.etMatchNumber.setText(nextMatchId.toString())
 
-        view.fab_edit_match_done.setOnClickListener {
+        binding.fabEditMatchDone.setOnClickListener {
             // Parse Match data
             val redAlliance = Alliance(
-                firstTeam = view.et_alliance_red_first.getTextString().toIntOrDefault(),
-                secondTeam = view.et_alliance_red_second.getTextString().toIntOrDefault(),
-                score = view.et_alliance_red_score.getTextString().toIntOrDefault()
+                firstTeam = content.etRedFirstTeam.getTextString().toIntOrDefault(),
+                secondTeam = content.etRedSecondTeam.getTextString().toIntOrDefault(),
+                score = content.etRedScore.getTextString().toIntOrDefault()
             )
 
             val blueAlliance = Alliance(
-                firstTeam = view.et_alliance_blue_first.getTextString().toIntOrDefault(),
-                secondTeam = view.et_alliance_blue_second.getTextString().toIntOrDefault(),
-                score = view.et_alliance_blue_score.getTextString().toIntOrDefault()
+                firstTeam = content.etBlueFirstTeam.getTextString().toIntOrDefault(),
+                secondTeam = content.etBlueSecondTeam.getTextString().toIntOrDefault(),
+                score = content.etBlueScore.getTextString().toIntOrDefault()
             )
 
             val parsedMatch = Match(
-                id = view.et_match_number.getTextString().toIntOrDefault(),
+                id = content.etMatchNumber.getTextString().toIntOrDefault(),
                 redAlliance = redAlliance,
                 blueAlliance = blueAlliance
             )
@@ -105,21 +108,26 @@ internal class MatchEditDialog : DialogFragment() {
 
         match ?: return
 
-        view.apply {
-            et_match_number.setText(match.id.toString())
+        with(content) {
+            etMatchNumber.setText(match.id.toString())
 
             match.redAlliance.let {
-                et_alliance_red_first.setText(it.firstTeam.toString())
-                et_alliance_red_second.setText(it.secondTeam.toString())
+                etRedFirstTeam.setText(it.firstTeam.toString())
+                etRedScore.setText(it.secondTeam.toString())
             }
 
             match.blueAlliance.let {
-                et_alliance_blue_first.setText(it.firstTeam.toString())
-                et_alliance_blue_second.setText(it.secondTeam.toString())
+                etBlueFirstTeam.setText(it.firstTeam.toString())
+                etBlueSecondTeam.setText(it.secondTeam.toString())
             }
 
-            et_alliance_red_score.setText(match.redAlliance.score.toString())
-            et_alliance_blue_score.setText(match.blueAlliance.score.toString())
+            etRedScore.setText(match.redAlliance.score.toString())
+            etBlueScore.setText(match.blueAlliance.score.toString())
         }
+    }
+
+    override fun onDestroy() {
+        _binding = null
+        super.onDestroy()
     }
 }

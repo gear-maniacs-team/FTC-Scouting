@@ -22,10 +22,6 @@ android {
     }
 }
 
-androidExtensions {
-    experimental = true
-}
-
 dependencies {
     api Libs.kotlin_stdlib
     api Libs.kotlin_coroutines

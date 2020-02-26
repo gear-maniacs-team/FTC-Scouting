@@ -48,19 +48,19 @@
             app:layout_constraintTop_toBottomOf="@+id/layout_match_number" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_alliance_red_first"
+            android:id="@+id/layout_red_first_team"
             style="@style/TextInputLayoutTheme"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="4dp"
-            app:layout_constraintEnd_toStartOf="@+id/layout_alliance_red_second"
+            app:layout_constraintEnd_toStartOf="@+id/layout_red_second_team"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_red_alliance">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_alliance_red_first"
+                android:id="@+id/et_red_first_team"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_first_team"
@@ -68,12 +68,12 @@
                 android:inputType="number"
                 android:maxLength="6"
                 android:maxLines="1"
-                android:nextFocusDown="@id/et_alliance_red_second"
+                android:nextFocusDown="@id/et_red_second_team"
                 android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_alliance_red_second"
+            android:id="@+id/layout_red_second_team"
             style="@style/TextInputLayoutTheme"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -81,11 +81,11 @@
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/layout_alliance_red_first"
+            app:layout_constraintStart_toEndOf="@+id/layout_red_first_team"
             app:layout_constraintTop_toBottomOf="@+id/tv_red_alliance">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_alliance_red_second"
+                android:id="@+id/et_red_second_team"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_second_team"
@@ -97,17 +97,17 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_alliance_red_score"
+            android:id="@+id/layout_red_score_team"
             style="@style/TextInputLayoutTheme"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="@+id/layout_alliance_red_first"
+            app:layout_constraintEnd_toEndOf="@+id/layout_red_first_team"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layout_alliance_red_first">
+            app:layout_constraintTop_toBottomOf="@+id/layout_red_first_team">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_alliance_red_score"
+                android:id="@+id/et_red_score"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_score"
@@ -128,23 +128,23 @@
             android:textColor="@color/blueAlliance"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@+id/layout_alliance_red_score"
+            app:layout_constraintTop_toBottomOf="@+id/layout_red_score_team"
             tools:layout_editor_absoluteX="27dp" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_alliance_blue_first"
+            android:id="@+id/layout_blue_first_team"
             style="@style/TextInputLayoutTheme"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="4dp"
-            app:layout_constraintEnd_toStartOf="@+id/layout_alliance_blue_second"
+            app:layout_constraintEnd_toStartOf="@+id/layout_blue_second_team"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_blue_alliance">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_alliance_blue_first"
+                android:id="@+id/et_blue_first_team"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_first_team"
@@ -152,12 +152,12 @@
                 android:inputType="number"
                 android:maxLength="6"
                 android:maxLines="1"
-                android:nextFocusDown="@id/et_alliance_blue_second"
+                android:nextFocusDown="@id/et_blue_second_team"
                 android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_alliance_blue_second"
+            android:id="@+id/layout_blue_second_team"
             style="@style/TextInputLayoutTheme"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -165,11 +165,11 @@
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/layout_alliance_blue_first"
+            app:layout_constraintStart_toEndOf="@+id/layout_blue_first_team"
             app:layout_constraintTop_toBottomOf="@+id/tv_blue_alliance">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_alliance_blue_second"
+                android:id="@+id/et_blue_second_team"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_second_team"
@@ -181,17 +181,17 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_alliance_blue_score"
+            android:id="@+id/layout_blue_score"
             style="@style/TextInputLayoutTheme"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="@+id/layout_alliance_blue_first"
+            app:layout_constraintEnd_toEndOf="@+id/layout_blue_first_team"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layout_alliance_blue_first">
+            app:layout_constraintTop_toBottomOf="@+id/layout_blue_first_team">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_alliance_blue_score"
+                android:id="@+id/et_blue_score"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_score"

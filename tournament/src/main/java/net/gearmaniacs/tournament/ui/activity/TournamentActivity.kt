@@ -16,7 +16,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.getSystemService
-import kotlinx.android.synthetic.main.activity_tournament.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -25,6 +24,7 @@ import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.User
 import net.gearmaniacs.tournament.R
+import net.gearmaniacs.tournament.databinding.ActivityTournamentBinding
 import net.gearmaniacs.tournament.ui.fragment.AnalyticsFragment
 import net.gearmaniacs.tournament.ui.fragment.InfoFragment
 import net.gearmaniacs.tournament.ui.fragment.MatchFragment
@@ -55,6 +55,7 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         }
     }
 
+    private lateinit var binding: ActivityTournamentBinding
     private val viewModel by viewModels<TournamentViewModel>()
     private val fragments =
         listOf(InfoFragment(), TeamFragment(), MatchFragment(), AnalyticsFragment())
@@ -62,9 +63,11 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_tournament)
 
-        setSupportActionBar(toolbar)
+        binding = ActivityTournamentBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Make sure the data from the intent is not null
@@ -75,11 +78,11 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         viewModel.setDefaultName(tournamentName)
 
-        fab.setOnClickListener {
+        binding.fab.setOnClickListener {
             activeFragment.fabClickListener()
         }
 
-        bottom_navigation.setOnNavigationItemSelectedListener {
+        binding.bottomNavigation.setOnNavigationItemSelectedListener {
             val newFragment = fragments[it.order]
 
             if (activeFragment.getFragmentTag() != newFragment.getFragmentTag()) {
@@ -157,7 +160,7 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 AlertDialog.Builder(this)
                     .setTitle(R.string.opr_info)
                     .setMessage(R.string.opr_info_desc)
-                    .setIcon(R.drawable.ic_info)
+                    .setIcon(R.drawable.ic_info_outline)
                     .setNeutralButton(android.R.string.ok, null)
                     .show()
             }
@@ -236,6 +239,8 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             else
                 R.drawable.ic_add
         )
+
+        val fab = binding.fab
 
         if (fab.isOrWillBeHidden) {
             fab.setImageDrawable(newDrawable)

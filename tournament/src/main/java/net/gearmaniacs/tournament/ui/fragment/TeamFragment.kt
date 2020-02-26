@@ -1,14 +1,15 @@
 package net.gearmaniacs.tournament.ui.fragment
 
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.activity_tournament.*
-import kotlinx.android.synthetic.main.fragment_recycler_view.view.*
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import net.gearmaniacs.core.extensions.observeNonNull
+import net.gearmaniacs.core.view.EmptyRecyclerView
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.ui.adapter.TeamAdapter
 import net.gearmaniacs.tournament.utils.RecyclerViewItemListener
@@ -27,13 +28,15 @@ internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view
     override fun onInflateView(view: View) {
         val activity = activity ?: return
 
-        val fab = activity.fab
-        view.empty_view.setText(R.string.empty_tab_teams)
+        val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
+        val emptyView = view.findViewById<TextView>(R.id.empty_view)
+        val recyclerView = view.findViewById<EmptyRecyclerView>(R.id.recycler_view)
+
+        emptyView.setText(R.string.empty_tab_teams)
 
         adapter = TeamAdapter(this)
 
-        val recyclerView = view.recycler_view
-        recyclerView.emptyView = view.empty_view
+        recyclerView.emptyView = emptyView
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
