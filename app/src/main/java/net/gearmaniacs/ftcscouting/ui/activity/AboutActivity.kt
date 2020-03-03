@@ -59,7 +59,7 @@ class AboutActivity : MaterialAboutActivity() {
         .addItem(
             MaterialAboutTitleItem(
                 getString(R.string.app_name),
-                "© 2019 Gear Maniacs",
+                "© 2019-2020 Gear Maniacs",
                 getDrawable(R.mipmap.ic_launcher)
             )
         )
@@ -83,7 +83,7 @@ class AboutActivity : MaterialAboutActivity() {
                 getString(R.string.about_app_feedback),
                 APP_EMAIL,
                 getDrawable(R.drawable.ic_about_email),
-                OpenEmailAction(this, APP_EMAIL, getString(R.string.app_name))
+                OpenEmailAction(this, APP_EMAIL, "FTC Scouting App")
             )
         )
         .addItem(
@@ -167,5 +167,4 @@ class AboutActivity : MaterialAboutActivity() {
         private const val AUTHOR_WEBSITE = "http://theluckycoder.net/"
         private const val AUTHOR_GITHUB = "https://github.com/TheLuckyCoder/"
     }
-
 }

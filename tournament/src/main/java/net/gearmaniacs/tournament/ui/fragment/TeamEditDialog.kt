@@ -213,7 +213,7 @@ internal class TeamEditDialog : DialogFragment() {
                 cbMoveFoundation.isChecked = it.moveFoundation
                 cbParking.isChecked = it.parked
 
-                if (it.capLevel > 0) {
+                if (it.capLevel >= 0) {
                     cbCapPlaced.isChecked = true
                     etCapLevel.setText(it.capLevel.toString())
                 }
@@ -247,7 +247,7 @@ internal class TeamEditDialog : DialogFragment() {
     private fun parseEndGameData(): EndGameData {
         val content = binding.content
         val capLevel =
-            if (content.cbCapPlaced.isChecked) content.etCapLevel.getTextString().toIntOrDefault() else 0
+            if (content.cbCapPlaced.isChecked) content.etCapLevel.getTextString().toIntOrDefault() else -1
 
         return EndGameData(
             content.cbMoveFoundation.isChecked,
@@ -257,14 +257,16 @@ internal class TeamEditDialog : DialogFragment() {
     }
 
     private fun updateAutonomousScore(score: Int = -1) {
-        val newScore = if (score == -1) parseAutonomousData(binding.content).calculateScore() else score
+        val newScore =
+            if (score == -1) parseAutonomousData(binding.content).calculateScore() else score
 
         autonomousScore = newScore
         binding.content.tvAutonomousScore.text = getString(R.string.autonomous_score, newScore)
     }
 
     private fun updateTeleOpScore(score: Int = -1) {
-        val newScore = if (score == -1) parseTeleOpData(binding.content).calculateScore() else score
+        val newScore =
+            if (score == -1) parseTeleOpData(binding.content).calculateScore() else score
 
         teleOpScore = newScore
         binding.content.tvTeleopScore.text = getString(R.string.teleop_score, newScore)

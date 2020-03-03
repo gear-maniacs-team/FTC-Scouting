@@ -72,11 +72,11 @@ data class EndGameData(
 ) : Parcelable {
 
     @Suppress("unused") // Needed for Firebase
-    constructor() : this(false, false, 0)
+    constructor() : this(false, false, -1)
 
     val isEmpty: Boolean
         @Exclude
-        get() = !moveFoundation && !parked && capLevel == 0
+        get() = !moveFoundation && !parked && capLevel < 0
 
     val isNotEmpty: Boolean
         @Exclude
@@ -87,7 +87,7 @@ data class EndGameData(
 
         if (moveFoundation) score += 15
         if (parked) score += 5
-        if (capLevel > 0)
+        if (capLevel >= 0)
             score += 5 + capLevel // Add 1 point per-level
 
         return score

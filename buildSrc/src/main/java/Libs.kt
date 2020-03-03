@@ -20,7 +20,7 @@ object Libs {
     val ktx_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
 
     // Firebase
-    val firebase_core = "com.google.firebase:firebase-core:17.2.2"
+    val firebase_core = "com.google.firebase:firebase-core:17.2.3"
     val firebase_database = "com.google.firebase:firebase-database:19.2.1"
     val firebase_auth = "com.google.firebase:firebase-auth:19.2.0"
     val firebase_crashlytics = "com.crashlytics.sdk.android:crashlytics:2.10.1"
@@ -28,7 +28,7 @@ object Libs {
     // Other Libraries
     val material_intro = "com.heinrichreimersoftware:material-intro:2.0.0"
     val material_about = "com.github.daniel-stoneuk:material-about-library:2.4.2"
-    val licenser = "com.github.marcoscgdev:Licenser:1.0.6"
+    val licenser = "com.github.marcoscgdev:Licenser:1.0.5"
     val apache_poi = "org.apache.poi:poi:4.0.1"
 
     // Tests
