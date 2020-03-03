@@ -1,20 +1,24 @@
 package net.gearmaniacs.ftcscouting.ui.activity
 
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.auth.FirebaseAuth
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.core.extensions.startActivity
+import net.gearmaniacs.core.firebase.Firebase
+import net.gearmaniacs.core.utils.PreferencesKeys
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.databinding.ActivityMainBinding
 import net.gearmaniacs.ftcscouting.ui.adapter.TournamentAdapter
@@ -27,7 +31,8 @@ import net.gearmaniacs.tournament.utils.RecyclerViewItemListener
 class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
 
     private lateinit var binding: ActivityMainBinding
-    private val viewModel by viewModels<MainViewModel>()
+    private lateinit var preferenceManager: SharedPreferences
+    private var viewModel: MainViewModel? = null
     private val adapter = TournamentAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +41,8 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.bottomAppBar)
+
+        preferenceManager = PreferenceManager.getDefaultSharedPreferences(this)
 
         val recyclerView = binding.content.rvTournament
         recyclerView.adapter = adapter
@@ -50,9 +57,11 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
             dialogFragment.actionButtonStringRes = R.string.action_create
 
             dialogFragment.actionButtonListener = { name ->
-                val tournamentName = name.trim()
-                if (tournamentName.isNotEmpty())
-                    viewModel.createNewTournament(tournamentName)
+                if (Firebase.auth.currentUser != null) {
+                    val tournamentName = name.trim()
+                    if (tournamentName.isNotEmpty())
+                        viewModel?.createNewTournament(tournamentName)
+                }
             }
             dialogFragment.show(supportFragmentManager, dialogFragment.tag)
         }
@@ -63,8 +72,12 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
             }
         }
 
-        observeNonNull(viewModel.getTournamentsData()) {
-            adapter.submitList(it)
+        if (Firebase.auth.currentUser != null) {
+            viewModel = MainViewModel().also {
+                observeNonNull(it.getTournamentsData()) { list ->
+                    adapter.submitList(list)
+                }
+            }
         }
     }
 
@@ -79,11 +92,13 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
             true
         }
         R.id.action_account -> {
-            TeamInfoActivity.startActivity(this, viewModel.userData)
+            viewModel?.userData?.let {
+                TeamInfoActivity.startActivity(this, it)
+            }
             true
         }
         R.id.action_sign_out -> {
-            FirebaseAuth.getInstance().signOut()
+            Firebase.auth.signOut()
             startActivity<LoginActivity>()
             finish()
             true
@@ -93,23 +108,43 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
 
     override fun onStart() {
         super.onStart()
-        if (FirebaseAuth.getInstance().currentUser == null) {
+        if (!preferenceManager.getBoolean(PreferencesKeys.KEY_SEEN_INTRO, false)) {
+            val intent = Intent(this, IntroActivity::class.java)
+            startActivityForResult(intent, REQUEST_CODE_INTRO)
+            return
+        }
+        if (Firebase.auth.currentUser == null) {
             startActivity<LoginActivity>()
             finish()
             return
         }
-        viewModel.startListening()
+        viewModel?.startListening()
     }
 
     override fun onStop() {
         super.onStop()
-        viewModel.stopListening()
+        viewModel?.stopListening()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_INTRO) {
+            if (resultCode == RESULT_OK) {
+                preferenceManager.edit {
+                    putBoolean(PreferencesKeys.KEY_SEEN_INTRO, true)
+                }
+            } else {
+                finish()
+            }
+        }
     }
 
     override fun onClickListener(position: Int) {
         try {
             val tournament = adapter.getItem(position)
-            TournamentActivity.startActivity(this, viewModel.userData, tournament)
+            viewModel?.userData?.let { user ->
+                TournamentActivity.startActivity(this, user, tournament)
+            }
         } catch (e: IndexOutOfBoundsException) {
         }
     }
@@ -122,11 +157,15 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
                 .setTitle(R.string.delete_tournament)
                 .setMessage(R.string.delete_tournament_desc)
                 .setPositiveButton(R.string.action_delete) { _, _ ->
-                    viewModel.deleteTournament(tournament)
+                    viewModel?.deleteTournament(tournament)
                 }
                 .setNegativeButton(android.R.string.cancel, null)
                 .show()
         } catch (e: IndexOutOfBoundsException) {
         }
+    }
+
+    private companion object {
+        private const val REQUEST_CODE_INTRO = 100
     }
 }

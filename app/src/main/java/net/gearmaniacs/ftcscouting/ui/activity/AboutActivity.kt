@@ -16,16 +16,6 @@ import net.gearmaniacs.ftcscouting.R
 
 class AboutActivity : MaterialAboutActivity() {
 
-    private companion object {
-        private const val APP_EMAIL = "app@gearmaniacs.net"
-        private const val DEVELOPER_EMAIL = "mail@theluckycoder.net"
-
-        private const val GEAR_MANIACS_WEBSITE = "http://gearmaniacs.net/"
-        private const val PRIVACY_POLICY = "http://gearmaniacs.net/privacy-policy"
-        private const val AUTHOR_WEBSITE = "http://theluckycoder.net/"
-        private const val AUTHOR_GITHUB = "https://github.com/TheLuckyCoder/"
-    }
-
     private class OpenUrlAction(
         private val context: Context,
         private val url: String
@@ -167,4 +157,15 @@ class AboutActivity : MaterialAboutActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
+    private companion object {
+        private const val APP_EMAIL = "gearmaniacsteam@gmail.com"
+        private const val DEVELOPER_EMAIL = "mail@theluckycoder.net"
+
+        private const val GEAR_MANIACS_WEBSITE = "https://gearmaniacs.ro/"
+        private const val PRIVACY_POLICY = "https://gearmaniacs.ro/privacy-policy/"
+        private const val AUTHOR_WEBSITE = "http://theluckycoder.net/"
+        private const val AUTHOR_GITHUB = "https://github.com/TheLuckyCoder/"
+    }
+
 }

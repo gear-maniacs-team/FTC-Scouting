@@ -18,7 +18,7 @@
         android:layout_marginTop="@dimen/mi_baseline"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
-        android:text="@string/intro_title_4"
+        android:text="@string/terms_and_conditions"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         app:layout_parallaxFactor="0.5" />
 
@@ -41,7 +41,7 @@
         android:layout_marginTop="@dimen/mi_baseline"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
-        android:text="@string/intro_desc_4"
+        android:text="@string/agree_terms_and_conditions"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textSize="16sp"
         app:layout_parallaxFactor="0.4"

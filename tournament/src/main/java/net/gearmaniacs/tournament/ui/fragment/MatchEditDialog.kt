@@ -50,7 +50,7 @@ internal class MatchEditDialog : DialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = DialogEditMatchBinding.inflate(inflater, container, false)
         val view = binding.root
 
@@ -113,7 +113,7 @@ internal class MatchEditDialog : DialogFragment() {
 
             match.redAlliance.let {
                 etRedFirstTeam.setText(it.firstTeam.toString())
-                etRedScore.setText(it.secondTeam.toString())
+                etRedSecondTeam.setText(it.secondTeam.toString())
             }
 
             match.blueAlliance.let {

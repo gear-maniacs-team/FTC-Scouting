@@ -36,7 +36,7 @@ class IntroActivity : IntroActivity() {
             cbAcceptedTerms = view.findViewById(R.id.mi_description)
             view.findViewById<TextView>(R.id.tv_open_link).setOnClickListener {
                 try {
-                    val url = "http://gearmaniacs.net/terms-and-conditions"
+                    val url = "https://gearmaniacs.ro/terms-and-conditions"
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                     startActivity(intent)
                 } catch (e: ActivityNotFoundException) {
