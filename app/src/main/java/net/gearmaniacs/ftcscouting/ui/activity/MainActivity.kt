@@ -52,6 +52,9 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
             DividerItemDecoration(this, LinearLayoutManager.VERTICAL)
         )
 
+        if (Firebase.auth.currentUser == null)
+            return
+
         binding.fabNewTournament.setOnClickListener {
             val dialogFragment = TournamentDialogFragment()
             dialogFragment.actionButtonStringRes = R.string.action_create
@@ -72,11 +75,10 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
             }
         }
 
-        if (Firebase.auth.currentUser != null) {
-            viewModel = MainViewModel().also {
-                observeNonNull(it.getTournamentsData()) { list ->
-                    adapter.submitList(list)
-                }
+
+        viewModel = MainViewModel().also {
+            observeNonNull(it.getTournamentsData()) { list ->
+                adapter.submitList(list)
             }
         }
     }

@@ -5,7 +5,7 @@ apply plugin: 'io.fabric'
 ext {
     versionMajor = 1
     versionMinor = 0
-    versionPatch = 3
+    versionPatch = 4
 }
 
 android {
@@ -35,14 +35,13 @@ android {
 
     buildTypes {
         debug {
-            manifestPlaceholders = [enableCrashlytics: false]
+            manifestPlaceholders = [disableFirebase: true, enableCrashlytics: false]
             ext.enableCrashlytics = false
             ext.alwaysUpdateBuildId = false
             aaptOptions.cruncherEnabled = false
-            versionNameSuffix "-debug"
         }
         release {
-            manifestPlaceholders = [enableCrashlytics: true]
+            manifestPlaceholders = [disableFirebase: false, enableCrashlytics: true]
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true

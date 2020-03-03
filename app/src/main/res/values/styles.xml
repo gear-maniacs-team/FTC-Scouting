@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+
     <style name="AppTheme.AboutActivity" parent="Theme.Mal.Dark">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -9,4 +10,5 @@
     <style name="AppTheme.Intro" parent="Theme.Intro">
         <item name="android:windowIsTranslucent" tools:targetApi="28">false</item>
     </style>
+
 </resources>
