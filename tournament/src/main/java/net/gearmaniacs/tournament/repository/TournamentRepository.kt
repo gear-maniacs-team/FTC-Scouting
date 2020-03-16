@@ -1,11 +1,15 @@
 package net.gearmaniacs.tournament.repository
 
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
+import androidx.lifecycle.MutableLiveData
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import net.gearmaniacs.core.extensions.justTry
+import net.gearmaniacs.core.extensions.safeCollect
 import net.gearmaniacs.core.firebase.DatabasePaths
-import net.gearmaniacs.core.firebase.FirebaseDatabaseCallback
+import net.gearmaniacs.core.firebase.valueEventListenerFlow
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeamPower
@@ -15,21 +19,9 @@ import java.text.DecimalFormatSymbols
 
 internal class TournamentRepository(private val tournamentReference: DatabaseReference) {
 
-    private val nameChangeListener = object : ValueEventListener {
-        override fun onDataChange(snapshot: DataSnapshot) {
-            try {
-                nameChangeCallback?.onSuccess(snapshot.getValue(String::class.java))
-            } catch (e: Exception) {
-                nameChangeCallback?.onError(e)
-            }
-        }
+    private var valueEventListenerJob: Job? = null
 
-        override fun onCancelled(error: DatabaseError) {
-            nameChangeCallback?.onError(error.toException())
-        }
-    }
-
-    var nameChangeCallback: FirebaseDatabaseCallback<String?>? = null
+    val nameLiveData = MutableLiveData<String>()
 
     fun updateTournamentName(tournamentKey: String, newName: String) {
         tournamentReference
@@ -71,16 +63,22 @@ internal class TournamentRepository(private val tournamentReference: DatabaseRef
         }
     }
 
-    fun addListener(tournamentKey: String) {
-        tournamentReference.child(DatabasePaths.KEY_TOURNAMENTS)
-            .child(tournamentKey)
-            .addValueEventListener(nameChangeListener)
+    suspend fun addListener(tournamentKey: String) = coroutineScope {
+        justTry { valueEventListenerJob?.cancelAndJoin() }
+
+        valueEventListenerJob = launch {
+            val databaseReference = tournamentReference
+                .child(DatabasePaths.KEY_TOURNAMENTS)
+                .child(tournamentKey)
+
+            databaseReference.valueEventListenerFlow<String>().safeCollect {
+                nameLiveData.postValue(it)
+            }
+        }
     }
 
-    fun removeListener(tournamentKey: String) {
-        tournamentReference
-            .child(DatabasePaths.KEY_TOURNAMENTS)
-            .child(tournamentKey)
-            .removeEventListener(nameChangeListener)
+    fun removeListener() {
+        valueEventListenerJob?.cancel()
+        valueEventListenerJob = null
     }
 }

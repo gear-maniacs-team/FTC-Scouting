@@ -2,17 +2,18 @@ package net.gearmaniacs.tournament.viewmodel
 
 import android.content.Context
 import android.net.Uri
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import net.gearmaniacs.core.architecture.NonNullLiveData
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.core.firebase.DatabasePaths
-import net.gearmaniacs.core.firebase.FirebaseDatabaseCallback
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeamPower
@@ -27,7 +28,7 @@ import java.util.Locale
 
 class TournamentViewModel : ViewModel() {
 
-    private val tournamentReference = FirebaseDatabase.getInstance()
+    private val tournamentReference = Firebase.database
         .getReference(DatabasePaths.KEY_SKYSTONE)
         .child(FirebaseAuth.getInstance().currentUser!!.uid)
 
@@ -37,39 +38,24 @@ class TournamentViewModel : ViewModel() {
     private var listening = false
 
     var tournamentKey = ""
-        set(value) {
-            stopListening()
-            field = value
-            startListening()
-        }
 
-    val nameData = MutableLiveData("")
     val analyticsData = NonNullLiveData(emptyList<TeamPower>())
-
-    init {
-        tournamentRepository.nameChangeCallback = object : FirebaseDatabaseCallback<String?> {
-            override fun onSuccess(result: String?) {
-                nameData.value = result
-            }
-
-            override fun onError(e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
 
     fun getInfoLiveData(user: User): NonNullLiveData<List<Match>> {
         matchesRepository.setUserTeamNumber(user.id)
         return matchesRepository.infoLiveData
     }
 
+    fun getNameLiveData() = tournamentRepository.nameLiveData
+
     fun getTeamsLiveData(): NonNullLiveData<List<Team>> = teamsRepository.queriedLiveData
 
     fun getMatchesLiveData(): NonNullLiveData<List<Match>> = matchesRepository.matchesLiveData
 
     fun setDefaultName(defaultName: String) {
-        if (nameData.value.isNullOrEmpty())
-            nameData.value = defaultName
+        val data = getNameLiveData()
+        if (data.value.isNullOrEmpty())
+            data.value = defaultName
     }
 
     // region Teams Management
@@ -79,7 +65,7 @@ class TournamentViewModel : ViewModel() {
     }
 
     fun addTeamsFromMatches() {
-        val existingTeamIds = teamsRepository.liveData.value.map { it.id }
+        val existingTeamIds = teamsRepository.teamsLiveData.value.map { it.id }
         val matchesList = matchesRepository.matchesLiveData.value
 
         viewModelScope.launch(Dispatchers.Default) {
@@ -148,7 +134,7 @@ class TournamentViewModel : ViewModel() {
     // endregion
 
     fun refreshAnalyticsData(appContext: Context) {
-        val teams = teamsRepository.liveData.value
+        val teams = teamsRepository.teamsLiveData.value
         val matches = matchesRepository.matchesLiveData.value
 
         if (matches.isEmpty()) {
@@ -169,7 +155,7 @@ class TournamentViewModel : ViewModel() {
     }
 
     fun exportToSpreadsheet(appContext: Context, fileUri: Uri) {
-        val teams = teamsRepository.liveData.value
+        val teams = teamsRepository.teamsLiveData.value
         val matches = matchesRepository.matchesLiveData.value
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -197,7 +183,7 @@ class TournamentViewModel : ViewModel() {
     }
 
     fun importFromSpreadSheet(appContext: Context, fileUri: Uri) {
-        val currentTeams = teamsRepository.liveData.value
+        val currentTeams = teamsRepository.teamsLiveData.value
         val currentMatches = matchesRepository.matchesLiveData.value
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -220,20 +206,25 @@ class TournamentViewModel : ViewModel() {
 
     fun startListening() {
         if (listening) return
-
-        tournamentRepository.addListener(tournamentKey)
-        teamsRepository.addListener(tournamentKey)
-        matchesRepository.addListeners(tournamentKey)
-
         listening = true
+
+        viewModelScope.launch(Dispatchers.Default) {
+            tournamentRepository.addListener(tournamentKey)
+        }
+        viewModelScope.launch(Dispatchers.Default) {
+            matchesRepository.addListener(tournamentKey)
+        }
+        viewModelScope.launch(Dispatchers.Default) {
+            teamsRepository.addListener(tournamentKey)
+        }
     }
 
     fun stopListening() {
         if (!listening) return
 
-        tournamentRepository.removeListener(tournamentKey)
-        teamsRepository.removeListener(tournamentKey)
-        matchesRepository.removeListeners(tournamentKey)
+        tournamentRepository.removeListener()
+        teamsRepository.removeListener()
+        matchesRepository.removeListener()
 
         listening = false
     }

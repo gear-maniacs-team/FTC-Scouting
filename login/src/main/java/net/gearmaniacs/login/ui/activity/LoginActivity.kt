@@ -13,7 +13,7 @@ import net.gearmaniacs.login.R
 import net.gearmaniacs.login.databinding.ActivityLoginBinding
 import net.gearmaniacs.login.ui.fragment.LoginFragment
 import net.gearmaniacs.login.ui.fragment.RegisterFragment
-import net.gearmaniacs.login.utils.LoginCallback
+import net.gearmaniacs.login.interfaces.LoginCallback
 
 class LoginActivity : AppCompatActivity(), LoginCallback {
 

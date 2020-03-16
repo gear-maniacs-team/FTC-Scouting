@@ -1,4 +1,4 @@
-package net.gearmaniacs.tournament.utils
+package net.gearmaniacs.tournament.interfaces
 
 interface RecyclerViewItemListener {
 

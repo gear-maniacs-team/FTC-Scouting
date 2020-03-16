@@ -1,90 +1,67 @@
 package net.gearmaniacs.ftcscouting.repository
 
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
+import androidx.lifecycle.MutableLiveData
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import net.gearmaniacs.core.architecture.NonNullLiveData
+import net.gearmaniacs.core.extensions.justTry
+import net.gearmaniacs.core.extensions.safeCollect
 import net.gearmaniacs.core.firebase.DatabasePaths
-import net.gearmaniacs.core.firebase.FirebaseDatabaseCallback
+import net.gearmaniacs.core.firebase.auth
+import net.gearmaniacs.core.firebase.listValueEventListenerFlow
+import net.gearmaniacs.core.firebase.valueEventListenerFlow
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.User
 
-class MainRepository(
-    coroutineScope: CoroutineScope,
-    val userCallback: FirebaseDatabaseCallback<User>
-) {
+class MainRepository {
 
-    private val tournamentReference = FirebaseDatabase.getInstance()
+    private val databaseReference = FirebaseDatabase.getInstance()
         .getReference(DatabasePaths.KEY_SKYSTONE)
-        .child(FirebaseAuth.getInstance().currentUser!!.uid)
+        .child(Firebase.auth.currentUser!!.uid)
     private val userReference = FirebaseDatabase.getInstance()
         .getReference(DatabasePaths.KEY_USERS)
-        .child(FirebaseAuth.getInstance().currentUser!!.uid)
+        .child(Firebase.auth.currentUser!!.uid)
+    private var valueEventListenerJob: Job? = null
 
-    private val tournamentsListener = object : ValueEventListener {
-        override fun onDataChange(snapshot: DataSnapshot) {
-            coroutineScope.launch(Dispatchers.IO) {
-                val list = snapshot.children.map {
-                    Tournament(it.getValue(String::class.java)!!).apply {
-                        this.key = it.key
-                    }
-                }.toMutableList()
+    val userLiveData = MutableLiveData<User>()
+    val tournamentsLiveData = NonNullLiveData(emptyList<Tournament>())
 
-                list.sort()
+    suspend fun addListener() = coroutineScope {
+        justTry { valueEventListenerJob?.cancelAndJoin() }
 
-                launch(Dispatchers.Main) {
-                    tournamentData.value = list
+        valueEventListenerJob = launch {
+            launch {
+                userReference.valueEventListenerFlow<User>().safeCollect {
+                    userLiveData.postValue(it)
                 }
             }
-        }
 
-        override fun onCancelled(error: DatabaseError) {
-            error.toException().printStackTrace()
-        }
-    }
-
-    private val userListener = object : ValueEventListener {
-        override fun onDataChange(snapshot: DataSnapshot) {
-            try {
-                val user = snapshot.getValue(User::class.java)!!
-
-                userCallback.onSuccess(user)
-            } catch (e: Exception) {
-                userCallback.onError(e)
+            launch {
+                databaseReference
+                    .child(DatabasePaths.KEY_TOURNAMENTS)
+                    .listValueEventListenerFlow {
+                        Tournament(it.getValue(String::class.java)!!).apply {
+                            this.key = it.key
+                        }
+                    }.safeCollect {
+                        tournamentsLiveData.postValue(it)
+                    }
             }
         }
-
-        override fun onCancelled(error: DatabaseError) {
-            userCallback.onError(error.toException())
-        }
     }
 
-    val tournamentData = NonNullLiveData(emptyList<Tournament>())
-
-    fun addListeners() {
-        userReference.addValueEventListener(userListener)
-
-        tournamentReference
-            .child(DatabasePaths.KEY_TOURNAMENTS)
-            .addValueEventListener(tournamentsListener)
-    }
-
-    fun removeListeners() {
-        userReference.removeEventListener(userListener)
-
-        tournamentReference
-            .child(DatabasePaths.KEY_TOURNAMENTS)
-            .removeEventListener(tournamentsListener)
+    fun removeListener() {
+        valueEventListenerJob?.cancel()
+        valueEventListenerJob = null
     }
 
     fun createNewTournament(user: User?, tournamentName: String) {
-        val newTournament = tournamentReference
+        val newTournament = databaseReference
             .child(DatabasePaths.KEY_TOURNAMENTS)
             .push()
 
@@ -94,7 +71,7 @@ class MainRepository(
             val key = newTournament.key ?: return
             val team = Team(user.id, user.teamName)
 
-            tournamentReference
+            databaseReference
                 .child(DatabasePaths.KEY_DATA)
                 .child(key)
                 .child(DatabasePaths.KEY_TEAMS)
@@ -104,12 +81,12 @@ class MainRepository(
     }
 
     fun deleteTournament(tournamentKey: String) {
-        tournamentReference
+        databaseReference
             .child(DatabasePaths.KEY_TOURNAMENTS)
             .child(tournamentKey)
             .removeValue()
 
-        tournamentReference
+        databaseReference
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .removeValue()

@@ -1,48 +1,42 @@
 package net.gearmaniacs.ftcscouting.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import net.gearmaniacs.core.firebase.FirebaseDatabaseCallback
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.User
 import net.gearmaniacs.ftcscouting.repository.MainRepository
 
 class MainViewModel : ViewModel() {
 
-    private val repository = MainRepository(viewModelScope,
-        object : FirebaseDatabaseCallback<User> {
-            override fun onSuccess(result: User) {
-                userData = result
-            }
-
-            override fun onError(e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    )
+    private val repository = MainRepository()
     private var listening = false
-    var userData: User? = null
 
-    fun getTournamentsData() = repository.tournamentData
+    fun getUserLiveData(): LiveData<User> = repository.userLiveData
+
+    fun getTournamentsLiveData() = repository.tournamentsLiveData
 
     fun startListening() {
         if (listening) return
-
-        repository.addListeners()
-
         listening = true
+
+        viewModelScope.launch(Dispatchers.Default) {
+            repository.addListener()
+        }
     }
 
     fun stopListening() {
         if (!listening) return
 
-        repository.removeListeners()
+        repository.removeListener()
 
         listening = false
     }
 
     fun createNewTournament(tournamentName: String) {
-        repository.createNewTournament(userData, tournamentName)
+        repository.createNewTournament(getUserLiveData().value, tournamentName)
     }
 
     fun deleteTournament(tournament: Tournament) {

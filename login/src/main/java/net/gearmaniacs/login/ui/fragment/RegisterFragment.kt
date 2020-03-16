@@ -11,7 +11,7 @@ import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.model.User
 import net.gearmaniacs.login.R
 import net.gearmaniacs.login.databinding.FragmentRegisterBinding
-import net.gearmaniacs.login.utils.LoginCallback
+import net.gearmaniacs.login.interfaces.LoginCallback
 
 class RegisterFragment : Fragment(R.layout.fragment_register) {
 

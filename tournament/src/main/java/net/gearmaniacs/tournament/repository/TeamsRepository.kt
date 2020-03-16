@@ -1,33 +1,29 @@
 package net.gearmaniacs.tournament.repository
 
-import androidx.lifecycle.Observer
 import com.google.firebase.database.DatabaseReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import net.gearmaniacs.core.architecture.MutexLiveData
 import net.gearmaniacs.core.architecture.NonNullLiveData
+import net.gearmaniacs.core.extensions.justTry
+import net.gearmaniacs.core.extensions.safeCollect
 import net.gearmaniacs.core.firebase.DatabasePaths
-import net.gearmaniacs.core.firebase.FirebaseChildListener
-import net.gearmaniacs.core.firebase.FirebaseSingleValueListener
+import net.gearmaniacs.core.firebase.listValueEventListenerFlow
 import net.gearmaniacs.core.model.Team
 
 class TeamsRepository(private val tournamentReference: DatabaseReference) {
 
-    val liveData = MutexLiveData(emptyList<Team>())
-    val queriedLiveData = NonNullLiveData(emptyList<Team>())
-
-    private val queryObserver = Observer<List<Team>> {
-        performTeamsSearch(lastTeamQuery)
-    }
-    private val teamsListener = FirebaseChildListener(Team::class.java, liveData)
-    private var listenersInitialized = false
-
     private var lastTeamQuery = ""
     private var teamSearchJob: Job? = null // Last launched search job
+    private var valueEventListenerJob: Job? = null
+
+    val teamsLiveData = NonNullLiveData(emptyList<Team>())
+    val queriedLiveData = NonNullLiveData(emptyList<Team>())
 
     fun addTeam(tournamentKey: String, team: Team) {
         tournamentReference
@@ -72,7 +68,7 @@ class TeamsRepository(private val tournamentReference: DatabaseReference) {
         // Cancel the last running search
         teamSearchJob?.cancel()
 
-        val teamList = liveData.value
+        val teamList = teamsLiveData.value
 
         if (teamList.isEmpty() || query.isEmpty()) {
             queriedLiveData.value = teamList
@@ -95,32 +91,26 @@ class TeamsRepository(private val tournamentReference: DatabaseReference) {
         }
     }
 
-    fun addListener(tournamentKey: String) {
-        val tournamentsListRef = tournamentReference
-            .child(DatabasePaths.KEY_DATA)
-            .child(tournamentKey)
+    suspend fun addListener(tournamentKey: String) = coroutineScope {
+        justTry { valueEventListenerJob?.cancelAndJoin() }
 
-        val teamsRef = tournamentsListRef.child(DatabasePaths.KEY_TEAMS)
+        valueEventListenerJob = launch {
+            val databaseReference = tournamentReference
+                .child(DatabasePaths.KEY_DATA)
+                .child(tournamentKey)
+                .child(DatabasePaths.KEY_TEAMS)
 
-        if (!listenersInitialized) {
-            teamsRef.addListenerForSingleValueEvent(
-                FirebaseSingleValueListener(Team::class.java, liveData)
-            )
-            listenersInitialized = true
+            databaseReference.listValueEventListenerFlow(Team::class.java).safeCollect {
+                launch(Dispatchers.Main) {
+                    teamsLiveData.value = it
+                    performTeamsSearch(lastTeamQuery)
+                }
+            }
         }
-
-        teamsRef.addChildEventListener(teamsListener)
-
-        liveData.observeForever(queryObserver)
     }
 
-    fun removeListener(tournamentKey: String) {
-        tournamentReference
-            .child(DatabasePaths.KEY_DATA)
-            .child(tournamentKey)
-            .child(DatabasePaths.KEY_TEAMS)
-            .removeEventListener(teamsListener)
-
-        liveData.removeObserver(queryObserver)
+    fun removeListener() {
+        valueEventListenerJob?.cancel()
+        valueEventListenerJob = null
     }
 }

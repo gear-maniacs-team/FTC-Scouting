@@ -6,8 +6,3 @@
 -keepclassmembers class net.gearmaniacs.core.model.EndGameData { *; }
 -keepclassmembers class net.gearmaniacs.core.model.Team { *; }
 -keepclassmembers class net.gearmaniacs.core.model.User { *; }
-
-# Most of volatile fields are updated with AFU and should not be mangled
--keepclassmembernames class kotlinx.** {
-    volatile <fields>;
-}

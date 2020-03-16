@@ -2,7 +2,7 @@
 object Libs {
     // Kotlin
     val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin_version}"
-    val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.3"
+    val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.4"
 
     // AndroidX
     val google_material = "com.google.android.material:material:1.1.0"
@@ -14,7 +14,7 @@ object Libs {
     val androidx_swipe_refresh_layout = "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     val androidx_preference = "androidx.preference:preference:1.1.0"
 
-    // KTX
+    // AndroidX KTX
     val ktx_core = "androidx.core:core-ktx:1.2.0"
     val ktx_fragment = "androidx.fragment:fragment-ktx:1.2.2"
     val ktx_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
@@ -22,8 +22,12 @@ object Libs {
     // Firebase
     val firebase_core = "com.google.firebase:firebase-core:17.2.3"
     val firebase_database = "com.google.firebase:firebase-database:19.2.1"
-    val firebase_auth = "com.google.firebase:firebase-auth:19.2.0"
+    val firebase_auth = "com.google.firebase:firebase-auth:19.3.0"
     val firebase_crashlytics = "com.crashlytics.sdk.android:crashlytics:2.10.1"
+
+    // Firebase KTX
+    val firebase_ktx_common = "com.google.firebase:firebase-common-ktx:19.2.1"
+    val firebase_ktx_database = "com.google.firebase:firebase-database-ktx:19.2.1"
 
     // Other Libraries
     val material_intro = "com.heinrichreimersoftware:material-intro:2.0.0"

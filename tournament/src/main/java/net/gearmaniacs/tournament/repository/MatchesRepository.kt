@@ -1,37 +1,31 @@
 package net.gearmaniacs.tournament.repository
 
-import androidx.lifecycle.Observer
 import com.google.firebase.database.DatabaseReference
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import net.gearmaniacs.core.architecture.MutexLiveData
+import net.gearmaniacs.core.architecture.NonNullLiveData
+import net.gearmaniacs.core.extensions.justTry
+import net.gearmaniacs.core.extensions.safeCollect
 import net.gearmaniacs.core.firebase.DatabasePaths
-import net.gearmaniacs.core.firebase.FirebaseChildListener
-import net.gearmaniacs.core.firebase.FirebaseSingleValueListener
+import net.gearmaniacs.core.firebase.listValueEventListenerFlow
 import net.gearmaniacs.core.model.Match
 
 internal class MatchesRepository(private val tournamentReference: DatabaseReference) {
 
-    val matchesLiveData = MutexLiveData(emptyList<Match>())
-    val infoLiveData = MutexLiveData(emptyList<Match>())
-
-    private val infoObserver = Observer<List<Match>>(::updateInfoData)
-    private val matchesListener = FirebaseChildListener(Match::class.java, matchesLiveData)
-    private var listenersInitialized = false
     private var userTeamNumber = -1
+    private var valueEventListenerJob: Job? = null
+
+    val infoLiveData = NonNullLiveData(emptyList<Match>())
+    val matchesLiveData = NonNullLiveData(emptyList<Match>())
 
     private fun updateInfoData(list: List<Match>) {
         if (userTeamNumber == -1)
-            infoLiveData.value = emptyList()
+            infoLiveData.postValue(emptyList())
 
-        GlobalScope.launch(Dispatchers.Main.immediate) {
-            val filtered = withContext(Dispatchers.Default) {
-                list.filter { match -> match.containsTeam(userTeamNumber) }
-            }
-            infoLiveData.value = filtered
-        }
+        val filteredList = list.filter { match -> match.containsTeam(userTeamNumber) }
+        infoLiveData.postValue(filteredList)
     }
 
     fun addMatch(tournamentKey: String, match: Match) {
@@ -76,32 +70,24 @@ internal class MatchesRepository(private val tournamentReference: DatabaseRefere
         userTeamNumber = number
     }
 
-    fun addListeners(tournamentKey: String) {
-        val tournamentRef = tournamentReference
-            .child(DatabasePaths.KEY_DATA)
-            .child(tournamentKey)
+    suspend fun addListener(tournamentKey: String) = coroutineScope {
+        justTry { valueEventListenerJob?.cancelAndJoin() }
 
-        val matchesRef = tournamentRef.child(DatabasePaths.KEY_MATCHES)
+        valueEventListenerJob = launch {
+            val databaseReference = tournamentReference
+                .child(DatabasePaths.KEY_DATA)
+                .child(tournamentKey)
+                .child(DatabasePaths.KEY_MATCHES)
 
-        if (!listenersInitialized) {
-            matchesRef.addListenerForSingleValueEvent(
-                FirebaseSingleValueListener(Match::class.java, matchesLiveData)
-            )
-            listenersInitialized = true
+            databaseReference.listValueEventListenerFlow(Match::class.java).safeCollect {
+                matchesLiveData.postValue(it)
+                updateInfoData(it)
+            }
         }
-
-        matchesRef.addChildEventListener(matchesListener)
-
-        matchesLiveData.observeForever(infoObserver)
     }
 
-    fun removeListeners(tournamentKey: String) {
-        tournamentReference
-            .child(DatabasePaths.KEY_DATA)
-            .child(tournamentKey)
-            .child(DatabasePaths.KEY_MATCHES)
-            .removeEventListener(matchesListener)
-
-        matchesLiveData.removeObserver(infoObserver)
+    fun removeListener() {
+        valueEventListenerJob?.cancel()
+        valueEventListenerJob = null
     }
 }

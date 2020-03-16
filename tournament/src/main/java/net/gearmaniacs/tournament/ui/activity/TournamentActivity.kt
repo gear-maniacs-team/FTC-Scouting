@@ -111,7 +111,7 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             .commit()
         updateFab(fragments.first().getFragmentTag(), activeFragment.getFragmentTag())
 
-        observe(viewModel.nameData) { name ->
+        observe(viewModel.getNameLiveData()) { name ->
             if (name == null) {
                 // Means the Tournament has been deleted so we should close the activity
                 finish()
@@ -181,7 +181,8 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                     type = "application/vnd.ms-excel"
                     addCategory(Intent.CATEGORY_OPENABLE)
                     flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                    putExtra(Intent.EXTRA_TITLE, viewModel.nameData.value)
+
+                    putExtra(Intent.EXTRA_TITLE, viewModel.getNameLiveData().value)
                 }
                 startActivityForResult(intent, SPREADSHEET_SAVE_REQUEST_CODE)
             }
@@ -295,7 +296,7 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private fun changeTournamentName() {
         val dialogFragment = TournamentDialogFragment()
         dialogFragment.actionButtonStringRes = R.string.action_update
-        dialogFragment.defaultName = viewModel.nameData.value
+        dialogFragment.defaultName = viewModel.getNameLiveData().value
 
         dialogFragment.actionButtonListener = { newName ->
             viewModel.updateTournamentName(newName)

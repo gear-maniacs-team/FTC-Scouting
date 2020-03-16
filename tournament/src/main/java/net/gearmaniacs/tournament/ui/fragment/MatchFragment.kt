@@ -12,7 +12,7 @@ import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.core.view.EmptyRecyclerView
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.ui.adapter.MatchAdapter
-import net.gearmaniacs.tournament.utils.RecyclerViewItemListener
+import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 internal class MatchFragment

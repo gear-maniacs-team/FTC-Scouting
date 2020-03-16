@@ -12,7 +12,7 @@ import net.gearmaniacs.core.model.PreferredZone
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.view.ExpandableLayout
 import net.gearmaniacs.tournament.R
-import net.gearmaniacs.tournament.utils.RecyclerViewItemListener
+import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
 
 internal class TeamAdapter(
     private val listener: RecyclerViewItemListener

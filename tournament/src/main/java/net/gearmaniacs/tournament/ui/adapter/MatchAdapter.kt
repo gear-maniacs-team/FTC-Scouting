@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.view.ExpandableLayout
 import net.gearmaniacs.tournament.R
-import net.gearmaniacs.tournament.utils.RecyclerViewItemListener
+import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
 
 internal class MatchAdapter(
     private val listener: RecyclerViewItemListener

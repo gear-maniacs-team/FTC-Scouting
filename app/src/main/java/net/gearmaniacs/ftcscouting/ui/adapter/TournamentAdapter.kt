@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.tournament.utils.RecyclerViewItemListener
+import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
 
 class TournamentAdapter(
     private val listener: RecyclerViewItemListener

@@ -10,7 +10,7 @@ import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.login.R
 import net.gearmaniacs.login.databinding.FragmentLoginBinding
 import net.gearmaniacs.login.ui.activity.ResetPasswordActivity
-import net.gearmaniacs.login.utils.LoginCallback
+import net.gearmaniacs.login.interfaces.LoginCallback
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
 

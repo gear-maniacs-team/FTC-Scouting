@@ -42,4 +42,7 @@ dependencies {
     api Libs.firebase_core
     api Libs.firebase_auth
     api Libs.firebase_database
+
+    api Libs.firebase_ktx_common
+    api Libs.firebase_ktx_database
 }

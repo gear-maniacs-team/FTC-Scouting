@@ -1,15 +1,7 @@
 package net.gearmaniacs.core.firebase
 
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
 
-object Firebase {
-
-    val database
-        get() = FirebaseDatabase.getInstance()
-
-    fun database(url: String) = FirebaseDatabase.getInstance(url)
-
-    val auth
-        get() = FirebaseAuth.getInstance()
-}
+val Firebase.auth
+    get() = FirebaseAuth.getInstance()

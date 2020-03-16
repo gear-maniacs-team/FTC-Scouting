@@ -15,9 +15,12 @@ import androidx.core.view.updateMargins
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.ktx.Firebase
+import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.core.extensions.startActivity
-import net.gearmaniacs.core.firebase.Firebase
+import net.gearmaniacs.core.firebase.auth
+import net.gearmaniacs.core.model.User
 import net.gearmaniacs.core.utils.PreferencesKeys
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.databinding.ActivityMainBinding
@@ -26,7 +29,7 @@ import net.gearmaniacs.ftcscouting.viewmodel.MainViewModel
 import net.gearmaniacs.login.ui.activity.LoginActivity
 import net.gearmaniacs.tournament.ui.activity.TournamentActivity
 import net.gearmaniacs.tournament.ui.fragment.TournamentDialogFragment
-import net.gearmaniacs.tournament.utils.RecyclerViewItemListener
+import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
 
 class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
 
@@ -34,6 +37,8 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
     private lateinit var preferenceManager: SharedPreferences
     private var viewModel: MainViewModel? = null
     private val adapter = TournamentAdapter(this)
+
+    private var user: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,10 +80,13 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
             }
         }
 
-
-        viewModel = MainViewModel().also {
-            observeNonNull(it.getTournamentsData()) { list ->
+        viewModel = MainViewModel().also { viewModel ->
+            observeNonNull(viewModel.getTournamentsLiveData()) { list ->
                 adapter.submitList(list)
+            }
+
+            observe(viewModel.getUserLiveData()) {
+                user = it
             }
         }
     }
@@ -94,7 +102,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
             true
         }
         R.id.action_account -> {
-            viewModel?.userData?.let {
+            user?.let {
                 TeamInfoActivity.startActivity(this, it)
             }
             true
@@ -144,7 +152,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
     override fun onClickListener(position: Int) {
         try {
             val tournament = adapter.getItem(position)
-            viewModel?.userData?.let { user ->
+            user?.let { user ->
                 TournamentActivity.startActivity(this, user, tournament)
             }
         } catch (e: IndexOutOfBoundsException) {

@@ -1,4 +1,4 @@
-package net.gearmaniacs.login.utils
+package net.gearmaniacs.login.interfaces
 
 import net.gearmaniacs.core.model.User
 
