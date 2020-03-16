@@ -8,7 +8,6 @@ object Libs {
     val google_material = "com.google.android.material:material:1.1.0"
     val androidx_appcompat = "androidx.appcompat:appcompat:1.1.0"
     val androidx_recycler_view = "androidx.recyclerview:recyclerview:1.1.0"
-    val androidx_card_view = "androidx.cardview:cardview:1.0.0"
     val androidx_constraint_layout = "androidx.constraintlayout:constraintlayout:2.0.0-beta4"
     val androidx_lifecycle = "androidx.lifecycle:lifecycle-extensions:2.2.0"
     val androidx_swipe_refresh_layout = "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
