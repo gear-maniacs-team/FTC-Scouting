@@ -8,9 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import net.gearmaniacs.core.architecture.NonNullLiveData
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.core.firebase.DatabasePaths

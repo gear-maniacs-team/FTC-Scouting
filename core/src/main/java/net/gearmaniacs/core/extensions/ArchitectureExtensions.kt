@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -42,7 +41,7 @@ fun <T : Any, L : NonNullLiveData<T>> LifecycleOwner.observeNonNull(
     liveData: L,
     body: (T) -> Unit
 ) {
-    liveData.observe(this, Observer<T> { data: T? ->
+    liveData.observe(this, Observer { data: T? ->
         body(data ?: liveData.defaultValue)
     })
 }

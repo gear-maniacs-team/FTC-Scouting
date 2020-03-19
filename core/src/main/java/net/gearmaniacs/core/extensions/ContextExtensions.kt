@@ -27,8 +27,3 @@ fun Context.toast(@StringRes resId: Int) {
 fun Context.longToast(@StringRes resId: Int) {
     Toast.makeText(this, resId, Toast.LENGTH_LONG).show()
 }
-
-fun Activity.checkRuntimePermission(permission: String, requestCode: Int = 200) {
-    if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED)
-        ActivityCompat.requestPermissions(this, arrayOf(permission), requestCode)
-}

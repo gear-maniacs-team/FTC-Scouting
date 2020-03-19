@@ -120,15 +120,6 @@ internal class SpreadsheetExport {
         }
     }
 
-    @Throws(IOException::class)
-    fun writeToFile(file: File) {
-        file.parentFile?.mkdirs()
-
-        file.outputStream().use {
-            workBook.write(it)
-        }
-    }
-
     fun export(teamList: List<Team>, matchList: List<Match>, powerList: List<TeamPower>) {
         exportTeams(teamList)
         exportMatches(matchList)
