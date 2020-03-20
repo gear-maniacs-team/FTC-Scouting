@@ -7,56 +7,62 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/dialog_edit_team">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/layout_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:paddingStart="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingEnd="@dimen/activity_horizontal_margin"
         android:paddingBottom="@dimen/activity_vertical_margin">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_team_number"
-            style="@style/TextInputLayoutTheme"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/view_margin"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_team_number"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_team_number"
+                style="@style/TextInputLayoutTheme"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_team_number"
-                android:inputType="number"
-                android:maxLength="6"
-                android:minEms="7"
-                android:nextFocusDown="@id/et_team_name"
-                android:textSize="16sp" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginTop="@dimen/view_margin"
+                android:layout_weight="0.35">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_team_name"
-            style="@style/TextInputLayoutTheme"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="@dimen/view_margin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/layout_team_number"
-            app:layout_constraintTop_toTopOf="parent">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_team_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_team_number"
+                    android:inputType="number"
+                    android:maxLength="6"
+                    android:minEms="7"
+                    android:nextFocusDown="@id/et_team_name"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_team_name"
-                android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_team_name"
+                style="@style/TextInputLayoutTheme"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_team_name"
-                android:inputType="textCapWords"
-                android:maxLines="1"
-                android:textSize="16sp" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="@dimen/view_margin"
+                android:layout_weight="0.65">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_team_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_team_name"
+                    android:inputType="textCapWords"
+                    android:maxLines="1"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_autonomous"
@@ -66,100 +72,69 @@
             android:text="@string/period_autonomous"
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@+id/layout_team_number" />
+            android:textStyle="bold" />
 
-        <CheckBox
-            android:id="@+id/cb_reposition_foundation"
-            android:layout_width="0dp"
+        <Switch
+            android:id="@+id/sw_reposition_foundation"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/prompt_reposition_foundation"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toStartOf="@+id/cb_navigated"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_autonomous" />
+            android:textSize="16sp" />
 
-        <CheckBox
-            android:id="@+id/cb_navigated"
-            android:layout_width="0dp"
+        <Switch
+            android:id="@+id/sw_navigated"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/prompt_navigation"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cb_reposition_foundation"
-            app:layout_constraintTop_toBottomOf="@+id/tv_autonomous" />
+            android:textSize="16sp" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_auto_delivered_skystones"
-            style="@style/TextInputLayoutTheme"
-            android:layout_width="0dp"
+        <net.gearmaniacs.core.CounterView
+            android:id="@+id/ct_delivered_skystones"
+            style="@style/CounterViewEditStyle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="@+id/layout_auto_delivered_stones"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cb_reposition_foundation">
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            app:max="2"
+            app:text="@string/prompt_delivered_skystones" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_auto_delivered_skystones"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/prompt_delivered_skystones"
-                android:inputType="number"
-                android:maxLength="2"
-                android:maxLines="1" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_auto_delivered_stones"
-            style="@style/TextInputLayoutTheme"
-            android:layout_width="0dp"
+        <net.gearmaniacs.core.CounterView
+            android:id="@+id/ct_delivered_stones"
+            style="@style/CounterViewEditStyle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="4dp"
-            app:layout_constraintEnd_toStartOf="@+id/layout_auto_placed_stones"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layout_auto_delivered_skystones">
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            app:max="4"
+            app:text="@string/prompt_delivered_stones" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_auto_delivered_stones"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/prompt_delivered_stones"
-                android:inputType="number"
-                android:maxLength="2"
-                android:nextFocusDown="@id/et_auto_placed_stones" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_auto_placed_stones"
-            style="@style/TextInputLayoutTheme"
-            android:layout_width="0dp"
+        <net.gearmaniacs.core.CounterView
+            android:id="@+id/ct_placed_stones"
+            style="@style/CounterViewEditStyle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/layout_auto_delivered_stones"
-            app:layout_constraintTop_toBottomOf="@+id/layout_auto_delivered_skystones">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_auto_placed_stones"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/prompt_placed_stones"
-                android:inputType="number"
-                android:maxLength="2" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            app:max="6"
+            app:text="@string/prompt_placed_stones" />
 
         <TextView
             android:id="@+id/tv_autonomous_score"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="6dp"
             android:textColor="@color/colorAccent"
             android:textSize="15.5sp"
-            app:layout_constraintTop_toBottomOf="@+id/layout_auto_delivered_stones"
             tools:text="@string/autonomous_score" />
 
         <TextView
@@ -171,60 +146,64 @@
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@+id/tv_autonomous_score" />
+            tools:layout_editor_absoluteX="16dp" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_delivered_stones"
-            style="@style/TextInputLayoutTheme"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="4dp"
-            app:layout_constraintEnd_toStartOf="@+id/layout_placed_stones"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_teleop">
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_delivered_stones"
-                android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_delivered_stones"
+                style="@style/TextInputLayoutTheme"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_delivered_stones"
-                android:inputType="number"
-                android:maxLength="2"
-                android:nextFocusDown="@id/et_placed_stones" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="0.5">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_placed_stones"
-            style="@style/TextInputLayoutTheme"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/layout_delivered_stones"
-            app:layout_constraintTop_toBottomOf="@+id/tv_teleop">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_delivered_stones"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_delivered_stones"
+                    android:inputType="number"
+                    android:maxLength="2"
+                    android:nextFocusDown="@id/et_placed_stones" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_placed_stones"
-                android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_placed_stones"
+                style="@style/TextInputLayoutTheme"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_placed_stones"
-                android:inputType="number"
-                android:maxLength="2"
-                android:nextFocusDown="@id/et_skyscraper_height" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="0.5">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_placed_stones"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_placed_stones"
+                    android:inputType="number"
+                    android:maxLength="2"
+                    android:nextFocusDown="@id/et_skyscraper_height" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layout_skyscraper_height"
             style="@style/TextInputLayoutTheme"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/layout_placed_stones"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layout_delivered_stones">
+            android:layout_marginEnd="6dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_skyscraper_height"
@@ -239,10 +218,11 @@
             android:id="@+id/tv_teleop_score"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="6dp"
             android:textColor="@color/colorAccent"
             android:textSize="15.5sp"
-            app:layout_constraintTop_toBottomOf="@+id/layout_skyscraper_height"
             tools:text="@string/teleop_score" />
 
         <TextView
@@ -253,54 +233,51 @@
             android:text="@string/period_end_game"
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/tv_teleop_score" />
+            android:textStyle="bold" />
 
-        <CheckBox
-            android:id="@+id/cb_parking"
-            android:layout_width="0dp"
+
+        <Switch
+            android:id="@+id/sw_parking"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/prompt_parking"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toStartOf="@+id/cb_move_foundation"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_endgame" />
+            android:textSize="16sp" />
 
-        <CheckBox
-            android:id="@+id/cb_move_foundation"
-            android:layout_width="0dp"
+        <Switch
+            android:id="@+id/sw_move_foundation"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/prompt_move_foundation"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cb_parking"
-            app:layout_constraintTop_toBottomOf="@+id/tv_endgame" />
+            android:textSize="16sp" />
 
-        <CheckBox
-            android:id="@+id/cb_cap_placed"
-            android:layout_width="0dp"
+        <Switch
+            android:id="@+id/sw_cap_placed"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/prompt_cap_placed"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="@+id/layout_cap_level"
-            app:layout_constraintEnd_toStartOf="@+id/layout_cap_level"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cb_parking" />
+            android:textSize="16sp" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layout_cap_level"
             style="@style/TextInputLayoutTheme"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="6dp"
             android:layout_marginTop="8dp"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cb_cap_placed"
-            app:layout_constraintTop_toBottomOf="@+id/cb_parking"
+            android:layout_marginEnd="6dp"
+            android:visibility="gone"
             tools:visibility="visible">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -317,10 +294,11 @@
             android:id="@+id/tv_endgame_score"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="6dp"
             android:textColor="@color/colorAccent"
             android:textSize="15.5sp"
-            app:layout_constraintTop_toBottomOf="@id/cb_cap_placed"
             tools:text="@string/endgame_score" />
 
         <TextView
@@ -329,7 +307,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:textSize="18sp"
-            app:layout_constraintTop_toBottomOf="@id/tv_endgame_score"
             tools:text="@string/total_score" />
 
         <TextView
@@ -340,25 +317,27 @@
             android:text="@string/category_other"
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/tv_total_score" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_preferred_zone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="6dp"
             android:text="@string/preferred_zone"
             android:textColor="@color/colorAccent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_other" />
+            android:textSize="15sp" />
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/toggle_preferred_zone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
             android:gravity="center_horizontal"
             app:checkedButton="@id/rb_zone_none"
-            app:layout_constraintTop_toBottomOf="@+id/tv_preferred_zone"
             app:singleSelection="true">
 
             <com.google.android.material.button.MaterialButton
@@ -392,9 +371,9 @@
             style="@style/TextInputLayoutTheme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toggle_preferred_zone">
+            android:layout_marginEnd="6dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_notes"
@@ -404,6 +383,7 @@
                 android:inputType="textImeMultiLine" />
         </com.google.android.material.textfield.TextInputLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

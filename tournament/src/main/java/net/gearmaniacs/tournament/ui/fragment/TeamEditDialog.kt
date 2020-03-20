@@ -9,10 +9,12 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.RadioGroup
 import androidx.core.view.doOnPreDraw
-import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.transition.TransitionManager
+import net.gearmaniacs.core.CounterView
 import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.model.AutonomousData
@@ -41,23 +43,24 @@ internal class TeamEditDialog : DialogFragment() {
 
     private class DataChangeListener(
         private val listener: () -> Unit
-    ) : RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener, TextWatcher {
+    ) : RadioGroup.OnCheckedChangeListener,
+        CompoundButton.OnCheckedChangeListener,
+        TextWatcher,
+        CounterView.CounterChange {
 
-        override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) {
-            listener()
-        }
+        override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) = listener()
 
-        override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-            listener()
-        }
+        override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) = listener()
 
-        override fun afterTextChanged(s: Editable?) {
-            listener()
-        }
+        override fun afterTextChanged(s: Editable?) = listener()
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+
+        override fun onIncrement(count: Int) = listener()
+
+        override fun onDecrement(count: Int) = listener()
     }
 
     private var _binding: DialogEditTeamBinding? = null
@@ -106,8 +109,9 @@ internal class TeamEditDialog : DialogFragment() {
         val team = arguments?.getParcelable<Team>(ARG_TEAM)
         val content = binding.content
 
-        content.cbCapPlaced.setOnCheckedChangeListener { _, isChecked ->
-            content.layoutCapLevel.isInvisible = !isChecked
+        content.swCapPlaced.setOnCheckedChangeListener { _, isChecked ->
+            TransitionManager.beginDelayedTransition(content.layoutContent)
+            content.layoutCapLevel.isVisible = isChecked
             updateEndGameScore()
             updateTotalScore()
         }
@@ -172,16 +176,16 @@ internal class TeamEditDialog : DialogFragment() {
         }
 
         with(binding.content) {
-            cbRepositionFoundation.setOnCheckedChangeListener(autonomousListener)
-            cbNavigated.setOnCheckedChangeListener(autonomousListener)
-            etAutoDeliveredSkystones.addTextChangedListener(autonomousListener)
-            etAutoDeliveredStones.addTextChangedListener(autonomousListener)
-            etAutoPlacedStones.addTextChangedListener(autonomousListener)
+            swRepositionFoundation.setOnCheckedChangeListener(autonomousListener)
+            swNavigated.setOnCheckedChangeListener(autonomousListener)
+            ctDeliveredSkystones.changeListener = autonomousListener
+            ctDeliveredStones.changeListener = autonomousListener
+            ctPlacedStones.changeListener = autonomousListener
             etDeliveredStones.addTextChangedListener(teleOpListener)
             etPlacedStones.addTextChangedListener(teleOpListener)
             etSkyscraperHeight.addTextChangedListener(teleOpListener)
-            cbMoveFoundation.setOnCheckedChangeListener(endGameListener)
-            cbParking.setOnCheckedChangeListener(endGameListener)
+            swMoveFoundation.setOnCheckedChangeListener(endGameListener)
+            swParking.setOnCheckedChangeListener(endGameListener)
             etCapLevel.addTextChangedListener(endGameListener)
         }
     }
@@ -192,11 +196,11 @@ internal class TeamEditDialog : DialogFragment() {
             etTeamName.setText(team.name)
 
             team.autonomousData?.let {
-                cbRepositionFoundation.isChecked = it.repositionFoundation
-                cbNavigated.isChecked = it.navigated
-                etAutoDeliveredSkystones.setText(it.deliveredSkystones.toString())
-                etAutoDeliveredStones.setText(it.deliveredStones.toString())
-                etAutoPlacedStones.setText(it.placedStones.toString())
+                swRepositionFoundation.isChecked = it.repositionFoundation
+                swNavigated.isChecked = it.navigated
+                ctDeliveredSkystones.counter = it.deliveredSkystones
+                ctDeliveredStones.counter = it.deliveredStones
+                ctPlacedStones.counter = it.placedStones
 
                 autonomousScore = it.calculateScore()
             }
@@ -210,11 +214,11 @@ internal class TeamEditDialog : DialogFragment() {
             }
 
             team.endGameData?.let {
-                cbMoveFoundation.isChecked = it.moveFoundation
-                cbParking.isChecked = it.parked
+                swMoveFoundation.isChecked = it.moveFoundation
+                swParking.isChecked = it.parked
 
                 if (it.capLevel >= 0) {
-                    cbCapPlaced.isChecked = true
+                    swCapPlaced.isChecked = true
                     etCapLevel.setText(it.capLevel.toString())
                 }
 
@@ -231,15 +235,15 @@ internal class TeamEditDialog : DialogFragment() {
     }
 
     private fun parseAutonomousData(content: DialogEditTeamContentBinding) = AutonomousData(
-        content.cbRepositionFoundation.isChecked,
-        content.cbNavigated.isChecked,
-        content.etAutoDeliveredSkystones.getTextString().toIntOrDefault(),
-        content.etAutoDeliveredStones.getTextString().toIntOrDefault(),
-        content.etAutoPlacedStones.getTextString().toIntOrDefault()
+        content.swRepositionFoundation.isChecked,
+        content.swNavigated.isChecked,
+        content.ctDeliveredSkystones.counter,
+        content.ctDeliveredStones.counter,
+        content.ctPlacedStones.counter
     )
 
     private fun parseTeleOpData(content: DialogEditTeamContentBinding) = TeleOpData(
-        content.etAutoDeliveredStones.getTextString().toIntOrDefault(),
+        content.etDeliveredStones.getTextString().toIntOrDefault(),
         content.etPlacedStones.getTextString().toIntOrDefault(),
         content.etSkyscraperHeight.getTextString().toIntOrDefault()
     )
@@ -247,11 +251,12 @@ internal class TeamEditDialog : DialogFragment() {
     private fun parseEndGameData(): EndGameData {
         val content = binding.content
         val capLevel =
-            if (content.cbCapPlaced.isChecked) content.etCapLevel.getTextString().toIntOrDefault() else -1
+            if (content.swCapPlaced.isChecked) content.etCapLevel.getTextString()
+                .toIntOrDefault() else -1
 
         return EndGameData(
-            content.cbMoveFoundation.isChecked,
-            content.cbParking.isChecked,
+            content.swMoveFoundation.isChecked,
+            content.swParking.isChecked,
             capLevel
         )
     }
