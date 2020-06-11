@@ -11,8 +11,8 @@ android {
         consumerProguardFiles 'login-rules.pro'
     }
 
-    viewBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding = true
     }
 
     compileOptions {

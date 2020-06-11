@@ -80,8 +80,7 @@ class TeamsRepository(private val tournamentReference: DatabaseReference) {
                 val pattern = "(?i).*($query).*".toPattern()
 
                 teamList.filter {
-                    pattern.matcher(it.name.orEmpty()).matches()
-                            || pattern.matcher(it.id.toString()).matches()
+                    pattern.matcher(it.id.toString() + ' ' + it.name.orEmpty()).matches()
                 }
             }
 

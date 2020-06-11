@@ -62,7 +62,7 @@ internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view
 
         val dialog = TeamEditDialog.newInstance()
         val transaction = activity.supportFragmentManager.beginTransaction()
-        dialog.show(transaction, null)
+        dialog.show(transaction, TeamEditDialog.TAG)
     }
 
     override fun getFragmentTag() = TAG
@@ -73,7 +73,7 @@ internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view
 
         val dialog = TeamEditDialog.newInstance(team)
         val transaction = activity.supportFragmentManager.beginTransaction()
-        dialog.show(transaction, null)
+        dialog.show(transaction, TeamEditDialog.TAG)
     }
 
     override fun onLongClickListener(position: Int) {

@@ -2,6 +2,7 @@ package net.gearmaniacs.ftcscouting.ui.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.view.MenuItem
 import com.danielstone.materialaboutlibrary.MaterialAboutActivity
@@ -10,6 +11,10 @@ import com.danielstone.materialaboutlibrary.items.MaterialAboutItemOnClickAction
 import com.danielstone.materialaboutlibrary.items.MaterialAboutTitleItem
 import com.danielstone.materialaboutlibrary.model.MaterialAboutCard
 import com.danielstone.materialaboutlibrary.model.MaterialAboutList
+import com.marcoscg.licenser.Library
+import com.marcoscg.licenser.License
+import com.marcoscg.licenser.Licenser
+import com.marcoscg.licenser.LicenserDialog
 import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.ftcscouting.BuildConfig
 import net.gearmaniacs.ftcscouting.R
@@ -91,7 +96,7 @@ class AboutActivity : MaterialAboutActivity() {
                 getString(R.string.about_licenses),
                 null,
                 getDrawable(R.drawable.ic_about_licenses),
-                MaterialAboutItemOnClickAction { startActivity<LicensesActivity>() }
+                MaterialAboutItemOnClickAction { showLicensesDialog() }
             )
         )
         .build()
@@ -150,6 +155,50 @@ class AboutActivity : MaterialAboutActivity() {
         )
         .build()
 
+    private fun showLicensesDialog() {
+        val dialog = LicenserDialog(this).apply {
+            setTitle(R.string.about_licenses)
+            setNeutralButton(android.R.string.ok, null)
+            setLibrary(
+                "Kotlin",
+                "https://kotlinlang.org/",
+                License.APACHE2
+            )
+            setLibrary(
+                "Kotlin Coroutines",
+                "https://github.com/Kotlin/kotlinx.coroutines",
+                License.APACHE2
+            )
+            setLibrary(
+                "AndroidX and Jetpack Libraries",
+                "https://developer.android.com/jetpack/androidx",
+                License.APACHE2
+            )
+            setLibrary(
+                "Firebase",
+                "https://github.com/firebase/firebase-android-sdk",
+                License.APACHE2
+            )
+            setLibrary(
+                "POI",
+                "https://poi.apache.org/",
+                License.APACHE2
+            )
+            setLibrary(
+                "Material Intro",
+                "https://github.com/heinrichreimer/material-intro",
+                License.MIT
+            )
+            setLibrary(
+                "Licenser",
+                "https://github.com/marcoscgdev/Licenser",
+                License.MIT
+            )
+        }
+
+        dialog.show()
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
             finish()
@@ -159,6 +208,9 @@ class AboutActivity : MaterialAboutActivity() {
     }
 
     private companion object {
+        private fun LicenserDialog.setLibrary(title: String, url: String, license: License) =
+            setLibrary(Library(title, url, license))
+
         private const val APP_EMAIL = "gearmaniacsteam@gmail.com"
         private const val DEVELOPER_EMAIL = "mail@theluckycoder.net"
 

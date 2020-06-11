@@ -110,6 +110,6 @@
         android:textSize="15sp"
         android:textAllCaps="false"
         android:text="@string/action_already_own_account"
-        android:textColor="@color/colorAccent" />
+        android:textColor="@color/colorSecondary" />
 
 </LinearLayout>

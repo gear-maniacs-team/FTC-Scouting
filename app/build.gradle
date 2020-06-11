@@ -20,8 +20,8 @@ android {
         resConfigs "en"
     }
 
-    viewBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding = true
     }
 
     compileOptions {

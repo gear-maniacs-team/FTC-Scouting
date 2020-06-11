@@ -133,7 +133,7 @@
             android:layout_marginStart="6dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="6dp"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorSecondary"
             android:textSize="15.5sp"
             tools:text="@string/autonomous_score" />
 
@@ -221,7 +221,7 @@
             android:layout_marginStart="6dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="6dp"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorSecondary"
             android:textSize="15.5sp"
             tools:text="@string/teleop_score" />
 
@@ -297,7 +297,7 @@
             android:layout_marginStart="6dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="6dp"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorSecondary"
             android:textSize="15.5sp"
             tools:text="@string/endgame_score" />
 
@@ -327,7 +327,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="6dp"
             android:text="@string/preferred_zone"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorSecondary"
             android:textSize="15sp" />
 
         <com.google.android.material.button.MaterialButtonToggleGroup

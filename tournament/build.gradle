@@ -11,8 +11,8 @@ android {
         consumerProguardFiles 'tournament-rules.pro'
     }
 
-    viewBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding = true
     }
 
     compileOptions {

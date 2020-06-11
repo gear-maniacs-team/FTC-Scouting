@@ -30,6 +30,8 @@ import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 internal class TeamEditDialog : DialogFragment() {
 
     companion object {
+        const val TAG = "TeamEditDialog"
+
         private const val ARG_TEAM = "team"
 
         fun newInstance() = TeamEditDialog()
