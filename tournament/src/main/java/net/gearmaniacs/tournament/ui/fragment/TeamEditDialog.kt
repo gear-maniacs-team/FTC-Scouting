@@ -14,6 +14,7 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.transition.TransitionManager
+import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.CounterView
 import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.toIntOrDefault
@@ -27,6 +28,7 @@ import net.gearmaniacs.tournament.databinding.DialogEditTeamBinding
 import net.gearmaniacs.tournament.databinding.DialogEditTeamContentBinding
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
+@AndroidEntryPoint
 internal class TeamEditDialog : DialogFragment() {
 
     companion object {

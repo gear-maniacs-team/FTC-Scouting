@@ -4,9 +4,11 @@ import android.app.Application
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.google.firebase.database.FirebaseDatabase
+import dagger.hilt.android.HiltAndroidApp
 import io.fabric.sdk.android.Fabric
 
 @Suppress("unused")
+@HiltAndroidApp
 class ScoutingApp : Application() {
 
     override fun onCreate() {

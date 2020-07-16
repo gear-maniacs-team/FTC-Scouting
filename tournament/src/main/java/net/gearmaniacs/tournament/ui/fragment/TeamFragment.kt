@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.core.view.EmptyRecyclerView
 import net.gearmaniacs.tournament.R
@@ -15,6 +16,7 @@ import net.gearmaniacs.tournament.ui.adapter.TeamAdapter
 import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
+@AndroidEntryPoint
 internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view),
     RecyclerViewItemListener {
 

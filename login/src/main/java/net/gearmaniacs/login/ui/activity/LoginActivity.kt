@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.model.User
@@ -15,6 +16,7 @@ import net.gearmaniacs.login.ui.fragment.LoginFragment
 import net.gearmaniacs.login.ui.fragment.RegisterFragment
 import net.gearmaniacs.login.interfaces.LoginCallback
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity(), LoginCallback {
 
     private lateinit var binding: ActivityLoginBinding

@@ -15,11 +15,13 @@ import com.heinrichreimersoftware.materialintro.app.IntroActivity
 import com.heinrichreimersoftware.materialintro.app.SlideFragment
 import com.heinrichreimersoftware.materialintro.slide.FragmentSlide
 import com.heinrichreimersoftware.materialintro.slide.SimpleSlide
+import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.justTry
 import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.utils.PreferencesKeys
 import net.gearmaniacs.ftcscouting.R
 
+@AndroidEntryPoint
 class IntroActivity : IntroActivity() {
 
     class TermsFragment : SlideFragment() {

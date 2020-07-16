@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'io.fabric'
 
 ext {
@@ -65,6 +67,9 @@ dependencies {
     implementation Libs.licenser
 
     testImplementation Libs.tests
+
+    implementation Libs.hilt
+    kapt Libs.hilt_compiler
 }
 
 apply plugin: 'com.google.gms.google-services'

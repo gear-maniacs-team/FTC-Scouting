@@ -2,6 +2,7 @@ package net.gearmaniacs.tournament.viewmodel
 
 import android.content.Context
 import android.net.Uri
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
@@ -24,17 +25,13 @@ import net.gearmaniacs.tournament.spreadsheet.SpreadsheetExport
 import net.gearmaniacs.tournament.spreadsheet.SpreadsheetImport
 import java.util.Locale
 
-class TournamentViewModel : ViewModel() {
+internal class TournamentViewModel @ViewModelInject constructor(
+    private val tournamentRepository: TournamentRepository,
+    private val teamsRepository: TeamsRepository,
+    private val matchesRepository: MatchesRepository
+) : ViewModel() {
 
-    private val tournamentReference = Firebase.database
-        .getReference(DatabasePaths.KEY_SKYSTONE)
-        .child(FirebaseAuth.getInstance().currentUser!!.uid)
-
-    private val tournamentRepository = TournamentRepository(tournamentReference)
-    private val teamsRepository = TeamsRepository(tournamentReference)
-    private val matchesRepository = MatchesRepository(tournamentReference)
     private var listening = false
-
     var tournamentKey = ""
 
     val analyticsData = NonNullLiveData(emptyList<TeamPower>())
@@ -152,6 +149,8 @@ class TournamentViewModel : ViewModel() {
         }
     }
 
+    // region Spreadsheet
+
     fun exportToSpreadsheet(appContext: Context, fileUri: Uri) {
         val teams = teamsRepository.teamsLiveData.value
         val matches = matchesRepository.matchesLiveData.value
@@ -201,6 +200,8 @@ class TournamentViewModel : ViewModel() {
             }
         }
     }
+
+    // endregion
 
     fun startListening() {
         if (listening) return

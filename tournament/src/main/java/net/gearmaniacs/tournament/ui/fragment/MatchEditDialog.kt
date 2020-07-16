@@ -8,6 +8,7 @@ import androidx.core.view.doOnPreDraw
 import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.model.Alliance
@@ -16,6 +17,7 @@ import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.databinding.DialogEditMatchBinding
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
+@AndroidEntryPoint
 internal class MatchEditDialog : DialogFragment() {
 
     companion object {

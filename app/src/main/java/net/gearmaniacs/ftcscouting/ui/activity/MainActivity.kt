@@ -16,6 +16,7 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.core.extensions.startActivity
@@ -31,6 +32,7 @@ import net.gearmaniacs.tournament.ui.activity.TournamentActivity
 import net.gearmaniacs.tournament.ui.fragment.TournamentDialogFragment
 import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
 
     private lateinit var binding: ActivityMainBinding

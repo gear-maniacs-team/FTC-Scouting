@@ -10,10 +10,12 @@ import android.widget.FrameLayout
 import androidx.annotation.StringRes
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.databinding.DialogNewTournamentBinding
 
+@AndroidEntryPoint
 class TournamentDialogFragment : RoundedBottomSheetDialogFragment() {
 
     private var _binding: DialogNewTournamentBinding? = null

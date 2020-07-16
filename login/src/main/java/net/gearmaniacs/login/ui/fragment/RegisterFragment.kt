@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.isValidEmail
 import net.gearmaniacs.core.extensions.toIntOrDefault
@@ -13,6 +14,7 @@ import net.gearmaniacs.login.R
 import net.gearmaniacs.login.databinding.FragmentRegisterBinding
 import net.gearmaniacs.login.interfaces.LoginCallback
 
+@AndroidEntryPoint
 class RegisterFragment : Fragment(R.layout.fragment_register) {
 
     private var _binding: FragmentRegisterBinding? = null

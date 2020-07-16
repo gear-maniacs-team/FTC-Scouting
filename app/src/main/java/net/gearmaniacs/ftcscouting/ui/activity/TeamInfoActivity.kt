@@ -7,6 +7,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.extensions.toIntOrDefault
@@ -16,6 +17,7 @@ import net.gearmaniacs.core.model.User
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.databinding.ActivityTeamInfoBinding
 
+@AndroidEntryPoint
 class TeamInfoActivity : AppCompatActivity() {
 
     companion object {

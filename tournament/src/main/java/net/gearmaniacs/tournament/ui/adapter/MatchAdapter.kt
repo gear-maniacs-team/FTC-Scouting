@@ -1,11 +1,18 @@
 package net.gearmaniacs.tournament.ui.adapter
 
 import android.annotation.SuppressLint
+import android.graphics.Color
+import android.graphics.Typeface
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.text.toSpanned
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -77,19 +84,22 @@ internal class MatchAdapter(
     }
 
     override fun onViewRecycled(holder: MatchViewHolder) {
-        holder.card.collapse(false)
+        holder.layout.collapse(false)
     }
 
     class MatchViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val card = itemView as ExpandableLayout
+        val layout = itemView as ExpandableLayout
         private val tvMatchId: TextView = itemView.findViewById(R.id.tv_card_title)
         private val tvBasicInfo: TextView = itemView.findViewById(R.id.tv_card_primary_desc)
         private val tvDetailedInfo: TextView = itemView.findViewById(R.id.tv_card_secondary_desc)
         val btnEdit: Button = itemView.findViewById(R.id.btn_card_main_action)
         val btnDelete: Button = itemView.findViewById(R.id.btn_card_secondary_action)
 
+        private val blueColor = ContextCompat.getColor(itemView.context, R.color.blueAlliance)
+        private val redColor = ContextCompat.getColor(itemView.context, R.color.redAlliance)
+
         init {
-            card.expandDuration = EXPAND_ANIMATION_DURATION
+            layout.expandDuration = EXPAND_ANIMATION_DURATION
         }
 
         @SuppressLint("SetTextI18n")
@@ -106,8 +116,17 @@ internal class MatchAdapter(
                     else -> R.string.match_draw
                 }
             )
+            val winnerColor = when {
+                blueScore > redScore -> blueColor
+                blueScore < redScore -> redColor
+                else -> Color.WHITE
+            }
 
-            tvMatchId.text = "#${match.id}: $winner"
+            val builder = SpannableStringBuilder("#${match.id}: ").apply {
+                append(winner, ForegroundColorSpan(winnerColor), 0)
+            }
+
+            tvMatchId.text = builder.toSpanned()
             tvBasicInfo.text = context.getString(
                 R.string.match_score_details,
                 match.redAlliance.score,

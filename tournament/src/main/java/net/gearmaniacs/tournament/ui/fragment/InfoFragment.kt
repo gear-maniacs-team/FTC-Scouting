@@ -5,6 +5,7 @@ import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.core.model.User
 import net.gearmaniacs.core.view.EmptyRecyclerView
@@ -13,6 +14,7 @@ import net.gearmaniacs.tournament.ui.activity.TournamentActivity
 import net.gearmaniacs.tournament.ui.adapter.InfoAdapter
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
+@AndroidEntryPoint
 internal class InfoFragment : TournamentFragment(R.layout.fragment_recycler_view) {
 
     companion object {

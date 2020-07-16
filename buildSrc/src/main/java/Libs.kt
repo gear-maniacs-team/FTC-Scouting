@@ -1,7 +1,7 @@
 @Suppress("unused", "MayBeConstant") // Improve performance on change
 object Libs {
     // Kotlin
-    val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin_version}"
+    val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
     val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.7"
 
     // AndroidX
@@ -24,6 +24,16 @@ object Libs {
     val firebase_auth = "com.google.firebase:firebase-auth:19.3.2"
     val firebase_crashlytics = "com.crashlytics.sdk.android:crashlytics:2.10.1"
     val firebase_ktx_common = "com.google.firebase:firebase-common-ktx:19.3.0"
+
+    // Hilt
+    private val dagger_hilt_android = "com.google.dagger:hilt-android:${Versions.dagger_hilt}"
+    private val hilt_lifecycle = "androidx.hilt:hilt-lifecycle-viewmodel:${Versions.hilt}"
+    val hilt = arrayOf(dagger_hilt_android, hilt_lifecycle)
+
+    // Hilt Compiler
+    private val dagger_hilt_compiler = "com.google.dagger:hilt-android-compiler:${Versions.dagger_hilt}"
+    private val hilt_android_compiler = "androidx.hilt:hilt-compiler:${Versions.hilt}"
+    val hilt_compiler = arrayOf(dagger_hilt_compiler, hilt_android_compiler)
 
     // Other Libraries
     val material_intro = "com.heinrichreimersoftware:material-intro:2.0.0"

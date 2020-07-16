@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.isValidEmail
 import net.gearmaniacs.core.extensions.longToast
@@ -12,6 +13,7 @@ import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.login.R
 import net.gearmaniacs.login.databinding.ActivityResetPasswordBinding
 
+@AndroidEntryPoint
 class ResetPasswordActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityResetPasswordBinding

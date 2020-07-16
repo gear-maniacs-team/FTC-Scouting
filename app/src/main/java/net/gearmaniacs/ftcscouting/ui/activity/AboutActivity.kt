@@ -15,10 +15,12 @@ import com.marcoscg.licenser.Library
 import com.marcoscg.licenser.License
 import com.marcoscg.licenser.Licenser
 import com.marcoscg.licenser.LicenserDialog
+import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.ftcscouting.BuildConfig
 import net.gearmaniacs.ftcscouting.R
 
+@AndroidEntryPoint
 class AboutActivity : MaterialAboutActivity() {
 
     private class OpenUrlAction(

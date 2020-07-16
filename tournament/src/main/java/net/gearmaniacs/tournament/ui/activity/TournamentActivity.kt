@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.getSystemService
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -32,6 +33,7 @@ import net.gearmaniacs.tournament.ui.fragment.TeamFragment
 import net.gearmaniacs.tournament.ui.fragment.TournamentDialogFragment
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
+@AndroidEntryPoint
 class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     companion object {
