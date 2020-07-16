@@ -10,7 +10,7 @@ object Libs {
     val androidx_recycler_view = "androidx.recyclerview:recyclerview:1.1.0"
     val androidx_constraint_layout = "androidx.constraintlayout:constraintlayout:2.0.0-beta6"
     val androidx_lifecycle = "androidx.lifecycle:lifecycle-extensions:2.2.0"
-    val androidx_swipe_refresh_layout = "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+    val androidx_swipe_refresh_layout = "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     val androidx_preference = "androidx.preference:preference:1.1.1"
 
     // AndroidX KTX
@@ -19,9 +19,9 @@ object Libs {
     val ktx_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
 
     // Firebase
-    val firebase_core = "com.google.firebase:firebase-core:17.4.3"
-    val firebase_database = "com.google.firebase:firebase-database-ktx:19.3.0"
-    val firebase_auth = "com.google.firebase:firebase-auth:19.3.1"
+    val firebase_core = "com.google.firebase:firebase-core:17.4.4"
+    val firebase_database = "com.google.firebase:firebase-database-ktx:19.3.1"
+    val firebase_auth = "com.google.firebase:firebase-auth:19.3.2"
     val firebase_crashlytics = "com.crashlytics.sdk.android:crashlytics:2.10.1"
     val firebase_ktx_common = "com.google.firebase:firebase-common-ktx:19.3.0"
 

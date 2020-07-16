@@ -36,7 +36,7 @@
         <activity
             android:name=".ui.activity.AboutActivity"
             android:label="@string/title_about"
-            android:theme="@style/AppTheme.AboutActivity" />
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name=".ui.activity.TeamInfoActivity"

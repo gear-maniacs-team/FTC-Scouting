@@ -7,5 +7,5 @@
 # Remove Kotlin Null-Checks
 -assumenosideeffects class kotlin.jvm.internal.Intrinsics { *; }
 
-# Crshlythics
+# Crashlythics
 -keepattributes SourceFile,LineNumberTable
