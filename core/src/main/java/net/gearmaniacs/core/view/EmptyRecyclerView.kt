@@ -4,10 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class EmptyRecyclerView : RecyclerView {
 
-    var emptyView: View? = null
+    private var emptyView: View? = null
 
     private val emptyObserver = object : RecyclerView.AdapterDataObserver() {
         override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
@@ -47,5 +48,21 @@ class EmptyRecyclerView : RecyclerView {
         adapter?.registerAdapterDataObserver(emptyObserver)
 
         emptyObserver.onChanged()
+    }
+
+    fun setEmptyView(view: View) {
+        emptyView = view
+    }
+
+    fun setFabToHide(fab: FloatingActionButton) {
+        addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy > 0 && fab.isOrWillBeShown) {
+                    fab.hide()
+                } else if (dy < 0 && fab.isOrWillBeHidden) {
+                    fab.show()
+                }
+            }
+        })
     }
 }

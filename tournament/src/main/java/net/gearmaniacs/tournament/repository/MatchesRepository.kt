@@ -5,7 +5,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import net.gearmaniacs.core.architecture.NonNullLiveData
+import net.gearmaniacs.core.architecture.MutableNonNullLiveData
 import net.gearmaniacs.core.extensions.justTry
 import net.gearmaniacs.core.extensions.safeCollect
 import net.gearmaniacs.core.firebase.DatabasePaths
@@ -17,8 +17,8 @@ internal class MatchesRepository(private val tournamentReference: DatabaseRefere
     private var userTeamNumber = -1
     private var valueEventListenerJob: Job? = null
 
-    val infoLiveData = NonNullLiveData(emptyList<Match>())
-    val matchesLiveData = NonNullLiveData(emptyList<Match>())
+    val infoLiveData = MutableNonNullLiveData(emptyList<Match>())
+    val matchesLiveData = MutableNonNullLiveData(emptyList<Match>())
 
     private fun updateInfoData(list: List<Match>) {
         if (userTeamNumber == -1)

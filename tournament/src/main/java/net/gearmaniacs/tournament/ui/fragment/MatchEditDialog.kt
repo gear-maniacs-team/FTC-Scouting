@@ -20,23 +20,6 @@ import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 @AndroidEntryPoint
 internal class MatchEditDialog : DialogFragment() {
 
-    companion object {
-        private const val ARG_NEXT_MATCH_ID = "next_match_id"
-        private const val ARG_MATCH = "match"
-
-        fun newInstance(nextMatchId: Int) = MatchEditDialog().apply {
-            val bundle = Bundle()
-            bundle.putInt(ARG_NEXT_MATCH_ID, nextMatchId)
-            arguments = bundle
-        }
-
-        fun newInstance(match: Match) = MatchEditDialog().apply {
-            val bundle = Bundle()
-            bundle.putParcelable(ARG_MATCH, match)
-            arguments = bundle
-        }
-    }
-
     private var _binding: DialogEditMatchBinding? = null
     private val binding get() = _binding!!
 
@@ -46,6 +29,13 @@ internal class MatchEditDialog : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
+
+        transitionPlayed = savedInstanceState?.getBoolean(BUNDLE_TRANSITION_PLAYED) ?: false
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(BUNDLE_TRANSITION_PLAYED, transitionPlayed)
     }
 
     override fun onCreateView(
@@ -131,5 +121,24 @@ internal class MatchEditDialog : DialogFragment() {
     override fun onDestroy() {
         _binding = null
         super.onDestroy()
+    }
+
+    companion object {
+        private const val BUNDLE_TRANSITION_PLAYED = "bundle_transition_played"
+
+        private const val ARG_NEXT_MATCH_ID = "arg_next_match_id"
+        private const val ARG_MATCH = "arg_match"
+
+        fun newInstance(nextMatchId: Int) = MatchEditDialog().apply {
+            val bundle = Bundle()
+            bundle.putInt(ARG_NEXT_MATCH_ID, nextMatchId)
+            arguments = bundle
+        }
+
+        fun newInstance(match: Match) = MatchEditDialog().apply {
+            val bundle = Bundle()
+            bundle.putParcelable(ARG_MATCH, match)
+            arguments = bundle
+        }
     }
 }

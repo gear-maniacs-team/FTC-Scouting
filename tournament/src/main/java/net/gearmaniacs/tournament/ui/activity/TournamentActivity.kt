@@ -1,7 +1,6 @@
 package net.gearmaniacs.tournament.ui.activity
 
 import android.app.Activity
-import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -14,8 +13,7 @@ import android.view.animation.ScaleAnimation
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
-import androidx.core.content.getSystemService
+import androidx.fragment.app.commit
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -26,15 +24,16 @@ import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.User
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.databinding.ActivityTournamentBinding
-import net.gearmaniacs.tournament.ui.fragment.AnalyticsFragment
-import net.gearmaniacs.tournament.ui.fragment.InfoFragment
-import net.gearmaniacs.tournament.ui.fragment.MatchFragment
-import net.gearmaniacs.tournament.ui.fragment.TeamFragment
 import net.gearmaniacs.tournament.ui.fragment.TournamentDialogFragment
+import net.gearmaniacs.tournament.ui.fragment.TournamentFragment
+import net.gearmaniacs.tournament.ui.fragment.nav.AnalyticsFragment
+import net.gearmaniacs.tournament.ui.fragment.nav.InfoFragment
+import net.gearmaniacs.tournament.ui.fragment.nav.MatchFragment
+import net.gearmaniacs.tournament.ui.fragment.nav.TeamFragment
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @AndroidEntryPoint
-class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
+class TournamentActivity : AppCompatActivity() {
 
     companion object {
         private const val ARG_TOURNAMENT_KEY = "tournament_key"
@@ -59,9 +58,15 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     private lateinit var binding: ActivityTournamentBinding
     private val viewModel by viewModels<TournamentViewModel>()
-    private val fragments =
-        listOf(InfoFragment(), TeamFragment(), MatchFragment(), AnalyticsFragment())
-    private var activeFragment = fragments.first()
+    private val fragments by lazy {
+        listOf(
+            loadFragment(InfoFragment),
+            loadFragment(TeamFragment),
+            loadFragment(MatchFragment),
+            loadFragment(AnalyticsFragment)
+        )
+    }
+    private lateinit var activeFragment: TournamentFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,38 +85,52 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         viewModel.setDefaultName(tournamentName)
 
+        // Setup Fragments
+        activeFragment = fragments.first()
+        savedInstanceState?.let { bundle ->
+            val restoredTag = bundle.getString(SAVED_FRAGMENT_INDEX)
+
+            activeFragment =
+                fragments.firstOrNull { it.getFragmentTag() == restoredTag } ?: fragments.first()
+        }
+
+        if (savedInstanceState == null) {
+
+            // Add all the fragments first time the activity is created
+            supportFragmentManager.commit {
+                fragments.forEach {
+                    add(R.id.layout_fragment, it, it.getFragmentTag())
+
+                    // Hide all fragments except the active one
+                    if (activeFragment.getFragmentTag() != it.getFragmentTag())
+                        hide(it)
+                }
+            }
+        }
+
+        updateFab(fragments.first().getFragmentTag(), activeFragment.getFragmentTag())
+
         binding.fab.setOnClickListener {
             activeFragment.fabClickListener()
         }
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener {
+            val oldFragment = activeFragment
             val newFragment = fragments[it.order]
 
-            if (activeFragment.getFragmentTag() != newFragment.getFragmentTag()) {
-                updateFab(activeFragment.getFragmentTag(), newFragment.getFragmentTag())
+            if (oldFragment.getFragmentTag() != newFragment.getFragmentTag()) {
+                updateFab(oldFragment.getFragmentTag(), newFragment.getFragmentTag())
 
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.layout_fragment, newFragment, newFragment.getFragmentTag())
-                    .commit()
+                supportFragmentManager.commit {
+                    hide(oldFragment)
+                    show(newFragment)
+                }
                 activeFragment = newFragment
                 invalidateOptionsMenu()
 
                 true
             } else false
         }
-
-        // Setup Fragments
-        savedInstanceState?.let { bundle ->
-            val restoredTag = bundle.getString(SAVED_FRAGMENT_INDEX)
-
-            activeFragment =
-                fragments.find { it.getFragmentTag() == restoredTag } ?: fragments.first()
-        }
-
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.layout_fragment, activeFragment, activeFragment.getFragmentTag())
-            .commit()
-        updateFab(fragments.first().getFragmentTag(), activeFragment.getFragmentTag())
 
         observe(viewModel.getNameLiveData()) { name ->
             if (name == null) {
@@ -124,6 +143,10 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         }
     }
 
+    private fun loadFragment(companion: TournamentFragment.ICompanion): TournamentFragment =
+        supportFragmentManager.findFragmentByTag(companion.fragmentTag) as? TournamentFragment?
+            ?: companion.newInstance()
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SAVED_FRAGMENT_INDEX, activeFragment.getFragmentTag())
@@ -133,24 +156,7 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         menuInflater.inflate(R.menu.menu_tournament, menu)
         val activeTag = activeFragment.getFragmentTag()
 
-        val isSearchVisible = activeTag == TeamFragment.TAG
-
-        menu.findItem(R.id.action_opr_info).isVisible = activeTag == AnalyticsFragment.TAG
-
-        val searchViewItem = menu.findItem(R.id.action_search)
-        searchViewItem.isVisible = isSearchVisible
-
-        if (isSearchVisible) {
-            val searchView = searchViewItem.actionView as SearchView
-
-            getSystemService<SearchManager>()?.let { searchManager ->
-                searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-            }
-
-            searchView.setIconifiedByDefault(true)
-            searchView.queryHint = getString(R.string.action_search)
-            searchView.setOnQueryTextListener(this)
-        }
+        menu.findItem(R.id.action_opr_info).isVisible = activeTag == AnalyticsFragment.fragmentTag
 
         return super.onCreateOptionsMenu(menu)
     }
@@ -179,21 +185,16 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                     .show()
             }
             R.id.action_export -> {
-                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-                    type = "application/vnd.ms-excel"
-                    addCategory(Intent.CATEGORY_OPENABLE)
-                    flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                val intent = getSpreadsheetIntent(Intent.ACTION_CREATE_DOCUMENT)
+                intent.flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                intent.putExtra(Intent.EXTRA_TITLE, viewModel.getNameLiveData().value)
 
-                    putExtra(Intent.EXTRA_TITLE, viewModel.getNameLiveData().value)
-                }
                 startActivityForResult(intent, SPREADSHEET_SAVE_REQUEST_CODE)
             }
             R.id.action_import -> {
-                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-                    type = "application/vnd.ms-excel"
-                    addCategory(Intent.CATEGORY_OPENABLE)
-                    flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                }
+                val intent = getSpreadsheetIntent(Intent.ACTION_OPEN_DOCUMENT)
+                intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+
                 startActivityForResult(intent, SPREADSHEET_LOAD_REQUEST_CODE)
             }
         }
@@ -215,35 +216,25 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         if (requestCode == SPREADSHEET_LOAD_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             resultData?.data?.also { documentUri ->
-                viewModel.importFromSpreadSheet(applicationContext, documentUri)
+                viewModel.importFromSpreadSheet(documentUri)
             }
         }
 
         if (requestCode == SPREADSHEET_SAVE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             resultData?.data?.also { documentUri ->
-                viewModel.exportToSpreadsheet(this.applicationContext, documentUri)
+                viewModel.exportToSpreadsheet(documentUri)
             }
         }
     }
 
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        viewModel.performTeamsSearch(query)
-        return true
-    }
-
-    override fun onQueryTextChange(newText: String?): Boolean {
-        return onQueryTextSubmit(newText)
-    }
-
     private fun updateFab(oldFragmentTag: String, newFragmentTag: String) {
+        val fab = binding.fab
         val newDrawable = getDrawable(
-            if (newFragmentTag == AnalyticsFragment.TAG)
+            if (newFragmentTag == AnalyticsFragment.fragmentTag)
                 R.drawable.ic_refresh
             else
                 R.drawable.ic_add
         )
-
-        val fab = binding.fab
 
         if (fab.isOrWillBeHidden) {
             fab.setImageDrawable(newDrawable)
@@ -251,12 +242,12 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             return
         }
 
-        if (newFragmentTag == InfoFragment.TAG) {
+        if (newFragmentTag == InfoFragment.fragmentTag) {
             fab.hide() // InfoFragment shouldn't have a visible FAB
             return
         }
 
-        if (oldFragmentTag != AnalyticsFragment.TAG && newFragmentTag != AnalyticsFragment.TAG) return
+        if (oldFragmentTag != AnalyticsFragment.fragmentTag && newFragmentTag != AnalyticsFragment.fragmentTag) return
 
         val animationDuration = 150L
         val relativeToSelfAnim = Animation.RELATIVE_TO_SELF
@@ -287,9 +278,8 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             }
         })
 
-        fab.startAnimation(fabAnimation)
-
         GlobalScope.launch(Dispatchers.Main.immediate) {
+            fab.startAnimation(fabAnimation)
             delay(animationDuration)
             fab.setImageDrawable(newDrawable)
         }
@@ -318,4 +308,10 @@ class TournamentActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             .setNegativeButton(android.R.string.cancel, null)
             .show()
     }
+
+    private fun getSpreadsheetIntent(action: String) =
+        Intent(action).apply {
+            type = "application/vnd.ms-excel"
+            addCategory(Intent.CATEGORY_OPENABLE)
+        }
 }

@@ -17,7 +17,8 @@ fun <T : DatabaseClass<T>> DatabaseReference.listValueEventListenerFlow(
 ) = callbackFlow<List<T>> {
     val eventListener = object : ValueEventListener {
         override fun onCancelled(error: DatabaseError) {
-            channel.close(error.toException())
+            error.toException().printStackTrace()
+            channel.close()
         }
 
         override fun onDataChange(snapshot: DataSnapshot) {
@@ -54,7 +55,8 @@ fun <T> DatabaseReference.valueEventListenerFlow(
 ) = callbackFlow<T?> {
     val eventListener = object : ValueEventListener {
         override fun onCancelled(error: DatabaseError) {
-            channel.close(error.toException())
+            error.toException().printStackTrace()
+            channel.close()
         }
 
         override fun onDataChange(snapshot: DataSnapshot) {

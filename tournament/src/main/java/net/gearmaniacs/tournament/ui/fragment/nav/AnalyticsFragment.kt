@@ -1,22 +1,21 @@
-package net.gearmaniacs.tournament.ui.fragment
+package net.gearmaniacs.tournament.ui.fragment.nav
 
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.core.view.EmptyRecyclerView
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.ui.adapter.AnalyticsAdapter
+import net.gearmaniacs.tournament.ui.fragment.TournamentFragment
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 internal class AnalyticsFragment : TournamentFragment(R.layout.fragment_recycler_view) {
-
-    companion object {
-        const val TAG = "AnalyticsFragment"
-    }
 
     private val viewModel by activityViewModels<TournamentViewModel>()
 
@@ -31,31 +30,35 @@ internal class AnalyticsFragment : TournamentFragment(R.layout.fragment_recycler
 
         val adapter = AnalyticsAdapter()
 
-        recyclerView.emptyView = emptyView
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
+        with(recyclerView) {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(activity)
+            addItemDecoration(DividerItemDecoration(activity, RecyclerView.VERTICAL))
+
+            setEmptyView(emptyView)
+            setFabToHide(fab)
+        }
         recyclerView.adapter = adapter
-
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (dy > 0 && fab.visibility == View.VISIBLE) {
-                    fab.hide()
-                } else if (dy < 0 && fab.visibility != View.VISIBLE) {
-                    fab.show()
-                }
-            }
-        })
-
-        viewModel.refreshAnalyticsData(activity.applicationContext)
 
         activity.observeNonNull(viewModel.analyticsData) {
             adapter.submitList(it)
         }
+
+        activity.observe(viewModel.getMatchesLiveData()) {
+            if (it != null)
+                viewModel.refreshAnalyticsData(false)
+        }
     }
 
     override fun fabClickListener() {
-        context?.applicationContext?.let { viewModel.refreshAnalyticsData(it) }
+        viewModel.refreshAnalyticsData()
     }
 
-    override fun getFragmentTag() = TAG
+    override fun getFragmentTag() = fragmentTag
+
+    companion object : ICompanion {
+        override val fragmentTag = "AnalyticsFragment"
+
+        override fun newInstance() = AnalyticsFragment()
+    }
 }

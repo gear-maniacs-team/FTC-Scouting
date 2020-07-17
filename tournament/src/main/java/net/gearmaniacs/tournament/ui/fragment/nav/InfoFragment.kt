@@ -1,9 +1,11 @@
-package net.gearmaniacs.tournament.ui.fragment
+package net.gearmaniacs.tournament.ui.fragment.nav
 
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.observeNonNull
@@ -12,19 +14,16 @@ import net.gearmaniacs.core.view.EmptyRecyclerView
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.ui.activity.TournamentActivity
 import net.gearmaniacs.tournament.ui.adapter.InfoAdapter
+import net.gearmaniacs.tournament.ui.fragment.TournamentFragment
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @AndroidEntryPoint
 internal class InfoFragment : TournamentFragment(R.layout.fragment_recycler_view) {
 
-    companion object {
-        const val TAG = "InfoFragment"
-    }
-
     private val viewModel by activityViewModels<TournamentViewModel>()
 
     override fun onInflateView(view: View) {
-        val activity = activity ?: return
+        val activity = requireActivity()
 
         val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
         val emptyView = view.findViewById<TextView>(R.id.empty_view)
@@ -35,9 +34,13 @@ internal class InfoFragment : TournamentFragment(R.layout.fragment_recycler_view
 
         val adapter = InfoAdapter()
 
-        recyclerView.emptyView = emptyView
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
+        with(recyclerView) {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(activity)
+
+            setEmptyView(emptyView)
+            setFabToHide(fab)
+        }
         recyclerView.adapter = adapter
 
         val user = activity.intent.getParcelableExtra<User>(TournamentActivity.ARG_USER)
@@ -53,5 +56,11 @@ internal class InfoFragment : TournamentFragment(R.layout.fragment_recycler_view
 
     override fun fabClickListener() = Unit
 
-    override fun getFragmentTag() = TAG
+    override fun getFragmentTag() = fragmentTag
+
+    companion object : ICompanion {
+        override val fragmentTag = "InfoFragment"
+
+        override fun newInstance() = InfoFragment()
+    }
 }

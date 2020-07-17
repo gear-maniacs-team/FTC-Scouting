@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.textfield.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+    android:layout_margin="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:endIconMode="clear_text"
+    app:startIconDrawable="@drawable/ic_search"
+    app:endIconDrawable="@drawable/ic_close"
+    app:endIconTint="?android:textColorPrimary">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/et_search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/action_search" />
+
+</com.google.android.material.textfield.TextInputLayout>

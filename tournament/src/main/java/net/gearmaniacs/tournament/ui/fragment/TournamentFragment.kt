@@ -41,4 +41,10 @@ internal abstract class TournamentFragment : Fragment {
     abstract fun fabClickListener()
 
     abstract fun getFragmentTag(): String
+
+    interface ICompanion {
+        val fragmentTag: String
+
+        fun newInstance(): TournamentFragment
+    }
 }

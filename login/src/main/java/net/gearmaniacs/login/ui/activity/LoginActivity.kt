@@ -15,6 +15,7 @@ import net.gearmaniacs.login.databinding.ActivityLoginBinding
 import net.gearmaniacs.login.ui.fragment.LoginFragment
 import net.gearmaniacs.login.ui.fragment.RegisterFragment
 import net.gearmaniacs.login.interfaces.LoginCallback
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity(), LoginCallback {
@@ -22,6 +23,9 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var auth: FirebaseAuth
     private var isLoginFragmentActive = true
+
+    @Inject
+    lateinit var mainActivityClass: MainActivityClass
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -153,7 +157,7 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     }
 
     private fun startMainActivity() {
-        val mainActivityClass = Class.forName(MAIN_ACTIVITY_CLASS)
+        val mainActivityClass = Class.forName(mainActivityClass.value)
         val intent = Intent(this, mainActivityClass)
 
         startActivity(intent)
@@ -161,13 +165,12 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     }
 
     private companion object {
-        private const val MAIN_ACTIVITY_CLASS =
-            "net.gearmaniacs.ftcscouting.ui.activity.MainActivity"
-
         private const val TAG = "LoginActivity"
         private const val TAG_LOGIN_FRAGMENT = "LOGIN_FRAGMENT"
         private const val TAG_FRAGMENT_REGISTER = "REGISTER_FRAGMENT"
 
         private const val BUNDLE_IS_LOGIN_ACTIVE = "login_fragment_active"
     }
+
+    class MainActivityClass(val value: String)
 }

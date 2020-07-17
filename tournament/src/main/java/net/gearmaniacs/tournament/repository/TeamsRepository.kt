@@ -9,7 +9,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import net.gearmaniacs.core.architecture.NonNullLiveData
+import net.gearmaniacs.core.architecture.MutableNonNullLiveData
 import net.gearmaniacs.core.extensions.justTry
 import net.gearmaniacs.core.extensions.safeCollect
 import net.gearmaniacs.core.firebase.DatabasePaths
@@ -22,8 +22,8 @@ class TeamsRepository(private val tournamentReference: DatabaseReference) {
     private var teamSearchJob: Job? = null // Last launched search job
     private var valueEventListenerJob: Job? = null
 
-    val teamsLiveData = NonNullLiveData(emptyList<Team>())
-    val queriedLiveData = NonNullLiveData(emptyList<Team>())
+    val teamsLiveData = MutableNonNullLiveData(emptyList<Team>())
+    val queriedLiveData = MutableNonNullLiveData(emptyList<Team>())
 
     fun addTeam(tournamentKey: String, team: Team) {
         tournamentReference

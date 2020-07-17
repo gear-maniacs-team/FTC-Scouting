@@ -7,7 +7,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import net.gearmaniacs.core.architecture.NonNullLiveData
+import net.gearmaniacs.core.architecture.MutableNonNullLiveData
 import net.gearmaniacs.core.extensions.justTry
 import net.gearmaniacs.core.extensions.safeCollect
 import net.gearmaniacs.core.firebase.DatabasePaths
@@ -29,7 +29,7 @@ class MainRepository {
     private var valueEventListenerJob: Job? = null
 
     val userLiveData = MutableLiveData<User>()
-    val tournamentsLiveData = NonNullLiveData(emptyList<Tournament>())
+    val tournamentsLiveData = MutableNonNullLiveData(emptyList<Tournament>())
 
     suspend fun addListener() = coroutineScope {
         justTry { valueEventListenerJob?.cancelAndJoin() }

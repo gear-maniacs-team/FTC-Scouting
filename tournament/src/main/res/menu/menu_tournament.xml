@@ -3,14 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_search"
-        android:icon="@drawable/ic_search"
-        android:title="@string/action_search"
-        android:visible="false"
-        app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="collapseActionView|ifRoom" />
-
-    <item
         android:id="@+id/action_opr_info"
         android:icon="@drawable/ic_info_outline"
         android:title="@string/opr_info"

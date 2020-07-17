@@ -1,4 +1,4 @@
-package net.gearmaniacs.tournament.ui.fragment
+package net.gearmaniacs.tournament.ui.fragment.nav
 
 import android.view.View
 import android.widget.TextView
@@ -12,17 +12,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.core.view.EmptyRecyclerView
 import net.gearmaniacs.tournament.R
-import net.gearmaniacs.tournament.ui.adapter.MatchAdapter
 import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
+import net.gearmaniacs.tournament.ui.adapter.MatchAdapter
+import net.gearmaniacs.tournament.ui.fragment.MatchEditDialog
+import net.gearmaniacs.tournament.ui.fragment.TournamentFragment
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @AndroidEntryPoint
 internal class MatchFragment
     : TournamentFragment(R.layout.fragment_recycler_view), RecyclerViewItemListener {
-
-    companion object {
-        const val TAG = "MatchFragment"
-    }
 
     private val viewModel by activityViewModels<TournamentViewModel>()
     private lateinit var adapter: MatchAdapter
@@ -39,21 +37,15 @@ internal class MatchFragment
 
         adapter = MatchAdapter(this)
 
-        recyclerView.emptyView = emptyView
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = adapter
-        recyclerView.addItemDecoration(DividerItemDecoration(activity, RecyclerView.VERTICAL))
+        with(recyclerView) {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(activity)
+            addItemDecoration(DividerItemDecoration(activity, RecyclerView.VERTICAL))
 
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (dy > 0 && fab.visibility == View.VISIBLE) {
-                    fab.hide()
-                } else if (dy < 0 && fab.visibility != View.VISIBLE) {
-                    fab.show()
-                }
-            }
-        })
+            setEmptyView(emptyView)
+            setFabToHide(fab)
+        }
+        recyclerView.adapter = adapter
 
         activity.observeNonNull(viewModel.getMatchesLiveData()) {
             adapter.submitList(it)
@@ -69,7 +61,8 @@ internal class MatchFragment
         dialog.show(transaction, null)
     }
 
-    override fun getFragmentTag() = TAG
+    override fun getFragmentTag() =
+        fragmentTag
 
     override fun onClickListener(position: Int) {
         val activity = activity ?: return
@@ -92,5 +85,12 @@ internal class MatchFragment
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
+    }
+
+    companion object : ICompanion {
+        override val fragmentTag = "MatchFragment"
+
+        override fun newInstance() =
+            MatchFragment()
     }
 }

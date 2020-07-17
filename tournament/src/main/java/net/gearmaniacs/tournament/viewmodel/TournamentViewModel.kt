@@ -1,18 +1,16 @@
 package net.gearmaniacs.tournament.viewmodel
 
-import android.content.Context
+import android.app.Application
 import android.net.Uri
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import net.gearmaniacs.core.architecture.MutableNonNullLiveData
 import net.gearmaniacs.core.architecture.NonNullLiveData
+import net.gearmaniacs.core.extensions.app
 import net.gearmaniacs.core.extensions.toast
-import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeamPower
@@ -28,13 +26,14 @@ import java.util.Locale
 internal class TournamentViewModel @ViewModelInject constructor(
     private val tournamentRepository: TournamentRepository,
     private val teamsRepository: TeamsRepository,
-    private val matchesRepository: MatchesRepository
-) : ViewModel() {
+    private val matchesRepository: MatchesRepository,
+    application: Application
+) : AndroidViewModel(application) {
 
     private var listening = false
     var tournamentKey = ""
 
-    val analyticsData = NonNullLiveData(emptyList<TeamPower>())
+    val analyticsData = MutableNonNullLiveData(emptyList<TeamPower>())
 
     fun getInfoLiveData(user: User): NonNullLiveData<List<Match>> {
         matchesRepository.setUserTeamNumber(user.id)
@@ -128,12 +127,13 @@ internal class TournamentViewModel @ViewModelInject constructor(
 
     // endregion
 
-    fun refreshAnalyticsData(appContext: Context) {
+    fun refreshAnalyticsData(showToast: Boolean = true) {
         val teams = teamsRepository.teamsLiveData.value
         val matches = matchesRepository.matchesLiveData.value
 
         if (matches.isEmpty()) {
-            appContext.toast(R.string.opr_error_no_matches)
+            if (showToast)
+                app.toast(R.string.opr_error_no_matches)
             return
         }
 
@@ -143,15 +143,15 @@ internal class TournamentViewModel @ViewModelInject constructor(
             launch(Dispatchers.Main) {
                 analyticsData.value = powerRankings
 
-                if (powerRankings.isEmpty())
-                    appContext.toast(R.string.opr_error_data)
+                if (powerRankings.isEmpty() && showToast)
+                    app.toast(R.string.opr_error_data)
             }
         }
     }
 
     // region Spreadsheet
 
-    fun exportToSpreadsheet(appContext: Context, fileUri: Uri) {
+    fun exportToSpreadsheet(fileUri: Uri) {
         val teams = teamsRepository.teamsLiveData.value
         val matches = matchesRepository.matchesLiveData.value
 
@@ -162,29 +162,29 @@ internal class TournamentViewModel @ViewModelInject constructor(
                 val export = SpreadsheetExport()
                 export.export(teams, matches, powerRankings)
 
-                appContext.contentResolver.openOutputStream(fileUri)!!.use {
+                app.contentResolver.openOutputStream(fileUri)!!.use {
                     export.writeToStream(it)
                 }
 
                 launch(Dispatchers.Main) {
-                    appContext.toast(R.string.spreadsheet_saved_successfully)
+                    app.toast(R.string.spreadsheet_saved_successfully)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
 
                 launch(Dispatchers.Main) {
-                    appContext.toast(R.string.spreadsheet_error)
+                    app.toast(R.string.spreadsheet_error)
                 }
             }
         }
     }
 
-    fun importFromSpreadSheet(appContext: Context, fileUri: Uri) {
+    fun importFromSpreadSheet(fileUri: Uri) {
         val currentTeams = teamsRepository.teamsLiveData.value
         val currentMatches = matchesRepository.matchesLiveData.value
 
         viewModelScope.launch(Dispatchers.IO) {
-            appContext.contentResolver.openInputStream(fileUri)?.use { inputStream ->
+            app.contentResolver.openInputStream(fileUri)?.use { inputStream ->
                 val import = SpreadsheetImport(inputStream)
                 val importedTeams = import.getTeams()
                 val importedMatches = import.getMatches()

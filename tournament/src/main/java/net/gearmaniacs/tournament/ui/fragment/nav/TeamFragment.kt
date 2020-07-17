@@ -1,4 +1,4 @@
-package net.gearmaniacs.tournament.ui.fragment
+package net.gearmaniacs.tournament.ui.fragment.nav
 
 import android.view.View
 import android.widget.TextView
@@ -6,26 +6,26 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.MergeAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.core.view.EmptyRecyclerView
 import net.gearmaniacs.tournament.R
-import net.gearmaniacs.tournament.ui.adapter.TeamAdapter
 import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
+import net.gearmaniacs.tournament.ui.adapter.SearchAdapter
+import net.gearmaniacs.tournament.ui.adapter.TeamAdapter
+import net.gearmaniacs.tournament.ui.fragment.TeamEditDialog
+import net.gearmaniacs.tournament.ui.fragment.TournamentFragment
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @AndroidEntryPoint
 internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view),
-    RecyclerViewItemListener {
-
-    companion object {
-        const val TAG = "TeamFragment"
-    }
+    RecyclerViewItemListener, SearchAdapter.QueryListener {
 
     private val viewModel by activityViewModels<TournamentViewModel>()
-    private lateinit var adapter: TeamAdapter
+    private lateinit var teamAdapter: TeamAdapter
 
     override fun onInflateView(view: View) {
         val activity = activity ?: return
@@ -36,26 +36,21 @@ internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view
 
         emptyView.setText(R.string.empty_tab_teams)
 
-        adapter = TeamAdapter(this)
+        val searchAdapter = SearchAdapter(this)
+        teamAdapter = TeamAdapter(this)
 
-        recyclerView.emptyView = emptyView
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = adapter
-        recyclerView.addItemDecoration(DividerItemDecoration(activity, RecyclerView.VERTICAL))
+        with(recyclerView) {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(activity)
+            addItemDecoration(DividerItemDecoration(activity, RecyclerView.VERTICAL))
 
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (dy > 0 && fab.visibility == View.VISIBLE) {
-                    fab.hide()
-                } else if (dy < 0 && fab.visibility != View.VISIBLE) {
-                    fab.show()
-                }
-            }
-        })
+            setEmptyView(emptyView)
+            setFabToHide(fab)
+        }
+        recyclerView.adapter = MergeAdapter(searchAdapter, teamAdapter)
 
         activity.observeNonNull(viewModel.getTeamsLiveData()) {
-            adapter.submitList(it)
+            teamAdapter.submitList(it)
         }
     }
 
@@ -67,11 +62,11 @@ internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view
         dialog.show(transaction, TeamEditDialog.TAG)
     }
 
-    override fun getFragmentTag() = TAG
+    override fun getFragmentTag() = fragmentTag
 
     override fun onClickListener(position: Int) {
         val activity = activity ?: return
-        val team = adapter.getItem(position)
+        val team = teamAdapter.getItem(position)
 
         val dialog = TeamEditDialog.newInstance(team)
         val transaction = activity.supportFragmentManager.beginTransaction()
@@ -80,7 +75,7 @@ internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view
 
     override fun onLongClickListener(position: Int) {
         val activity = activity ?: return
-        val key = adapter.getItem(position).key ?: return
+        val key = teamAdapter.getItem(position).key ?: return
 
         AlertDialog.Builder(activity)
             .setTitle(R.string.delete_team)
@@ -90,5 +85,15 @@ internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
+    }
+
+    override fun onQueryChange(newQuery: CharSequence?) {
+        viewModel.performTeamsSearch(newQuery?.toString())
+    }
+
+    companion object : ICompanion {
+        override val fragmentTag = "TeamFragment"
+
+        override fun newInstance() = TeamFragment()
     }
 }
