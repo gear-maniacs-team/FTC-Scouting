@@ -10,7 +10,7 @@ import net.gearmaniacs.login.ui.activity.LoginActivity
 
 @Module
 @InstallIn(ApplicationComponent::class)
-class LoginModule {
+object LoginModule {
 
     @Provides
     fun providesMainActivityClass() =

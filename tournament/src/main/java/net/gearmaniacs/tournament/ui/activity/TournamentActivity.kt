@@ -15,10 +15,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.User
@@ -108,7 +104,7 @@ class TournamentActivity : AppCompatActivity() {
             }
         }
 
-        updateFab(fragments.first().getFragmentTag(), activeFragment.getFragmentTag())
+        updateFab(activeFragment.getFragmentTag())
 
         binding.fab.setOnClickListener {
             activeFragment.fabClickListener()
@@ -119,7 +115,7 @@ class TournamentActivity : AppCompatActivity() {
             val newFragment = fragments[it.order]
 
             if (oldFragment.getFragmentTag() != newFragment.getFragmentTag()) {
-                updateFab(oldFragment.getFragmentTag(), newFragment.getFragmentTag())
+                updateFab(newFragment.getFragmentTag())
 
                 supportFragmentManager.commit {
                     hide(oldFragment)
@@ -227,27 +223,18 @@ class TournamentActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateFab(oldFragmentTag: String, newFragmentTag: String) {
+    private fun updateFab(newFragmentTag: String) {
         val fab = binding.fab
-        val newDrawable = getDrawable(
-            if (newFragmentTag == AnalyticsFragment.fragmentTag)
-                R.drawable.ic_refresh
-            else
-                R.drawable.ic_add
-        )
 
         if (fab.isOrWillBeHidden) {
-            fab.setImageDrawable(newDrawable)
             fab.show()
             return
         }
 
-        if (newFragmentTag == InfoFragment.fragmentTag) {
-            fab.hide() // InfoFragment shouldn't have a visible FAB
+        if (newFragmentTag == InfoFragment.fragmentTag || newFragmentTag == AnalyticsFragment.fragmentTag) {
+            fab.hide() // InfoFragment and AnalyticsFragment don't have a visible FAB
             return
         }
-
-        if (oldFragmentTag != AnalyticsFragment.fragmentTag && newFragmentTag != AnalyticsFragment.fragmentTag) return
 
         val animationDuration = 150L
         val relativeToSelfAnim = Animation.RELATIVE_TO_SELF
@@ -278,11 +265,7 @@ class TournamentActivity : AppCompatActivity() {
             }
         })
 
-        GlobalScope.launch(Dispatchers.Main.immediate) {
-            fab.startAnimation(fabAnimation)
-            delay(animationDuration)
-            fab.setImageDrawable(newDrawable)
-        }
+        fab.startAnimation(fabAnimation)
     }
 
     private fun changeTournamentName() {

@@ -39,7 +39,6 @@ internal class InfoFragment : TournamentFragment(R.layout.fragment_recycler_view
             layoutManager = LinearLayoutManager(activity)
 
             setEmptyView(emptyView)
-            setFabToHide(fab)
         }
         recyclerView.adapter = adapter
 

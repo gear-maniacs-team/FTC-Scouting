@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.gearmaniacs.core.architecture.MutableNonNullLiveData
 import net.gearmaniacs.core.architecture.NonNullLiveData
 import net.gearmaniacs.core.extensions.app
@@ -129,26 +130,23 @@ internal class TournamentViewModel @ViewModelInject constructor(
 
     // endregion
 
-    fun refreshAnalyticsData(showToast: Boolean = true) {
+    suspend fun refreshAnalyticsData() = withContext(Dispatchers.Main.immediate) {
         val teams = teamsRepository.teamsLiveData.value
         val matches = matchesRepository.matchesLiveData.value
 
-        if (matches.isEmpty()) {
-            if (showToast)
-                app.toast(R.string.opr_error_no_matches)
-            return
+        if (matches.isEmpty())
+            return@withContext app.getString(R.string.opr_error_no_matches)
+
+        val powerRankings = withContext(Dispatchers.Default) {
+            tournamentRepository.generateOprList(teams, matches)
         }
 
-        viewModelScope.launch(Dispatchers.Default) {
-            val powerRankings = tournamentRepository.generateOprList(teams, matches)
+        analyticsData.value = powerRankings
 
-            launch(Dispatchers.Main) {
-                analyticsData.value = powerRankings
-
-                if (powerRankings.isEmpty() && showToast)
-                    app.toast(R.string.opr_error_data)
-            }
-        }
+        if (powerRankings.isEmpty())
+            app.getString(R.string.opr_error_data)
+        else
+            ""
     }
 
     // region Spreadsheet
