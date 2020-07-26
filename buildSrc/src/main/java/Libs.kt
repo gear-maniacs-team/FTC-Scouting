@@ -25,10 +25,10 @@ object Libs {
     val ktx_room = "androidx.room:room-ktx:${Versions.room}"
 
     // Firebase
-    val firebase_core = "com.google.firebase:firebase-core:17.4.4"
+    val firebase_analytics = "com.google.firebase:firebase-analytics-ktx:17.4.4"
     val firebase_database = "com.google.firebase:firebase-database-ktx:19.3.1"
-    val firebase_auth = "com.google.firebase:firebase-auth:19.3.2"
-    val firebase_crashlytics = "com.crashlytics.sdk.android:crashlytics:2.10.1"
+    val firebase_auth = "com.google.firebase:firebase-auth-ktx:19.3.2"
+    val firebase_crashlytics = "com.google.firebase:firebase-crashlytics:17.1.1"
     val firebase_ktx_common = "com.google.firebase:firebase-common-ktx:19.3.0"
 
     // Hilt

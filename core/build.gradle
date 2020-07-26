@@ -1,7 +1,9 @@
 apply plugin: 'com.android.library'
+
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+
 apply plugin: 'dagger.hilt.android.plugin'
 
 android {
@@ -45,7 +47,7 @@ dependencies {
     api Libs.androidx_swipe_refresh_layout
     api Libs.androidx_preference
 
-    api Libs.firebase_core
+    api Libs.firebase_analytics
     api Libs.firebase_auth
     api Libs.firebase_database
     api Libs.firebase_ktx_common
