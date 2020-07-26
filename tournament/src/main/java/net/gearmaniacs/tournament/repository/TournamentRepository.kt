@@ -6,6 +6,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import net.gearmaniacs.core.extensions.justTry
 import net.gearmaniacs.core.extensions.safeCollect
 import net.gearmaniacs.core.firebase.DatabasePaths
@@ -23,23 +24,26 @@ internal class TournamentRepository(private val tournamentReference: DatabaseRef
 
     val nameLiveData = MutableLiveData<String>()
 
-    fun updateTournamentName(tournamentKey: String, newName: String) {
+    suspend fun updateTournamentName(tournamentKey: String, newName: String) {
         tournamentReference
             .child(DatabasePaths.KEY_TOURNAMENTS)
             .child(tournamentKey)
             .setValue(newName)
+            .await()
     }
 
-    fun deleteTournament(tournamentKey: String) {
+    suspend fun deleteTournament(tournamentKey: String) {
         tournamentReference
             .child(DatabasePaths.KEY_TOURNAMENTS)
             .child(tournamentKey)
             .removeValue()
+            .await()
 
         tournamentReference
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .removeValue()
+            .await()
     }
 
     suspend fun generateOprList(teams: List<Team>, matches: List<Match>): List<TeamPower> {

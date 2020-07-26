@@ -24,8 +24,7 @@ fun <T : DatabaseClass<T>> DatabaseReference.listValueEventListenerFlow(
         override fun onDataChange(snapshot: DataSnapshot) {
             val list = snapshot.children.asSequence()
                 .filter { it.key != null }
-                .map { parser(it) }
-                .filterNotNull()
+                .mapNotNull { parser(it) }
                 .toMutableList()
 
             list.sort()
@@ -46,7 +45,11 @@ fun <T : DatabaseClass<T>> DatabaseReference.listValueEventListenerFlow(
 ) = listValueEventListenerFlow { dataSnapshot ->
     // Try to parse the data to the destination class
     // If not null, add the key
-    dataSnapshot.getValue(clazz)?.apply { this.key = dataSnapshot.key }
+    val snapshotKey = dataSnapshot.key
+    if (snapshotKey != null)
+        dataSnapshot.getValue(clazz)?.apply { this.key = snapshotKey }
+    else
+        null
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)

@@ -87,12 +87,12 @@ internal class MatchEditDialog : DialogFragment() {
             )
 
             val parsedMatch = Match(
+                match?.key.orEmpty(),
                 id = content.etMatchNumber.getTextString().toIntOrDefault(),
                 redAlliance = redAlliance,
                 blueAlliance = blueAlliance
             )
 
-            parsedMatch.key = match?.key
             viewModel.updateMatch(parsedMatch)
 
             dismiss()

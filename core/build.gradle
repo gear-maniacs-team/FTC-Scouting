@@ -31,6 +31,7 @@ android {
 dependencies {
     api Libs.kotlin_stdlib
     api Libs.kotlin_coroutines
+    api Libs.kotlin_coroutines_play_services
 
     api Libs.ktx_core
     api Libs.ktx_fragment
@@ -48,6 +49,10 @@ dependencies {
     api Libs.firebase_auth
     api Libs.firebase_database
     api Libs.firebase_ktx_common
+
+    api Libs.room
+    api Libs.ktx_room
+    kapt Libs.room_compiler
 
     implementation Libs.hilt
     kapt Libs.hilt_compiler

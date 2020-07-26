@@ -50,7 +50,7 @@ class TeamsRepository(private val tournamentReference: DatabaseReference) {
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .child(DatabasePaths.KEY_TEAMS)
-            .child(team.key!!)
+            .child(team.key)
             .setValue(team)
     }
 

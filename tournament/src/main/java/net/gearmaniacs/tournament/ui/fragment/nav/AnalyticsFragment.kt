@@ -40,7 +40,7 @@ internal class AnalyticsFragment : TournamentFragment(R.layout.fragment_recycler
         }
         recyclerView.adapter = adapter
 
-        activity.observeNonNull(viewModel.analyticsData) {
+        activity.observeNonNull(viewModel.getAnalyticsLiveData()) {
             adapter.submitList(it)
         }
 

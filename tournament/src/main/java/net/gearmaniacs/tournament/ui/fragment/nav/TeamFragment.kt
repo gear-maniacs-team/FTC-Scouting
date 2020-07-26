@@ -28,7 +28,7 @@ internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view
     private lateinit var teamAdapter: TeamAdapter
 
     override fun onInflateView(view: View) {
-        val activity = activity ?: return
+        val activity = requireActivity()
 
         val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
         val emptyView = view.findViewById<TextView>(R.id.empty_view)
@@ -75,7 +75,7 @@ internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view
 
     override fun onLongClickListener(position: Int) {
         val activity = activity ?: return
-        val key = teamAdapter.getItem(position).key ?: return
+        val key = teamAdapter.getItem(position).key
 
         AlertDialog.Builder(activity)
             .setTitle(R.string.delete_team)

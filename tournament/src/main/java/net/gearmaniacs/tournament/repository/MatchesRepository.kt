@@ -53,7 +53,7 @@ internal class MatchesRepository(private val tournamentReference: DatabaseRefere
             .child(DatabasePaths.KEY_DATA)
             .child(tournamentKey)
             .child(DatabasePaths.KEY_MATCHES)
-            .child(match.key!!)
+            .child(match.key)
             .setValue(match)
     }
 

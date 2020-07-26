@@ -75,7 +75,7 @@ internal class MatchFragment
 
     override fun onLongClickListener(position: Int) {
         val activity = activity ?: return
-        val key = adapter.getItem(position).key ?: return
+        val key = adapter.getItem(position).key
 
         AlertDialog.Builder(activity)
             .setTitle(R.string.delete_match)

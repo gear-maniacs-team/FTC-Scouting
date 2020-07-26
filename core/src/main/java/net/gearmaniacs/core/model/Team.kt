@@ -1,6 +1,10 @@
 package net.gearmaniacs.core.model
 
 import android.os.Parcelable
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import com.google.firebase.database.Exclude
 import kotlinx.android.parcel.Parcelize
 
@@ -101,17 +105,28 @@ object PreferredZone {
 }
 
 @Parcelize
+@Entity(
+    tableName = "skystone_team",
+    foreignKeys = [ForeignKey(
+        entity = Tournament::class,
+        parentColumns = ["key"],
+        childColumns = ["tournamentKey"],
+        onDelete = ForeignKey.CASCADE
+    )]
+)
 data class Team(
+    @PrimaryKey @get:Exclude @set:Exclude override var key: String,
+    @get:Exclude val tournamentKey: String = "",
     val id: Int,
     val name: String? = null,
-    val autonomousData: AutonomousData? = null,
-    val teleOpData: TeleOpData? = null,
-    val endGameData: EndGameData? = null,
+    @Embedded(prefix = "auto_") val autonomousData: AutonomousData? = null,
+    @Embedded(prefix = "teleop_") val teleOpData: TeleOpData? = null,
+    @Embedded(prefix = "end_") val endGameData: EndGameData? = null,
     val preferredZone: Int = PreferredZone.NONE,
     val notes: String? = null
 ) : DatabaseClass<Team>(), Parcelable {
 
-    constructor() : this(0)
+    constructor() : this("", "", 0)
 
     override fun compareTo(other: Team): Int = id.compareTo(other.id)
 

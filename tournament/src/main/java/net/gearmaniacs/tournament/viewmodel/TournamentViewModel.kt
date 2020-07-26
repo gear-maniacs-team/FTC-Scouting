@@ -33,7 +33,7 @@ internal class TournamentViewModel @ViewModelInject constructor(
     private var listening = false
     var tournamentKey = ""
 
-    val analyticsData = MutableNonNullLiveData(emptyList<TeamPower>())
+    private val analyticsData = MutableNonNullLiveData(emptyList<TeamPower>())
 
     fun getInfoLiveData(user: User): NonNullLiveData<List<Match>> {
         matchesRepository.setUserTeamNumber(user.id)
@@ -45,6 +45,8 @@ internal class TournamentViewModel @ViewModelInject constructor(
     fun getTeamsLiveData(): NonNullLiveData<List<Team>> = teamsRepository.queriedLiveData
 
     fun getMatchesLiveData(): NonNullLiveData<List<Match>> = matchesRepository.matchesLiveData
+
+    fun getAnalyticsLiveData(): NonNullLiveData<List<TeamPower>> = analyticsData
 
     fun setDefaultName(defaultName: String) {
         val data = getNameLiveData()
@@ -75,7 +77,7 @@ internal class TournamentViewModel @ViewModelInject constructor(
             val newTeamsList = teamIds.asSequence()
                 .filter { it > 0 }
                 .filterNot { existingTeamIds.contains(it) }
-                .map { Team(it, null) }
+                .map { Team("", "", it, null) }
                 .toList()
 
             teamsRepository.addTeams(tournamentKey, newTeamsList)
@@ -85,7 +87,7 @@ internal class TournamentViewModel @ViewModelInject constructor(
     fun updateTeam(team: Team) {
         val key = team.key
 
-        if (key == null)
+        if (key.isEmpty())
             teamsRepository.addTeam(tournamentKey, team)
         else
             teamsRepository.updateTeam(tournamentKey, team)
@@ -102,7 +104,7 @@ internal class TournamentViewModel @ViewModelInject constructor(
     fun updateMatch(match: Match) {
         val key = match.key
 
-        if (key == null)
+        if (key.isEmpty())
             matchesRepository.addMatch(tournamentKey, match)
         else
             matchesRepository.updateMatch(tournamentKey, match)
@@ -116,12 +118,12 @@ internal class TournamentViewModel @ViewModelInject constructor(
 
     // region Tournament Management
 
-    fun updateTournamentName(newName: String) {
+    fun updateTournamentName(newName: String) = viewModelScope.launch(Dispatchers.IO) {
         if (newName.isNotBlank())
             tournamentRepository.updateTournamentName(tournamentKey, newName)
     }
 
-    fun deleteTournament() {
+    fun deleteTournament() = viewModelScope.launch(Dispatchers.IO) {
         tournamentRepository.deleteTournament(tournamentKey)
     }
 
@@ -207,13 +209,13 @@ internal class TournamentViewModel @ViewModelInject constructor(
         if (listening) return
         listening = true
 
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             tournamentRepository.addListener(tournamentKey)
         }
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             matchesRepository.addListener(tournamentKey)
         }
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             teamsRepository.addListener(tournamentKey)
         }
     }

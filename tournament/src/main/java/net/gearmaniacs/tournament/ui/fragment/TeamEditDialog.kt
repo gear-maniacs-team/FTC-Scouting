@@ -134,6 +134,7 @@ internal class TeamEditDialog : DialogFragment() {
 
             val notesText = content.etNotes.getTextString()
             val parsedTeam = Team(
+                key = team?.key.orEmpty(),
                 id = content.etTeamNumber.getTextString().toIntOrDefault(),
                 name = content.etTeamName.getTextString(),
                 autonomousData = autonomousData.takeIf { it.isNotEmpty },
@@ -143,7 +144,6 @@ internal class TeamEditDialog : DialogFragment() {
                 notes = notesText.takeIf { it.isNotBlank() }
             )
 
-            parsedTeam.key = team?.key
             viewModel.updateTeam(parsedTeam)
 
             dismiss()

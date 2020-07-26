@@ -2,21 +2,27 @@
 object Libs {
     // Kotlin
     val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
-    val kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.7"
+    val kotlin_coroutines =
+        "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.kotlin_coroutines}"
+    val kotlin_coroutines_play_services =
+        "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${Versions.kotlin_coroutines}"
 
     // AndroidX
     val google_material = "com.google.android.material:material:1.1.0"
     val androidx_appcompat = "androidx.appcompat:appcompat:1.1.0"
     val androidx_recycler_view = "androidx.recyclerview:recyclerview:1.2.0-alpha03"
-    val androidx_constraint_layout = "androidx.constraintlayout:constraintlayout:2.0.0-beta6"
+    val androidx_constraint_layout = "androidx.constraintlayout:constraintlayout:2.0.0-beta8"
     val androidx_lifecycle = "androidx.lifecycle:lifecycle-extensions:2.2.0"
     val androidx_swipe_refresh_layout = "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     val androidx_preference = "androidx.preference:preference:1.1.1"
+    val room = "androidx.room:room-runtime:${Versions.room}"
+    val room_compiler = "androidx.room:room-compiler:${Versions.room}"
 
     // AndroidX KTX
     val ktx_core = "androidx.core:core-ktx:1.3.0"
     val ktx_fragment = "androidx.fragment:fragment-ktx:1.2.5"
     val ktx_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    val ktx_room = "androidx.room:room-ktx:${Versions.room}"
 
     // Firebase
     val firebase_core = "com.google.firebase:firebase-core:17.4.4"
@@ -31,7 +37,8 @@ object Libs {
     val hilt = arrayOf(dagger_hilt_android, hilt_lifecycle)
 
     // Hilt Compiler
-    private val dagger_hilt_compiler = "com.google.dagger:hilt-android-compiler:${Versions.dagger_hilt}"
+    private val dagger_hilt_compiler =
+        "com.google.dagger:hilt-android-compiler:${Versions.dagger_hilt}"
     private val hilt_android_compiler = "androidx.hilt:hilt-compiler:${Versions.hilt}"
     val hilt_compiler = arrayOf(dagger_hilt_compiler, hilt_android_compiler)
 

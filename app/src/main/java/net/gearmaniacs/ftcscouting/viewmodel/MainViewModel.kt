@@ -22,7 +22,7 @@ class MainViewModel : ViewModel() {
         if (listening) return
         listening = true
 
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.addListener()
         }
     }
@@ -35,14 +35,12 @@ class MainViewModel : ViewModel() {
         listening = false
     }
 
-    fun createNewTournament(tournamentName: String) {
+    fun createNewTournament(tournamentName: String) = viewModelScope.launch(Dispatchers.IO) {
         repository.createNewTournament(getUserLiveData().value, tournamentName)
     }
 
-    fun deleteTournament(tournament: Tournament) {
-        tournament.key?.let {
-            repository.deleteTournament(it)
-        }
+    fun deleteTournament(tournament: Tournament) = viewModelScope.launch(Dispatchers.IO) {
+        repository.deleteTournament(tournament.key)
     }
 
     override fun onCleared() {

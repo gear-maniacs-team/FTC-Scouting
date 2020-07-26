@@ -1,6 +1,11 @@
 package net.gearmaniacs.core.model
 
 import android.os.Parcelable
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
+import com.google.firebase.database.Exclude
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -17,13 +22,24 @@ data class Alliance(
 }
 
 @Parcelize
+@Entity(
+    tableName = "skystone_match",
+    foreignKeys = [ForeignKey(
+        entity = Tournament::class,
+        parentColumns = ["key"],
+        childColumns = ["tournamentKey"],
+        onDelete = ForeignKey.CASCADE
+    )]
+)
 data class Match(
+    @PrimaryKey @get:Exclude @set:Exclude override var key: String,
+    @get:Exclude val tournamentKey: String = "",
     val id: Int,
-    val redAlliance: Alliance,
-    val blueAlliance: Alliance
+    @Embedded(prefix = "red_") val redAlliance: Alliance,
+    @Embedded(prefix = "blue_") val blueAlliance: Alliance
 ) : DatabaseClass<Match>(), Parcelable {
 
-    constructor() : this(0, Alliance(), Alliance())
+    constructor() : this("", "", 0, Alliance(), Alliance())
 
     override fun compareTo(other: Match): Int = id.compareTo(other.id)
 

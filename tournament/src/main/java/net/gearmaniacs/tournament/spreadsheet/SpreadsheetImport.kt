@@ -90,6 +90,8 @@ internal class SpreadsheetImport(inputStream: InputStream) {
         }
 
         return Team(
+            "",
+            "",
             id,
             name,
             autonomousData.takeIf { it.isNotEmpty },
@@ -139,6 +141,8 @@ internal class SpreadsheetImport(inputStream: InputStream) {
         check(number > 0) { "Invalid Match number on row ${row.rowNum}" }
 
         return Match(
+            "",
+            "",
             number,
             Alliance(firstRed, secondRed, redScore),
             Alliance(firstBlue, secondBlue, blueScore)

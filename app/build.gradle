@@ -59,6 +59,7 @@ dependencies {
     implementation project(Modules.core)
     implementation project(Modules.login)
     implementation project(Modules.tournament)
+    implementation project(Modules.database)
 
     implementation Libs.firebase_crashlytics
 
