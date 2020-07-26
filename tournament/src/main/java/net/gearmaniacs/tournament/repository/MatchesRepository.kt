@@ -11,14 +11,19 @@ import net.gearmaniacs.core.extensions.safeCollect
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.listValueEventListenerFlow
 import net.gearmaniacs.core.model.Match
+import net.theluckycoder.database.dao.MatchesDao
 
-internal class MatchesRepository(private val tournamentReference: DatabaseReference) {
+internal class MatchesRepository(
+    private val matchesDao: MatchesDao,
+    private val tournamentReference: DatabaseReference
+) {
 
     private var userTeamNumber = -1
     private var valueEventListenerJob: Job? = null
 
     val infoLiveData = MutableNonNullLiveData(emptyList<Match>())
-    val matchesLiveData = MutableNonNullLiveData(emptyList<Match>())
+
+    fun getMatchesFlow(tournamentKey: String) = matchesDao.getAllByTournament(tournamentKey)
 
     private fun updateInfoData(list: List<Match>) {
         if (userTeamNumber == -1)
@@ -79,8 +84,8 @@ internal class MatchesRepository(private val tournamentReference: DatabaseRefere
                 .child(tournamentKey)
                 .child(DatabasePaths.KEY_MATCHES)
 
-            databaseReference.listValueEventListenerFlow(Match::class.java).safeCollect {
-                matchesLiveData.postValue(it)
+            databaseReference.listValueEventListenerFlow(Match::class).safeCollect {
+                matchesDao.replaceTournamentMatches(tournamentKey, it)
                 updateInfoData(it)
             }
         }

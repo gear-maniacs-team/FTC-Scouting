@@ -37,6 +37,7 @@ dependencies {
 
     api Libs.ktx_core
     api Libs.ktx_fragment
+    api Libs.ktx_livedata
     api Libs.ktx_viewmodel
 
     api Libs.google_material

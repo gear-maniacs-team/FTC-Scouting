@@ -1,7 +1,9 @@
 package net.gearmaniacs.ftcscouting.viewmodel
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -9,14 +11,15 @@ import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.User
 import net.gearmaniacs.ftcscouting.repository.MainRepository
 
-class MainViewModel : ViewModel() {
+class MainViewModel @ViewModelInject constructor(
+    private val repository: MainRepository
+) : ViewModel() {
 
-    private val repository = MainRepository()
     private var listening = false
 
     fun getUserLiveData(): LiveData<User> = repository.userLiveData
 
-    fun getTournamentsLiveData() = repository.tournamentsLiveData
+    fun getTournamentsLiveData() = repository.tournamentsFlow.asLiveData()
 
     fun startListening() {
         if (listening) return

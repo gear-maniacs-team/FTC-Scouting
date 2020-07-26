@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.firebase.database.Exclude
 import kotlinx.android.parcel.Parcelize
@@ -29,6 +30,10 @@ data class Alliance(
         parentColumns = ["key"],
         childColumns = ["tournamentKey"],
         onDelete = ForeignKey.CASCADE
+    )],
+    indices = [Index(
+        value = ["tournamentKey"],
+        name = "indexTournamentKey"
     )]
 )
 data class Match(

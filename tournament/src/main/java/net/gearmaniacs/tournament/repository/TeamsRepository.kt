@@ -15,14 +15,19 @@ import net.gearmaniacs.core.extensions.safeCollect
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.listValueEventListenerFlow
 import net.gearmaniacs.core.model.Team
+import net.theluckycoder.database.dao.TeamsDao
 
-class TeamsRepository(private val tournamentReference: DatabaseReference) {
+class TeamsRepository(
+    private val teamsDao: TeamsDao,
+    private val tournamentReference: DatabaseReference
+) {
 
     private var lastTeamQuery = ""
     private var teamSearchJob: Job? = null // Last launched search job
     private var valueEventListenerJob: Job? = null
 
-    val teamsLiveData = MutableNonNullLiveData(emptyList<Team>())
+    fun getTeamsFlow(tournamentKey: String) = teamsDao.getAllByTournament(tournamentKey)
+
     val queriedLiveData = MutableNonNullLiveData(emptyList<Team>())
 
     fun addTeam(tournamentKey: String, team: Team) {
@@ -63,12 +68,10 @@ class TeamsRepository(private val tournamentReference: DatabaseReference) {
             .removeValue()
     }
 
-    fun performTeamsSearch(query: String) {
+    fun performTeamsSearch(teamList: List<Team>, query: String) {
         lastTeamQuery = query
         // Cancel the last running search
         teamSearchJob?.cancel()
-
-        val teamList = teamsLiveData.value
 
         if (teamList.isEmpty() || query.isEmpty()) {
             queriedLiveData.value = teamList
@@ -99,11 +102,12 @@ class TeamsRepository(private val tournamentReference: DatabaseReference) {
                 .child(tournamentKey)
                 .child(DatabasePaths.KEY_TEAMS)
 
-            databaseReference.listValueEventListenerFlow(Team::class.java).safeCollect {
-                launch(Dispatchers.Main) {
-                    teamsLiveData.value = it
-                    performTeamsSearch(lastTeamQuery)
-                }
+            databaseReference.listValueEventListenerFlow(Team::class).safeCollect {
+                teamsDao.replaceTournamentTeams(tournamentKey, it)
+                println(it.size)
+                /*withContext(Dispatchers.Main) {
+                    performTeamsSearch(it, lastTeamQuery)
+                }*/
             }
         }
     }

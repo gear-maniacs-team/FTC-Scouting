@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
+import net.gearmaniacs.core.extensions.getViewModel
 import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.core.extensions.startActivity
@@ -37,7 +39,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var preferenceManager: SharedPreferences
-    private var viewModel: MainViewModel? = null
+    private val viewModel by viewModels<MainViewModel>()
     private val adapter = TournamentAdapter(this)
 
     private var user: User? = null
@@ -69,8 +71,9 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
             dialogFragment.actionButtonListener = { name ->
                 if (Firebase.auth.currentUser != null) {
                     val tournamentName = name.trim()
+
                     if (tournamentName.isNotEmpty())
-                        viewModel?.createNewTournament(tournamentName)
+                        viewModel.createNewTournament(tournamentName)
                 }
             }
             dialogFragment.show(supportFragmentManager, dialogFragment.tag)
@@ -82,14 +85,12 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
             }
         }
 
-        viewModel = MainViewModel().also { viewModel ->
-            observeNonNull(viewModel.getTournamentsLiveData()) { list ->
-                adapter.submitList(list)
-            }
+        observe(viewModel.getUserLiveData()) {
+            user = it
+        }
 
-            observe(viewModel.getUserLiveData()) {
-                user = it
-            }
+        observe(viewModel.getTournamentsLiveData()) { list ->
+            adapter.submitList(list ?: emptyList())
         }
     }
 
@@ -130,12 +131,13 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
             finish()
             return
         }
-        viewModel?.startListening()
+
+        viewModel.startListening()
     }
 
     override fun onStop() {
         super.onStop()
-        viewModel?.stopListening()
+        viewModel.stopListening()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -169,7 +171,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
                 .setTitle(R.string.delete_tournament)
                 .setMessage(R.string.delete_tournament_desc)
                 .setPositiveButton(R.string.action_delete) { _, _ ->
-                    viewModel?.deleteTournament(tournament)
+                    viewModel.deleteTournament(tournament)
                 }
                 .setNegativeButton(android.R.string.cancel, null)
                 .show()

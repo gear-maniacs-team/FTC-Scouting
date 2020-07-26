@@ -12,6 +12,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.extensions.observeNonNull
+import net.gearmaniacs.core.model.Match
+import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.view.EmptyRecyclerView
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.ui.adapter.AnalyticsAdapter
@@ -22,6 +24,9 @@ internal class AnalyticsFragment : TournamentFragment(R.layout.fragment_recycler
 
     private val viewModel by activityViewModels<TournamentViewModel>()
     private lateinit var emptyView: TextView
+
+    private var teamsList = emptyList<Team>()
+    private var matchesList = emptyList<Match>()
     private var observedDataChanged = true
 
     override fun onInflateView(view: View) {
@@ -45,12 +50,14 @@ internal class AnalyticsFragment : TournamentFragment(R.layout.fragment_recycler
         }
         recyclerView.adapter = adapter
 
-        activity.observe(viewModel.getMatchesLiveData()) {
+        activity.observe(viewModel.getTeamsLiveData()) {
+            teamsList = it ?: emptyList()
             if (it != null)
                 observedDataChanged = true
         }
 
-        activity.observe(viewModel.getTeamsLiveData()) {
+        activity.observe(viewModel.getMatchesLiveData()) {
+            matchesList = it ?: emptyList()
             if (it != null)
                 observedDataChanged = true
         }
@@ -74,7 +81,7 @@ internal class AnalyticsFragment : TournamentFragment(R.layout.fragment_recycler
     private fun refreshData() {
         GlobalScope.launch(Dispatchers.Main.immediate) {
             // TODO: Refactor getMatchesLiveData() observable into Response<List<TeamPower>, String>
-            val response = viewModel.refreshAnalyticsData()
+            val response = viewModel.refreshAnalyticsData(teamsList, matchesList)
             emptyView.text = response
         }
     }

@@ -13,6 +13,8 @@ import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.tournament.repository.MatchesRepository
 import net.gearmaniacs.tournament.repository.TeamsRepository
 import net.gearmaniacs.tournament.repository.TournamentRepository
+import net.theluckycoder.database.dao.MatchesDao
+import net.theluckycoder.database.dao.TeamsDao
 import javax.inject.Singleton
 
 @Module
@@ -32,11 +34,11 @@ internal object TournamentModule {
 
     @Provides
     @ActivityRetainedScoped
-    fun provideTeamsRepository(tournamentReference: DatabaseReference) =
-        TeamsRepository(tournamentReference)
+    fun provideTeamsRepository(teamsDao: TeamsDao, tournamentReference: DatabaseReference) =
+        TeamsRepository(teamsDao, tournamentReference)
 
     @Provides
     @ActivityRetainedScoped
-    fun provideMatchesRepository(tournamentReference: DatabaseReference) =
-        MatchesRepository(tournamentReference)
+    fun provideMatchesRepository(matchesDao: MatchesDao, tournamentReference: DatabaseReference) =
+        MatchesRepository(matchesDao, tournamentReference)
 }

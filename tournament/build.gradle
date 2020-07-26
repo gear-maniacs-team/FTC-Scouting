@@ -34,6 +34,7 @@ android {
 
 dependencies {
     implementation project(Modules.core)
+    implementation project(Modules.database)
 
     implementation Libs.apache_poi
 

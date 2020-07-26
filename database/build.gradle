@@ -27,7 +27,7 @@ android {
 }
 
 dependencies {
-    api project(Modules.core)
+    implementation project(Modules.core)
 
     kapt Libs.room_compiler
 

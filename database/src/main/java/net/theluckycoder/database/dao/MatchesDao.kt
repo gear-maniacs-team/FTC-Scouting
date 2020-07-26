@@ -23,7 +23,7 @@ abstract class MatchesDao {
     abstract suspend fun deleteAllFromTournament(tournamentKey: String)
 
     @Transaction
-    open suspend fun replaceTournamentTeams(tournamentKey: String, list: List<Match>) {
+    open suspend fun replaceTournamentMatches(tournamentKey: String, list: List<Match>) {
         deleteAllFromTournament(tournamentKey)
         insertAll(list.map { it.copy(tournamentKey = tournamentKey) })
     }

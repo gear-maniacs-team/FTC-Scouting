@@ -4,6 +4,7 @@ import android.app.Application
 import android.net.Uri
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,6 +36,8 @@ internal class TournamentViewModel @ViewModelInject constructor(
     var tournamentKey = ""
 
     private val analyticsData = MutableNonNullLiveData(emptyList<TeamPower>())
+    private val teamsData by lazy { teamsRepository.getTeamsFlow(tournamentKey).asLiveData() }
+    private val matchesData by lazy { matchesRepository.getMatchesFlow(tournamentKey).asLiveData() }
 
     fun getInfoLiveData(user: User): NonNullLiveData<List<Match>> {
         matchesRepository.setUserTeamNumber(user.id)
@@ -43,9 +46,11 @@ internal class TournamentViewModel @ViewModelInject constructor(
 
     fun getNameLiveData() = tournamentRepository.nameLiveData
 
-    fun getTeamsLiveData(): NonNullLiveData<List<Team>> = teamsRepository.queriedLiveData
+    fun getTeamsLiveData() = teamsData
 
-    fun getMatchesLiveData(): NonNullLiveData<List<Match>> = matchesRepository.matchesLiveData
+    fun getTeamsFilteredLiveData(): NonNullLiveData<List<Team>> = teamsRepository.queriedLiveData
+
+    fun getMatchesLiveData() = matchesData
 
     fun getAnalyticsLiveData(): NonNullLiveData<List<TeamPower>> = analyticsData
 
@@ -57,18 +62,17 @@ internal class TournamentViewModel @ViewModelInject constructor(
 
     // region Teams Management
 
-    fun performTeamsSearch(query: String?) {
-        teamsRepository.performTeamsSearch(query.orEmpty().trim().toLowerCase(Locale.ROOT))
+    fun performTeamsSearch(teams: List<Team>, query: String?) {
+        teamsRepository.performTeamsSearch(teams, query.orEmpty().trim().toLowerCase(Locale.ROOT))
     }
 
-    fun addTeamsFromMatches() {
-        val existingTeamIds = teamsRepository.teamsLiveData.value.map { it.id }
-        val matchesList = matchesRepository.matchesLiveData.value
+    fun addTeamsFromMatches(teams: List<Team>, matches: List<Match>) {
+        val existingTeamIds = teams.map { it.id }
 
         viewModelScope.launch(Dispatchers.Default) {
-            val teamIds = HashSet<Int>(matchesList.size)
+            val teamIds = HashSet<Int>(matches.size)
 
-            matchesList.forEach {
+            matches.forEach {
                 teamIds.add(it.redAlliance.firstTeam)
                 teamIds.add(it.redAlliance.secondTeam)
                 teamIds.add(it.blueAlliance.firstTeam)
@@ -130,31 +134,26 @@ internal class TournamentViewModel @ViewModelInject constructor(
 
     // endregion
 
-    suspend fun refreshAnalyticsData() = withContext(Dispatchers.Main.immediate) {
-        val teams = teamsRepository.teamsLiveData.value
-        val matches = matchesRepository.matchesLiveData.value
+    suspend fun refreshAnalyticsData(teams: List<Team>, matches: List<Match>) =
+        withContext(Dispatchers.Main.immediate) {
+            if (matches.isEmpty())
+                return@withContext app.getString(R.string.opr_error_no_matches)
 
-        if (matches.isEmpty())
-            return@withContext app.getString(R.string.opr_error_no_matches)
+            val powerRankings = withContext(Dispatchers.Default) {
+                tournamentRepository.generateOprList(teams, matches)
+            }
 
-        val powerRankings = withContext(Dispatchers.Default) {
-            tournamentRepository.generateOprList(teams, matches)
+            analyticsData.value = powerRankings
+
+            if (powerRankings.isEmpty())
+                app.getString(R.string.opr_error_data)
+            else
+                ""
         }
-
-        analyticsData.value = powerRankings
-
-        if (powerRankings.isEmpty())
-            app.getString(R.string.opr_error_data)
-        else
-            ""
-    }
 
     // region Spreadsheet
 
-    fun exportToSpreadsheet(fileUri: Uri) {
-        val teams = teamsRepository.teamsLiveData.value
-        val matches = matchesRepository.matchesLiveData.value
-
+    fun exportToSpreadsheet(fileUri: Uri, teams: List<Team>, matches: List<Match>) =
         viewModelScope.launch(Dispatchers.IO) {
             val powerRankings = tournamentRepository.generateOprList(teams, matches)
 
@@ -177,12 +176,8 @@ internal class TournamentViewModel @ViewModelInject constructor(
                 }
             }
         }
-    }
 
-    fun importFromSpreadSheet(fileUri: Uri) {
-        val currentTeams = teamsRepository.teamsLiveData.value
-        val currentMatches = matchesRepository.matchesLiveData.value
-
+    fun importFromSpreadSheet(fileUri: Uri, currentTeams: List<Team>, currentMatches: List<Match>) =
         viewModelScope.launch(Dispatchers.IO) {
             app.contentResolver.openInputStream(fileUri)?.use { inputStream ->
                 val import = SpreadsheetImport(inputStream)
@@ -199,7 +194,6 @@ internal class TournamentViewModel @ViewModelInject constructor(
                 )
             }
         }
-    }
 
     // endregion
 

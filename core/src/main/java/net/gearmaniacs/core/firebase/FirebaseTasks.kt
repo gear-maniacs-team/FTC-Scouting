@@ -10,6 +10,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.callbackFlow
 import net.gearmaniacs.core.model.DatabaseClass
+import kotlin.reflect.KClass
 
 @OptIn(ExperimentalCoroutinesApi::class)
 fun <T : DatabaseClass<T>> DatabaseReference.listValueEventListenerFlow(
@@ -41,13 +42,13 @@ fun <T : DatabaseClass<T>> DatabaseReference.listValueEventListenerFlow(
 }
 
 fun <T : DatabaseClass<T>> DatabaseReference.listValueEventListenerFlow(
-    clazz: Class<T>
+    clazz: KClass<T>
 ) = listValueEventListenerFlow { dataSnapshot ->
     // Try to parse the data to the destination class
     // If not null, add the key
     val snapshotKey = dataSnapshot.key
     if (snapshotKey != null)
-        dataSnapshot.getValue(clazz)?.apply { this.key = snapshotKey }
+        dataSnapshot.getValue(clazz.java)?.apply { this.key = snapshotKey }
     else
         null
 }

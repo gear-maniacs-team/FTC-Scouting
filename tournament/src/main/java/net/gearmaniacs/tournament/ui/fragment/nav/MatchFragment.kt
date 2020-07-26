@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
-import net.gearmaniacs.core.extensions.observeNonNull
+import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.view.EmptyRecyclerView
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
@@ -47,9 +47,11 @@ internal class MatchFragment
         }
         recyclerView.adapter = adapter
 
-        activity.observeNonNull(viewModel.getMatchesLiveData()) {
-            adapter.submitList(it)
-            nextMatchId = (it.maxBy { match -> match.id }?.id ?: 0) + 1
+        activity.observe(viewModel.getMatchesLiveData()) {
+            val matches = it ?: emptyList()
+
+            adapter.submitList(matches)
+            nextMatchId = (matches.maxBy { match -> match.id }?.id ?: 0) + 1
         }
     }
 
@@ -61,8 +63,7 @@ internal class MatchFragment
         dialog.show(transaction, null)
     }
 
-    override fun getFragmentTag() =
-        fragmentTag
+    override fun getFragmentTag() = fragmentTag
 
     override fun onClickListener(position: Int) {
         val activity = activity ?: return

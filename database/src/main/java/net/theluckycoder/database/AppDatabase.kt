@@ -7,12 +7,12 @@ import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.Tournament
 import net.theluckycoder.database.dao.MatchesDao
 import net.theluckycoder.database.dao.TeamsDao
-import net.theluckycoder.database.dao.TournamentDao
+import net.theluckycoder.database.dao.TournamentsDao
 
 @Database(version = 1, entities = [Tournament::class, Match::class, Team::class])
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun tournamentsDao(): TournamentDao
+    abstract fun tournamentsDao(): TournamentsDao
 
     abstract fun teamsDao(): TeamsDao
 

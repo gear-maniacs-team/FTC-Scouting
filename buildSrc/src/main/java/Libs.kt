@@ -21,6 +21,7 @@ object Libs {
     // AndroidX KTX
     val ktx_core = "androidx.core:core-ktx:1.3.0"
     val ktx_fragment = "androidx.fragment:fragment-ktx:1.2.5"
+    val ktx_livedata = "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
     val ktx_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
     val ktx_room = "androidx.room:room-ktx:${Versions.room}"
 

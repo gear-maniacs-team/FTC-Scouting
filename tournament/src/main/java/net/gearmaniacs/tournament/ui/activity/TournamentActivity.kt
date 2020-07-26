@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.observe
+import net.gearmaniacs.core.model.Match
+import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.User
 import net.gearmaniacs.tournament.R
@@ -64,6 +66,9 @@ class TournamentActivity : AppCompatActivity() {
     }
     private lateinit var activeFragment: TournamentFragment
 
+    private var teamsList = emptyList<Team>()
+    private var matchesList = emptyList<Match>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -110,6 +115,7 @@ class TournamentActivity : AppCompatActivity() {
             activeFragment.fabClickListener()
         }
 
+        // Setup Navigation
         binding.bottomNavigation.setOnNavigationItemSelectedListener {
             val oldFragment = activeFragment
             val newFragment = fragments[it.order]
@@ -128,6 +134,7 @@ class TournamentActivity : AppCompatActivity() {
             } else false
         }
 
+        // Observe Live Data
         observe(viewModel.getNameLiveData()) { name ->
             if (name == null) {
                 // Means the Tournament has been deleted so we should close the activity
@@ -136,6 +143,14 @@ class TournamentActivity : AppCompatActivity() {
             }
 
             supportActionBar?.title = name
+        }
+
+        observe(viewModel.getTeamsLiveData()) {
+            teamsList = it ?: emptyList()
+        }
+
+        observe(viewModel.getMatchesLiveData()) {
+            matchesList = it ?: emptyList()
         }
     }
 
@@ -175,7 +190,7 @@ class TournamentActivity : AppCompatActivity() {
                     .setTitle(R.string.add_teams_from_matches)
                     .setMessage(R.string.add_teams_from_matches_desc)
                     .setPositiveButton(R.string.action_add_teams) { _, _ ->
-                        viewModel.addTeamsFromMatches()
+                        viewModel.addTeamsFromMatches(teamsList, matchesList)
                     }
                     .setNegativeButton(android.R.string.cancel, null)
                     .show()
@@ -212,13 +227,13 @@ class TournamentActivity : AppCompatActivity() {
 
         if (requestCode == SPREADSHEET_LOAD_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             resultData?.data?.also { documentUri ->
-                viewModel.importFromSpreadSheet(documentUri)
+                viewModel.importFromSpreadSheet(documentUri, teamsList, matchesList)
             }
         }
 
         if (requestCode == SPREADSHEET_SAVE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             resultData?.data?.also { documentUri ->
-                viewModel.exportToSpreadsheet(documentUri)
+                viewModel.exportToSpreadsheet(documentUri, teamsList, matchesList)
             }
         }
     }
@@ -226,46 +241,12 @@ class TournamentActivity : AppCompatActivity() {
     private fun updateFab(newFragmentTag: String) {
         val fab = binding.fab
 
-        if (fab.isOrWillBeHidden) {
-            fab.show()
-            return
-        }
-
         if (newFragmentTag == InfoFragment.fragmentTag || newFragmentTag == AnalyticsFragment.fragmentTag) {
-            fab.hide() // InfoFragment and AnalyticsFragment don't have a visible FAB
+            fab.hide() // InfoFragment and AnalyticsFragment don't have a FAB
             return
         }
 
-        val animationDuration = 150L
-        val relativeToSelfAnim = Animation.RELATIVE_TO_SELF
-
-        val fabAnimation =
-            ScaleAnimation(1f, 0f, 1f, 0f, relativeToSelfAnim, 0.5f, relativeToSelfAnim, 0.5f)
-        fabAnimation.duration = animationDuration
-        fabAnimation.interpolator = AccelerateInterpolator()
-        fabAnimation.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation) = Unit
-
-            override fun onAnimationRepeat(animation: Animation) = Unit
-
-            override fun onAnimationEnd(animation: Animation) {
-                val expand = ScaleAnimation(
-                    0f,
-                    1f,
-                    0f,
-                    1f,
-                    Animation.RELATIVE_TO_SELF,
-                    0.5f,
-                    Animation.RELATIVE_TO_SELF,
-                    0.5f
-                )
-                expand.duration = animationDuration
-                expand.interpolator = DecelerateInterpolator()
-                fab.startAnimation(expand)
-            }
-        })
-
-        fab.startAnimation(fabAnimation)
+        fab.show()
     }
 
     private fun changeTournamentName() {

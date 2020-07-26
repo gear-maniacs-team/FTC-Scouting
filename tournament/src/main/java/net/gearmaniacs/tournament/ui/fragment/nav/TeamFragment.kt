@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.MergeAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
+import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.extensions.observeNonNull
+import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.view.EmptyRecyclerView
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
@@ -26,6 +28,8 @@ internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view
 
     private val viewModel by activityViewModels<TournamentViewModel>()
     private lateinit var teamAdapter: TeamAdapter
+
+    private var teamsList = emptyList<Team>()
 
     override fun onInflateView(view: View) {
         val activity = requireActivity()
@@ -49,7 +53,11 @@ internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view
         }
         recyclerView.adapter = MergeAdapter(searchAdapter, teamAdapter)
 
-        activity.observeNonNull(viewModel.getTeamsLiveData()) {
+        activity.observe(viewModel.getTeamsLiveData()) {
+            teamsList = it ?: emptyList()
+        }
+
+        activity.observeNonNull(viewModel.getTeamsFilteredLiveData()) {
             teamAdapter.submitList(it)
         }
     }
@@ -88,7 +96,7 @@ internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view
     }
 
     override fun onQueryChange(newQuery: CharSequence?) {
-        viewModel.performTeamsSearch(newQuery?.toString())
+        viewModel.performTeamsSearch(teamsList, newQuery?.toString())
     }
 
     companion object : ICompanion {
