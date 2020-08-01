@@ -39,8 +39,7 @@ class EmptyRecyclerView : RecyclerView {
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int)
-            : super(context, attrs, defStyle)
+    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
 
     override fun setAdapter(adapter: Adapter<*>?) {
         super.setAdapter(adapter)
@@ -52,17 +51,5 @@ class EmptyRecyclerView : RecyclerView {
 
     fun setEmptyView(view: View) {
         emptyView = view
-    }
-
-    fun setFabToHide(fab: FloatingActionButton) {
-        addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (dy > 0 && fab.isOrWillBeShown) {
-                    fab.hide()
-                } else if (dy < 0 && fab.isOrWillBeHidden) {
-                    fab.show()
-                }
-            }
-        })
     }
 }

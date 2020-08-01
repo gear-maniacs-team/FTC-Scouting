@@ -47,6 +47,7 @@ object Libs {
     val material_intro = "com.heinrichreimersoftware:material-intro:2.0.0"
     val material_about = "com.github.daniel-stoneuk:material-about-library:3.1.2"
     val licenser = "com.github.marcoscgdev:Licenser:2.0.0"
+    val flow_preferences = "com.github.tfcporciuncula:flow-preferences:1.3.0"
     val apache_poi = "org.apache.poi:poi:4.0.1"
 
     // Tests

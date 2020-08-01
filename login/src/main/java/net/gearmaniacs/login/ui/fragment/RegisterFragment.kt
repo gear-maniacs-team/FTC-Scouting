@@ -9,7 +9,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.isValidEmail
 import net.gearmaniacs.core.extensions.toIntOrDefault
-import net.gearmaniacs.core.model.User
+import net.gearmaniacs.core.model.UserData
 import net.gearmaniacs.login.R
 import net.gearmaniacs.login.databinding.FragmentRegisterBinding
 import net.gearmaniacs.login.interfaces.LoginCallback
@@ -69,7 +69,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                 etEmail.error == null &&
                 etPassword.error == null &&
                 etConfirmPassword.error == null
-            ) loginCallback?.onRegister(User(number, name), email, password)
+            ) loginCallback?.onRegister(UserData(number, name), email, password)
         }
 
         binding.btnAlreadyOwnAccount.setOnClickListener {

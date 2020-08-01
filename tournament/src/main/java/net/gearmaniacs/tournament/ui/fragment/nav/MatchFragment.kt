@@ -29,7 +29,6 @@ internal class MatchFragment
     override fun onInflateView(view: View) {
         val activity = activity ?: return
 
-        val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
         val emptyView = view.findViewById<TextView>(R.id.empty_view)
         val recyclerView = view.findViewById<EmptyRecyclerView>(R.id.recycler_view)
 
@@ -43,7 +42,6 @@ internal class MatchFragment
             addItemDecoration(DividerItemDecoration(activity, RecyclerView.VERTICAL))
 
             setEmptyView(emptyView)
-            setFabToHide(fab)
         }
         recyclerView.adapter = adapter
 

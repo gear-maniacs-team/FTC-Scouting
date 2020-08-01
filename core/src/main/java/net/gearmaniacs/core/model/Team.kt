@@ -5,6 +5,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import androidx.room.Index
 import com.google.firebase.database.Exclude
 import kotlinx.android.parcel.Parcelize
 
@@ -112,6 +113,10 @@ object PreferredZone {
         parentColumns = ["key"],
         childColumns = ["tournamentKey"],
         onDelete = ForeignKey.CASCADE
+    )],
+    indices = [Index(
+        value = ["tournamentKey"],
+        name = "indexTeamTournamentKey"
     )]
 )
 data class Team(

@@ -5,14 +5,16 @@ import com.google.firebase.database.Exclude
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class User(
+data class UserData(
     val id: Int,
     val teamName: String
 ) : Parcelable {
 
-    constructor() : this(0, "")
-
-    val isEmpty: Boolean
-        @Exclude
-        get() = id == 0 && teamName.isEmpty()
+    constructor() : this(-1, "")
 }
+
+val UserData.isEmpty: Boolean
+    get() = id == -1 && teamName.isEmpty()
+
+val UserData?.isNullOrEmpty
+    get() = this == null || isEmpty

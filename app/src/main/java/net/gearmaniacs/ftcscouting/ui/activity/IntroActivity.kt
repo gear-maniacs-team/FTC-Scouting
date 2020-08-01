@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
-import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
 import com.heinrichreimersoftware.materialintro.app.IntroActivity
 import com.heinrichreimersoftware.materialintro.app.SlideFragment
@@ -18,11 +17,15 @@ import com.heinrichreimersoftware.materialintro.slide.SimpleSlide
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.justTry
 import net.gearmaniacs.core.extensions.longToast
-import net.gearmaniacs.core.utils.PreferencesKeys
+import net.gearmaniacs.core.utils.AppPreferences
 import net.gearmaniacs.ftcscouting.R
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class IntroActivity : IntroActivity() {
+
+    @Inject
+    lateinit var appPreferences: AppPreferences
 
     class TermsFragment : SlideFragment() {
 
@@ -56,8 +59,7 @@ class IntroActivity : IntroActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val preferenceManager = PreferenceManager.getDefaultSharedPreferences(this)
-        if (preferenceManager.getBoolean(PreferencesKeys.KEY_SEEN_INTRO, false)) {
+        if (appPreferences.seenIntroPref.get()) {
             finish()
             return
         }

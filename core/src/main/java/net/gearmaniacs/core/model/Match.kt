@@ -33,7 +33,7 @@ data class Alliance(
     )],
     indices = [Index(
         value = ["tournamentKey"],
-        name = "indexTournamentKey"
+        name = "indexMatchTournamentKey"
     )]
 )
 data class Match(

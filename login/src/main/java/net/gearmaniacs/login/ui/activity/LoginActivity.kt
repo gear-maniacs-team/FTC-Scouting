@@ -9,7 +9,7 @@ import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.firebase.DatabasePaths
-import net.gearmaniacs.core.model.User
+import net.gearmaniacs.core.model.UserData
 import net.gearmaniacs.login.R
 import net.gearmaniacs.login.databinding.ActivityLoginBinding
 import net.gearmaniacs.login.ui.fragment.LoginFragment
@@ -84,7 +84,7 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
             }
     }
 
-    override fun onRegister(user: User, email: String, password: String) {
+    override fun onRegister(userData: UserData, email: String, password: String) {
         binding.pbLogin.isRefreshing = true
 
         auth.createUserWithEmailAndPassword(email, password)
@@ -93,7 +93,7 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
 
                 if (task.isSuccessful) {
                     Log.d(TAG, "registerWithEmail:success")
-                    registerUser(user)
+                    registerUser(userData)
                 } else {
                     Log.w(TAG, "registerWithEmail:failure")
                     longToast("Registration failed.")
@@ -113,11 +113,11 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
 
     override fun isWorking(): Boolean = binding.pbLogin.isRefreshing
 
-    private fun registerUser(user: User) {
+    private fun registerUser(userData: UserData) {
         FirebaseDatabase.getInstance()
             .getReference(DatabasePaths.KEY_USERS)
             .child(auth.currentUser!!.uid)
-            .setValue(user) { error, _ ->
+            .setValue(userData) { error, _ ->
                 binding.pbLogin.isRefreshing = false
 
                 if (error == null) {

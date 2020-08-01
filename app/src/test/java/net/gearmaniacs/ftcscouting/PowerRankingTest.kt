@@ -113,7 +113,7 @@ class PowerRankingTest {
         val matches = ArrayList<Match>(redAlliances.size)
 
         for (i in redAlliances.indices) {
-            matches.add(Match(i, redAlliances[i], blueAlliances[i]))
+            matches.add(Match("", "", i, redAlliances[i], blueAlliances[i]))
         }
 
         val powerRanking = PowerRanking(emptyList(), matches)

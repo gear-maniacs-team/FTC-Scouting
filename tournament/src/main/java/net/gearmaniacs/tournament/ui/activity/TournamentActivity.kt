@@ -6,10 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.Animation
-import android.view.animation.DecelerateInterpolator
-import android.view.animation.ScaleAnimation
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -19,7 +15,7 @@ import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.Tournament
-import net.gearmaniacs.core.model.User
+import net.gearmaniacs.core.model.UserData
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.databinding.ActivityTournamentBinding
 import net.gearmaniacs.tournament.ui.fragment.TournamentDialogFragment
@@ -36,18 +32,16 @@ class TournamentActivity : AppCompatActivity() {
     companion object {
         private const val ARG_TOURNAMENT_KEY = "tournament_key"
         const val ARG_USER = "user"
-        private const val ARG_TOURNAMENT_NAME = "tournament_name"
 
         private const val SAVED_FRAGMENT_INDEX = "tournament_key"
 
         private const val SPREADSHEET_LOAD_REQUEST_CODE = 1
         private const val SPREADSHEET_SAVE_REQUEST_CODE = 2
 
-        fun startActivity(context: Context, user: User?, tournament: Tournament) {
+        fun startActivity(context: Context, userData: UserData?, tournament: Tournament) {
             val intent = Intent(context, TournamentActivity::class.java).apply {
-                putExtra(ARG_USER, user)
+                putExtra(ARG_USER, userData)
                 putExtra(ARG_TOURNAMENT_KEY, tournament.key)
-                putExtra(ARG_TOURNAMENT_NAME, tournament.name)
             }
 
             context.startActivity(intent)
@@ -81,10 +75,6 @@ class TournamentActivity : AppCompatActivity() {
         // Make sure the data from the intent is not null
         viewModel.tournamentKey = intent.getStringExtra(ARG_TOURNAMENT_KEY)
             ?: throw IllegalArgumentException(ARG_TOURNAMENT_KEY)
-        val tournamentName = intent.getStringExtra(ARG_TOURNAMENT_NAME)
-            ?: throw IllegalArgumentException(ARG_TOURNAMENT_NAME)
-
-        viewModel.setDefaultName(tournamentName)
 
         // Setup Fragments
         activeFragment = fragments.first()
@@ -135,14 +125,14 @@ class TournamentActivity : AppCompatActivity() {
         }
 
         // Observe Live Data
-        observe(viewModel.getNameLiveData()) { name ->
-            if (name == null) {
+        observe(viewModel.getCurrentTournamentLiveData()) { thisTournament: Tournament? ->
+            if (thisTournament == null) {
                 // Means the Tournament has been deleted so we should close the activity
                 finish()
                 return@observe
             }
 
-            supportActionBar?.title = name
+            supportActionBar?.title = thisTournament.name
         }
 
         observe(viewModel.getTeamsLiveData()) {
@@ -198,7 +188,9 @@ class TournamentActivity : AppCompatActivity() {
             R.id.action_export -> {
                 val intent = getSpreadsheetIntent(Intent.ACTION_CREATE_DOCUMENT)
                 intent.flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                intent.putExtra(Intent.EXTRA_TITLE, viewModel.getNameLiveData().value)
+                viewModel.getCurrentTournamentLiveData().value?.name?.let {
+                    intent.putExtra(Intent.EXTRA_TITLE, it)
+                }
 
                 startActivityForResult(intent, SPREADSHEET_SAVE_REQUEST_CODE)
             }
@@ -252,7 +244,7 @@ class TournamentActivity : AppCompatActivity() {
     private fun changeTournamentName() {
         val dialogFragment = TournamentDialogFragment()
         dialogFragment.actionButtonStringRes = R.string.action_update
-        dialogFragment.defaultName = viewModel.getNameLiveData().value
+        dialogFragment.defaultName = viewModel.getCurrentTournamentLiveData().value?.name
 
         dialogFragment.actionButtonListener = { newName ->
             viewModel.updateTournamentName(newName)

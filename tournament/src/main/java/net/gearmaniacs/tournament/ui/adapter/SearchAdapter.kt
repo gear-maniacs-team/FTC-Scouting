@@ -19,7 +19,6 @@ class SearchAdapter(
             LayoutInflater.from(parent.context).inflate(R.layout.view_search_bar, parent, false)
         )
 
-        queryListener.onQueryChange(null)
         holder.searchBar.addTextChangedListener(afterTextChanged = queryListener::onQueryChange)
 
         return holder

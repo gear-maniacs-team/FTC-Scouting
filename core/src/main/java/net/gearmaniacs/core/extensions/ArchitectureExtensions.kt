@@ -31,13 +31,13 @@ inline fun <reified T : ViewModel> Fragment.getViewModel(crossinline factory: ()
     return ViewModelProvider(this, vmFactory)[T::class.java]
 }
 
-fun <T : Any, L : LiveData<T>> LifecycleOwner.observe(liveData: L, body: (T?) -> Unit) {
+fun <T : Any?, L : LiveData<T>> LifecycleOwner.observe(liveData: L, body: (T?) -> Unit) {
     liveData.observe(this, Observer { data: T? ->
         body(data)
     })
 }
 
-fun <T : Any, L : NonNullLiveData<T>> LifecycleOwner.observeNonNull(
+fun <T : Any?, L : NonNullLiveData<T>> LifecycleOwner.observeNonNull(
     liveData: L,
     body: (T) -> Unit
 ) {

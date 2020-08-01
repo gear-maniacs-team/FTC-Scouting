@@ -5,6 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.android.scopes.ActivityRetainedScoped
+import net.gearmaniacs.core.utils.AppPreferences
 import net.gearmaniacs.ftcscouting.repository.MainRepository
 import net.theluckycoder.database.dao.TournamentsDao
 
@@ -14,6 +15,6 @@ object MainModule {
 
     @Provides
     @ActivityRetainedScoped
-    fun provideMainRepository(tournamentsDao: TournamentsDao) =
-        MainRepository(tournamentsDao)
+    fun provideMainRepository(tournamentsDao: TournamentsDao, appPreferences: AppPreferences) =
+        MainRepository(tournamentsDao, appPreferences)
 }

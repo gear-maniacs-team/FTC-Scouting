@@ -3,13 +3,11 @@ package net.gearmaniacs.tournament.ui.fragment.nav
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.observeNonNull
-import net.gearmaniacs.core.model.User
+import net.gearmaniacs.core.model.UserData
 import net.gearmaniacs.core.view.EmptyRecyclerView
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.ui.activity.TournamentActivity
@@ -42,7 +40,7 @@ internal class InfoFragment : TournamentFragment(R.layout.fragment_recycler_view
         }
         recyclerView.adapter = adapter
 
-        val user = activity.intent.getParcelableExtra<User>(TournamentActivity.ARG_USER)
+        val user = activity.intent.getParcelableExtra<UserData>(TournamentActivity.ARG_USER)
 
         if (user != null) {
             activity.observeNonNull(viewModel.getInfoLiveData(user)) {

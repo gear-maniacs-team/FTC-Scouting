@@ -1,15 +1,15 @@
 package net.gearmaniacs.ftcscouting.viewmodel
 
+import android.content.Context
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.gearmaniacs.core.model.Tournament
-import net.gearmaniacs.core.model.User
 import net.gearmaniacs.ftcscouting.repository.MainRepository
+import net.theluckycoder.database.di.DatabaseModule
 
 class MainViewModel @ViewModelInject constructor(
     private val repository: MainRepository
@@ -17,9 +17,12 @@ class MainViewModel @ViewModelInject constructor(
 
     private var listening = false
 
-    fun getUserLiveData(): LiveData<User> = repository.userLiveData
+    private val userDataLiveData = repository.userDataFlow.asLiveData()
+    private val tournamentsLiveData = repository.tournamentsFlow.asLiveData()
 
-    fun getTournamentsLiveData() = repository.tournamentsFlow.asLiveData()
+    fun getUserLiveData() = userDataLiveData
+
+    fun getTournamentsLiveData() = tournamentsLiveData
 
     fun startListening() {
         if (listening) return
@@ -44,6 +47,11 @@ class MainViewModel @ViewModelInject constructor(
 
     fun deleteTournament(tournament: Tournament) = viewModelScope.launch(Dispatchers.IO) {
         repository.deleteTournament(tournament.key)
+    }
+
+    fun signOut(context: Context) = viewModelScope.launch(Dispatchers.IO) {
+        DatabaseModule.providesAppDatabase(context.applicationContext)
+            .clearAllTables()
     }
 
     override fun onCleared() {

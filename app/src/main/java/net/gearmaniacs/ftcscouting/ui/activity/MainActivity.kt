@@ -1,7 +1,6 @@
 package net.gearmaniacs.ftcscouting.ui.activity
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -9,40 +8,39 @@ import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
-import net.gearmaniacs.core.extensions.getViewModel
 import net.gearmaniacs.core.extensions.observe
-import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.core.extensions.startActivity
-import net.gearmaniacs.core.firebase.auth
-import net.gearmaniacs.core.model.User
-import net.gearmaniacs.core.utils.PreferencesKeys
+import net.gearmaniacs.core.model.UserData
+import net.gearmaniacs.core.utils.AppPreferences
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.databinding.ActivityMainBinding
 import net.gearmaniacs.ftcscouting.ui.adapter.TournamentAdapter
 import net.gearmaniacs.ftcscouting.viewmodel.MainViewModel
 import net.gearmaniacs.login.ui.activity.LoginActivity
+import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
 import net.gearmaniacs.tournament.ui.activity.TournamentActivity
 import net.gearmaniacs.tournament.ui.fragment.TournamentDialogFragment
-import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var preferenceManager: SharedPreferences
     private val viewModel by viewModels<MainViewModel>()
     private val adapter = TournamentAdapter(this)
 
-    private var user: User? = null
+    private lateinit var userData: UserData
+
+    @Inject
+    lateinit var appPreferences: AppPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,8 +48,6 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.bottomAppBar)
-
-        preferenceManager = PreferenceManager.getDefaultSharedPreferences(this)
 
         val recyclerView = binding.content.rvTournament
         recyclerView.adapter = adapter
@@ -61,20 +57,15 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
             DividerItemDecoration(this, LinearLayoutManager.VERTICAL)
         )
 
-        if (Firebase.auth.currentUser == null)
-            return
-
         binding.fabNewTournament.setOnClickListener {
             val dialogFragment = TournamentDialogFragment()
             dialogFragment.actionButtonStringRes = R.string.action_create
 
             dialogFragment.actionButtonListener = { name ->
-                if (Firebase.auth.currentUser != null) {
-                    val tournamentName = name.trim()
+                val tournamentName = name.trim()
 
-                    if (tournamentName.isNotEmpty())
-                        viewModel.createNewTournament(tournamentName)
-                }
+                if (tournamentName.isNotEmpty())
+                    viewModel.createNewTournament(tournamentName)
             }
             dialogFragment.show(supportFragmentManager, dialogFragment.tag)
         }
@@ -86,7 +77,8 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
         }
 
         observe(viewModel.getUserLiveData()) {
-            user = it
+            if (it != null)
+                userData = it
         }
 
         observe(viewModel.getTournamentsLiveData()) { list ->
@@ -105,13 +97,14 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
             true
         }
         R.id.action_account -> {
-            user?.let {
+            userData?.let {
                 TeamInfoActivity.startActivity(this, it)
             }
             true
         }
         R.id.action_sign_out -> {
             Firebase.auth.signOut()
+            viewModel.signOut(applicationContext)
             startActivity<LoginActivity>()
             finish()
             true
@@ -121,14 +114,9 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
 
     override fun onStart() {
         super.onStart()
-        if (!preferenceManager.getBoolean(PreferencesKeys.KEY_SEEN_INTRO, false)) {
+        if (!appPreferences.seenIntroPref.get()) {
             val intent = Intent(this, IntroActivity::class.java)
             startActivityForResult(intent, REQUEST_CODE_INTRO)
-            return
-        }
-        if (Firebase.auth.currentUser == null) {
-            startActivity<LoginActivity>()
-            finish()
             return
         }
 
@@ -144,9 +132,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_INTRO) {
             if (resultCode == RESULT_OK) {
-                preferenceManager.edit {
-                    putBoolean(PreferencesKeys.KEY_SEEN_INTRO, true)
-                }
+                appPreferences.seenIntroPref.set(true)
             } else {
                 finish()
             }
@@ -156,7 +142,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
     override fun onClickListener(position: Int) {
         try {
             val tournament = adapter.getItem(position)
-            user?.let { user ->
+            userData?.let { user ->
                 TournamentActivity.startActivity(this, user, tournament)
             }
         } catch (e: IndexOutOfBoundsException) {

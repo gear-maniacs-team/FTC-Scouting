@@ -7,28 +7,26 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.core.firebase.DatabasePaths
-import net.gearmaniacs.core.model.User
+import net.gearmaniacs.core.firebase.isLoggedIn
+import net.gearmaniacs.core.model.UserData
+import net.gearmaniacs.core.model.isNullOrEmpty
+import net.gearmaniacs.core.utils.AppPreferences
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.databinding.ActivityTeamInfoBinding
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class TeamInfoActivity : AppCompatActivity() {
 
-    companion object {
-        private const val ARG_USER = "user"
-
-        fun startActivity(context: Context, user: User?) {
-            val intent = Intent(context, TeamInfoActivity::class.java)
-            intent.putExtra(ARG_USER, user)
-            context.startActivity(intent)
-        }
-    }
+    @Inject
+    lateinit var appPreferences: AppPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,13 +37,13 @@ class TeamInfoActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val user = intent.getParcelableExtra<User>(ARG_USER)
+        val originalUserData = intent.getParcelableExtra<UserData>(ARG_USER)
 
-        if (user != null) {
-            binding.etTeamNumber.setText(user.id.toString())
-            binding.etTeamName.setText(user.teamName)
-        } else {
+        if (originalUserData.isNullOrEmpty) {
             longToast(R.string.team_info_previous_not_found)
+        } else {
+            binding.etTeamNumber.setText(originalUserData!!.id.toString())
+            binding.etTeamName.setText(originalUserData.teamName)
         }
 
         binding.btnUpdateAccount.setOnClickListener {
@@ -62,18 +60,28 @@ class TeamInfoActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            val newUserData = UserData(number, teamName)
+
+            appPreferences.userDataNumberPref.set(newUserData.id)
+            appPreferences.userDataNamePref.set(newUserData.teamName)
+
+            // TODO: Move to ViewModel and repo
             val appContext = applicationContext
-            FirebaseDatabase.getInstance()
-                .getReference(DatabasePaths.KEY_USERS)
-                .child(FirebaseAuth.getInstance().currentUser!!.uid)
-                .setValue(user)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        appContext.toast(R.string.team_updated)
-                    } else {
-                        appContext.toast(R.string.team_update_error)
+            if (Firebase.isLoggedIn) {
+                FirebaseDatabase.getInstance()
+                    .getReference(DatabasePaths.KEY_USERS)
+                    .child(FirebaseAuth.getInstance().currentUser!!.uid)
+                    .setValue(newUserData)
+                    .addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            appContext.toast(R.string.team_updated)
+                        } else {
+                            appContext.toast(R.string.team_update_error)
+                        }
                     }
-                }
+            } else {
+                appContext.toast(R.string.team_updated)
+            }
         }
     }
 
@@ -83,5 +91,15 @@ class TeamInfoActivity : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    companion object {
+        private const val ARG_USER = "user"
+
+        fun startActivity(context: Context, userData: UserData?) {
+            val intent = Intent(context, TeamInfoActivity::class.java)
+            intent.putExtra(ARG_USER, userData)
+            context.startActivity(intent)
+        }
     }
 }
