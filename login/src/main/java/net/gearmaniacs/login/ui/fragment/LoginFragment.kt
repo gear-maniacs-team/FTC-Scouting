@@ -10,8 +10,8 @@ import net.gearmaniacs.core.extensions.isValidEmail
 import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.login.R
 import net.gearmaniacs.login.databinding.FragmentLoginBinding
-import net.gearmaniacs.login.ui.activity.ResetPasswordActivity
 import net.gearmaniacs.login.interfaces.LoginCallback
+import net.gearmaniacs.login.ui.activity.ResetPasswordActivity
 
 @AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.fragment_login) {
@@ -63,5 +63,9 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         loginCallback = null
         _binding = null
         super.onDestroy()
+    }
+
+    companion object {
+        const val TAG = "LoginFragment"
     }
 }

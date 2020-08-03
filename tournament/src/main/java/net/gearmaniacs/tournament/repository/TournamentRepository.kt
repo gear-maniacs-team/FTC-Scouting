@@ -1,10 +1,7 @@
 package net.gearmaniacs.tournament.repository
 
-import android.content.SharedPreferences
-import androidx.lifecycle.MutableLiveData
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.ktx.Firebase
-import com.tfcporciuncula.flow.FlowSharedPreferences
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
@@ -20,20 +17,25 @@ import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeamPower
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.tournament.opr.PowerRanking
+import net.gearmaniacs.tournament.ui.activity.TournamentActivity
 import net.theluckycoder.database.dao.TournamentsDao
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
+import javax.inject.Inject
 
-internal class TournamentRepository(
+internal class TournamentRepository @Inject constructor(
+    @TournamentActivity.TournamentKey
+    private val tournamentKey: String,
     private val tournamentsDao: TournamentsDao,
     private val tournamentReference: DatabaseReference?
 ) {
 
     private var valueEventListenerJob: Job? = null
 
-    fun getCurrentTournamentFlow(tournamentKey: String) = tournamentsDao.getFlow(tournamentKey)
+    val tournamentFlow = tournamentsDao.getFlow(tournamentKey)
 
-    suspend fun updateTournamentName(tournament: Tournament) {
+    suspend fun updateTournamentName(tournamentName: String) {
+        val tournament = Tournament(tournamentKey, tournamentName)
         tournamentsDao.insert(tournament)
 
         if (Firebase.isLoggedIn) {
@@ -45,7 +47,7 @@ internal class TournamentRepository(
         }
     }
 
-    suspend fun deleteTournament(tournamentKey: String) {
+    suspend fun deleteTournament() {
         tournamentsDao.delete(tournamentKey)
 
         if (Firebase.isLoggedIn) {
@@ -84,7 +86,7 @@ internal class TournamentRepository(
         }
     }
 
-    suspend fun addListener(tournamentKey: String) = coroutineScope {
+    suspend fun addListener() = coroutineScope {
         justTry { valueEventListenerJob?.cancelAndJoin() }
 
         if (!Firebase.isLoggedIn) return@coroutineScope
@@ -96,7 +98,7 @@ internal class TournamentRepository(
 
             databaseReference.valueEventListenerFlow<String>().safeCollect { name ->
                 if (name != null)
-                tournamentsDao.insert(Tournament(tournamentKey, name))
+                    tournamentsDao.insert(Tournament(tournamentKey, name))
                 else
                     tournamentsDao.delete(tournamentKey)
             }

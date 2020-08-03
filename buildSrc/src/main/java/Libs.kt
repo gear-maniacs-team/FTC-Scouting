@@ -8,10 +8,10 @@ object Libs {
         "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${Versions.kotlin_coroutines}"
 
     // AndroidX
-    val google_material = "com.google.android.material:material:1.1.0"
+    val google_material = "com.google.android.material:material:1.2.0-rc01"
     val androidx_appcompat = "androidx.appcompat:appcompat:1.1.0"
-    val androidx_recycler_view = "androidx.recyclerview:recyclerview:1.2.0-alpha03"
-    val androidx_constraint_layout = "androidx.constraintlayout:constraintlayout:2.0.0-beta8"
+    val androidx_recycler_view = "androidx.recyclerview:recyclerview:1.2.0-alpha05"
+    val androidx_constraint_layout = "androidx.constraintlayout:constraintlayout:2.0.0-rc1"
     val androidx_lifecycle = "androidx.lifecycle:lifecycle-extensions:2.2.0"
     val androidx_swipe_refresh_layout = "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     val androidx_preference = "androidx.preference:preference:1.1.1"

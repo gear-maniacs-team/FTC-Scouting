@@ -19,9 +19,4 @@ object CoreModule {
     @Singleton
     fun providesSharedPreferences(@ApplicationContext context: Context): SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(context)
-
-    @Provides
-    @Singleton
-    fun providesAppPreferences(sharedPreferences: SharedPreferences): AppPreferences =
-        AppPreferences(sharedPreferences)
 }

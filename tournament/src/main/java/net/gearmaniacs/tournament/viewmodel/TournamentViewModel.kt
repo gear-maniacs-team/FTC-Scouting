@@ -13,7 +13,10 @@ import net.gearmaniacs.core.architecture.MutableNonNullLiveData
 import net.gearmaniacs.core.architecture.NonNullLiveData
 import net.gearmaniacs.core.extensions.app
 import net.gearmaniacs.core.extensions.toast
-import net.gearmaniacs.core.model.*
+import net.gearmaniacs.core.model.Match
+import net.gearmaniacs.core.model.Team
+import net.gearmaniacs.core.model.TeamPower
+import net.gearmaniacs.core.model.UserData
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.repository.MatchesRepository
 import net.gearmaniacs.tournament.repository.TeamsRepository
@@ -29,24 +32,23 @@ internal class TournamentViewModel @ViewModelInject constructor(
     application: Application
 ) : AndroidViewModel(application) {
 
-    private var listening = false
-    var tournamentKey = ""
-
     private val analyticsData = MutableNonNullLiveData(emptyList<TeamPower>())
-    private val currentTournamentData by lazy { tournamentRepository.getCurrentTournamentFlow(tournamentKey).asLiveData() }
-    private val teamsData by lazy { teamsRepository.getTeamsFlow(tournamentKey).asLiveData() }
-    private val matchesData by lazy { matchesRepository.getMatchesFlow(tournamentKey).asLiveData() }
+    private val tournamentData = tournamentRepository.tournamentFlow.asLiveData()
+    private val teamsData = teamsRepository.teamsFlows.asLiveData()
+    private val matchesData = matchesRepository.matchesFlow.asLiveData()
+
+    private var listening = false
 
     fun getInfoLiveData(userData: UserData): NonNullLiveData<List<Match>> {
         matchesRepository.setUserTeamNumber(userData.id)
-        return matchesRepository.infoLiveData
+        return matchesRepository.infoData
     }
 
-    fun getCurrentTournamentLiveData() = currentTournamentData
+    fun getCurrentTournamentLiveData() = tournamentData
 
     fun getTeamsLiveData() = teamsData
 
-    fun getTeamsFilteredLiveData(): NonNullLiveData<List<Team>> = teamsRepository.queriedLiveData
+    fun getTeamsFilteredLiveData(): NonNullLiveData<List<Team>> = teamsRepository.queriedTeamsData
 
     fun getMatchesLiveData() = matchesData
 
@@ -74,10 +76,10 @@ internal class TournamentViewModel @ViewModelInject constructor(
             val newTeamsList = teamIds.asSequence()
                 .filter { it > 0 }
                 .filterNot { existingTeamIds.contains(it) }
-                .map { Team("", tournamentKey, it, null) }
+                .map { Team("", "", it, null) }
                 .toList()
 
-            teamsRepository.addTeams(tournamentKey, newTeamsList)
+            teamsRepository.addTeams(newTeamsList)
         }
     }
 
@@ -85,13 +87,13 @@ internal class TournamentViewModel @ViewModelInject constructor(
         val key = team.key
 
         if (key.isEmpty())
-            teamsRepository.addTeam(tournamentKey, team)
+            teamsRepository.addTeam(team)
         else
-            teamsRepository.updateTeam(tournamentKey, team)
+            teamsRepository.updateTeam(team)
     }
 
     fun deleteTeam(teamKey: String) = viewModelScope.launch(Dispatchers.IO) {
-        teamsRepository.deleteTeam(tournamentKey, teamKey)
+        teamsRepository.deleteTeam(teamKey)
     }
 
     // endregion
@@ -102,13 +104,13 @@ internal class TournamentViewModel @ViewModelInject constructor(
         val key = match.key
 
         if (key.isEmpty())
-            matchesRepository.addMatch(tournamentKey, match)
+            matchesRepository.addMatch(match)
         else
-            matchesRepository.updateMatch(tournamentKey, match)
+            matchesRepository.updateMatch(match)
     }
 
     fun deleteMatch(matchKey: String) = viewModelScope.launch(Dispatchers.IO) {
-        matchesRepository.deleteMatch(tournamentKey, matchKey)
+        matchesRepository.deleteMatch(matchKey)
     }
 
     // endregion
@@ -117,11 +119,11 @@ internal class TournamentViewModel @ViewModelInject constructor(
 
     fun updateTournamentName(newName: String) = viewModelScope.launch(Dispatchers.IO) {
         if (newName.isNotBlank())
-            tournamentRepository.updateTournamentName(Tournament(tournamentKey, newName))
+            tournamentRepository.updateTournamentName(newName)
     }
 
     fun deleteTournament() = viewModelScope.launch(Dispatchers.IO) {
-        tournamentRepository.deleteTournament(tournamentKey)
+        tournamentRepository.deleteTournament()
     }
 
     // endregion
@@ -173,17 +175,11 @@ internal class TournamentViewModel @ViewModelInject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             app.contentResolver.openInputStream(fileUri)?.use { inputStream ->
                 val import = SpreadsheetImport(inputStream)
-                val importedTeams = import.getTeams().map { it.copy(tournamentKey = tournamentKey) }
-                val importedMatches = import.getMatches().map { it.copy(tournamentKey = tournamentKey) }
+                val importedTeams = import.getTeams()
+                val importedMatches = import.getMatches()
 
-                teamsRepository.addTeams(
-                    tournamentKey,
-                    importedTeams.filterNot { currentTeams.contains(it) }
-                )
-                matchesRepository.addMatches(
-                    tournamentKey,
-                    importedMatches.filterNot { currentMatches.contains(it) }
-                )
+                teamsRepository.addTeams(importedTeams.filterNot { currentTeams.contains(it) })
+                matchesRepository.addMatches(importedMatches.filterNot { currentMatches.contains(it) })
             }
         }
 
@@ -194,13 +190,13 @@ internal class TournamentViewModel @ViewModelInject constructor(
         listening = true
 
         viewModelScope.launch(Dispatchers.IO) {
-            tournamentRepository.addListener(tournamentKey)
+            tournamentRepository.addListener()
         }
         viewModelScope.launch(Dispatchers.IO) {
-            matchesRepository.addListener(tournamentKey)
+            teamsRepository.addListener()
         }
         viewModelScope.launch(Dispatchers.IO) {
-            teamsRepository.addListener(tournamentKey)
+            matchesRepository.addListener()
         }
     }
 

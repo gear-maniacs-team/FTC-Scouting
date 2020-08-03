@@ -6,6 +6,7 @@
     <string name="action_register">Register Team Account</string>
     <string name="action_no_account">You don\'t have a team account?</string>
     <string name="action_already_own_account">I already own an account</string>
+    <string name="action_use_without_account">Use offline without an account</string>
     <string name="action_sign_out">Sign Out</string>
     <string name="action_forgot_password">Forgot your password?</string>
     <string name="action_reset_password">Reset Password</string>

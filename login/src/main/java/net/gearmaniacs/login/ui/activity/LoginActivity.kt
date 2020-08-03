@@ -4,17 +4,23 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
+import androidx.transition.Fade
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.firebase.DatabasePaths
+import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.model.UserData
+import net.gearmaniacs.core.utils.AppPreferences
 import net.gearmaniacs.login.R
 import net.gearmaniacs.login.databinding.ActivityLoginBinding
+import net.gearmaniacs.login.interfaces.LoginCallback
 import net.gearmaniacs.login.ui.fragment.LoginFragment
 import net.gearmaniacs.login.ui.fragment.RegisterFragment
-import net.gearmaniacs.login.interfaces.LoginCallback
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -24,35 +30,37 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     private lateinit var auth: FirebaseAuth
     private var isLoginFragmentActive = true
 
+    private lateinit var loginFragment: LoginFragment
+    private lateinit var registerFragment: RegisterFragment
+
     @Inject
     lateinit var mainActivityClass: MainActivityClass
+
+    @Inject
+    lateinit var appPreferences: AppPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        auth = FirebaseAuth.getInstance()
+        auth = Firebase.auth
         with(binding.pbLogin) {
             isEnabled = false
             setColorSchemeResources(R.color.colorPrimary)
         }
 
-        if (auth.currentUser != null) {
+        if (Firebase.isLoggedIn) {
             // If the user is logged in the MainActivity will be launched in onStart
             return
         }
 
-        if (savedInstanceState == null) {
-            setLoginFragment()
-        } else {
-            isLoginFragmentActive = savedInstanceState.getBoolean(BUNDLE_IS_LOGIN_ACTIVE, true)
-
-            if (isLoginFragmentActive)
-                setLoginFragment()
-            else
-                setRegisterFragment()
+        binding.btnUseOffline.setOnClickListener {
+            // TODO Add a warning dialog or sth
+            startMainActivity()
         }
+
+        initFragments(savedInstanceState)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -63,7 +71,7 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     override fun onStart() {
         super.onStart()
 
-        if (auth.currentUser != null)
+        if (Firebase.isLoggedIn)
             startMainActivity()
     }
 
@@ -101,20 +109,61 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
             }
     }
 
+    override fun isWorking(): Boolean = binding.pbLogin.isRefreshing
+
+    private fun initFragments(savedInstanceState: Bundle?) {
+        loginFragment =
+            supportFragmentManager.findFragmentByTag(LoginFragment.TAG) as? LoginFragment?
+                ?: LoginFragment()
+
+        registerFragment =
+            supportFragmentManager.findFragmentByTag(RegisterFragment.TAG) as? RegisterFragment?
+                ?: RegisterFragment()
+
+        val enterFade = Fade().apply {
+            startDelay = FADE_DURATION
+            duration = FADE_DURATION
+        }
+        val exitFade = Fade().apply {
+            duration = FADE_DURATION
+        }
+
+        loginFragment.enterTransition = enterFade
+        loginFragment.exitTransition = exitFade
+        registerFragment.enterTransition = enterFade
+        registerFragment.exitTransition = exitFade
+
+        isLoginFragmentActive =
+            savedInstanceState?.getBoolean(BUNDLE_IS_LOGIN_ACTIVE, true) ?: true
+
+        supportFragmentManager.commit {
+            if (savedInstanceState == null) {
+                add(R.id.fragment_placeholder, loginFragment, LoginFragment.TAG)
+                add(R.id.fragment_placeholder, registerFragment, RegisterFragment.TAG)
+            }
+
+            if (isLoginFragmentActive) {
+                loginFragment.loginCallback = this@LoginActivity
+                hide(registerFragment)
+            } else {
+                registerFragment.loginCallback = this@LoginActivity
+                hide(loginFragment)
+            }
+        }
+    }
+
     override fun switchFragment() {
         // Don't allow fragment switching while processing a request
         if (binding.pbLogin.isRefreshing) return
 
         if (!isLoginFragmentActive)
-            setLoginFragment()
+            showLoginFragment()
         else
-            setRegisterFragment()
+            showRegisterFragment()
     }
 
-    override fun isWorking(): Boolean = binding.pbLogin.isRefreshing
-
     private fun registerUser(userData: UserData) {
-        FirebaseDatabase.getInstance()
+        Firebase.database
             .getReference(DatabasePaths.KEY_USERS)
             .child(auth.currentUser!!.uid)
             .setValue(userData) { error, _ ->
@@ -130,33 +179,31 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
             }
     }
 
-    private fun setLoginFragment() {
-        val fragment = supportFragmentManager
-            .findFragmentByTag(TAG_LOGIN_FRAGMENT) as? LoginFragment ?: LoginFragment()
-
+    private fun showLoginFragment() {
         isLoginFragmentActive = true
-        fragment.loginCallback = this
+        loginFragment.loginCallback = this
+        registerFragment.loginCallback = null
 
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragment_placeholder, fragment, TAG_LOGIN_FRAGMENT)
-            commit()
+        supportFragmentManager.commit {
+            show(loginFragment)
+            hide(registerFragment)
         }
     }
 
-    private fun setRegisterFragment() {
-        val fragment = supportFragmentManager
-            .findFragmentByTag(TAG_FRAGMENT_REGISTER) as? RegisterFragment ?: RegisterFragment()
-
+    private fun showRegisterFragment() {
         isLoginFragmentActive = false
-        fragment.loginCallback = this
+        loginFragment.loginCallback = null
+        registerFragment.loginCallback = this
 
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragment_placeholder, fragment, TAG_FRAGMENT_REGISTER)
-            commit()
+        supportFragmentManager.commit {
+            hide(loginFragment)
+            show(registerFragment)
         }
     }
 
     private fun startMainActivity() {
+        appPreferences.firstStartUp.set(false)
+
         val mainActivityClass = Class.forName(mainActivityClass.value)
         val intent = Intent(this, mainActivityClass)
 
@@ -165,9 +212,9 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     }
 
     private companion object {
+        private const val FADE_DURATION = 150L
+
         private const val TAG = "LoginActivity"
-        private const val TAG_LOGIN_FRAGMENT = "LOGIN_FRAGMENT"
-        private const val TAG_FRAGMENT_REGISTER = "REGISTER_FRAGMENT"
 
         private const val BUNDLE_IS_LOGIN_ACTIVE = "login_fragment_active"
     }

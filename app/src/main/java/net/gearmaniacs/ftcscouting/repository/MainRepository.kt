@@ -3,6 +3,7 @@ package net.gearmaniacs.ftcscouting.repository
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
@@ -17,8 +18,10 @@ import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.UserData
 import net.gearmaniacs.core.utils.AppPreferences
 import net.theluckycoder.database.dao.TournamentsDao
+import javax.inject.Inject
 
-class MainRepository(
+@ActivityRetainedScoped
+class MainRepository @Inject constructor(
     private val tournamentsDao: TournamentsDao,
     private val appPreferences: AppPreferences
 ) {

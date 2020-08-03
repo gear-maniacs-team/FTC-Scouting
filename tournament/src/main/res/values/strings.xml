@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Strings related to the tournament -->
-    <string name="action_delete_tournament">Delete tournament</string>
+    <string name="action_delete_tournament">Delete Tournament</string>
     <string name="delete_tournament">Delete this tournament?</string>
     <string name="delete_tournament_desc">If deleted, the tournament will also be removed from all other devices!</string>
     <string name="title_tournaments">Tournaments</string>

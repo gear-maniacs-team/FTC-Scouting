@@ -4,11 +4,10 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.MergeAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.core.view.EmptyRecyclerView
@@ -45,7 +44,7 @@ internal class TeamFragment : TournamentFragment(R.layout.fragment_recycler_view
 
             setEmptyView(emptyView)
         }
-        recyclerView.adapter = MergeAdapter(searchAdapter, teamAdapter)
+        recyclerView.adapter = ConcatAdapter(searchAdapter, teamAdapter)
 
         activity.observeNonNull(viewModel.getTeamsFilteredLiveData()) {
             teamAdapter.submitList(it)

@@ -8,31 +8,41 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import net.gearmaniacs.core.architecture.MutableNonNullLiveData
 import net.gearmaniacs.core.extensions.justTry
 import net.gearmaniacs.core.extensions.safeCollect
-import net.gearmaniacs.core.firebase.*
+import net.gearmaniacs.core.firebase.DatabasePaths
+import net.gearmaniacs.core.firebase.generatePushId
+import net.gearmaniacs.core.firebase.ifLoggedIn
+import net.gearmaniacs.core.firebase.isLoggedIn
+import net.gearmaniacs.core.firebase.listValueEventListenerFlow
 import net.gearmaniacs.core.model.Team
+import net.gearmaniacs.tournament.ui.activity.TournamentActivity
 import net.theluckycoder.database.dao.TeamsDao
+import javax.inject.Inject
 
-class TeamsRepository(
+class TeamsRepository @Inject constructor(
+    @TournamentActivity.TournamentKey
+    private val tournamentKey: String,
     private val teamsDao: TeamsDao,
     private val tournamentReference: DatabaseReference?
 ) {
 
     private var teamListForQuery = emptyList<Team>()
     private var lastTeamQuery = ""
+
+    private var teamsFlowCollector: Job? = null
     private var teamSearchJob: Job? = null // Last launched search job
     private var valueEventListenerJob: Job? = null
 
-    fun getTeamsFlow(tournamentKey: String) = teamsDao.getAllByTournament(tournamentKey)
+    val teamsFlows = teamsDao.getAllByTournament(tournamentKey)
+    val queriedTeamsData = MutableNonNullLiveData(emptyList<Team>())
 
-    val queriedLiveData = MutableNonNullLiveData(emptyList<Team>())
-
-    suspend fun addTeam(tournamentKey: String, team: Team) {
+    suspend fun addTeam(team: Team) {
         val teamRef = Firebase.ifLoggedIn {
             tournamentReference!!
                 .child(DatabasePaths.KEY_DATA)
@@ -40,10 +50,10 @@ class TeamsRepository(
                 .child(DatabasePaths.KEY_TEAMS)
         }
 
-        insertTeam(team, tournamentKey, teamRef)
+        insertTeam(team, teamRef)
     }
 
-    suspend fun addTeams(tournamentKey: String, teams: List<Team>) {
+    suspend fun addTeams(teams: List<Team>) {
         val ref = Firebase.ifLoggedIn {
             tournamentReference!!
                 .child(DatabasePaths.KEY_DATA)
@@ -52,11 +62,11 @@ class TeamsRepository(
         }
 
         teams.forEach {
-            insertTeam(it, tournamentKey, ref)
+            insertTeam(it, ref)
         }
     }
 
-    private suspend fun insertTeam(team: Team, tournamentKey: String, ref: DatabaseReference?) {
+    private suspend fun insertTeam(team: Team, ref: DatabaseReference?) {
         val key = if (ref != null) {
             val teamRef = ref.push()
             teamRef.setValue(team)
@@ -68,7 +78,7 @@ class TeamsRepository(
         teamsDao.insert(team.copy(key = key, tournamentKey = tournamentKey))
     }
 
-    suspend fun updateTeam(tournamentKey: String, team: Team) {
+    suspend fun updateTeam(team: Team) {
         teamsDao.insert(team.copy(tournamentKey = tournamentKey))
 
         if (Firebase.isLoggedIn) {
@@ -82,7 +92,7 @@ class TeamsRepository(
         }
     }
 
-    suspend fun deleteTeam(tournamentKey: String, teamKey: String) {
+    suspend fun deleteTeam(teamKey: String) {
         teamsDao.delete(teamKey)
 
         if (Firebase.isLoggedIn) {
@@ -102,7 +112,7 @@ class TeamsRepository(
         teamSearchJob?.cancel()
 
         if (teamListForQuery.isEmpty() || query.isEmpty()) {
-            queriedLiveData.value = teamListForQuery
+            queriedTeamsData.value = teamListForQuery
             return
         }
 
@@ -117,12 +127,24 @@ class TeamsRepository(
 
             // Don't update the data if the search was canceled
             ensureActive()
-            queriedLiveData.value = filteredList
+            queriedTeamsData.value = filteredList
         }
     }
 
-    suspend fun addListener(tournamentKey: String) = coroutineScope {
+    suspend fun addListener() = coroutineScope {
+        justTry { teamsFlowCollector?.cancelAndJoin() }
         justTry { valueEventListenerJob?.cancelAndJoin() }
+
+        teamsFlowCollector = launch {
+            teamsFlows.collectLatest {
+                coroutineContext.ensureActive()
+
+                withContext(Dispatchers.Main) {
+                    teamListForQuery = it
+                    performTeamsSearch(lastTeamQuery)
+                }
+            }
+        }
 
         if (!Firebase.isLoggedIn) return@coroutineScope
 
@@ -134,16 +156,14 @@ class TeamsRepository(
 
             databaseReference.listValueEventListenerFlow(Team::class).safeCollect {
                 teamsDao.replaceTournamentTeams(tournamentKey, it)
-
-                launch(Dispatchers.Main) {
-                    teamListForQuery = it
-                    performTeamsSearch(lastTeamQuery)
-                }
             }
         }
     }
 
     fun removeListener() {
+        teamsFlowCollector?.cancel()
+        teamsFlowCollector = null
+
         valueEventListenerJob?.cancel()
         valueEventListenerJob = null
     }

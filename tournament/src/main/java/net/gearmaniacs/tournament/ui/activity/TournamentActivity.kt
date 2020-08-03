@@ -10,7 +10,13 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.android.qualifiers.ActivityContext
+import dagger.hilt.android.scopes.ActivityScoped
 import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
@@ -25,12 +31,13 @@ import net.gearmaniacs.tournament.ui.fragment.nav.InfoFragment
 import net.gearmaniacs.tournament.ui.fragment.nav.MatchFragment
 import net.gearmaniacs.tournament.ui.fragment.nav.TeamFragment
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
+import javax.inject.Qualifier
 
 @AndroidEntryPoint
 class TournamentActivity : AppCompatActivity() {
 
     companion object {
-        private const val ARG_TOURNAMENT_KEY = "tournament_key"
+        const val ARG_TOURNAMENT_KEY = "tournament_key"
         const val ARG_USER = "user"
 
         private const val SAVED_FRAGMENT_INDEX = "tournament_key"
@@ -38,7 +45,7 @@ class TournamentActivity : AppCompatActivity() {
         private const val SPREADSHEET_LOAD_REQUEST_CODE = 1
         private const val SPREADSHEET_SAVE_REQUEST_CODE = 2
 
-        fun startActivity(context: Context, userData: UserData?, tournament: Tournament) {
+        fun startActivity(context: Context, userData: UserData, tournament: Tournament) {
             val intent = Intent(context, TournamentActivity::class.java).apply {
                 putExtra(ARG_USER, userData)
                 putExtra(ARG_TOURNAMENT_KEY, tournament.key)
@@ -73,7 +80,7 @@ class TournamentActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Make sure the data from the intent is not null
-        viewModel.tournamentKey = intent.getStringExtra(ARG_TOURNAMENT_KEY)
+        intent.getStringExtra(ARG_TOURNAMENT_KEY)
             ?: throw IllegalArgumentException(ARG_TOURNAMENT_KEY)
 
         // Setup Fragments
@@ -270,4 +277,27 @@ class TournamentActivity : AppCompatActivity() {
             type = "application/vnd.ms-excel"
             addCategory(Intent.CATEGORY_OPENABLE)
         }
+
+    /// Provide the tournament key passed by the intent
+
+    @Qualifier
+    @Target(AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.VALUE_PARAMETER)
+    @Retention(AnnotationRetention.RUNTIME)
+    @MustBeDocumented
+    internal annotation class TournamentKey
+
+    @TournamentKey
+    internal fun getTournamentKey() = intent.getStringExtra(ARG_TOURNAMENT_KEY)!!
+
+    @Module
+    @InstallIn(ActivityComponent::class)
+    internal object TournamentKeyModule {
+
+        @Provides
+        @ActivityScoped
+        @TournamentKey
+        fun provideTournamentKey(@ActivityContext activity: Context): String {
+            return (activity as TournamentActivity).getTournamentKey()
+        }
+    }
 }

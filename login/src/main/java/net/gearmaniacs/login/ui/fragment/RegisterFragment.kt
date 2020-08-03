@@ -84,4 +84,8 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         _binding = null
         super.onDestroy()
     }
+
+    companion object {
+        const val TAG = "RegisterFragment"
+    }
 }

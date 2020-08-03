@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.textfield.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
     android:layout_margin="16dp"
     android:layout_width="match_parent"
@@ -8,12 +9,14 @@
     app:endIconMode="clear_text"
     app:startIconDrawable="@drawable/ic_search"
     app:endIconDrawable="@drawable/ic_close"
-    app:endIconTint="?android:textColorPrimary">
+    app:endIconTint="?android:textColorPrimary"
+    tools:viewBindingIgnore="true">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/et_search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:maxLines="1"
         android:hint="@string/action_search" />
 
 </com.google.android.material.textfield.TextInputLayout>

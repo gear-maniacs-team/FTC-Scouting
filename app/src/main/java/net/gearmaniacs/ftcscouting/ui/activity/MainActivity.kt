@@ -18,6 +18,7 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.extensions.startActivity
+import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.model.UserData
 import net.gearmaniacs.core.utils.AppPreferences
 import net.gearmaniacs.ftcscouting.R
@@ -44,6 +45,9 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (appPreferences.firstStartUp.get())
+            return
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -86,8 +90,27 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        if (!appPreferences.seenIntroPref.get()) {
+            val intent = Intent(this, IntroActivity::class.java)
+            startActivityForResult(intent, REQUEST_CODE_INTRO)
+            return
+        }
+        if (appPreferences.firstStartUp.get()) {
+            startActivity<LoginActivity>()
+            return
+        }
+
+        viewModel.startListening()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
+
+        menu.findItem(R.id.action_sign_in).isVisible = !Firebase.isLoggedIn
+        menu.findItem(R.id.action_sign_out).isVisible = Firebase.isLoggedIn
+
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -97,9 +120,12 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
             true
         }
         R.id.action_account -> {
-            userData?.let {
-                TeamInfoActivity.startActivity(this, it)
-            }
+            TeamInfoActivity.startActivity(this, userData)
+            true
+        }
+        R.id.action_sign_in -> {
+            startActivity<LoginActivity>()
+            finish()
             true
         }
         R.id.action_sign_out -> {
@@ -110,17 +136,6 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
             true
         }
         else -> super.onOptionsItemSelected(item)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        if (!appPreferences.seenIntroPref.get()) {
-            val intent = Intent(this, IntroActivity::class.java)
-            startActivityForResult(intent, REQUEST_CODE_INTRO)
-            return
-        }
-
-        viewModel.startListening()
     }
 
     override fun onStop() {
@@ -142,9 +157,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
     override fun onClickListener(position: Int) {
         try {
             val tournament = adapter.getItem(position)
-            userData?.let { user ->
-                TournamentActivity.startActivity(this, user, tournament)
-            }
+            TournamentActivity.startActivity(this, userData, tournament)
         } catch (e: IndexOutOfBoundsException) {
         }
     }
@@ -155,6 +168,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
 
             AlertDialog.Builder(this)
                 .setTitle(R.string.delete_tournament)
+                // TODO Add message for offline mode
                 .setMessage(R.string.delete_tournament_desc)
                 .setPositiveButton(R.string.action_delete) { _, _ ->
                     viewModel.deleteTournament(tournament)
