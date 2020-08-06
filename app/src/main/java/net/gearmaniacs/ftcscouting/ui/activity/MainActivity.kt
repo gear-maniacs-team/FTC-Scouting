@@ -19,6 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.core.firebase.isLoggedIn
+import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.UserData
 import net.gearmaniacs.core.utils.AppPreferences
 import net.gearmaniacs.ftcscouting.R
@@ -32,11 +33,10 @@ import net.gearmaniacs.tournament.ui.fragment.TournamentDialogFragment
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
+class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel by viewModels<MainViewModel>()
-    private val adapter = TournamentAdapter(this)
 
     private lateinit var userData: UserData
 
@@ -46,12 +46,19 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (appPreferences.firstStartUp.get())
-            return
+        if (appPreferences.firstStartUp.get()) {
+            // If the user is already logged in
+            if (Firebase.isLoggedIn)
+                appPreferences.firstStartUp.set(false)
+            else
+                return
+        }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.bottomAppBar)
+
+        val adapter = TournamentAdapter(this)
 
         val recyclerView = binding.content.rvTournament
         recyclerView.adapter = adapter
@@ -92,7 +99,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
 
     override fun onStart() {
         super.onStart()
-        if (!appPreferences.seenIntroPref.get()) {
+        if (!appPreferences.seenIntro.get()) {
             val intent = Intent(this, IntroActivity::class.java)
             startActivityForResult(intent, REQUEST_CODE_INTRO)
             return
@@ -147,31 +154,28 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_INTRO) {
             if (resultCode == RESULT_OK) {
-                appPreferences.seenIntroPref.set(true)
+                appPreferences.seenIntro.set(true)
             } else {
                 finish()
             }
         }
     }
 
-    override fun onClickListener(position: Int) {
+    override fun onClickListener(item: Tournament) {
         try {
-            val tournament = adapter.getItem(position)
-            TournamentActivity.startActivity(this, userData, tournament)
+            TournamentActivity.startActivity(this, userData, item)
         } catch (e: IndexOutOfBoundsException) {
         }
     }
 
-    override fun onLongClickListener(position: Int) {
+    override fun onLongClickListener(item: Tournament) {
         try {
-            val tournament = adapter.getItem(position)
-
             AlertDialog.Builder(this)
                 .setTitle(R.string.delete_tournament)
                 // TODO Add message for offline mode
                 .setMessage(R.string.delete_tournament_desc)
                 .setPositiveButton(R.string.action_delete) { _, _ ->
-                    viewModel.deleteTournament(tournament)
+                    viewModel.deleteTournament(item)
                 }
                 .setNegativeButton(android.R.string.cancel, null)
                 .show()

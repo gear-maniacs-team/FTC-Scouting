@@ -12,7 +12,7 @@ import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
 
 class TournamentAdapter(
-    private val listener: RecyclerViewItemListener
+    private val listener: RecyclerViewItemListener<Tournament>
 ) : RecyclerView.Adapter<TournamentAdapter.TournamentViewHolder>() {
 
     companion object {
@@ -51,17 +51,17 @@ class TournamentAdapter(
         )
 
         holder.itemView.setOnClickListener {
-            val pos = holder.adapterPosition
+            val pos = holder.bindingAdapterPosition
 
             if (pos != -1)
-                listener.onClickListener(pos)
+                listener.onClickListener(getItem(pos))
         }
 
         holder.itemView.setOnLongClickListener {
-            val pos = holder.adapterPosition
+            val pos = holder.bindingAdapterPosition
 
             if (pos != -1)
-                listener.onLongClickListener(pos)
+                listener.onLongClickListener(getItem(pos))
 
             true
         }

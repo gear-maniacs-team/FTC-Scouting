@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -24,8 +25,8 @@ import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.UserData
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.databinding.ActivityTournamentBinding
+import net.gearmaniacs.tournament.ui.fragment.AbstractTournamentFragment
 import net.gearmaniacs.tournament.ui.fragment.TournamentDialogFragment
-import net.gearmaniacs.tournament.ui.fragment.TournamentFragment
 import net.gearmaniacs.tournament.ui.fragment.nav.AnalyticsFragment
 import net.gearmaniacs.tournament.ui.fragment.nav.InfoFragment
 import net.gearmaniacs.tournament.ui.fragment.nav.MatchFragment
@@ -65,7 +66,7 @@ class TournamentActivity : AppCompatActivity() {
             loadFragment(AnalyticsFragment)
         )
     }
-    private lateinit var activeFragment: TournamentFragment
+    private lateinit var activeFragment: AbstractTournamentFragment
 
     private var teamsList = emptyList<Team>()
     private var matchesList = emptyList<Match>()
@@ -144,6 +145,7 @@ class TournamentActivity : AppCompatActivity() {
 
         observe(viewModel.getTeamsLiveData()) {
             teamsList = it ?: emptyList()
+            Log.i("Teams1", teamsList.size.toString())
         }
 
         observe(viewModel.getMatchesLiveData()) {
@@ -151,8 +153,8 @@ class TournamentActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadFragment(companion: TournamentFragment.ICompanion): TournamentFragment =
-        supportFragmentManager.findFragmentByTag(companion.fragmentTag) as? TournamentFragment?
+    private fun loadFragment(companion: AbstractTournamentFragment.ICompanion): AbstractTournamentFragment =
+        supportFragmentManager.findFragmentByTag(companion.fragmentTag) as? AbstractTournamentFragment?
             ?: companion.newInstance()
 
     override fun onSaveInstanceState(outState: Bundle) {

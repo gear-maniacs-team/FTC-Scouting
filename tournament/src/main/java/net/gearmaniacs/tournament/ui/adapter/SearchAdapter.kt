@@ -32,7 +32,7 @@ class SearchAdapter(
         val searchBar: TextInputEditText = itemView.findViewById(R.id.et_search_bar)
     }
 
-    interface QueryListener {
+    fun interface QueryListener {
         fun onQueryChange(newQuery: CharSequence?)
     }
 }

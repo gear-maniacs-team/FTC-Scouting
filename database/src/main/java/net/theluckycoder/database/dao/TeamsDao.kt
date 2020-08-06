@@ -1,13 +1,17 @@
 package net.theluckycoder.database.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
 import net.gearmaniacs.core.model.Team
 
 @Dao
 abstract class TeamsDao {
 
-    @Query("SELECT * FROM skystone_team WHERE tournamentKey = :tournamentKey")
+    @Query("SELECT * FROM skystone_team WHERE tournamentKey = :tournamentKey ORDER BY id ASC")
     abstract fun getAllByTournament(tournamentKey: String): Flow<List<Team>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

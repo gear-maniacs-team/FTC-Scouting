@@ -31,7 +31,7 @@ class TournamentDialogFragment : RoundedBottomSheetDialogFragment() {
         dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         dialog.setOnShowListener {
             val bottomSheetDialog = dialog as? BottomSheetDialog
-            bottomSheetDialog?.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheetDialog?.findViewById<FrameLayout>(R.id.design_bottom_sheet)
                 ?.let { bottomSheet ->
                     BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
                 }

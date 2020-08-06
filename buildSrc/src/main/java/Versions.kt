@@ -4,7 +4,7 @@ object Versions {
     const val compile_sdk = 30
     const val target_sdk = 29
 
-    const val kotlin = "1.3.72"
+    const val kotlin = "1.4.0-rc"
     const val kotlin_coroutines = "1.3.8"
     const val room = "2.2.5"
     const val dagger_hilt = "2.28.3-alpha"

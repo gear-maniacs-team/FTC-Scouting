@@ -2,8 +2,8 @@ package net.gearmaniacs.tournament.repository
 
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -11,7 +11,7 @@ import net.gearmaniacs.core.extensions.justTry
 import net.gearmaniacs.core.extensions.safeCollect
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.isLoggedIn
-import net.gearmaniacs.core.firebase.valueEventListenerFlow
+import net.gearmaniacs.core.firebase.valueEventFlow
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeamPower
@@ -30,7 +30,7 @@ internal class TournamentRepository @Inject constructor(
     private val tournamentReference: DatabaseReference?
 ) {
 
-    private var valueEventListenerJob: Job? = null
+    private var listenerScope: CoroutineScope? = null
 
     val tournamentFlow = tournamentsDao.getFlow(tournamentKey)
 
@@ -87,16 +87,17 @@ internal class TournamentRepository @Inject constructor(
     }
 
     suspend fun addListener() = coroutineScope {
-        justTry { valueEventListenerJob?.cancelAndJoin() }
+        removeListener()
+        listenerScope = this
 
         if (!Firebase.isLoggedIn) return@coroutineScope
 
-        valueEventListenerJob = launch {
+        launch {
             val databaseReference = tournamentReference!!
                 .child(DatabasePaths.KEY_TOURNAMENTS)
                 .child(tournamentKey)
 
-            databaseReference.valueEventListenerFlow<String>().safeCollect { name ->
+            databaseReference.valueEventFlow<String>().safeCollect { name ->
                 if (name != null)
                     tournamentsDao.insert(Tournament(tournamentKey, name))
                 else
@@ -106,7 +107,7 @@ internal class TournamentRepository @Inject constructor(
     }
 
     fun removeListener() {
-        valueEventListenerJob?.cancel()
-        valueEventListenerJob = null
+        justTry { listenerScope?.cancel() }
+        listenerScope = null
     }
 }

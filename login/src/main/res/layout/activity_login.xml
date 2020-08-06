@@ -15,7 +15,10 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@id/btn_use_offline"
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/fragment_placeholder"
@@ -33,11 +36,10 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/action_use_without_account"
             android:textColor="@color/colorSecondary"
             android:textSize="15sp"
-            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

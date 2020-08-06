@@ -1,8 +1,8 @@
 package net.gearmaniacs.tournament.interfaces
 
-interface RecyclerViewItemListener {
+interface RecyclerViewItemListener<T> {
 
-    fun onClickListener(position: Int)
+    fun onClickListener(item: T)
 
-    fun onLongClickListener(position: Int)
+    fun onLongClickListener(item: T)
 }

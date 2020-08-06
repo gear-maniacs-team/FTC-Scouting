@@ -12,11 +12,11 @@ import net.gearmaniacs.core.view.EmptyRecyclerView
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.ui.activity.TournamentActivity
 import net.gearmaniacs.tournament.ui.adapter.InfoAdapter
-import net.gearmaniacs.tournament.ui.fragment.TournamentFragment
+import net.gearmaniacs.tournament.ui.fragment.AbstractTournamentFragment
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @AndroidEntryPoint
-internal class InfoFragment : TournamentFragment(R.layout.fragment_recycler_view) {
+internal class InfoFragment : AbstractTournamentFragment(R.layout.fragment_recycler_view) {
 
     private val viewModel by activityViewModels<TournamentViewModel>()
 

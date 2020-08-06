@@ -2,10 +2,8 @@ package net.gearmaniacs.tournament.ui.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.graphics.Typeface
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -22,7 +20,7 @@ import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
 
 internal class MatchAdapter(
-    private val listener: RecyclerViewItemListener
+    private val listener: RecyclerViewItemListener<Match>
 ) : RecyclerView.Adapter<MatchAdapter.MatchViewHolder>() {
 
     companion object {
@@ -32,7 +30,8 @@ internal class MatchAdapter(
             override fun areItemsTheSame(oldMatch: Match, newMatch: Match) =
                 oldMatch.key == newMatch.key
 
-            override fun areContentsTheSame(oldMatch: Match, newMatch: Match) = oldMatch == newMatch
+            override fun areContentsTheSame(oldMatch: Match, newMatch: Match) =
+                oldMatch == newMatch
         }
     }
 
@@ -42,7 +41,7 @@ internal class MatchAdapter(
         setHasStableIds(true)
     }
 
-    fun getItem(position: Int): Match = differ.currentList[position]
+    private fun getItem(position: Int): Match = differ.currentList[position]
 
     fun submitList(list: List<Match>) {
         differ.submitList(list)
@@ -62,17 +61,17 @@ internal class MatchAdapter(
         val holder = MatchViewHolder(view)
 
         holder.btnEdit.setOnClickListener {
-            val pos = holder.adapterPosition
+            val pos = holder.bindingAdapterPosition
 
             if (pos != -1)
-                listener.onClickListener(pos)
+                listener.onClickListener(getItem(pos))
         }
 
         holder.btnDelete.setOnClickListener {
-            val pos = holder.adapterPosition
+            val pos = holder.bindingAdapterPosition
 
             if (pos != -1)
-                listener.onLongClickListener(pos)
+                listener.onLongClickListener(getItem(pos))
         }
 
         return holder

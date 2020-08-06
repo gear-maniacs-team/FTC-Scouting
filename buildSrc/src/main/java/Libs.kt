@@ -8,7 +8,7 @@ object Libs {
         "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${Versions.kotlin_coroutines}"
 
     // AndroidX
-    val google_material = "com.google.android.material:material:1.2.0-rc01"
+    val google_material = "com.google.android.material:material:1.2.0"
     val androidx_appcompat = "androidx.appcompat:appcompat:1.1.0"
     val androidx_recycler_view = "androidx.recyclerview:recyclerview:1.2.0-alpha05"
     val androidx_constraint_layout = "androidx.constraintlayout:constraintlayout:2.0.0-rc1"
@@ -19,7 +19,7 @@ object Libs {
     val room_compiler = "androidx.room:room-compiler:${Versions.room}"
 
     // AndroidX KTX
-    val ktx_core = "androidx.core:core-ktx:1.3.0"
+    val ktx_core = "androidx.core:core-ktx:1.3.1"
     val ktx_fragment = "androidx.fragment:fragment-ktx:1.2.5"
     val ktx_livedata = "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
     val ktx_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"

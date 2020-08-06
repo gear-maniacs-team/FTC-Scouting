@@ -1,6 +1,11 @@
 package net.theluckycoder.database.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
 import net.gearmaniacs.core.model.Tournament
 
@@ -10,7 +15,7 @@ abstract class TournamentsDao {
     @Query("SELECT * from skystone_tournament")
     abstract suspend fun getAll(): List<Tournament>
 
-    @Query("SELECT * from skystone_tournament")
+    @Query("SELECT * from skystone_tournament ORDER BY name ASC")
     abstract fun getAllFlow(): Flow<List<Tournament>>
 
     @Query("SELECT * from skystone_tournament WHERE `key` = :tournamentKey")

@@ -57,6 +57,7 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
 
         binding.btnUseOffline.setOnClickListener {
             // TODO Add a warning dialog or sth
+            appPreferences.hasOfflineAccount.set(true)
             startMainActivity()
         }
 

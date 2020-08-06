@@ -15,7 +15,7 @@ import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
 
 internal class TeamAdapter(
-    private val listener: RecyclerViewItemListener
+    private val listener: RecyclerViewItemListener<Team>
 ) : RecyclerView.Adapter<TeamAdapter.TeamViewHolder>() {
 
     companion object {
@@ -36,7 +36,7 @@ internal class TeamAdapter(
         setHasStableIds(true)
     }
 
-    fun getItem(position: Int): Team = differ.currentList[position]
+    private fun getItem(position: Int): Team = differ.currentList[position]
 
     fun submitList(list: List<Team>) {
         differ.submitList(list)
@@ -56,17 +56,17 @@ internal class TeamAdapter(
         val holder = TeamViewHolder(view)
 
         holder.btnEdit.setOnClickListener {
-            val pos = holder.adapterPosition
+            val pos = holder.bindingAdapterPosition
 
             if (pos != -1)
-                listener.onClickListener(pos)
+                listener.onClickListener(getItem(pos))
         }
 
         holder.btnDelete.setOnClickListener {
-            val pos = holder.adapterPosition
+            val pos = holder.bindingAdapterPosition
 
             if (pos != -1)
-                listener.onLongClickListener(pos)
+                listener.onLongClickListener(getItem(pos))
         }
 
         return holder

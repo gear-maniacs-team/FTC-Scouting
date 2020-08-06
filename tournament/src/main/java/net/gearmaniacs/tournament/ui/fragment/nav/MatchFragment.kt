@@ -7,23 +7,22 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.observe
+import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.view.EmptyRecyclerView
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
 import net.gearmaniacs.tournament.ui.adapter.MatchAdapter
 import net.gearmaniacs.tournament.ui.fragment.MatchEditDialog
-import net.gearmaniacs.tournament.ui.fragment.TournamentFragment
+import net.gearmaniacs.tournament.ui.fragment.AbstractTournamentFragment
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @AndroidEntryPoint
 internal class MatchFragment
-    : TournamentFragment(R.layout.fragment_recycler_view), RecyclerViewItemListener {
+    : AbstractTournamentFragment(R.layout.fragment_recycler_view), RecyclerViewItemListener<Match> {
 
     private val viewModel by activityViewModels<TournamentViewModel>()
-    private lateinit var adapter: MatchAdapter
     private var nextMatchId = 1
 
     override fun onInflateView(view: View) {
@@ -34,7 +33,7 @@ internal class MatchFragment
 
         emptyView.setText(R.string.empty_tab_matches)
 
-        adapter = MatchAdapter(this)
+        val adapter = MatchAdapter(this)
 
         with(recyclerView) {
             setHasFixedSize(true)
@@ -49,7 +48,7 @@ internal class MatchFragment
             val matches = it ?: emptyList()
 
             adapter.submitList(matches)
-            nextMatchId = (matches.maxBy { match -> match.id }?.id ?: 0) + 1
+            nextMatchId = (matches.maxByOrNull { match -> match.id }?.id ?: 0) + 1
         }
     }
 
@@ -63,18 +62,17 @@ internal class MatchFragment
 
     override fun getFragmentTag() = fragmentTag
 
-    override fun onClickListener(position: Int) {
+    override fun onClickListener(item: Match) {
         val activity = activity ?: return
-        val match = adapter.getItem(position)
 
-        val dialog = MatchEditDialog.newInstance(match)
+        val dialog = MatchEditDialog.newInstance(item)
         val transaction = activity.supportFragmentManager.beginTransaction()
         dialog.show(transaction, null)
     }
 
-    override fun onLongClickListener(position: Int) {
+    override fun onLongClickListener(item: Match) {
         val activity = activity ?: return
-        val key = adapter.getItem(position).key
+        val key = item.key
 
         AlertDialog.Builder(activity)
             .setTitle(R.string.delete_match)
@@ -89,7 +87,6 @@ internal class MatchFragment
     companion object : ICompanion {
         override val fragmentTag = "MatchFragment"
 
-        override fun newInstance() =
-            MatchFragment()
+        override fun newInstance() = MatchFragment()
     }
 }

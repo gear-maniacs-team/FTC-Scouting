@@ -39,10 +39,10 @@ class TeamInfoActivity : AppCompatActivity() {
 
         val originalUserData = intent.getParcelableExtra<UserData>(ARG_USER)
 
-        if (originalUserData.isNullOrEmpty) {
+        if (originalUserData.isNullOrEmpty()) {
             longToast(R.string.team_info_previous_not_found)
         } else {
-            binding.etTeamNumber.setText(originalUserData!!.id.toString())
+            binding.etTeamNumber.setText(originalUserData.id.toString())
             binding.etTeamName.setText(originalUserData.teamName)
         }
 
@@ -62,8 +62,8 @@ class TeamInfoActivity : AppCompatActivity() {
 
             val newUserData = UserData(number, teamName)
 
-            appPreferences.userDataNumberPref.set(newUserData.id)
-            appPreferences.userDataNamePref.set(newUserData.teamName)
+            appPreferences.userDataNumber.set(newUserData.id)
+            appPreferences.userDataName.set(newUserData.teamName)
 
             // TODO: Move to ViewModel and repo
             val appContext = applicationContext

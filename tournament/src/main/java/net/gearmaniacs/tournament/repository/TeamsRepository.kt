@@ -2,10 +2,11 @@ package net.gearmaniacs.tournament.repository
 
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.collectLatest
@@ -14,12 +15,13 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import net.gearmaniacs.core.architecture.MutableNonNullLiveData
 import net.gearmaniacs.core.extensions.justTry
+import net.gearmaniacs.core.extensions.lazyFast
 import net.gearmaniacs.core.extensions.safeCollect
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.generatePushId
 import net.gearmaniacs.core.firebase.ifLoggedIn
 import net.gearmaniacs.core.firebase.isLoggedIn
-import net.gearmaniacs.core.firebase.listValueEventListenerFlow
+import net.gearmaniacs.core.firebase.listValueEventFlow
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.tournament.ui.activity.TournamentActivity
 import net.theluckycoder.database.dao.TeamsDao
@@ -35,11 +37,10 @@ class TeamsRepository @Inject constructor(
     private var teamListForQuery = emptyList<Team>()
     private var lastTeamQuery = ""
 
-    private var teamsFlowCollector: Job? = null
+    private var listenerScope: CoroutineScope? = null
     private var teamSearchJob: Job? = null // Last launched search job
-    private var valueEventListenerJob: Job? = null
 
-    val teamsFlows = teamsDao.getAllByTournament(tournamentKey)
+    val teamsFlows by lazyFast { teamsDao.getAllByTournament(tournamentKey) }
     val queriedTeamsData = MutableNonNullLiveData(emptyList<Team>())
 
     suspend fun addTeam(team: Team) {
@@ -132,10 +133,10 @@ class TeamsRepository @Inject constructor(
     }
 
     suspend fun addListener() = coroutineScope {
-        justTry { teamsFlowCollector?.cancelAndJoin() }
-        justTry { valueEventListenerJob?.cancelAndJoin() }
+        removeListener()
+        listenerScope = this
 
-        teamsFlowCollector = launch {
+        launch {
             teamsFlows.collectLatest {
                 coroutineContext.ensureActive()
 
@@ -148,23 +149,20 @@ class TeamsRepository @Inject constructor(
 
         if (!Firebase.isLoggedIn) return@coroutineScope
 
-        valueEventListenerJob = launch {
+        launch {
             val databaseReference = tournamentReference!!
                 .child(DatabasePaths.KEY_DATA)
                 .child(tournamentKey)
                 .child(DatabasePaths.KEY_TEAMS)
 
-            databaseReference.listValueEventListenerFlow(Team::class).safeCollect {
+            databaseReference.listValueEventFlow(Team::class).safeCollect {
                 teamsDao.replaceTournamentTeams(tournamentKey, it)
             }
         }
     }
 
     fun removeListener() {
-        teamsFlowCollector?.cancel()
-        teamsFlowCollector = null
-
-        valueEventListenerJob?.cancel()
-        valueEventListenerJob = null
+        justTry { listenerScope?.cancel() }
+        listenerScope = null
     }
 }

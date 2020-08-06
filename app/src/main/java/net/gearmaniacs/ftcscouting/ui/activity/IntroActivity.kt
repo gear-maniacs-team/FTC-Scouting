@@ -59,7 +59,7 @@ class IntroActivity : IntroActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (appPreferences.seenIntroPref.get()) {
+        if (appPreferences.seenIntro.get()) {
             finish()
             return
         }

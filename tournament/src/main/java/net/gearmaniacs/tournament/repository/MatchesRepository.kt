@@ -2,8 +2,8 @@ package net.gearmaniacs.tournament.repository
 
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.collectLatest
@@ -16,7 +16,7 @@ import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.generatePushId
 import net.gearmaniacs.core.firebase.ifLoggedIn
 import net.gearmaniacs.core.firebase.isLoggedIn
-import net.gearmaniacs.core.firebase.listValueEventListenerFlow
+import net.gearmaniacs.core.firebase.listValueEventFlow
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.tournament.ui.activity.TournamentActivity
 import net.theluckycoder.database.dao.MatchesDao
@@ -31,8 +31,7 @@ internal class MatchesRepository @Inject constructor(
 
     private var userTeamNumber = -1
 
-    private var matchesFlowCollector: Job? = null
-    private var valueEventListenerJob: Job? = null
+    private var listenerScope: CoroutineScope? = null
 
     val matchesFlow = matchesDao.getAllByTournament(tournamentKey)
     val infoData = MutableNonNullLiveData(emptyList<Match>())
@@ -114,10 +113,10 @@ internal class MatchesRepository @Inject constructor(
     }
 
     suspend fun addListener() = coroutineScope {
-        justTry { matchesFlowCollector?.cancelAndJoin() }
-        justTry { valueEventListenerJob?.cancelAndJoin() }
+        removeListener()
+        listenerScope = this
 
-        matchesFlowCollector = launch {
+        launch {
             matchesFlow.collectLatest {
                 coroutineContext.ensureActive()
 
@@ -127,23 +126,20 @@ internal class MatchesRepository @Inject constructor(
 
         if (!Firebase.isLoggedIn) return@coroutineScope
 
-        valueEventListenerJob = launch {
+        launch {
             val databaseReference = tournamentReference!!
                 .child(DatabasePaths.KEY_DATA)
                 .child(tournamentKey)
                 .child(DatabasePaths.KEY_MATCHES)
 
-            databaseReference.listValueEventListenerFlow(Match::class).safeCollect {
+            databaseReference.listValueEventFlow(Match::class).safeCollect {
                 matchesDao.replaceTournamentMatches(tournamentKey, it)
             }
         }
     }
 
     fun removeListener() {
-        matchesFlowCollector?.cancel()
-        matchesFlowCollector = null
-
-        valueEventListenerJob?.cancel()
-        valueEventListenerJob = null
+        justTry { listenerScope?.cancel() }
+        listenerScope = null
     }
 }

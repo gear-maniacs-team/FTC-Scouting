@@ -6,15 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
-import dagger.hilt.android.AndroidEntryPoint
+import com.google.android.material.transition.MaterialFadeThrough
 
-internal abstract class TournamentFragment : Fragment {
+internal abstract class AbstractTournamentFragment : Fragment {
 
     constructor() : super()
 
     constructor(@LayoutRes contentLayoutId: Int) : super(contentLayoutId)
 
     private var inflatedView: View? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialFadeThrough()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,6 +50,6 @@ internal abstract class TournamentFragment : Fragment {
     interface ICompanion {
         val fragmentTag: String
 
-        fun newInstance(): TournamentFragment
+        fun newInstance(): AbstractTournamentFragment
     }
 }

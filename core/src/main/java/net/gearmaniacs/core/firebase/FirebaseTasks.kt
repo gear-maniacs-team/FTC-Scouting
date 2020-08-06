@@ -13,7 +13,7 @@ import net.gearmaniacs.core.model.DatabaseClass
 import kotlin.reflect.KClass
 
 @OptIn(ExperimentalCoroutinesApi::class)
-fun <T : DatabaseClass<T>> DatabaseReference.listValueEventListenerFlow(
+fun <T : DatabaseClass<T>> DatabaseReference.listValueEventFlow(
     parser: (DataSnapshot) -> T?
 ) = callbackFlow<List<T>> {
     val eventListener = object : ValueEventListener {
@@ -26,35 +26,34 @@ fun <T : DatabaseClass<T>> DatabaseReference.listValueEventListenerFlow(
             val list = snapshot.children.asSequence()
                 .filter { it.key != null }
                 .mapNotNull { parser(it) }
-                .toMutableList()
-
-            list.sort()
+                .toList()
 
             channel.sendBlocking(list)
         }
     }
 
-    this@listValueEventListenerFlow.addValueEventListener(eventListener)
+    this@listValueEventFlow.addValueEventListener(eventListener)
 
     awaitClose {
-        this@listValueEventListenerFlow.removeEventListener(eventListener)
+        this@listValueEventFlow.removeEventListener(eventListener)
     }
 }
 
-fun <T : DatabaseClass<T>> DatabaseReference.listValueEventListenerFlow(
+fun <T : DatabaseClass<T>> DatabaseReference.listValueEventFlow(
     clazz: KClass<T>
-) = listValueEventListenerFlow { dataSnapshot ->
+) = listValueEventFlow { dataSnapshot ->
     // Try to parse the data to the destination class
     // If not null, add the key
     val snapshotKey = dataSnapshot.key
-    if (snapshotKey != null)
-        dataSnapshot.getValue(clazz.java)?.apply { this.key = snapshotKey }
+    val value = dataSnapshot.getValue(clazz.java)
+    if (snapshotKey != null && value != null)
+        value.also { it.key = snapshotKey }
     else
         null
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
-fun <T> DatabaseReference.valueEventListenerFlow(
+fun <T> DatabaseReference.valueEventFlow(
     parser: (DataSnapshot) -> T?
 ) = callbackFlow<T?> {
     val eventListener = object : ValueEventListener {
@@ -68,14 +67,14 @@ fun <T> DatabaseReference.valueEventListenerFlow(
         }
     }
 
-    this@valueEventListenerFlow.addValueEventListener(eventListener)
+    this@valueEventFlow.addValueEventListener(eventListener)
 
     awaitClose {
-        this@valueEventListenerFlow.removeEventListener(eventListener)
+        this@valueEventFlow.removeEventListener(eventListener)
     }
 }
 
-inline fun <reified T> DatabaseReference.valueEventListenerFlow() =
-    valueEventListenerFlow { dataSnapshot ->
+inline fun <reified T> DatabaseReference.valueEventFlow() =
+    valueEventFlow { dataSnapshot ->
         dataSnapshot.getValue<T>()
     }
