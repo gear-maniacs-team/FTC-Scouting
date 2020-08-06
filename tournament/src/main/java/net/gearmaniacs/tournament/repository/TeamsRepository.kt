@@ -15,7 +15,6 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import net.gearmaniacs.core.architecture.MutableNonNullLiveData
 import net.gearmaniacs.core.extensions.justTry
-import net.gearmaniacs.core.extensions.lazyFast
 import net.gearmaniacs.core.extensions.safeCollect
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.generatePushId
@@ -40,7 +39,7 @@ class TeamsRepository @Inject constructor(
     private var listenerScope: CoroutineScope? = null
     private var teamSearchJob: Job? = null // Last launched search job
 
-    val teamsFlows by lazyFast { teamsDao.getAllByTournament(tournamentKey) }
+    val teamsFlows = teamsDao.getAllByTournament(tournamentKey)
     val queriedTeamsData = MutableNonNullLiveData(emptyList<Team>())
 
     suspend fun addTeam(team: Team) {

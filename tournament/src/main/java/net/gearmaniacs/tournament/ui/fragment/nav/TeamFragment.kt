@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.core.model.Team
@@ -29,6 +30,7 @@ internal class TeamFragment : AbstractTournamentFragment(R.layout.fragment_recyc
     override fun onInflateView(view: View) {
         val activity = requireActivity()
 
+        val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
         val emptyView = view.findViewById<TextView>(R.id.empty_view)
         val recyclerView = view.findViewById<EmptyRecyclerView>(R.id.recycler_view)
 
@@ -45,6 +47,7 @@ internal class TeamFragment : AbstractTournamentFragment(R.layout.fragment_recyc
             addItemDecoration(DividerItemDecoration(activity, RecyclerView.VERTICAL))
 
             setEmptyView(emptyView)
+            setFabToHideOnScroll(fab)
         }
         recyclerView.adapter = ConcatAdapter(searchAdapter, teamAdapter)
 

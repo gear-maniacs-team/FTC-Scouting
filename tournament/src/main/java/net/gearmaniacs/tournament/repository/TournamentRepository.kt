@@ -36,7 +36,7 @@ internal class TournamentRepository @Inject constructor(
 
     suspend fun updateTournamentName(tournamentName: String) {
         val tournament = Tournament(tournamentKey, tournamentName)
-        tournamentsDao.insert(tournament)
+        tournamentsDao.update(tournament)
 
         if (Firebase.isLoggedIn) {
             tournamentReference!!
@@ -99,7 +99,7 @@ internal class TournamentRepository @Inject constructor(
 
             databaseReference.valueEventFlow<String>().safeCollect { name ->
                 if (name != null)
-                    tournamentsDao.insert(Tournament(tournamentKey, name))
+                    tournamentsDao.update(Tournament(tournamentKey, name))
                 else
                     tournamentsDao.delete(tournamentKey)
             }

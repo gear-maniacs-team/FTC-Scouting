@@ -51,15 +51,17 @@ internal class AnalyticsFragment : AbstractTournamentFragment(R.layout.fragment_
         recyclerView.adapter = adapter
 
         activity.observe(viewModel.getTeamsLiveData()) {
-            teamsList = it ?: emptyList()
-            if (it != null)
+            if (it != null) {
+                teamsList = it
                 observedDataChanged = true
+            }
         }
 
         activity.observe(viewModel.getMatchesLiveData()) {
-            matchesList = it ?: emptyList()
-            if (it != null)
+            if (it != null) {
+                matchesList = it
                 observedDataChanged = true
+            }
         }
 
         activity.observeNonNull(viewModel.getAnalyticsLiveData()) {

@@ -7,6 +7,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.model.Match
@@ -14,8 +15,8 @@ import net.gearmaniacs.core.view.EmptyRecyclerView
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
 import net.gearmaniacs.tournament.ui.adapter.MatchAdapter
-import net.gearmaniacs.tournament.ui.fragment.MatchEditDialog
 import net.gearmaniacs.tournament.ui.fragment.AbstractTournamentFragment
+import net.gearmaniacs.tournament.ui.fragment.MatchEditDialog
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @AndroidEntryPoint
@@ -28,6 +29,7 @@ internal class MatchFragment
     override fun onInflateView(view: View) {
         val activity = activity ?: return
 
+        val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
         val emptyView = view.findViewById<TextView>(R.id.empty_view)
         val recyclerView = view.findViewById<EmptyRecyclerView>(R.id.recycler_view)
 
@@ -41,14 +43,15 @@ internal class MatchFragment
             addItemDecoration(DividerItemDecoration(activity, RecyclerView.VERTICAL))
 
             setEmptyView(emptyView)
+            setFabToHideOnScroll(fab)
         }
         recyclerView.adapter = adapter
 
-        activity.observe(viewModel.getMatchesLiveData()) {
-            val matches = it ?: emptyList()
-
-            adapter.submitList(matches)
-            nextMatchId = (matches.maxByOrNull { match -> match.id }?.id ?: 0) + 1
+        activity.observe(viewModel.getMatchesLiveData()) { matches ->
+            if (matches != null) {
+                adapter.submitList(matches)
+                nextMatchId = (matches.maxByOrNull { it.id }?.id ?: 0) + 1
+            }
         }
     }
 

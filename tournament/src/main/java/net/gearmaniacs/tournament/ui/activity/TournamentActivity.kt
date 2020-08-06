@@ -4,12 +4,15 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.doOnPreDraw
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updateMargins
 import androidx.fragment.app.commit
 import dagger.Module
 import dagger.Provides
@@ -132,6 +135,12 @@ class TournamentActivity : AppCompatActivity() {
             } else false
         }
 
+        binding.bottomNavigation.doOnPreDraw { appBar ->
+            binding.layoutFragment.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                updateMargins(bottom = appBar.height)
+            }
+        }
+
         // Observe Live Data
         observe(viewModel.getCurrentTournamentLiveData()) { thisTournament: Tournament? ->
             if (thisTournament == null) {
@@ -144,12 +153,13 @@ class TournamentActivity : AppCompatActivity() {
         }
 
         observe(viewModel.getTeamsLiveData()) {
-            teamsList = it ?: emptyList()
-            Log.i("Teams1", teamsList.size.toString())
+            if (it != null)
+                teamsList = it
         }
 
         observe(viewModel.getMatchesLiveData()) {
-            matchesList = it ?: emptyList()
+            if (it != null)
+                matchesList = it
         }
     }
 

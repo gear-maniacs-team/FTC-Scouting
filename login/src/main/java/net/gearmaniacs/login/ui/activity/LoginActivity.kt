@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
-import androidx.transition.Fade
+import com.google.android.material.transition.MaterialFadeThrough
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
@@ -121,18 +121,12 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
             supportFragmentManager.findFragmentByTag(RegisterFragment.TAG) as? RegisterFragment?
                 ?: RegisterFragment()
 
-        val enterFade = Fade().apply {
-            startDelay = FADE_DURATION
-            duration = FADE_DURATION
-        }
-        val exitFade = Fade().apply {
+        val fade = MaterialFadeThrough().apply {
             duration = FADE_DURATION
         }
 
-        loginFragment.enterTransition = enterFade
-        loginFragment.exitTransition = exitFade
-        registerFragment.enterTransition = enterFade
-        registerFragment.exitTransition = exitFade
+        loginFragment.enterTransition = fade
+        registerFragment.enterTransition = fade
 
         isLoginFragmentActive =
             savedInstanceState?.getBoolean(BUNDLE_IS_LOGIN_ACTIVE, true) ?: true

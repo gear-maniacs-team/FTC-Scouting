@@ -38,8 +38,7 @@
         app:itemIconTint="@drawable/bottom_nav_icon_color"
         app:itemTextColor="@drawable/bottom_nav_text_color"
         app:labelVisibilityMode="labeled"
-        app:layout_behavior="net.gearmaniacs.core.view.BottomNavigationBehavior"
-        app:menu="@menu/navigation" />
+        app:menu="@menu/nav_tournament" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

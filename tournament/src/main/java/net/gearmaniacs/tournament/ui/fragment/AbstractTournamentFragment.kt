@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
-import com.google.android.material.transition.MaterialFadeThrough
+import com.google.android.material.transition.MaterialFade
 
 internal abstract class AbstractTournamentFragment : Fragment {
 
@@ -18,7 +18,7 @@ internal abstract class AbstractTournamentFragment : Fragment {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enterTransition = MaterialFadeThrough()
+        enterTransition = MaterialFade()
     }
 
     override fun onCreateView(
@@ -38,7 +38,7 @@ internal abstract class AbstractTournamentFragment : Fragment {
 
     /*
      * This method is only called the first time
-     * #onCreateView(LayoutInflater, ViewGroup, Bundle) is called,
+     * Fragment#onCreateView(LayoutInflater, ViewGroup, Bundle) is called,
      * if the view was inflated
      */
     open fun onInflateView(view: View) = Unit
