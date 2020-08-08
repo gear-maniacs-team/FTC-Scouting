@@ -6,19 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.FrameLayout
 import androidx.annotation.StringRes
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.tournament.R
-import net.gearmaniacs.tournament.databinding.DialogNewTournamentBinding
+import net.gearmaniacs.tournament.databinding.NewTournamentDialogBinding
 
 @AndroidEntryPoint
-class TournamentDialogFragment : RoundedBottomSheetDialogFragment() {
+class NewTournamentDialog : RoundedBottomSheetDialogFragment() {
 
-    private var _binding: DialogNewTournamentBinding? = null
+    private var _binding: NewTournamentDialogBinding? = null
     private val binding
         get() = _binding!!
 
@@ -27,15 +24,11 @@ class TournamentDialogFragment : RoundedBottomSheetDialogFragment() {
     var defaultName: String? = null
     var actionButtonListener: ((name: String) -> Unit)? = null
 
-    override fun setupDialog(dialog: Dialog, style: Int) {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
         dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-        dialog.setOnShowListener {
-            val bottomSheetDialog = dialog as? BottomSheetDialog
-            bottomSheetDialog?.findViewById<FrameLayout>(R.id.design_bottom_sheet)
-                ?.let { bottomSheet ->
-                    BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
-                }
-        }
+        setExpanded(dialog)
+        return dialog
     }
 
     override fun onCreateView(
@@ -43,7 +36,7 @@ class TournamentDialogFragment : RoundedBottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = DialogNewTournamentBinding.inflate(layoutInflater, container, false)
+        _binding = NewTournamentDialogBinding.inflate(layoutInflater, container, false)
 
         binding.btnTournamentAction.setText(actionButtonStringRes)
         binding.etTournamentName.setText(defaultName)

@@ -14,13 +14,13 @@ import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.model.Alliance
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.tournament.R
-import net.gearmaniacs.tournament.databinding.DialogEditMatchBinding
+import net.gearmaniacs.tournament.databinding.EditMatchDialogBinding
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @AndroidEntryPoint
-internal class MatchEditDialog : DialogFragment() {
+internal class EditMatchDialog : DialogFragment() {
 
-    private var _binding: DialogEditMatchBinding? = null
+    private var _binding: EditMatchDialogBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel by activityViewModels<TournamentViewModel>()
@@ -43,7 +43,7 @@ internal class MatchEditDialog : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = DialogEditMatchBinding.inflate(inflater, container, false)
+        _binding = EditMatchDialogBinding.inflate(inflater, container, false)
         val view = binding.root
 
         binding.bottomBar.setNavigationIcon(R.drawable.ic_close)
@@ -129,13 +129,13 @@ internal class MatchEditDialog : DialogFragment() {
         private const val ARG_NEXT_MATCH_ID = "arg_next_match_id"
         private const val ARG_MATCH = "arg_match"
 
-        fun newInstance(nextMatchId: Int) = MatchEditDialog().apply {
+        fun newInstance(nextMatchId: Int) = EditMatchDialog().apply {
             val bundle = Bundle()
             bundle.putInt(ARG_NEXT_MATCH_ID, nextMatchId)
             arguments = bundle
         }
 
-        fun newInstance(match: Match) = MatchEditDialog().apply {
+        fun newInstance(match: Match) = EditMatchDialog().apply {
             val bundle = Bundle()
             bundle.putParcelable(ARG_MATCH, match)
             arguments = bundle

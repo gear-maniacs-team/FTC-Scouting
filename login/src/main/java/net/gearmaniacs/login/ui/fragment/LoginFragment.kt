@@ -9,14 +9,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.isValidEmail
 import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.login.R
-import net.gearmaniacs.login.databinding.FragmentLoginBinding
+import net.gearmaniacs.login.databinding.LoginFragmentBinding
 import net.gearmaniacs.login.interfaces.LoginCallback
 import net.gearmaniacs.login.ui.activity.ResetPasswordActivity
 
 @AndroidEntryPoint
-class LoginFragment : Fragment(R.layout.fragment_login) {
+class LoginFragment : Fragment(R.layout.login_fragment) {
 
-    private var _binding: FragmentLoginBinding? = null
+    private var _binding: LoginFragmentBinding? = null
     private val binding get() = _binding!!
 
     var loginCallback: LoginCallback? = null
@@ -26,7 +26,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        _binding = LoginFragmentBinding.inflate(inflater, container, false)
         val view = binding.root
 
         binding.btnEmailSignIn.setOnClickListener {

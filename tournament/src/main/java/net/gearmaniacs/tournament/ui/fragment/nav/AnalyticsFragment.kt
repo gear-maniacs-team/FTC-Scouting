@@ -20,7 +20,7 @@ import net.gearmaniacs.tournament.ui.adapter.AnalyticsAdapter
 import net.gearmaniacs.tournament.ui.fragment.AbstractTournamentFragment
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
-internal class AnalyticsFragment : AbstractTournamentFragment(R.layout.fragment_recycler_view) {
+internal class AnalyticsFragment : AbstractTournamentFragment(R.layout.empty_recycler_view_layout) {
 
     private val viewModel by activityViewModels<TournamentViewModel>()
     private lateinit var emptyView: TextView

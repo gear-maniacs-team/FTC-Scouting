@@ -2,6 +2,7 @@
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_confirm_password">Confirm Password</string>
+
     <string name="action_sign_in">Sign in</string>
     <string name="action_register">Register Team Account</string>
     <string name="action_no_account">You don\'t have a team account?</string>
@@ -11,6 +12,10 @@
     <string name="action_forgot_password">Forgot your password?</string>
     <string name="action_reset_password">Reset Password</string>
 
+    <string name="confirm_sign_out">Are you sure you want to Sign Out?</string>
+    <string name="confirm_sign_out_desc">No data will be list</string>
+
+    <!-- Login/Register Errors Password -->
     <string name="error_invalid_team_number">Team Number is invalid</string>
     <string name="error_invalid_team_name">Team Name can\'t be empty</string>
     <string name="error_invalid_email">This email address is invalid</string>
@@ -20,6 +25,7 @@
     <string name="error_field_required">This field is required</string>
     <string name="error_register_failed">Registration failed</string>
 
+    <!-- Reset Password -->
     <string name="reset_password_sending">Sending reset email</string>
     <string name="reset_password_email_sent">Email has been sent!</string>
     <string name="reset_password_email_not_sent">The email could not be sent!</string>

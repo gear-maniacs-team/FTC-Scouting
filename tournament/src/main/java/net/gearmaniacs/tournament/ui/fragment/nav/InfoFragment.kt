@@ -16,7 +16,7 @@ import net.gearmaniacs.tournament.ui.fragment.AbstractTournamentFragment
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @AndroidEntryPoint
-internal class InfoFragment : AbstractTournamentFragment(R.layout.fragment_recycler_view) {
+internal class InfoFragment : AbstractTournamentFragment(R.layout.empty_recycler_view_layout) {
 
     private val viewModel by activityViewModels<TournamentViewModel>()
 

@@ -16,7 +16,7 @@ class SearchAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val holder = SearchViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.view_search_bar, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.search_bar_view, parent, false)
         )
 
         holder.searchBar.addTextChangedListener(afterTextChanged = queryListener::onQueryChange)

@@ -14,6 +14,7 @@ import androidx.core.view.doOnPreDraw
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
 import androidx.fragment.app.commit
+import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,14 +23,15 @@ import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.ActivityScoped
 import net.gearmaniacs.core.extensions.observe
+import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.UserData
 import net.gearmaniacs.tournament.R
-import net.gearmaniacs.tournament.databinding.ActivityTournamentBinding
+import net.gearmaniacs.tournament.databinding.TournamentActivityBinding
 import net.gearmaniacs.tournament.ui.fragment.AbstractTournamentFragment
-import net.gearmaniacs.tournament.ui.fragment.TournamentDialogFragment
+import net.gearmaniacs.tournament.ui.fragment.NewTournamentDialog
 import net.gearmaniacs.tournament.ui.fragment.nav.AnalyticsFragment
 import net.gearmaniacs.tournament.ui.fragment.nav.InfoFragment
 import net.gearmaniacs.tournament.ui.fragment.nav.MatchFragment
@@ -59,7 +61,7 @@ class TournamentActivity : AppCompatActivity() {
         }
     }
 
-    private lateinit var binding: ActivityTournamentBinding
+    private lateinit var binding: TournamentActivityBinding
     private val viewModel by viewModels<TournamentViewModel>()
     private val fragments by lazy {
         listOf(
@@ -77,7 +79,7 @@ class TournamentActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityTournamentBinding.inflate(layoutInflater)
+        binding = TournamentActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
@@ -261,7 +263,7 @@ class TournamentActivity : AppCompatActivity() {
     }
 
     private fun changeTournamentName() {
-        val dialogFragment = TournamentDialogFragment()
+        val dialogFragment = NewTournamentDialog()
         dialogFragment.actionButtonStringRes = R.string.action_update
         dialogFragment.defaultName = viewModel.getCurrentTournamentLiveData().value?.name
 
@@ -273,9 +275,12 @@ class TournamentActivity : AppCompatActivity() {
     }
 
     private fun deleteTournament() {
+        val message =
+            if (Firebase.isLoggedIn) R.string.delete_tournament_desc else R.string.delete_tournament_desc_offline
+
         AlertDialog.Builder(this)
             .setTitle(R.string.delete_tournament)
-            .setMessage(R.string.delete_tournament_desc)
+            .setMessage(message)
             .setPositiveButton(R.string.action_delete) { _, _ ->
                 viewModel.deleteTournament()
                 finish()

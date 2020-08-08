@@ -13,7 +13,7 @@ import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.model.UserData
 import net.gearmaniacs.core.model.isNullOrEmpty
 import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.ftcscouting.databinding.ActivityTeamInfoBinding
+import net.gearmaniacs.ftcscouting.databinding.TeamInfoActivityBinding
 import net.gearmaniacs.ftcscouting.viewmodel.TeamInfoViewModel
 
 @AndroidEntryPoint
@@ -24,7 +24,7 @@ class TeamInfoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val binding = ActivityTeamInfoBinding.inflate(layoutInflater)
+        val binding = TeamInfoActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.bottomAppBar)
 

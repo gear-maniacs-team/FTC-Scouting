@@ -7,7 +7,7 @@
 
     <include
         android:id="@+id/content"
-        layout="@layout/dialog_edit_match_content" />
+        layout="@layout/edit_team_content_dialog" />
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottom_bar"
@@ -19,7 +19,7 @@
         app:hideOnScroll="true" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_edit_match_done"
+        android:id="@+id/fab_edit_team_done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_done"

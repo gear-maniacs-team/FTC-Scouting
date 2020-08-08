@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/dialog_edit_match">
+    tools:showIn="@layout/edit_match_dialog">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_content"

@@ -20,20 +20,20 @@ import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.UserData
 import net.gearmaniacs.core.utils.AppPreferences
 import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.ftcscouting.databinding.ActivityMainBinding
+import net.gearmaniacs.ftcscouting.databinding.MainActivityBinding
 import net.gearmaniacs.ftcscouting.ui.adapter.TournamentAdapter
 import net.gearmaniacs.ftcscouting.ui.fragment.MainMenuDialog
 import net.gearmaniacs.ftcscouting.viewmodel.MainViewModel
 import net.gearmaniacs.login.ui.activity.LoginActivity
 import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
 import net.gearmaniacs.tournament.ui.activity.TournamentActivity
-import net.gearmaniacs.tournament.ui.fragment.TournamentDialogFragment
+import net.gearmaniacs.tournament.ui.fragment.NewTournamentDialog
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
 
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: MainActivityBinding
     private val viewModel by viewModels<MainViewModel>()
 
     private lateinit var userData: UserData
@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
                 return
         }
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.bottomAppBar)
 
@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
         }
 
         binding.fabNewTournament.setOnClickListener {
-            val dialogFragment = TournamentDialogFragment()
+            val dialogFragment = NewTournamentDialog()
             dialogFragment.actionButtonStringRes = R.string.action_create
 
             dialogFragment.actionButtonListener = { name ->
@@ -133,25 +133,21 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
     }
 
     override fun onClickListener(item: Tournament) {
-        try {
-            TournamentActivity.startActivity(this, userData, item)
-        } catch (e: IndexOutOfBoundsException) {
-        }
+        TournamentActivity.startActivity(this, userData, item)
     }
 
     override fun onLongClickListener(item: Tournament) {
-        try {
-            AlertDialog.Builder(this)
-                .setTitle(R.string.delete_tournament)
-                // TODO Add message for offline mode
-                .setMessage(R.string.delete_tournament_desc)
-                .setPositiveButton(R.string.action_delete) { _, _ ->
-                    viewModel.deleteTournament(item)
-                }
-                .setNegativeButton(android.R.string.cancel, null)
-                .show()
-        } catch (e: IndexOutOfBoundsException) {
-        }
+        val message =
+            if (Firebase.isLoggedIn) net.gearmaniacs.tournament.R.string.delete_tournament_desc else net.gearmaniacs.tournament.R.string.delete_tournament_desc_offline
+
+        AlertDialog.Builder(this)
+            .setTitle(R.string.delete_tournament)
+            .setMessage(message)
+            .setPositiveButton(R.string.action_delete) { _, _ ->
+                viewModel.deleteTournament(item)
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
     }
 
     private companion object {

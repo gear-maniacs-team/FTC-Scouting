@@ -79,4 +79,14 @@
         android:textColor="@color/colorSecondary"
         android:textSize="15sp" />
 
+    <!--<com.google.android.material.button.MaterialButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_round_bg"
+        android:text="Sign In with Google"
+        android:textSize="17sp"
+        android:elevation="2dp"
+        app:icon="@drawable/ic_google_logo"
+        app:iconTint="@null" />-->
+
 </LinearLayout>

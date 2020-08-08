@@ -41,7 +41,7 @@ internal class InfoAdapter : RecyclerView.Adapter<InfoAdapter.InfoViewHolder>() 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InfoViewHolder {
         return InfoViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_info, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.info_item, parent, false)
         )
     }
 

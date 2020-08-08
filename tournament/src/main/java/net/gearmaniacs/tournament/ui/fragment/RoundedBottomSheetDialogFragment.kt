@@ -2,6 +2,8 @@ package net.gearmaniacs.tournament.ui.fragment
 
 import android.app.Dialog
 import android.os.Bundle
+import android.widget.FrameLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import net.gearmaniacs.tournament.R
@@ -17,4 +19,14 @@ open class RoundedBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
         BottomSheetDialog(requireContext(), theme)
+
+    fun setExpanded(dialog: Dialog) {
+        dialog.setOnShowListener {
+            val bottomSheetDialog = dialog as? BottomSheetDialog
+            bottomSheetDialog?.findViewById<FrameLayout>(R.id.design_bottom_sheet)
+                ?.let { bottomSheet ->
+                    BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+                }
+        }
+    }
 }

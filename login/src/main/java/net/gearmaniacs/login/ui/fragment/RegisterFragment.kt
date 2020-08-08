@@ -11,13 +11,13 @@ import net.gearmaniacs.core.extensions.isValidEmail
 import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.model.UserData
 import net.gearmaniacs.login.R
-import net.gearmaniacs.login.databinding.FragmentRegisterBinding
+import net.gearmaniacs.login.databinding.RegisterFragmentBinding
 import net.gearmaniacs.login.interfaces.LoginCallback
 
 @AndroidEntryPoint
-class RegisterFragment : Fragment(R.layout.fragment_register) {
+class RegisterFragment : Fragment(R.layout.register_fragment) {
 
-    private var _binding: FragmentRegisterBinding? = null
+    private var _binding: RegisterFragmentBinding? = null
     private val binding get() = _binding!!
 
     var loginCallback: LoginCallback? = null
@@ -27,7 +27,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentRegisterBinding.inflate(inflater, container, false)
+        _binding = RegisterFragmentBinding.inflate(inflater, container, false)
         val view = binding.root
 
         binding.btnEmailRegister.setOnClickListener {

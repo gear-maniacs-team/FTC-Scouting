@@ -11,16 +11,16 @@ import net.gearmaniacs.core.extensions.isValidEmail
 import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.login.R
-import net.gearmaniacs.login.databinding.ActivityResetPasswordBinding
+import net.gearmaniacs.login.databinding.ResetPasswordActivityBinding
 
 @AndroidEntryPoint
 class ResetPasswordActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityResetPasswordBinding
+    private lateinit var binding: ResetPasswordActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityResetPasswordBinding.inflate(layoutInflater)
+        binding = ResetPasswordActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.bottomAppBar)

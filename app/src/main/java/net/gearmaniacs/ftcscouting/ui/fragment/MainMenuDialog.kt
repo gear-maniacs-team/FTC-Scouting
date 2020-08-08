@@ -1,9 +1,11 @@
 package net.gearmaniacs.ftcscouting.ui.fragment
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import com.google.firebase.auth.ktx.auth
@@ -11,7 +13,8 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.core.utils.AppPreferences
-import net.gearmaniacs.ftcscouting.databinding.DialogMainMenuBinding
+import net.gearmaniacs.ftcscouting.R
+import net.gearmaniacs.ftcscouting.databinding.MainMenuDialogBinding
 import net.gearmaniacs.ftcscouting.ui.activity.AboutActivity
 import net.gearmaniacs.ftcscouting.ui.activity.TeamInfoActivity
 import net.gearmaniacs.ftcscouting.viewmodel.MainViewModel
@@ -22,7 +25,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainMenuDialog : RoundedBottomSheetDialogFragment() {
 
-    private var _binding: DialogMainMenuBinding? = null
+    private var _binding: MainMenuDialogBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel by activityViewModels<MainViewModel>()
@@ -30,24 +33,30 @@ class MainMenuDialog : RoundedBottomSheetDialogFragment() {
     @Inject
     lateinit var appPreferences: AppPreferences
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        setExpanded(dialog)
+        return dialog
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = DialogMainMenuBinding.inflate(inflater, container, false)
+        _binding = MainMenuDialogBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val binding = binding
         val currentUser = Firebase.auth.currentUser
-        
+
         if (currentUser == null) {
             binding.layoutAccount.isVisible = false
         } else {
             val defaultDisplayName = currentUser.displayName
-            val displayName =
+            val displayName: String =
                 if (defaultDisplayName.isNullOrBlank()) appPreferences.userDataName.get() else defaultDisplayName
 
             binding.btnAccountSignIn.isVisible = false
@@ -57,12 +66,20 @@ class MainMenuDialog : RoundedBottomSheetDialogFragment() {
             binding.btnAccountSignOut.setOnClickListener {
                 val activity = requireActivity()
 
-                Firebase.auth.signOut()
-                viewModel.signOut(activity)
+                AlertDialog.Builder(activity)
+                    .setTitle(R.string.confirm_sign_out)
+                    .setTitle(R.string.confirm_sign_out_desc)
+                    .setPositiveButton(R.string.action_sign_out) { _, _ ->
+                        dismiss()
+                        Firebase.auth.signOut()
+                        viewModel.signOut(activity)
 
-                dismiss()
-                activity.startActivity<LoginActivity>()
-                activity.finish()
+                        activity.startActivity<LoginActivity>()
+                        activity.finish()
+                    }
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show()
+
             }
         }
 

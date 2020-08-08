@@ -49,7 +49,7 @@ internal class AnalyticsAdapter : RecyclerView.Adapter<AnalyticsAdapter.Analytic
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = AnalyticsViewHolder(
         LayoutInflater.from(parent.context).inflate(
-            R.layout.item_analytics,
+            R.layout.analytics_item,
             parent,
             false
         )

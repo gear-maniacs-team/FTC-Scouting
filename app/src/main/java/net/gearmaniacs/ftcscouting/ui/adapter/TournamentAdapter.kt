@@ -44,7 +44,7 @@ class TournamentAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TournamentViewHolder {
         val holder = TournamentViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.item_tournament,
+                R.layout.tournament_item,
                 parent,
                 false
             )

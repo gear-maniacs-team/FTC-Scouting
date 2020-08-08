@@ -24,21 +24,21 @@ import net.gearmaniacs.core.model.PreferredZone
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeleOpData
 import net.gearmaniacs.tournament.R
-import net.gearmaniacs.tournament.databinding.DialogEditTeamBinding
-import net.gearmaniacs.tournament.databinding.DialogEditTeamContentBinding
+import net.gearmaniacs.tournament.databinding.EditTeamContentDialogBinding
+import net.gearmaniacs.tournament.databinding.EditTeamDialogBinding
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @AndroidEntryPoint
-internal class TeamEditDialog : DialogFragment() {
+internal class EditTeamDialog : DialogFragment() {
 
     companion object {
         const val TAG = "TeamEditDialog"
 
         private const val ARG_TEAM = "team"
 
-        fun newInstance() = TeamEditDialog()
+        fun newInstance() = EditTeamDialog()
 
-        fun newInstance(team: Team) = TeamEditDialog().apply {
+        fun newInstance(team: Team) = EditTeamDialog().apply {
             val bundle = Bundle()
             bundle.putParcelable(ARG_TEAM, team)
             arguments = bundle
@@ -67,7 +67,7 @@ internal class TeamEditDialog : DialogFragment() {
         override fun onDecrement(count: Int) = listener()
     }
 
-    private var _binding: DialogEditTeamBinding? = null
+    private var _binding: EditTeamDialogBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel by activityViewModels<TournamentViewModel>()
@@ -87,7 +87,7 @@ internal class TeamEditDialog : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = DialogEditTeamBinding.inflate(inflater, container, false)
+        _binding = EditTeamDialogBinding.inflate(inflater, container, false)
         val view = binding.root
 
         binding.bottomBar.setNavigationIcon(R.drawable.ic_close)
@@ -238,7 +238,7 @@ internal class TeamEditDialog : DialogFragment() {
         }
     }
 
-    private fun parseAutonomousData(content: DialogEditTeamContentBinding) = AutonomousData(
+    private fun parseAutonomousData(content: EditTeamContentDialogBinding) = AutonomousData(
         content.swRepositionFoundation.isChecked,
         content.swNavigated.isChecked,
         content.ctDeliveredSkystones.counter,
@@ -246,7 +246,7 @@ internal class TeamEditDialog : DialogFragment() {
         content.ctPlacedStones.counter
     )
 
-    private fun parseTeleOpData(content: DialogEditTeamContentBinding) = TeleOpData(
+    private fun parseTeleOpData(content: EditTeamContentDialogBinding) = TeleOpData(
         content.etDeliveredStones.getTextString().toIntOrDefault(),
         content.etPlacedStones.getTextString().toIntOrDefault(),
         content.etSkyscraperHeight.getTextString().toIntOrDefault()

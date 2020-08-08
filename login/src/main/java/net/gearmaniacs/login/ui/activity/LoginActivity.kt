@@ -17,7 +17,7 @@ import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.model.UserData
 import net.gearmaniacs.core.utils.AppPreferences
 import net.gearmaniacs.login.R
-import net.gearmaniacs.login.databinding.ActivityLoginBinding
+import net.gearmaniacs.login.databinding.LoginActivityBinding
 import net.gearmaniacs.login.interfaces.LoginCallback
 import net.gearmaniacs.login.ui.fragment.LoginFragment
 import net.gearmaniacs.login.ui.fragment.RegisterFragment
@@ -26,7 +26,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity(), LoginCallback {
 
-    private lateinit var binding: ActivityLoginBinding
+    private lateinit var binding: LoginActivityBinding
     private lateinit var auth: FirebaseAuth
     private var isLoginFragmentActive = true
 
@@ -41,7 +41,7 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityLoginBinding.inflate(layoutInflater)
+        binding = LoginActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         auth = Firebase.auth
