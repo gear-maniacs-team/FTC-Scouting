@@ -31,7 +31,7 @@ class TournamentAdapter(
         setHasStableIds(true)
     }
 
-    fun getItem(position: Int): Tournament = differ.currentList[position]
+    private fun getItem(position: Int): Tournament = differ.currentList[position]
 
     fun submitList(list: List<Tournament>) {
         differ.submitList(list)

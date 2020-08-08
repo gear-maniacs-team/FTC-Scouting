@@ -3,11 +3,8 @@ package net.gearmaniacs.core.extensions
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.annotation.StringRes
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 
 inline fun <reified T : Activity> Context.startActivity() =
     startActivity(Intent(this, T::class.java))

@@ -108,7 +108,7 @@ class CounterView @JvmOverloads constructor(
 
     @SuppressLint("SetTextI18n")
     private fun updateView() {
-        tvCounter.text = counterText + ": " + counterValue
+        tvCounter.text = "$counterText: $counterValue"
         btnIncrement.isEnabled = counterValue < counterMax
         btnDecrement.isEnabled = counterValue > counterMin
     }

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="BottomSheetDialogTheme" parent="@style/Theme.Design.BottomSheetDialog">
+    <style name="BottomSheetDialogTheme" parent="@style/Theme.MaterialComponents.BottomSheetDialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorBackgroundDark</item>
+        <item name="colorAccent">@color/colorSecondary</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="bottomSheetStyle">@style/BottomSheet</item>

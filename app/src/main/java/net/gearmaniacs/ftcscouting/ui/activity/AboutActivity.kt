@@ -2,7 +2,6 @@ package net.gearmaniacs.ftcscouting.ui.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.view.MenuItem
 import com.danielstone.materialaboutlibrary.MaterialAboutActivity
@@ -13,10 +12,8 @@ import com.danielstone.materialaboutlibrary.model.MaterialAboutCard
 import com.danielstone.materialaboutlibrary.model.MaterialAboutList
 import com.marcoscg.licenser.Library
 import com.marcoscg.licenser.License
-import com.marcoscg.licenser.Licenser
 import com.marcoscg.licenser.LicenserDialog
 import dagger.hilt.android.AndroidEntryPoint
-import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.ftcscouting.BuildConfig
 import net.gearmaniacs.ftcscouting.R
 
@@ -98,7 +95,7 @@ class AboutActivity : MaterialAboutActivity() {
                 getString(R.string.about_licenses),
                 null,
                 getDrawable(R.drawable.ic_about_licenses),
-                MaterialAboutItemOnClickAction { showLicensesDialog() }
+                ::showLicensesDialog
             )
         )
         .build()
@@ -152,7 +149,7 @@ class AboutActivity : MaterialAboutActivity() {
                 "GitHub",
                 AUTHOR_GITHUB,
                 getDrawable(R.drawable.ic_about_github),
-                OpenEmailAction(this, AUTHOR_GITHUB, getString(R.string.app_name))
+                OpenUrlAction(this, AUTHOR_GITHUB)
             )
         )
         .build()

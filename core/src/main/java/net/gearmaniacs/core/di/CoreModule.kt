@@ -8,7 +8,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import net.gearmaniacs.core.utils.AppPreferences
 import javax.inject.Singleton
 
 @Module

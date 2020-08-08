@@ -1,7 +1,6 @@
 package net.gearmaniacs.core.firebase
 
 import android.annotation.SuppressLint
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.core.utilities.PushIdGenerator

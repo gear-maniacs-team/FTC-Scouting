@@ -2,8 +2,6 @@ package net.gearmaniacs.ftcscouting.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -13,7 +11,6 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.observe
@@ -25,6 +22,7 @@ import net.gearmaniacs.core.utils.AppPreferences
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.databinding.ActivityMainBinding
 import net.gearmaniacs.ftcscouting.ui.adapter.TournamentAdapter
+import net.gearmaniacs.ftcscouting.ui.fragment.MainMenuDialog
 import net.gearmaniacs.ftcscouting.viewmodel.MainViewModel
 import net.gearmaniacs.login.ui.activity.LoginActivity
 import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
@@ -68,6 +66,12 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
             DividerItemDecoration(this, LinearLayoutManager.VERTICAL)
         )
 
+        binding.bottomAppBar.setNavigationOnClickListener {
+            val dialog = MainMenuDialog.newInstance()
+            val transaction = supportFragmentManager.beginTransaction()
+            dialog.show(transaction, null)
+        }
+
         binding.fabNewTournament.setOnClickListener {
             val dialogFragment = TournamentDialogFragment()
             dialogFragment.actionButtonStringRes = R.string.action_create
@@ -110,39 +114,6 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
         }
 
         viewModel.startListening()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-
-        menu.findItem(R.id.action_sign_in).isVisible = !Firebase.isLoggedIn
-        menu.findItem(R.id.action_sign_out).isVisible = Firebase.isLoggedIn
-
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.action_about -> {
-            startActivity<AboutActivity>()
-            true
-        }
-        R.id.action_account -> {
-            TeamInfoActivity.startActivity(this, userData)
-            true
-        }
-        R.id.action_sign_in -> {
-            startActivity<LoginActivity>()
-            finish()
-            true
-        }
-        R.id.action_sign_out -> {
-            Firebase.auth.signOut()
-            viewModel.signOut(applicationContext)
-            startActivity<LoginActivity>()
-            finish()
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
     }
 
     override fun onStop() {

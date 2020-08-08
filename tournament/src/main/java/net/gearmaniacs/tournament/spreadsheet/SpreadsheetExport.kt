@@ -8,7 +8,6 @@ import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeamPower
 import net.gearmaniacs.core.model.TeleOpData
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
-import java.io.File
 import java.io.IOException
 import java.io.OutputStream
 

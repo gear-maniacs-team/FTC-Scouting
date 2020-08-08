@@ -4,29 +4,22 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.extensions.toIntOrDefault
-import net.gearmaniacs.core.extensions.toast
-import net.gearmaniacs.core.firebase.DatabasePaths
-import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.model.UserData
 import net.gearmaniacs.core.model.isNullOrEmpty
-import net.gearmaniacs.core.utils.AppPreferences
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.databinding.ActivityTeamInfoBinding
-import javax.inject.Inject
+import net.gearmaniacs.ftcscouting.viewmodel.TeamInfoViewModel
 
 @AndroidEntryPoint
 class TeamInfoActivity : AppCompatActivity() {
 
-    @Inject
-    lateinit var appPreferences: AppPreferences
+    private val viewModel by viewModels<TeamInfoViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,27 +54,7 @@ class TeamInfoActivity : AppCompatActivity() {
             }
 
             val newUserData = UserData(number, teamName)
-
-            appPreferences.userDataNumber.set(newUserData.id)
-            appPreferences.userDataName.set(newUserData.teamName)
-
-            // TODO: Move to ViewModel and repo
-            val appContext = applicationContext
-            if (Firebase.isLoggedIn) {
-                FirebaseDatabase.getInstance()
-                    .getReference(DatabasePaths.KEY_USERS)
-                    .child(FirebaseAuth.getInstance().currentUser!!.uid)
-                    .setValue(newUserData)
-                    .addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            appContext.toast(R.string.team_updated)
-                        } else {
-                            appContext.toast(R.string.team_update_error)
-                        }
-                    }
-            } else {
-                appContext.toast(R.string.team_updated)
-            }
+            viewModel.updateUserData(newUserData)
         }
     }
 
