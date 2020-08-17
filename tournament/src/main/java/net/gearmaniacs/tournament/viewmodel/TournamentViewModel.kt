@@ -32,7 +32,7 @@ internal class TournamentViewModel @ViewModelInject constructor(
     application: Application
 ) : AndroidViewModel(application) {
 
-    private val analyticsData = MutableNonNullLiveData(emptyList<TeamPower>())
+    private val leaderboardData = MutableNonNullLiveData(emptyList<TeamPower>())
     private val tournamentData = tournamentRepository.tournamentFlow.asLiveData()
     private val teamsData = teamsRepository.teamsFlows.asLiveData()
     private val matchesData = matchesRepository.matchesFlow.asLiveData()
@@ -52,7 +52,7 @@ internal class TournamentViewModel @ViewModelInject constructor(
 
     fun getMatchesLiveData() = matchesData
 
-    fun getAnalyticsLiveData(): NonNullLiveData<List<TeamPower>> = analyticsData
+    fun getLeaderboardLiveData(): NonNullLiveData<List<TeamPower>> = leaderboardData
 
     // region Teams Management
 
@@ -128,7 +128,7 @@ internal class TournamentViewModel @ViewModelInject constructor(
 
     // endregion
 
-    suspend fun refreshAnalyticsData(teams: List<Team>, matches: List<Match>) =
+    suspend fun refreshLeaderboardData(teams: List<Team>, matches: List<Match>) =
         withContext(Dispatchers.Main.immediate) {
             if (matches.isEmpty())
                 return@withContext app.getString(R.string.opr_error_no_matches)
@@ -137,7 +137,7 @@ internal class TournamentViewModel @ViewModelInject constructor(
                 tournamentRepository.generateOprList(teams, matches)
             }
 
-            analyticsData.value = powerRankings
+            leaderboardData.value = powerRankings
 
             if (powerRankings.isEmpty())
                 app.getString(R.string.opr_error_data)

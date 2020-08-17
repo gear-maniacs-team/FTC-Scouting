@@ -20,9 +20,9 @@
         android:title="@string/title_matches" />
 
     <item
-        android:id="@+id/nav_analytics"
-        android:icon="@drawable/ic_analytics"
+        android:id="@+id/nav_leaderboard"
+        android:icon="@drawable/ic_leaderboard"
         android:orderInCategory="3"
-        android:title="@string/title_analytics" />
+        android:title="@string/title_leaderboard" />
 
 </menu>

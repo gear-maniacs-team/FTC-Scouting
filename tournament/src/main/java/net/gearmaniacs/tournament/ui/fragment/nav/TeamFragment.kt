@@ -64,20 +64,16 @@ internal class TeamFragment : AbstractTournamentFragment(R.layout.recycler_view_
     }
 
     override fun fabClickListener() {
-        val activity = activity ?: return
-
         val dialog = EditTeamDialog.newInstance()
-        val transaction = activity.supportFragmentManager.beginTransaction()
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
         dialog.show(transaction, EditTeamDialog.TAG)
     }
 
     override fun getFragmentTag() = fragmentTag
 
     override fun onClickListener(item: Team) {
-        val activity = activity ?: return
-
         val dialog = EditTeamDialog.newInstance(item)
-        val transaction = activity.supportFragmentManager.beginTransaction()
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
         dialog.show(transaction, EditTeamDialog.TAG)
     }
 

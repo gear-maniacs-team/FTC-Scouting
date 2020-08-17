@@ -11,7 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import net.gearmaniacs.core.model.TeamPower
 import net.gearmaniacs.tournament.R
 
-internal class AnalyticsAdapter : RecyclerView.Adapter<AnalyticsAdapter.AnalyticsViewHolder>() {
+internal class LeaderboardAdapter :
+    RecyclerView.Adapter<LeaderboardAdapter.LeaderboardViewHolder>() {
 
     private companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TeamPower>() {
@@ -47,15 +48,15 @@ internal class AnalyticsAdapter : RecyclerView.Adapter<AnalyticsAdapter.Analytic
 
     override fun getItemId(position: Int) = getItem(position).id.hashCode().toLong()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = AnalyticsViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = LeaderboardViewHolder(
         LayoutInflater.from(parent.context).inflate(
-            R.layout.analytics_item,
+            R.layout.leaderboard_item,
             parent,
             false
         )
     )
 
-    override fun onBindViewHolder(holder: AnalyticsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: LeaderboardViewHolder, position: Int) {
         val team = getItem(position)
         val context = holder.itemView.context
 
@@ -66,7 +67,7 @@ internal class AnalyticsAdapter : RecyclerView.Adapter<AnalyticsAdapter.Analytic
         holder.pbScore.progress = team.power.toInt() - lowestScore
     }
 
-    class AnalyticsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class LeaderboardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvName: TextView = itemView.findViewById(R.id.tv_team_name)
         val tvScore: TextView = itemView.findViewById(R.id.tv_team_score)
         val pbScore: ProgressBar = itemView.findViewById(R.id.pb_team_score)

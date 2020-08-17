@@ -9,12 +9,12 @@
     <string name="title_info">Info</string>
     <string name="title_teams">Teams</string>
     <string name="title_matches">Matches</string>
-    <string name="title_analytics">Analytics</string>
+    <string name="title_leaderboard">Leaderboard</string>
 
     <string name="empty_tab_info">The matches in which you play will appear here</string>
     <string name="empty_tab_teams">You can add each team manually or add them from the matches</string>
     <string name="empty_tab_matches">Add the matches and their results here</string>
-    <string name="empty_tab_analytics">Ranking could not be computed</string>
+    <string name="empty_tab_leaderboard">Ranking could not be computed</string>
 
     <!-- Strings related to the team -->
     <string name="team_preferred_building">Building</string>
@@ -70,8 +70,8 @@
     <!-- Strings related to OPR -->
     <string name="opr_error_no_matches">No matches found</string>
     <string name="opr_error_data">Something went wrong. Please check the input data</string>
-    <string name="opr_info">Analytics Algorithm</string>
-    <string name="opr_info_desc">The analytics page takes the results of the matches and uses the <b>Offensive Power Power</b> Ranking algorithm to rank the teams accordingly.\n\nPlease note that the algorithm might not perform well with intermediate results.</string>
+    <string name="opr_info">Leaderboard Algorithm</string>
+    <string name="opr_info_desc">The Leaderboard page takes the results of the matches in the tournament and uses the <b>Offensive Power Power</b> Ranking algorithm to rank the teams accordingly.\n\nPlease note that the algorithm might not perform well with intermediate results.</string>
 
     <!-- Strings related to Spreadsheet -->
     <string name="spreadsheet_error">Could not export to spreadsheet</string>

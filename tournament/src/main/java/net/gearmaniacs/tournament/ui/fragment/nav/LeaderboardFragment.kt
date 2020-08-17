@@ -17,11 +17,11 @@ import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.utils.EmptyViewAdapter
 import net.gearmaniacs.core.view.FabRecyclerView
 import net.gearmaniacs.tournament.R
-import net.gearmaniacs.tournament.ui.adapter.AnalyticsAdapter
+import net.gearmaniacs.tournament.ui.adapter.LeaderboardAdapter
 import net.gearmaniacs.tournament.ui.fragment.AbstractTournamentFragment
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
-internal class AnalyticsFragment : AbstractTournamentFragment(R.layout.recycler_view_layout) {
+internal class LeaderboardFragment : AbstractTournamentFragment(R.layout.recycler_view_layout) {
 
     private val viewModel by activityViewModels<TournamentViewModel>()
     private lateinit var emptyViewAdapter: EmptyViewAdapter
@@ -39,14 +39,14 @@ internal class AnalyticsFragment : AbstractTournamentFragment(R.layout.recycler_
         fab.hide()
 
         emptyViewAdapter = EmptyViewAdapter()
-        emptyViewAdapter.text = getString(R.string.empty_tab_analytics)
-        val analyticsAdapter = AnalyticsAdapter()
+        emptyViewAdapter.text = getString(R.string.empty_tab_leaderboard)
+        val leaderboardAdapter = LeaderboardAdapter()
 
         with(recyclerView) {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(activity)
             addItemDecoration(DividerItemDecoration(activity, RecyclerView.VERTICAL))
-            adapter = ConcatAdapter(emptyViewAdapter, analyticsAdapter)
+            adapter = ConcatAdapter(emptyViewAdapter, leaderboardAdapter)
         }
 
         activity.observe(viewModel.getTeamsLiveData()) {
@@ -63,8 +63,8 @@ internal class AnalyticsFragment : AbstractTournamentFragment(R.layout.recycler_
             }
         }
 
-        activity.observeNonNull(viewModel.getAnalyticsLiveData()) {
-            analyticsAdapter.submitList(it)
+        activity.observeNonNull(viewModel.getLeaderboardLiveData()) {
+            leaderboardAdapter.submitList(it)
 
             emptyViewAdapter.isVisible = it.isEmpty()
         }
@@ -85,14 +85,14 @@ internal class AnalyticsFragment : AbstractTournamentFragment(R.layout.recycler_
     private fun refreshData() {
         GlobalScope.launch(Dispatchers.Main.immediate) {
             // TODO: Refactor getMatchesLiveData() observable into Response<List<TeamPower>, String>
-            val response = viewModel.refreshAnalyticsData(teamsList, matchesList)
+            val response = viewModel.refreshLeaderboardData(teamsList, matchesList)
             emptyViewAdapter.text = response
         }
     }
 
     companion object : ICompanion {
-        override val fragmentTag = "AnalyticsFragment"
+        override val fragmentTag = LeaderboardFragment::class.simpleName!!
 
-        override fun newInstance() = AnalyticsFragment()
+        override fun newInstance() = LeaderboardFragment()
     }
 }

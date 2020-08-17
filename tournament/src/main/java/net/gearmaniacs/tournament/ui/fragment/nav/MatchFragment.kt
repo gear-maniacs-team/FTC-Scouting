@@ -59,31 +59,26 @@ internal class MatchFragment
     }
 
     override fun fabClickListener() {
-        val activity = activity ?: return
-
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
         val dialog = EditMatchDialog.newInstance(nextMatchId)
-        val transaction = activity.supportFragmentManager.beginTransaction()
         dialog.show(transaction, null)
     }
 
     override fun getFragmentTag() = fragmentTag
 
     override fun onClickListener(item: Match) {
-        val activity = activity ?: return
-
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
         val dialog = EditMatchDialog.newInstance(item)
-        val transaction = activity.supportFragmentManager.beginTransaction()
         dialog.show(transaction, null)
     }
 
     override fun onLongClickListener(item: Match) {
-        val activity = activity ?: return
         val key = item.key
 
         val message =
             if (Firebase.isLoggedIn) R.string.delete_match_desc else R.string.delete_match_desc_offline
 
-        AlertDialog.Builder(activity)
+        AlertDialog.Builder(requireContext())
             .setTitle(R.string.delete_match)
             .setMessage(message)
             .setPositiveButton(R.string.action_delete) { _, _ ->

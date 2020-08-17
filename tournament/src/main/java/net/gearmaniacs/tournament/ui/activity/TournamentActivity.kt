@@ -32,8 +32,8 @@ import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.databinding.TournamentActivityBinding
 import net.gearmaniacs.tournament.ui.fragment.AbstractTournamentFragment
 import net.gearmaniacs.tournament.ui.fragment.NewTournamentDialog
-import net.gearmaniacs.tournament.ui.fragment.nav.AnalyticsFragment
 import net.gearmaniacs.tournament.ui.fragment.nav.InfoFragment
+import net.gearmaniacs.tournament.ui.fragment.nav.LeaderboardFragment
 import net.gearmaniacs.tournament.ui.fragment.nav.MatchFragment
 import net.gearmaniacs.tournament.ui.fragment.nav.TeamFragment
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
@@ -68,7 +68,7 @@ class TournamentActivity : AppCompatActivity() {
             loadFragment(InfoFragment),
             loadFragment(TeamFragment),
             loadFragment(MatchFragment),
-            loadFragment(AnalyticsFragment)
+            loadFragment(LeaderboardFragment)
         )
     }
     private lateinit var activeFragment: AbstractTournamentFragment
@@ -178,7 +178,7 @@ class TournamentActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_tournament, menu)
         val activeTag = activeFragment.getFragmentTag()
 
-        menu.findItem(R.id.action_opr_info).isVisible = activeTag == AnalyticsFragment.fragmentTag
+        menu.findItem(R.id.action_opr_info).isVisible = activeTag == LeaderboardFragment.fragmentTag
 
         return super.onCreateOptionsMenu(menu)
     }
@@ -254,8 +254,8 @@ class TournamentActivity : AppCompatActivity() {
     private fun updateFab(newFragmentTag: String) {
         val fab = binding.fab
 
-        if (newFragmentTag == InfoFragment.fragmentTag || newFragmentTag == AnalyticsFragment.fragmentTag) {
-            fab.hide() // InfoFragment and AnalyticsFragment don't have a FAB
+        if (newFragmentTag == InfoFragment.fragmentTag || newFragmentTag == LeaderboardFragment.fragmentTag) {
+            fab.hide() // InfoFragment and LeaderboardFragment don't have a FAB
             return
         }
 
