@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.isValidEmail
 import net.gearmaniacs.core.extensions.startActivity
+import net.gearmaniacs.core.extensions.textString
 import net.gearmaniacs.login.R
 import net.gearmaniacs.login.databinding.LoginFragmentBinding
 import net.gearmaniacs.login.interfaces.LoginCallback
@@ -32,8 +33,8 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
         binding.btnEmailSignIn.setOnClickListener {
             val etEmail = binding.etEmail
             val etPassword = binding.etPassword
-            val email = etEmail.text.toString()
-            val password = etPassword.text.toString()
+            val email = etEmail.textString
+            val password = etPassword.textString
 
             etEmail.error = null
             etPassword.error = null

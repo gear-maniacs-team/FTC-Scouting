@@ -13,7 +13,7 @@
     <string name="action_reset_password">Reset Password</string>
 
     <string name="confirm_sign_out">Are you sure you want to Sign Out?</string>
-    <string name="confirm_sign_out_desc">No data will be list</string>
+    <string name="confirm_sign_out_desc">No data will be list in the process!</string>
 
     <!-- Login/Register Errors Password -->
     <string name="error_invalid_team_number">Team Number is invalid</string>

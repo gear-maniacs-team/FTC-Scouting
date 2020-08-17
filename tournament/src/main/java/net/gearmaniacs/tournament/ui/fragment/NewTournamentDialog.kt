@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.annotation.StringRes
 import dagger.hilt.android.AndroidEntryPoint
-import net.gearmaniacs.core.extensions.getTextString
+import net.gearmaniacs.core.extensions.textString
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.databinding.NewTournamentDialogBinding
 
@@ -43,7 +43,7 @@ class NewTournamentDialog : RoundedBottomSheetDialogFragment() {
         binding.etTournamentName.requestFocus()
 
         binding.btnTournamentAction.setOnClickListener {
-            val name = binding.etTournamentName.getTextString()
+            val name = binding.etTournamentName.textString
             actionButtonListener?.invoke(name)
             dismiss()
         }

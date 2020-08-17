@@ -7,11 +7,11 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'dagger.hilt.android.plugin'
 
 android {
-    compileSdkVersion Versions.compile_sdk
+    compileSdkVersion Versions.compileSdk
 
     defaultConfig {
-        minSdkVersion Versions.min_sdk
-        targetSdkVersion Versions.target_sdk
+        minSdkVersion Versions.minSdk
+        targetSdkVersion Versions.targetSdk
 
         consumerProguardFiles 'core-rules.pro'
     }
@@ -51,7 +51,6 @@ dependencies {
     api Libs.firebase_analytics
     api Libs.firebase_auth
     api Libs.firebase_database
-    api Libs.firebase_ktx_common
 
     api Libs.flow_preferences
 

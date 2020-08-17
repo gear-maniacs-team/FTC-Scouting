@@ -1,7 +1,6 @@
 package net.gearmaniacs.tournament.ui.fragment.nav
 
 import android.view.View
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ConcatAdapter
@@ -14,47 +13,53 @@ import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.model.Team
-import net.gearmaniacs.core.view.EmptyRecyclerView
+import net.gearmaniacs.core.utils.EmptyViewAdapter
+import net.gearmaniacs.core.view.FabRecyclerView
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
-import net.gearmaniacs.tournament.ui.adapter.SearchAdapter
 import net.gearmaniacs.tournament.ui.adapter.TeamAdapter
+import net.gearmaniacs.tournament.ui.adapter.TeamSearchAdapter
 import net.gearmaniacs.tournament.ui.fragment.AbstractTournamentFragment
 import net.gearmaniacs.tournament.ui.fragment.EditTeamDialog
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @AndroidEntryPoint
-internal class TeamFragment : AbstractTournamentFragment(R.layout.empty_recycler_view_layout),
+internal class TeamFragment : AbstractTournamentFragment(R.layout.recycler_view_layout),
     RecyclerViewItemListener<Team> {
 
     private val viewModel by activityViewModels<TournamentViewModel>()
+    private var lastQuery: CharSequence? = null
 
     override fun onInflateView(view: View) {
         val activity = requireActivity()
 
         val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
-        val emptyView = view.findViewById<TextView>(R.id.empty_view)
-        val recyclerView = view.findViewById<EmptyRecyclerView>(R.id.recycler_view)
+        val recyclerView = view.findViewById<FabRecyclerView>(R.id.recycler_view)
 
-        emptyView.setText(R.string.empty_tab_teams)
-
-        val searchAdapter = SearchAdapter {
+        val searchAdapter = TeamSearchAdapter {
+            lastQuery = it
             viewModel.performTeamsSearch(it?.toString())
         }
+        val emptyViewAdapter = EmptyViewAdapter()
+        emptyViewAdapter.text = getString(R.string.empty_tab_teams)
+
         val teamAdapter = TeamAdapter(this)
 
         with(recyclerView) {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(activity)
             addItemDecoration(DividerItemDecoration(activity, RecyclerView.VERTICAL))
+            adapter = ConcatAdapter(searchAdapter, emptyViewAdapter, teamAdapter)
 
-            setEmptyView(emptyView)
             setFabToHideOnScroll(fab)
         }
-        recyclerView.adapter = ConcatAdapter(searchAdapter, teamAdapter)
 
         activity.observeNonNull(viewModel.getTeamsFilteredLiveData()) {
             teamAdapter.submitList(it)
+
+            val emptyViewVisible = it.isEmpty() && lastQuery.isNullOrBlank()
+            emptyViewAdapter.isVisible = emptyViewVisible
+            searchAdapter.isVisible = !emptyViewVisible
         }
     }
 

@@ -6,25 +6,22 @@ import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
+import net.gearmaniacs.core.utils.OneElementRecyclerViewAdapter
 import net.gearmaniacs.tournament.R
 
-class SearchAdapter(
+class TeamSearchAdapter(
     private val queryListener: QueryListener
-) : RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
-
-    var showSearchBar = true
+) : OneElementRecyclerViewAdapter<TeamSearchAdapter.SearchViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val holder = SearchViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.search_bar_view, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.team_search_view, parent, false)
         )
 
         holder.searchBar.addTextChangedListener(afterTextChanged = queryListener::onQueryChange)
 
         return holder
     }
-
-    override fun getItemCount(): Int = if (showSearchBar) 1 else 0
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) = Unit
 

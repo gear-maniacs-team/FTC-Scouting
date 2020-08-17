@@ -6,11 +6,11 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'dagger.hilt.android.plugin'
 
 android {
-    compileSdkVersion Versions.compile_sdk
+    compileSdkVersion Versions.compileSdk
 
     defaultConfig {
-        minSdkVersion Versions.min_sdk
-        targetSdkVersion Versions.target_sdk
+        minSdkVersion Versions.minSdk
+        targetSdkVersion Versions.targetSdk
 
         consumerProguardFiles 'login-rules.pro'
     }

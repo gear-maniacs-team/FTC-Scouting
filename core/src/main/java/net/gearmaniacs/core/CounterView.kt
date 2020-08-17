@@ -42,7 +42,7 @@ class CounterView @JvmOverloads constructor(
     var changeListener: CounterChange? = null
 
     init {
-        inflate(context, R.layout.view_counter, this as ViewGroup)
+        inflate(context, R.layout.counter_view, this as ViewGroup)
 
         tvCounter = findViewById(R.id.tv_counter_text)
         btnIncrement = findViewById(R.id.btn_counter_inc)

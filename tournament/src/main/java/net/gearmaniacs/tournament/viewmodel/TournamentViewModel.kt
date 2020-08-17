@@ -76,7 +76,7 @@ internal class TournamentViewModel @ViewModelInject constructor(
             val newTeamsList = teamIds.asSequence()
                 .filter { it > 0 }
                 .filterNot { existingTeamIds.contains(it) }
-                .map { Team("", "", it, null) }
+                .map { Team(key = "", id = it) }
                 .toList()
 
             teamsRepository.addTeams(newTeamsList)

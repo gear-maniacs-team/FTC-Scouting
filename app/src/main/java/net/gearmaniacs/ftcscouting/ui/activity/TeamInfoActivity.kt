@@ -7,8 +7,8 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
-import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.longToast
+import net.gearmaniacs.core.extensions.textString
 import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.model.UserData
 import net.gearmaniacs.core.model.isNullOrEmpty
@@ -40,8 +40,8 @@ class TeamInfoActivity : AppCompatActivity() {
         }
 
         binding.btnUpdateAccount.setOnClickListener {
-            val number = binding.etTeamNumber.getTextString().toIntOrDefault(-1)
-            val teamName = binding.etTeamName.getTextString()
+            val number = binding.etTeamNumber.textString.toIntOrDefault(-1)
+            val teamName = binding.etTeamName.textString
 
             if (number < 0) {
                 binding.etTeamNumber.error = getString(R.string.error_invalid_team_number)

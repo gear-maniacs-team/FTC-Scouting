@@ -6,9 +6,9 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
-import net.gearmaniacs.core.extensions.getTextString
 import net.gearmaniacs.core.extensions.isValidEmail
 import net.gearmaniacs.core.extensions.longToast
+import net.gearmaniacs.core.extensions.textString
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.login.R
 import net.gearmaniacs.login.databinding.ResetPasswordActivityBinding
@@ -30,7 +30,7 @@ class ResetPasswordActivity : AppCompatActivity() {
 
         binding.btnResetPassword.setOnClickListener {
             val auth = FirebaseAuth.getInstance()
-            val email = binding.etEmail.getTextString()
+            val email = binding.etEmail.textString
             val appContext = applicationContext
 
             if (!email.isValidEmail()) {

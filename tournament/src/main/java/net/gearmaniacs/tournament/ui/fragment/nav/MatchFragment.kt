@@ -1,9 +1,9 @@
 package net.gearmaniacs.tournament.ui.fragment.nav
 
 import android.view.View
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +13,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.model.Match
-import net.gearmaniacs.core.view.EmptyRecyclerView
+import net.gearmaniacs.core.utils.EmptyViewAdapter
+import net.gearmaniacs.core.view.FabRecyclerView
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
 import net.gearmaniacs.tournament.ui.adapter.MatchAdapter
@@ -23,7 +24,7 @@ import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @AndroidEntryPoint
 internal class MatchFragment
-    : AbstractTournamentFragment(R.layout.empty_recycler_view_layout), RecyclerViewItemListener<Match> {
+    : AbstractTournamentFragment(R.layout.recycler_view_layout), RecyclerViewItemListener<Match> {
 
     private val viewModel by activityViewModels<TournamentViewModel>()
     private var nextMatchId = 1
@@ -32,27 +33,27 @@ internal class MatchFragment
         val activity = activity ?: return
 
         val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
-        val emptyView = view.findViewById<TextView>(R.id.empty_view)
-        val recyclerView = view.findViewById<EmptyRecyclerView>(R.id.recycler_view)
+        val recyclerView = view.findViewById<FabRecyclerView>(R.id.recycler_view)
 
-        emptyView.setText(R.string.empty_tab_matches)
-
-        val adapter = MatchAdapter(this)
+        val matchAdapter = MatchAdapter(this)
+        val emptyViewAdapter = EmptyViewAdapter()
+        emptyViewAdapter.text = getString(R.string.empty_tab_matches)
 
         with(recyclerView) {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(activity)
             addItemDecoration(DividerItemDecoration(activity, RecyclerView.VERTICAL))
+            adapter = ConcatAdapter(emptyViewAdapter, matchAdapter)
 
-            setEmptyView(emptyView)
             setFabToHideOnScroll(fab)
         }
-        recyclerView.adapter = adapter
 
         activity.observe(viewModel.getMatchesLiveData()) { matches ->
             if (matches != null) {
-                adapter.submitList(matches)
+                matchAdapter.submitList(matches)
                 nextMatchId = (matches.maxByOrNull { it.id }?.id ?: 0) + 1
+
+                emptyViewAdapter.isVisible = matches.isEmpty()
             }
         }
     }

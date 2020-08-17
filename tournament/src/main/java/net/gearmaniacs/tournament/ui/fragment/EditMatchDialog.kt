@@ -9,7 +9,7 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
-import net.gearmaniacs.core.extensions.getTextString
+import net.gearmaniacs.core.extensions.textString
 import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.model.Alliance
 import net.gearmaniacs.core.model.Match
@@ -75,20 +75,20 @@ internal class EditMatchDialog : DialogFragment() {
         binding.fabEditMatchDone.setOnClickListener {
             // Parse Match data
             val redAlliance = Alliance(
-                firstTeam = content.etRedFirstTeam.getTextString().toIntOrDefault(),
-                secondTeam = content.etRedSecondTeam.getTextString().toIntOrDefault(),
-                score = content.etRedScore.getTextString().toIntOrDefault()
+                firstTeam = content.etRedFirstTeam.textString.toIntOrDefault(),
+                secondTeam = content.etRedSecondTeam.textString.toIntOrDefault(),
+                score = content.etRedScore.textString.toIntOrDefault()
             )
 
             val blueAlliance = Alliance(
-                firstTeam = content.etBlueFirstTeam.getTextString().toIntOrDefault(),
-                secondTeam = content.etBlueSecondTeam.getTextString().toIntOrDefault(),
-                score = content.etBlueScore.getTextString().toIntOrDefault()
+                firstTeam = content.etBlueFirstTeam.textString.toIntOrDefault(),
+                secondTeam = content.etBlueSecondTeam.textString.toIntOrDefault(),
+                score = content.etBlueScore.textString.toIntOrDefault()
             )
 
             val parsedMatch = Match(
                 match?.key.orEmpty(),
-                id = content.etMatchNumber.getTextString().toIntOrDefault(),
+                id = content.etMatchNumber.textString.toIntOrDefault(),
                 redAlliance = redAlliance,
                 blueAlliance = blueAlliance
             )

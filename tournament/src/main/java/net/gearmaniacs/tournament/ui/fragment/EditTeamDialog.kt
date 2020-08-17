@@ -16,7 +16,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.transition.TransitionManager
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.CounterView
-import net.gearmaniacs.core.extensions.getTextString
+import net.gearmaniacs.core.extensions.textString
 import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.model.AutonomousData
 import net.gearmaniacs.core.model.EndGameData
@@ -132,11 +132,11 @@ internal class EditTeamDialog : DialogFragment() {
                 else -> PreferredZone.NONE
             }
 
-            val notesText = content.etNotes.getTextString()
+            val notesText = content.etNotes.textString
             val parsedTeam = Team(
                 key = team?.key.orEmpty(),
-                id = content.etTeamNumber.getTextString().toIntOrDefault(),
-                name = content.etTeamName.getTextString(),
+                id = content.etTeamNumber.textString.toIntOrDefault(),
+                name = content.etTeamName.textString,
                 autonomousData = autonomousData.takeIf { it.isNotEmpty },
                 teleOpData = teleOpData.takeIf { it.isNotEmpty },
                 endGameData = endGameData.takeIf { it.isNotEmpty },
@@ -247,15 +247,15 @@ internal class EditTeamDialog : DialogFragment() {
     )
 
     private fun parseTeleOpData(content: EditTeamContentDialogBinding) = TeleOpData(
-        content.etDeliveredStones.getTextString().toIntOrDefault(),
-        content.etPlacedStones.getTextString().toIntOrDefault(),
-        content.etSkyscraperHeight.getTextString().toIntOrDefault()
+        content.etDeliveredStones.textString.toIntOrDefault(),
+        content.etPlacedStones.textString.toIntOrDefault(),
+        content.etSkyscraperHeight.textString.toIntOrDefault()
     )
 
     private fun parseEndGameData(): EndGameData {
         val content = binding.content
         val capLevel =
-            if (content.swCapPlaced.isChecked) content.etCapLevel.getTextString()
+            if (content.swCapPlaced.isChecked) content.etCapLevel.textString
                 .toIntOrDefault() else -1
 
         return EndGameData(

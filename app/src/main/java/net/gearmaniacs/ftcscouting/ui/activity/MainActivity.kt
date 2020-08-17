@@ -138,7 +138,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
 
     override fun onLongClickListener(item: Tournament) {
         val message =
-            if (Firebase.isLoggedIn) net.gearmaniacs.tournament.R.string.delete_tournament_desc else net.gearmaniacs.tournament.R.string.delete_tournament_desc_offline
+            if (Firebase.isLoggedIn) R.string.delete_tournament_desc else R.string.delete_tournament_desc_offline
 
         AlertDialog.Builder(this)
             .setTitle(R.string.delete_tournament)

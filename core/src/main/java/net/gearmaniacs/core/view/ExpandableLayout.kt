@@ -33,7 +33,7 @@ open class ExpandableLayout : FrameLayout {
     }
 
     private fun init() {
-        inflate(context, R.layout.view_expandable_card, this)
+        inflate(context, R.layout.expandable_card_view, this)
 
         setHeightToZero(false)
 

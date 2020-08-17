@@ -1,8 +1,8 @@
 package net.gearmaniacs.tournament.ui.fragment.nav
 
 import android.view.View
-import android.widget.TextView
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,16 +14,17 @@ import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
-import net.gearmaniacs.core.view.EmptyRecyclerView
+import net.gearmaniacs.core.utils.EmptyViewAdapter
+import net.gearmaniacs.core.view.FabRecyclerView
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.ui.adapter.AnalyticsAdapter
 import net.gearmaniacs.tournament.ui.fragment.AbstractTournamentFragment
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
-internal class AnalyticsFragment : AbstractTournamentFragment(R.layout.empty_recycler_view_layout) {
+internal class AnalyticsFragment : AbstractTournamentFragment(R.layout.recycler_view_layout) {
 
     private val viewModel by activityViewModels<TournamentViewModel>()
-    private lateinit var emptyView: TextView
+    private lateinit var emptyViewAdapter: EmptyViewAdapter
 
     private var teamsList = emptyList<Team>()
     private var matchesList = emptyList<Match>()
@@ -33,22 +34,20 @@ internal class AnalyticsFragment : AbstractTournamentFragment(R.layout.empty_rec
         val activity = requireActivity()
 
         val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
-        emptyView = view.findViewById(R.id.empty_view)
-        val recyclerView = view.findViewById<EmptyRecyclerView>(R.id.recycler_view)
+        val recyclerView = view.findViewById<FabRecyclerView>(R.id.recycler_view)
 
         fab.hide()
-        emptyView.setText(R.string.empty_tab_analytics)
 
-        val adapter = AnalyticsAdapter()
+        emptyViewAdapter = EmptyViewAdapter()
+        emptyViewAdapter.text = getString(R.string.empty_tab_analytics)
+        val analyticsAdapter = AnalyticsAdapter()
 
         with(recyclerView) {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(activity)
             addItemDecoration(DividerItemDecoration(activity, RecyclerView.VERTICAL))
-
-            setEmptyView(emptyView)
+            adapter = ConcatAdapter(emptyViewAdapter, analyticsAdapter)
         }
-        recyclerView.adapter = adapter
 
         activity.observe(viewModel.getTeamsLiveData()) {
             if (it != null) {
@@ -65,12 +64,15 @@ internal class AnalyticsFragment : AbstractTournamentFragment(R.layout.empty_rec
         }
 
         activity.observeNonNull(viewModel.getAnalyticsLiveData()) {
-            adapter.submitList(it)
+            analyticsAdapter.submitList(it)
+
+            emptyViewAdapter.isVisible = it.isEmpty()
         }
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
         if (!hidden && observedDataChanged) {
+            // Only recompute the Leaderboard data when needed
             observedDataChanged = false
             refreshData()
         }
@@ -84,7 +86,7 @@ internal class AnalyticsFragment : AbstractTournamentFragment(R.layout.empty_rec
         GlobalScope.launch(Dispatchers.Main.immediate) {
             // TODO: Refactor getMatchesLiveData() observable into Response<List<TeamPower>, String>
             val response = viewModel.refreshAnalyticsData(teamsList, matchesList)
-            emptyView.text = response
+            emptyViewAdapter.text = response
         }
     }
 

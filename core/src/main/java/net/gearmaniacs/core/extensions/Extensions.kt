@@ -25,8 +25,8 @@ fun String.toIntOrDefault(default: Int = 0): Int = try {
     default
 }
 
-fun EditText.getTextString(): String =
-    text?.toString().orEmpty()
+val EditText.textString: String
+    get() = text?.toString().orEmpty()
 
 @Suppress("DEPRECATION")
 fun String.fromHtmlCompat(): Spanned {

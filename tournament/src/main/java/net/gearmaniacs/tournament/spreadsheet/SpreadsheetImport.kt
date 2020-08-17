@@ -84,8 +84,8 @@ internal class SpreadsheetImport(inputStream: InputStream) {
         val endGameData = EndGameData(endFoundationMoved, endParked, endCapLevel)
 
         val preferredZone = when (preferredZoneString?.toLowerCase(Locale.ROOT)) {
-            "crater" -> PreferredZone.LOADING
-            "depot" -> PreferredZone.BUILDING
+            "loading" -> PreferredZone.LOADING
+            "building" -> PreferredZone.BUILDING
             else -> PreferredZone.NONE
         }
 

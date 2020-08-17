@@ -11,7 +11,7 @@ import net.gearmaniacs.core.model.Team
 @Dao
 abstract class TeamsDao {
 
-    @Query("SELECT * FROM skystone_team WHERE tournamentKey = :tournamentKey ORDER BY id ASC")
+    @Query("SELECT * FROM skystone_teams WHERE tournament_key = :tournamentKey ORDER BY id ASC")
     abstract fun getAllByTournament(tournamentKey: String): Flow<List<Team>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -20,10 +20,10 @@ abstract class TeamsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insert(list: List<Team>)
 
-    @Query("DELETE from skystone_team WHERE `key` = :teamKey")
+    @Query("DELETE from skystone_teams WHERE `key` = :teamKey")
     abstract suspend fun delete(teamKey: String)
 
-    @Query("DELETE from skystone_team WHERE tournamentKey = :tournamentKey")
+    @Query("DELETE from skystone_teams WHERE tournament_key = :tournamentKey")
     abstract suspend fun deleteAllFromTournament(tournamentKey: String)
 
     @Transaction

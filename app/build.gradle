@@ -15,15 +15,24 @@ ext {
 }
 
 android {
-    compileSdkVersion Versions.compile_sdk
+    compileSdkVersion Versions.compileSdk
 
     defaultConfig {
         applicationId "net.gearmaniacs.ftcscouting"
-        minSdkVersion Versions.min_sdk
-        targetSdkVersion Versions.target_sdk
+        minSdkVersion Versions.minSdk
+        targetSdkVersion Versions.targetSdk
         versionCode versionMajor * 100 + versionMinor * 10 + versionPatch
         versionName "$versionMajor.$versionMinor.$versionPatch"
         resConfigs "en"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += [
+                        "room.incremental": "true",
+                        "room.schemaLocation": "$projectDir/schemas".toString()
+                ]
+            }
+        }
     }
 
     buildFeatures {

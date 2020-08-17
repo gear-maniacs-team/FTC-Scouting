@@ -1,20 +1,26 @@
 package net.gearmaniacs.core.model
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
 import androidx.room.Index
+import androidx.room.PrimaryKey
 import com.google.firebase.database.Exclude
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class AutonomousData(
+    @ColumnInfo(name = "foundation")
     val repositionFoundation: Boolean,
+    @ColumnInfo(name = "navigated")
     val navigated: Boolean,
+    @ColumnInfo(name = "skystones_delivered")
     val deliveredSkystones: Int,
+    @ColumnInfo(name = "stones_delivered")
     val deliveredStones: Int,
+    @ColumnInfo(name = "stones_placed")
     val placedStones: Int
 ) : Parcelable {
 
@@ -50,8 +56,11 @@ data class AutonomousData(
 
 @Parcelize
 data class TeleOpData(
+    @ColumnInfo(name = "delivered")
     val deliveredStones: Int,
+    @ColumnInfo(name = "placed")
     val placedStones: Int,
+    @ColumnInfo(name = "skyscraper_height")
     val skyscraperHeight: Int
 ) : Parcelable {
 
@@ -71,8 +80,11 @@ data class TeleOpData(
 
 @Parcelize
 data class EndGameData(
+    @ColumnInfo(name = "foundation_moved")
     val moveFoundation: Boolean,
+    @ColumnInfo(name = "parked")
     val parked: Boolean,
+    @ColumnInfo(name = "cap_level")
     val capLevel: Int
 ) : Parcelable {
 
@@ -107,27 +119,33 @@ object PreferredZone {
 
 @Parcelize
 @Entity(
-    tableName = "skystone_team",
+    tableName = "skystone_teams",
     foreignKeys = [ForeignKey(
         entity = Tournament::class,
         parentColumns = ["key"],
-        childColumns = ["tournamentKey"],
+        childColumns = ["tournament_key"],
         onDelete = ForeignKey.CASCADE
     )],
     indices = [Index(
-        value = ["tournamentKey"],
-        name = "indexTeamTournamentKey"
+        value = ["tournament_key"],
+        name = "index_team_tournament_key"
     )]
 )
 data class Team(
-    @PrimaryKey @get:Exclude @set:Exclude override var key: String,
+    @PrimaryKey @ColumnInfo(name = "key")
+    @get:Exclude @set:Exclude override var key: String,
+    @ColumnInfo(name = "tournament_key")
     @get:Exclude val tournamentKey: String = "",
+    @ColumnInfo(name = "id")
     val id: Int,
+    @ColumnInfo(name = "name")
     val name: String? = null,
     @Embedded(prefix = "auto_") val autonomousData: AutonomousData? = null,
     @Embedded(prefix = "teleop_") val teleOpData: TeleOpData? = null,
     @Embedded(prefix = "end_") val endGameData: EndGameData? = null,
+    @ColumnInfo(name = "preferred_zone")
     val preferredZone: Int = PreferredZone.NONE,
+    @ColumnInfo(name = "notes")
     val notes: String? = null
 ) : DatabaseClass<Team>(), Parcelable {
 

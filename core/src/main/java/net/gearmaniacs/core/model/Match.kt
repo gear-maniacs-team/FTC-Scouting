@@ -1,6 +1,7 @@
 package net.gearmaniacs.core.model
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -11,8 +12,11 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Alliance(
+    @ColumnInfo(name = "first_team")
     val firstTeam: Int,
+    @ColumnInfo(name = "second_team")
     val secondTeam: Int,
+    @ColumnInfo(name = "score")
     val score: Int
 ) : Parcelable {
 
@@ -24,21 +28,24 @@ data class Alliance(
 
 @Parcelize
 @Entity(
-    tableName = "skystone_match",
+    tableName = "matches",
     foreignKeys = [ForeignKey(
         entity = Tournament::class,
         parentColumns = ["key"],
-        childColumns = ["tournamentKey"],
+        childColumns = ["tournament_key"],
         onDelete = ForeignKey.CASCADE
     )],
     indices = [Index(
-        value = ["tournamentKey"],
-        name = "indexMatchTournamentKey"
+        value = ["tournament_key"],
+        name = "index_match_tournament_key"
     )]
 )
 data class Match(
-    @PrimaryKey @get:Exclude @set:Exclude override var key: String,
+    @PrimaryKey @ColumnInfo(name = "key")
+    @get:Exclude @set:Exclude override var key: String,
+    @ColumnInfo(name = "tournament_key")
     @get:Exclude val tournamentKey: String = "",
+    @ColumnInfo(name = "id")
     val id: Int,
     @Embedded(prefix = "red_") val redAlliance: Alliance,
     @Embedded(prefix = "blue_") val blueAlliance: Alliance
