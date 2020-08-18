@@ -1,5 +1,6 @@
 package net.gearmaniacs.tournament.ui.fragment.nav
 
+import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
@@ -28,7 +29,14 @@ internal class TeamFragment : AbstractTournamentFragment(R.layout.recycler_view_
     RecyclerViewItemListener<Team> {
 
     private val viewModel by activityViewModels<TournamentViewModel>()
-    private var lastQuery: CharSequence? = null
+    private var lastQuery: TeamSearchAdapter.Query? = null
+    private lateinit var searchAdapter: TeamSearchAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        lastQuery = savedInstanceState?.getParcelable(BUNDLE_QUERY)
+    }
 
     override fun onInflateView(view: View) {
         val activity = requireActivity()
@@ -36,10 +44,12 @@ internal class TeamFragment : AbstractTournamentFragment(R.layout.recycler_view_
         val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
         val recyclerView = view.findViewById<FabRecyclerView>(R.id.recycler_view)
 
-        val searchAdapter = TeamSearchAdapter {
+        searchAdapter = TeamSearchAdapter {
             lastQuery = it
-            viewModel.performTeamsSearch(it?.toString())
+            viewModel.performTeamsSearch(it)
         }
+        lastQuery?.let { searchAdapter.setQuery(it) }
+
         val emptyViewAdapter = EmptyViewAdapter()
         emptyViewAdapter.text = getString(R.string.empty_tab_teams)
 
@@ -55,12 +65,18 @@ internal class TeamFragment : AbstractTournamentFragment(R.layout.recycler_view_
         }
 
         activity.observeNonNull(viewModel.getTeamsFilteredLiveData()) {
+            val query = lastQuery
             teamAdapter.submitList(it)
 
-            val emptyViewVisible = it.isEmpty() && lastQuery.isNullOrBlank()
+            val emptyViewVisible = it.isEmpty() && (query == null || query.isEmpty())
             emptyViewAdapter.isVisible = emptyViewVisible
             searchAdapter.isVisible = !emptyViewVisible
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(BUNDLE_QUERY, searchAdapter.getQuery())
     }
 
     override fun fabClickListener() {
@@ -95,6 +111,8 @@ internal class TeamFragment : AbstractTournamentFragment(R.layout.recycler_view_
     }
 
     companion object : ICompanion {
+        private const val BUNDLE_QUERY = "query"
+
         override val fragmentTag = "TeamFragment"
 
         override fun newInstance() = TeamFragment()

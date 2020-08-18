@@ -1,19 +1,17 @@
 package net.gearmaniacs.tournament.ui.adapter
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.text.toSpanned
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import net.gearmaniacs.core.extensions.getColorCompat
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.view.ExpandableLayout
 import net.gearmaniacs.tournament.R
@@ -83,25 +81,23 @@ internal class MatchAdapter(
     }
 
     override fun onViewRecycled(holder: MatchViewHolder) {
-        holder.layout.collapse(false)
+        holder.recycle()
     }
 
-    class MatchViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val layout = itemView as ExpandableLayout
-        private val tvMatchId: TextView = itemView.findViewById(R.id.tv_card_title)
-        private val tvBasicInfo: TextView = itemView.findViewById(R.id.tv_card_primary_desc)
-        private val tvDetailedInfo: TextView = itemView.findViewById(R.id.tv_card_secondary_desc)
-        val btnEdit: Button = itemView.findViewById(R.id.btn_card_main_action)
-        val btnDelete: Button = itemView.findViewById(R.id.btn_card_secondary_action)
+    class MatchViewHolder(private val layout: ExpandableLayout) : RecyclerView.ViewHolder(layout) {
+        private val tvMatchId: TextView = layout.binding.tvTitle
+        private val tvBasicInfo: TextView = layout.binding.tvPrimaryDesc
+        private val tvDetailedInfo: TextView = layout.binding.tvSecondaryDesc
+        val btnEdit: Button = layout.binding.btnMainAction
+        val btnDelete: Button = layout.binding.btnSecondaryAction
 
-        private val blueColor = ContextCompat.getColor(itemView.context, R.color.blueAlliance)
-        private val redColor = ContextCompat.getColor(itemView.context, R.color.redAlliance)
+        private val blueColor = itemView.context.getColorCompat(R.color.alliance_blue)
+        private val redColor = itemView.context.getColorCompat(R.color.alliance_red)
 
         init {
             layout.expandDuration = EXPAND_ANIMATION_DURATION
         }
 
-        @SuppressLint("SetTextI18n")
         fun bind(match: Match) {
             val context = itemView.context
 
@@ -138,6 +134,10 @@ internal class MatchAdapter(
                 match.blueAlliance.firstTeam,
                 match.blueAlliance.secondTeam
             )
+        }
+
+        fun recycle() {
+            layout.collapse(false)
         }
     }
 }

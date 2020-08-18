@@ -6,4 +6,10 @@
     <color name="colorSecondaryDark">#c7ae00</color>
     <color name="colorBackgroundLight">#202020</color>
     <color name="colorBackgroundDark">#020202</color>
+
+    <color name="marker_red">#FF5252</color>
+    <color name="marker_blue">#0091EA</color>
+    <color name="marker_green">#64DD17</color>
+    <color name="marker_purple">#7C4DFF</color>
+    <color name="marker_yellow">#FFFF00</color>
 </resources>

@@ -28,7 +28,7 @@
             android:id="@+id/tv_match_red_alliance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/redAlliance"
+            android:textColor="@color/alliance_red"
             android:textSize="16sp"
             tools:text="@string/match_info_red_alliance" />
 
@@ -36,7 +36,7 @@
             android:id="@+id/tv_match_blue_alliance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/blueAlliance"
+            android:textColor="@color/alliance_blue"
             android:textSize="16sp"
             tools:text="@string/match_info_blue_alliance" />
 

@@ -15,10 +15,11 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.transition.TransitionManager
 import dagger.hilt.android.AndroidEntryPoint
-import net.gearmaniacs.core.CounterView
+import net.gearmaniacs.core.view.CounterView
 import net.gearmaniacs.core.extensions.textString
 import net.gearmaniacs.core.extensions.toIntOrDefault
 import net.gearmaniacs.core.model.AutonomousData
+import net.gearmaniacs.core.model.ColorMarker
 import net.gearmaniacs.core.model.EndGameData
 import net.gearmaniacs.core.model.PreferredZone
 import net.gearmaniacs.core.model.Team
@@ -50,7 +51,7 @@ internal class EditTeamDialog : DialogFragment() {
     ) : RadioGroup.OnCheckedChangeListener,
         CompoundButton.OnCheckedChangeListener,
         TextWatcher,
-        CounterView.CounterChange {
+        CounterView.CounterChangeListener {
 
         override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) = listener()
 
@@ -140,6 +141,7 @@ internal class EditTeamDialog : DialogFragment() {
                 autonomousData = autonomousData.takeIf { it.isNotEmpty },
                 teleOpData = teleOpData.takeIf { it.isNotEmpty },
                 endGameData = endGameData.takeIf { it.isNotEmpty },
+                colorMarker = parseColorMarker(),
                 preferredZone = preferredZone,
                 notes = notesText.takeIf { it.isNotBlank() }
             )
@@ -229,6 +231,15 @@ internal class EditTeamDialog : DialogFragment() {
                 endGameScore = it.calculateScore()
             }
 
+            when (team.colorMarker) {
+                ColorMarker.RED -> colorMarkerRed.isChecked = true
+                ColorMarker.BLUE -> colorMarkerBlue.isChecked = true
+                ColorMarker.GREEN -> colorMarkerGreen.isChecked = true
+                ColorMarker.PURPLE -> colorMarkerPurple.isChecked = true
+                ColorMarker.YELLOW -> colorMarkerYellow.isChecked = true
+                else -> colorMarkerDefault.isChecked = true
+            }
+
             when (team.preferredZone) {
                 PreferredZone.BUILDING -> rbZoneBuilding.isChecked = true
                 PreferredZone.LOADING -> rbZoneLoading.isChecked = true
@@ -263,6 +274,19 @@ internal class EditTeamDialog : DialogFragment() {
             content.swParking.isChecked,
             capLevel
         )
+    }
+
+    private fun parseColorMarker(): Int {
+        val content = binding.content
+
+        return when (content.groupColorMarker.checkedChipId) {
+            content.colorMarkerRed.id -> ColorMarker.RED
+            content.colorMarkerBlue.id -> ColorMarker.BLUE
+            content.colorMarkerGreen.id -> ColorMarker.GREEN
+            content.colorMarkerPurple.id -> ColorMarker.PURPLE
+            content.colorMarkerYellow.id -> ColorMarker.YELLOW
+            else -> ColorMarker.DEFAULT
+        }
     }
 
     private fun updateAutonomousScore(score: Int = -1) {

@@ -10,7 +10,12 @@ abstract class OneElementRecyclerViewAdapter<VH : RecyclerView.ViewHolder> :
             if (field == value)
                 return
             field = value
-            notifyDataSetChanged()
+
+            //notifyDataSetChanged()
+            if (value)
+                notifyItemInserted(0)
+            else
+                notifyItemRemoved(0)
         }
 
     override fun getItemCount(): Int = if (isVisible) 1 else 0

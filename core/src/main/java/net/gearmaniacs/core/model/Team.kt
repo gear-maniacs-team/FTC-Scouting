@@ -111,12 +111,6 @@ data class EndGameData(
     }
 }
 
-object PreferredZone {
-    const val NONE = 0
-    const val BUILDING = 1
-    const val LOADING = 2
-}
-
 @Parcelize
 @Entity(
     tableName = "skystone_teams",
@@ -143,6 +137,8 @@ data class Team(
     @Embedded(prefix = "auto_") val autonomousData: AutonomousData? = null,
     @Embedded(prefix = "teleop_") val teleOpData: TeleOpData? = null,
     @Embedded(prefix = "end_") val endGameData: EndGameData? = null,
+    @ColumnInfo(name = "color_marker")
+    val colorMarker: Int = ColorMarker.DEFAULT,
     @ColumnInfo(name = "preferred_zone")
     val preferredZone: Int = PreferredZone.NONE,
     @ColumnInfo(name = "notes")

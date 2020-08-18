@@ -1,4 +1,4 @@
-package net.gearmaniacs.core
+package net.gearmaniacs.core.view
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.content.res.getColorOrThrow
+import net.gearmaniacs.core.R
 
 class CounterView @JvmOverloads constructor(
     context: Context,
@@ -18,7 +19,7 @@ class CounterView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    interface CounterChange {
+    interface CounterChangeListener {
         fun onIncrement(count: Int)
 
         fun onDecrement(count: Int)
@@ -39,7 +40,7 @@ class CounterView @JvmOverloads constructor(
             counterValue = value
             updateView()
         }
-    var changeListener: CounterChange? = null
+    var changeListener: CounterChangeListener? = null
 
     init {
         inflate(context, R.layout.counter_view, this as ViewGroup)

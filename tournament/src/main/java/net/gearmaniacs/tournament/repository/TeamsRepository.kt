@@ -21,8 +21,10 @@ import net.gearmaniacs.core.firebase.generatePushId
 import net.gearmaniacs.core.firebase.ifLoggedIn
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.firebase.listValueEventFlow
+import net.gearmaniacs.core.model.ColorMarker
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.tournament.ui.activity.TournamentActivity
+import net.gearmaniacs.tournament.ui.adapter.TeamSearchAdapter
 import net.theluckycoder.database.dao.TeamsDao
 import javax.inject.Inject
 
@@ -34,7 +36,7 @@ class TeamsRepository @Inject constructor(
 ) {
 
     private var teamListForQuery = emptyList<Team>()
-    private var lastTeamQuery = ""
+    private var lastTeamQuery: TeamSearchAdapter.Query? = null
 
     private var listenerScope: CoroutineScope? = null
     private var teamSearchJob: Job? = null // Last launched search job
@@ -106,23 +108,37 @@ class TeamsRepository @Inject constructor(
         }
     }
 
-    fun performTeamsSearch(query: String) {
+    fun performTeamsSearch(query: TeamSearchAdapter.Query?) {
         lastTeamQuery = query
+        val list = teamListForQuery
         // Cancel the last running search
         teamSearchJob?.cancel()
 
-        if (teamListForQuery.isEmpty() || query.isEmpty()) {
-            queriedTeamsData.value = teamListForQuery
+        if (list.isEmpty() || query == null || query.isEmpty()) {
+            queriedTeamsData.value = list
             return
         }
 
         teamSearchJob = GlobalScope.launch(Dispatchers.Main.immediate) {
             val filteredList = withContext(Dispatchers.Default) {
-                val pattern = "(?i).*($query).*".toPattern()
-
-                teamListForQuery.filter {
-                    pattern.matcher(it.id.toString() + ' ' + it.name.orEmpty()).matches()
+                var newList = list.filter {
+                    (query.defaultMarker && it.colorMarker == ColorMarker.DEFAULT)
+                            || (query.redMarker && it.colorMarker == ColorMarker.RED)
+                            || (query.blueMarker && it.colorMarker == ColorMarker.BLUE)
+                            || (query.greenMarker && it.colorMarker == ColorMarker.GREEN)
+                            || (query.purpleMarker && it.colorMarker == ColorMarker.PURPLE)
+                            || (query.yellowMarker && it.colorMarker == ColorMarker.YELLOW)
                 }
+
+                if (query.name.isNotEmpty()) {
+                    val pattern = "(?i).*(${query.name}).*".toPattern()
+
+                    newList = newList.filter {
+                        pattern.matcher(it.id.toString() + ' ' + it.name.orEmpty()).matches()
+                    }
+                }
+
+                newList.toList()
             }
 
             // Don't update the data if the search was canceled

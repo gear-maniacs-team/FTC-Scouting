@@ -4,37 +4,25 @@ import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.core.view.ViewCompat
-import net.gearmaniacs.core.R
+import net.gearmaniacs.core.databinding.ExpandableCardViewBinding
 
-open class ExpandableLayout : FrameLayout {
+class ExpandableLayout : FrameLayout {
 
-    private val tvTitle by bind<TextView>(R.id.tv_card_title)
-    private val ivArrow by bind<ImageView>(R.id.iv_card_expand)
-    private val hiddenLayout by bind<View>(R.id.layout_hidden)
+    val binding =
+        ExpandableCardViewBinding.inflate(LayoutInflater.from(context), this, true)
 
-    constructor(context: Context) : super(context) {
-        init()
-    }
+    constructor(context: Context) : super(context)
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init()
-    }
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int)
-            : super(context, attrs, defStyleAttr) {
-        init()
-    }
+            : super(context, attrs, defStyleAttr)
 
-    private fun init() {
-        inflate(context, R.layout.expandable_card_view, this)
-
+    init {
         setHeightToZero(false)
 
         setOnClickListener {
@@ -46,11 +34,8 @@ open class ExpandableLayout : FrameLayout {
         }
     }
 
-    private fun <T : View> View.bind(@IdRes res: Int) =
-        lazy(LazyThreadSafetyMode.NONE) { findViewById<T>(res) }
-
     private fun rotateArrow(rotation: Float, animate: Boolean) {
-        ViewCompat.animate(ivArrow)
+        ViewCompat.animate(binding.ivExpand)
             .rotation(rotation)
             .withLayer()
             .setDuration(if (animate) expandDuration else 0)
@@ -59,7 +44,7 @@ open class ExpandableLayout : FrameLayout {
 
     private fun setHeightToZero(animate: Boolean) {
         if (animate) {
-            animate(hiddenLayout.height, 0)
+            animate(binding.layoutHidden.height, 0)
         } else {
             setContentHeight(0)
         }
@@ -67,7 +52,7 @@ open class ExpandableLayout : FrameLayout {
 
     private fun setHeightToContentHeight(animate: Boolean) {
         measureContentView()
-        val targetHeight = hiddenLayout.measuredHeight
+        val targetHeight = binding.layoutHidden.measuredHeight
         if (animate) {
             animate(0, targetHeight)
         } else {
@@ -76,14 +61,16 @@ open class ExpandableLayout : FrameLayout {
     }
 
     private fun setContentHeight(height: Int) {
-        hiddenLayout.layoutParams.height = height
-        hiddenLayout.requestLayout()
+        with(binding.layoutHidden) {
+            layoutParams.height = height
+            requestLayout()
+        }
     }
 
     private fun measureContentView() {
         val widthMS = MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST)
         val heightMS = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
-        hiddenLayout.measure(widthMS, heightMS)
+        binding.layoutHidden.measure(widthMS, heightMS)
     }
 
     private fun animate(from: Int, to: Int) {
@@ -102,7 +89,7 @@ open class ExpandableLayout : FrameLayout {
             val newHeight = animator.getAnimatedValue("height") as Int? ?: 0
             val newAlpha = animator.getAnimatedValue("alpha") as Float? ?: 0f
 
-            with(hiddenLayout) {
+            with(binding.layoutHidden) {
                 layoutParams.height = newHeight
                 alpha = newAlpha
                 requestLayout()
@@ -122,7 +109,7 @@ open class ExpandableLayout : FrameLayout {
     /**
      * Expand the Card
      */
-    open fun expand(animate: Boolean = true) {
+    fun expand(animate: Boolean = true) {
         if (isExpanded) return
 
         setHeightToContentHeight(animate)
@@ -133,7 +120,7 @@ open class ExpandableLayout : FrameLayout {
     /**
      * Collapse the Card
      */
-    open fun collapse(animate: Boolean = true) {
+    fun collapse(animate: Boolean = true) {
         if (!isExpanded) return
 
         setHeightToZero(animate)
@@ -142,28 +129,28 @@ open class ExpandableLayout : FrameLayout {
     }
 
     /**
-     * @property cardTitle The title of the card
+     * @property title The title of the card
      */
-    open var cardTitle: CharSequence
-        get() = tvTitle.text
+    var title: CharSequence
+        get() = binding.tvTitle.text
         set(title) {
-            tvTitle.text = title
+            binding.tvTitle.text = title
         }
 
     /**
      * Sets the title of the card
      * @param resId String resource to display as title
-     * @see cardTitle
+     * @see title
      */
-    open fun setCardTitle(@StringRes resId: Int) {
-        cardTitle = context.getString(resId)
+    fun setTitle(@StringRes resId: Int) {
+        title = context.getString(resId)
     }
 
     /**
      * @property expandDuration The duration of the expand animation
      * @throws IllegalArgumentException if the duration is <= 0
      */
-    open var expandDuration: Long = 400
+    var expandDuration: Long = 400
         set(duration) {
             if (duration > 0) {
                 field = duration

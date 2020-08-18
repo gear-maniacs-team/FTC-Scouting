@@ -3,6 +3,7 @@ package net.gearmaniacs.tournament.spreadsheet
 import net.gearmaniacs.core.extensions.justTry
 import net.gearmaniacs.core.model.Alliance
 import net.gearmaniacs.core.model.AutonomousData
+import net.gearmaniacs.core.model.ColorMarker
 import net.gearmaniacs.core.model.EndGameData
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.PreferredZone
@@ -97,6 +98,7 @@ internal class SpreadsheetImport(inputStream: InputStream) {
             autonomousData.takeIf { it.isNotEmpty },
             teleOpData.takeIf { it.isNotEmpty },
             endGameData.takeIf { it.isNotEmpty },
+            ColorMarker.DEFAULT,
             preferredZone,
             notes
         )

@@ -1,18 +1,24 @@
 package net.gearmaniacs.tournament.ui.adapter
 
-import android.view.View
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.LayerDrawable
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textview.MaterialTextView
+import net.gearmaniacs.core.model.ColorMarker
 import net.gearmaniacs.core.model.PreferredZone
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.view.ExpandableLayout
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
+
 
 internal class TeamAdapter(
     private val listener: RecyclerViewItemListener<Team>
@@ -78,19 +84,20 @@ internal class TeamAdapter(
     }
 
     override fun onViewRecycled(holder: TeamViewHolder) {
-        holder.card.collapse(false)
+        holder.recycle()
     }
 
-    class TeamViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val card = itemView as ExpandableLayout
-        private val tvName: TextView = itemView.findViewById(R.id.tv_card_title)
-        private val tvScore: TextView = itemView.findViewById(R.id.tv_card_primary_desc)
-        private val tvDescription: TextView = itemView.findViewById(R.id.tv_card_secondary_desc)
-        val btnEdit: Button = itemView.findViewById(R.id.btn_card_main_action)
-        val btnDelete: Button = itemView.findViewById(R.id.btn_card_secondary_action)
+    class TeamViewHolder(private val layout: ExpandableLayout) : RecyclerView.ViewHolder(layout) {
+        private val tvName: TextView = layout.binding.tvTitle
+        private val tvScore: MaterialTextView = layout.binding.tvPrimaryDesc
+        private val tvDescription: TextView = layout.binding.tvSecondaryDesc
+        val btnEdit: Button = layout.binding.btnMainAction
+        val btnDelete: Button = layout.binding.btnSecondaryAction
+
+        private val outline = ContextCompat.getDrawable(itemView.context, R.drawable.ic_circle_outline)!!
 
         init {
-            card.expandDuration = EXPAND_ANIMATION_DURATION
+            layout.expandDuration = EXPAND_ANIMATION_DURATION
         }
 
         fun bind(team: Team) {
@@ -98,6 +105,10 @@ internal class TeamAdapter(
 
             tvName.text = context.getString(R.string.team_id_name, team.id, team.name.orEmpty())
             tvScore.text = context.getString(R.string.team_predicted_score, team.score)
+
+            // Color Marker
+            if (team.colorMarker != ColorMarker.DEFAULT)
+                setupColorMarker(team)
 
             val preferredLocation = when (team.preferredZone) {
                 PreferredZone.BUILDING -> R.string.team_preferred_building
@@ -110,6 +121,30 @@ internal class TeamAdapter(
                 team.endGameScore, context.getString(preferredLocation), team.notes.orEmpty()
             )
             tvDescription.text = description
+        }
+
+        private fun setupColorMarker(team: Team) {
+            val context = itemView.context
+
+            val circle = ContextCompat.getDrawable(context, R.drawable.ic_circle)!!
+            val color = ColorMarker.getHexColor(team.colorMarker, context)
+
+            circle.mutate().colorFilter = PorterDuffColorFilter(
+                ColorMarker.getHexColor(color, context),
+                PorterDuff.Mode.SRC_IN
+            )
+
+            val finalDrawable = LayerDrawable(arrayOf(circle, outline)).apply {
+                setLayerInset(0, 0, 0, 0, 0)
+                setLayerInset(1, 0, 0, 0, 0)
+            }
+
+            tvScore.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, finalDrawable, null)
+        }
+
+        fun recycle() {
+            layout.collapse(false)
+            tvScore.setCompoundDrawablesRelative(null, null, null, null)
         }
     }
 }

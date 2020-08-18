@@ -23,7 +23,7 @@ import net.gearmaniacs.tournament.repository.TeamsRepository
 import net.gearmaniacs.tournament.repository.TournamentRepository
 import net.gearmaniacs.tournament.spreadsheet.SpreadsheetExport
 import net.gearmaniacs.tournament.spreadsheet.SpreadsheetImport
-import java.util.Locale
+import net.gearmaniacs.tournament.ui.adapter.TeamSearchAdapter
 
 internal class TournamentViewModel @ViewModelInject constructor(
     private val tournamentRepository: TournamentRepository,
@@ -56,8 +56,8 @@ internal class TournamentViewModel @ViewModelInject constructor(
 
     // region Teams Management
 
-    fun performTeamsSearch(query: String?) {
-        teamsRepository.performTeamsSearch(query.orEmpty().trim().toLowerCase(Locale.ROOT))
+    fun performTeamsSearch(query: TeamSearchAdapter.Query?) {
+        teamsRepository.performTeamsSearch(query)
     }
 
     fun addTeamsFromMatches(teams: List<Team>, matches: List<Match>) {

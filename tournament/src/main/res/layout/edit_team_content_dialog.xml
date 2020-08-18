@@ -74,29 +74,26 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <Switch
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/sw_reposition_foundation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="6dp"
-            android:layout_marginBottom="8dp"
             android:text="@string/prompt_reposition_foundation"
             android:textSize="16sp" />
 
-        <Switch
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/sw_navigated"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="6dp"
-            android:layout_marginBottom="8dp"
             android:text="@string/prompt_navigation"
             android:textSize="16sp" />
 
-        <net.gearmaniacs.core.CounterView
+        <net.gearmaniacs.core.view.CounterView
             android:id="@+id/ct_delivered_skystones"
             style="@style/CounterViewEditStyle"
             android:layout_width="match_parent"
@@ -106,7 +103,7 @@
             app:max="2"
             app:text="@string/prompt_delivered_skystones" />
 
-        <net.gearmaniacs.core.CounterView
+        <net.gearmaniacs.core.view.CounterView
             android:id="@+id/ct_delivered_stones"
             style="@style/CounterViewEditStyle"
             android:layout_width="match_parent"
@@ -116,7 +113,7 @@
             app:max="4"
             app:text="@string/prompt_delivered_stones" />
 
-        <net.gearmaniacs.core.CounterView
+        <net.gearmaniacs.core.view.CounterView
             android:id="@+id/ct_placed_stones"
             style="@style/CounterViewEditStyle"
             android:layout_width="match_parent"
@@ -235,37 +232,31 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-
-        <Switch
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/sw_parking"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="6dp"
-            android:layout_marginBottom="8dp"
             android:text="@string/prompt_parking"
             android:textSize="16sp" />
 
-        <Switch
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/sw_move_foundation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="6dp"
-            android:layout_marginBottom="8dp"
             android:text="@string/prompt_move_foundation"
             android:textSize="16sp" />
 
-        <Switch
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/sw_cap_placed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="6dp"
-            android:layout_marginBottom="8dp"
             android:text="@string/prompt_cap_placed"
             android:textSize="16sp" />
 
@@ -320,6 +311,88 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/tv_color_marker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="6dp"
+            android:text="Color Marker:"
+            android:textColor="@color/colorSecondary"
+            android:textSize="15sp" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/group_color_marker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            app:checkedChip="@id/color_marker_default"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/color_marker_default"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/color_default"
+                app:chipIcon="@drawable/ic_circle"
+                app:chipIconEnabled="true" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/color_marker_red"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/color_red"
+                app:chipIcon="@drawable/ic_circle"
+                app:chipIconEnabled="true"
+                app:chipIconTint="@color/marker_red" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/color_marker_blue"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/color_blue"
+                app:chipIcon="@drawable/ic_circle"
+                app:chipIconEnabled="true"
+                app:chipIconTint="@color/marker_blue" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/color_marker_green"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/color_green"
+                app:chipIcon="@drawable/ic_circle"
+                app:chipIconEnabled="true"
+                app:chipIconTint="@color/marker_green" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/color_marker_purple"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/color_purple"
+                app:chipIcon="@drawable/ic_circle"
+                app:chipIconEnabled="true"
+                app:chipIconTint="@color/marker_purple" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/color_marker_yellow"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/color_yellow"
+                app:chipIcon="@drawable/ic_circle"
+                app:chipIconEnabled="true"
+                app:chipIconTint="@color/marker_yellow" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <TextView
             android:id="@+id/tv_preferred_zone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -338,6 +411,7 @@
             android:layout_marginEnd="6dp"
             android:gravity="center_horizontal"
             app:checkedButton="@id/rb_zone_none"
+            app:selectionRequired="true"
             app:singleSelection="true">
 
             <com.google.android.material.button.MaterialButton
@@ -382,7 +456,6 @@
                 android:hint="@string/team_notes"
                 android:inputType="textImeMultiLine" />
         </com.google.android.material.textfield.TextInputLayout>
-
 
     </LinearLayout>
 
