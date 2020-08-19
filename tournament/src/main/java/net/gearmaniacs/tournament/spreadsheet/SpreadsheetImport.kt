@@ -95,9 +95,9 @@ internal class SpreadsheetImport(inputStream: InputStream) {
             "",
             id,
             name,
-            autonomousData.takeIf { it.isNotEmpty },
-            teleOpData.takeIf { it.isNotEmpty },
-            endGameData.takeIf { it.isNotEmpty },
+            autonomousData.takeIf { it.isNotEmpty() },
+            teleOpData.takeIf { it.isNotEmpty() },
+            endGameData.takeIf { it.isNotEmpty() },
             ColorMarker.DEFAULT,
             preferredZone,
             notes

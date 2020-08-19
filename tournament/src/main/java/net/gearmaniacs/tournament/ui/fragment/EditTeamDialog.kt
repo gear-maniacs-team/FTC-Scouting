@@ -138,9 +138,9 @@ internal class EditTeamDialog : DialogFragment() {
                 key = team?.key.orEmpty(),
                 id = content.etTeamNumber.textString.toIntOrDefault(),
                 name = content.etTeamName.textString,
-                autonomousData = autonomousData.takeIf { it.isNotEmpty },
-                teleOpData = teleOpData.takeIf { it.isNotEmpty },
-                endGameData = endGameData.takeIf { it.isNotEmpty },
+                autonomousData = autonomousData.takeIf { it.isNotEmpty() },
+                teleOpData = teleOpData.takeIf { it.isNotEmpty() },
+                endGameData = endGameData.takeIf { it.isNotEmpty() },
                 colorMarker = parseColorMarker(),
                 preferredZone = preferredZone,
                 notes = notesText.takeIf { it.isNotBlank() }
@@ -208,7 +208,7 @@ internal class EditTeamDialog : DialogFragment() {
                 ctDeliveredStones.counter = it.deliveredStones
                 ctPlacedStones.counter = it.placedStones
 
-                autonomousScore = it.calculateScore()
+                autonomousScore = it.score()
             }
 
             team.teleOpData?.let {
@@ -216,7 +216,7 @@ internal class EditTeamDialog : DialogFragment() {
                 etPlacedStones.setText(it.placedStones.toString())
                 etSkyscraperHeight.setText(it.skyscraperHeight.toString())
 
-                teleOpScore = it.calculateScore()
+                teleOpScore = it.score()
             }
 
             team.endGameData?.let {
@@ -228,7 +228,7 @@ internal class EditTeamDialog : DialogFragment() {
                     etCapLevel.setText(it.capLevel.toString())
                 }
 
-                endGameScore = it.calculateScore()
+                endGameScore = it.score()
             }
 
             when (team.colorMarker) {
@@ -291,7 +291,7 @@ internal class EditTeamDialog : DialogFragment() {
 
     private fun updateAutonomousScore(score: Int = -1) {
         val newScore =
-            if (score == -1) parseAutonomousData(binding.content).calculateScore() else score
+            if (score == -1) parseAutonomousData(binding.content).score() else score
 
         autonomousScore = newScore
         binding.content.tvAutonomousScore.text = getString(R.string.autonomous_score, newScore)
@@ -299,14 +299,14 @@ internal class EditTeamDialog : DialogFragment() {
 
     private fun updateTeleOpScore(score: Int = -1) {
         val newScore =
-            if (score == -1) parseTeleOpData(binding.content).calculateScore() else score
+            if (score == -1) parseTeleOpData(binding.content).score() else score
 
         teleOpScore = newScore
         binding.content.tvTeleopScore.text = getString(R.string.teleop_score, newScore)
     }
 
     private fun updateEndGameScore(score: Int = -1) {
-        val newScore = if (score == -1) parseEndGameData().calculateScore() else score
+        val newScore = if (score == -1) parseEndGameData().score() else score
 
         endGameScore = newScore
         binding.content.tvEndgameScore.text = getString(R.string.endgame_score, newScore)

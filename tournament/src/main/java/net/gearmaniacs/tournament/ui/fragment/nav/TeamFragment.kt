@@ -94,13 +94,12 @@ internal class TeamFragment : AbstractTournamentFragment(R.layout.recycler_view_
     }
 
     override fun onLongClickListener(item: Team) {
-        val activity = activity ?: return
         val key = item.key
 
         val message =
             if (Firebase.isLoggedIn) R.string.delete_team_desc else R.string.delete_team_desc_offline
 
-        AlertDialog.Builder(activity)
+        AlertDialog.Builder(requireContext())
             .setTitle(R.string.delete_team)
             .setMessage(message)
             .setPositiveButton(R.string.action_delete) { _, _ ->

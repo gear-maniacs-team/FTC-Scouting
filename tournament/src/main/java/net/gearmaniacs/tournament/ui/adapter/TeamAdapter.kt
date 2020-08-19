@@ -94,7 +94,8 @@ internal class TeamAdapter(
         val btnEdit: Button = layout.binding.btnMainAction
         val btnDelete: Button = layout.binding.btnSecondaryAction
 
-        private val outline = ContextCompat.getDrawable(itemView.context, R.drawable.ic_circle_outline)!!
+        private val outline =
+            ContextCompat.getDrawable(itemView.context, R.drawable.ic_circle_outline)!!
 
         init {
             layout.expandDuration = EXPAND_ANIMATION_DURATION
@@ -104,11 +105,11 @@ internal class TeamAdapter(
             val context = itemView.context
 
             tvName.text = context.getString(R.string.team_id_name, team.id, team.name.orEmpty())
-            tvScore.text = context.getString(R.string.team_predicted_score, team.score)
+            tvScore.text = context.getString(R.string.team_predicted_score, team.score())
 
             // Color Marker
             if (team.colorMarker != ColorMarker.DEFAULT)
-                setupColorMarker(team)
+                setupColorMarker(team.colorMarker)
 
             val preferredLocation = when (team.preferredZone) {
                 PreferredZone.BUILDING -> R.string.team_preferred_building
@@ -117,22 +118,19 @@ internal class TeamAdapter(
             }
 
             val description = context.getString(
-                R.string.team_description, team.autonomousScore, team.teleOpScore,
-                team.endGameScore, context.getString(preferredLocation), team.notes.orEmpty()
+                R.string.team_description, team.autonomousScore(), team.teleOpScore(),
+                team.endGameScore(), context.getString(preferredLocation), team.notes.orEmpty()
             )
             tvDescription.text = description
         }
 
-        private fun setupColorMarker(team: Team) {
+        private fun setupColorMarker(colorMarker: Int) {
             val context = itemView.context
 
-            val circle = ContextCompat.getDrawable(context, R.drawable.ic_circle)!!
-            val color = ColorMarker.getHexColor(team.colorMarker, context)
+            val circle = context.getDrawable(R.drawable.ic_circle)!!
+            val color = ColorMarker.getHexColor(colorMarker, context)
 
-            circle.mutate().colorFilter = PorterDuffColorFilter(
-                ColorMarker.getHexColor(color, context),
-                PorterDuff.Mode.SRC_IN
-            )
+            circle.mutate().colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
 
             val finalDrawable = LayerDrawable(arrayOf(circle, outline)).apply {
                 setLayerInset(0, 0, 0, 0, 0)

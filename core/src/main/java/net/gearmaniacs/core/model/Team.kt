@@ -27,16 +27,12 @@ data class AutonomousData(
     @Suppress("unused") // Needed for Firebase
     constructor() : this(false, false, 0, 0, 0)
 
-    val isEmpty: Boolean
-        @Exclude
-        get() = !repositionFoundation && deliveredSkystones == 0 && deliveredStones == 0
-                && placedStones == 0 && !navigated
+    fun isEmpty(): Boolean =
+        !repositionFoundation && deliveredSkystones == 0 && deliveredStones == 0 && placedStones == 0 && !navigated
 
-    val isNotEmpty: Boolean
-        @Exclude
-        get() = !isEmpty
+    fun isNotEmpty(): Boolean = !isEmpty()
 
-    fun calculateScore(): Int {
+    fun score(): Int {
         var score = 0
 
         if (repositionFoundation) score += 10
@@ -67,15 +63,11 @@ data class TeleOpData(
     @Suppress("unused") // Needed for Firebase
     constructor() : this(0, 0, 0)
 
-    val isEmpty: Boolean
-        @Exclude
-        get() = deliveredStones == 0 && placedStones == 0 && skyscraperHeight == 0
+    fun isEmpty(): Boolean = deliveredStones == 0 && placedStones == 0 && skyscraperHeight == 0
 
-    val isNotEmpty: Boolean
-        @Exclude
-        get() = !isEmpty
+    fun isNotEmpty(): Boolean = !isEmpty()
 
-    fun calculateScore(): Int = deliveredStones + placedStones + skyscraperHeight * 2
+    fun score(): Int = deliveredStones + placedStones + skyscraperHeight * 2
 }
 
 @Parcelize
@@ -91,15 +83,11 @@ data class EndGameData(
     @Suppress("unused") // Needed for Firebase
     constructor() : this(false, false, -1)
 
-    val isEmpty: Boolean
-        @Exclude
-        get() = !moveFoundation && !parked && capLevel < 0
+    fun isEmpty(): Boolean = !moveFoundation && !parked && capLevel < 0
 
-    val isNotEmpty: Boolean
-        @Exclude
-        get() = !isEmpty
+    fun isNotEmpty(): Boolean = !isEmpty()
 
-    fun calculateScore(): Int {
+    fun score(): Int {
         var score = 0
 
         if (moveFoundation) score += 15
@@ -149,15 +137,11 @@ data class Team(
 
     override fun compareTo(other: Team): Int = id.compareTo(other.id)
 
-    val autonomousScore: Int
-        @Exclude get() = autonomousData?.calculateScore() ?: 0
+    fun autonomousScore(): Int = autonomousData?.score() ?: 0
 
-    val teleOpScore
-        @Exclude get() = teleOpData?.calculateScore() ?: 0
+    fun teleOpScore() = teleOpData?.score() ?: 0
 
-    val endGameScore: Int
-        @Exclude get() = endGameData?.calculateScore() ?: 0
+    fun endGameScore(): Int = endGameData?.score() ?: 0
 
-    val score: Int
-        @Exclude get() = autonomousScore + teleOpScore + endGameScore
+    fun score(): Int = autonomousScore() + teleOpScore() + endGameScore()
 }

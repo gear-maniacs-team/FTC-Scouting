@@ -63,7 +63,7 @@ internal class SpreadsheetExport {
             row.createCell(column++).setCellValue(endGame.capLevel.toDouble())
 
             // Predicted Score
-            row.createCell(column).setCellValue(team.score.toDouble())
+            row.createCell(column).setCellValue(team.score().toDouble())
         }
     }
 
