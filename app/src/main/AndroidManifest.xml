@@ -43,13 +43,14 @@
             android:label="@string/title_team_info"
             android:windowSoftInputMode="adjustPan" />
 
+        <!-- These do not work in Android Studio 4.1 Beta -->
         <meta-data
             android:name="firebase_analytics_collection_deactivated"
-            android:value="${disableFirebase}" />
+            android:value="true" /> <!-- ${disableFirebase} -->
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
-            android:value="${enableCrashlytics}" />
+            android:value="false" /> <!-- ${enableCrashlytics} -->
 
     </application>
 
