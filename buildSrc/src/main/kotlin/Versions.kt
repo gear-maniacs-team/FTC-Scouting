@@ -10,7 +10,7 @@ object Versions {
 
     const val minSdk = 21
     const val compileSdk = 30
-    const val targetSdk = 29
+    const val targetSdk = 30
 
     const val kotlin = "1.4.0"
     const val kotlinCoroutines = "1.3.9"

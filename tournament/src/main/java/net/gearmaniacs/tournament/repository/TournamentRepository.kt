@@ -3,11 +3,8 @@ package net.gearmaniacs.tournament.repository
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import net.gearmaniacs.core.extensions.justTry
 import net.gearmaniacs.core.extensions.safeCollect
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.isLoggedIn
@@ -16,6 +13,7 @@ import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeamPower
 import net.gearmaniacs.core.model.Tournament
+import net.gearmaniacs.core.utils.AbstractListenerRepository
 import net.gearmaniacs.tournament.opr.PowerRanking
 import net.gearmaniacs.tournament.ui.activity.TournamentActivity
 import net.theluckycoder.database.dao.TournamentsDao
@@ -28,9 +26,7 @@ internal class TournamentRepository @Inject constructor(
     private val tournamentKey: String,
     private val tournamentsDao: TournamentsDao,
     private val tournamentReference: DatabaseReference?
-) {
-
-    private var listenerScope: CoroutineScope? = null
+) : AbstractListenerRepository() {
 
     val tournamentFlow = tournamentsDao.getFlow(tournamentKey)
 
@@ -86,13 +82,10 @@ internal class TournamentRepository @Inject constructor(
         }
     }
 
-    suspend fun addListener() = coroutineScope {
-        removeListener()
-        listenerScope = this
+    override suspend fun onListenerAdded(scope: CoroutineScope) {
+        if (!Firebase.isLoggedIn) return
 
-        if (!Firebase.isLoggedIn) return@coroutineScope
-
-        launch {
+        scope.launch {
             val databaseReference = tournamentReference!!
                 .child(DatabasePaths.KEY_TOURNAMENTS)
                 .child(tournamentKey)
@@ -104,10 +97,5 @@ internal class TournamentRepository @Inject constructor(
                     tournamentsDao.delete(tournamentKey)
             }
         }
-    }
-
-    fun removeListener() {
-        justTry { listenerScope?.cancel() }
-        listenerScope = null
     }
 }

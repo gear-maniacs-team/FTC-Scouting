@@ -4,9 +4,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.collectLatest
@@ -14,7 +12,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import net.gearmaniacs.core.architecture.MutableNonNullLiveData
-import net.gearmaniacs.core.extensions.justTry
 import net.gearmaniacs.core.extensions.safeCollect
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.generatePushId
@@ -23,22 +20,22 @@ import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.firebase.listValueEventFlow
 import net.gearmaniacs.core.model.ColorMarker
 import net.gearmaniacs.core.model.Team
+import net.gearmaniacs.core.utils.AbstractListenerRepository
 import net.gearmaniacs.tournament.ui.activity.TournamentActivity
 import net.gearmaniacs.tournament.ui.adapter.TeamSearchAdapter
 import net.theluckycoder.database.dao.TeamsDao
 import javax.inject.Inject
 
-class TeamsRepository @Inject constructor(
+internal class TeamsRepository @Inject constructor(
     @TournamentActivity.TournamentKey
     private val tournamentKey: String,
     private val teamsDao: TeamsDao,
     private val tournamentReference: DatabaseReference?
-) {
+) : AbstractListenerRepository() {
 
     private var teamListForQuery = emptyList<Team>()
     private var lastTeamQuery: TeamSearchAdapter.Query? = null
 
-    private var listenerScope: CoroutineScope? = null
     private var teamSearchJob: Job? = null // Last launched search job
 
     val teamsFlows = teamsDao.getAllByTournament(tournamentKey)
@@ -108,7 +105,7 @@ class TeamsRepository @Inject constructor(
         }
     }
 
-    fun performTeamsSearch(query: TeamSearchAdapter.Query?) {
+    suspend fun performTeamsSearch(query: TeamSearchAdapter.Query?): Unit = coroutineScope {
         lastTeamQuery = query
         val list = teamListForQuery
         // Cancel the last running search
@@ -116,10 +113,10 @@ class TeamsRepository @Inject constructor(
 
         if (list.isEmpty() || query == null || query.isEmpty()) {
             queriedTeamsData.value = list
-            return
+            return@coroutineScope
         }
 
-        teamSearchJob = GlobalScope.launch(Dispatchers.Main.immediate) {
+        teamSearchJob = launch(Dispatchers.Main.immediate) {
             val filteredList = withContext(Dispatchers.Default) {
                 var newList = list.filter {
                     (query.defaultMarker && it.colorMarker == ColorMarker.DEFAULT)
@@ -147,11 +144,8 @@ class TeamsRepository @Inject constructor(
         }
     }
 
-    suspend fun addListener() = coroutineScope {
-        removeListener()
-        listenerScope = this
-
-        launch {
+    override suspend fun onListenerAdded(scope: CoroutineScope) {
+        scope.launch {
             teamsFlows.collectLatest {
                 coroutineContext.ensureActive()
 
@@ -162,9 +156,9 @@ class TeamsRepository @Inject constructor(
             }
         }
 
-        if (!Firebase.isLoggedIn) return@coroutineScope
+        if (!Firebase.isLoggedIn) return
 
-        launch {
+        scope.launch {
             val databaseReference = tournamentReference!!
                 .child(DatabasePaths.KEY_DATA)
                 .child(tournamentKey)
@@ -174,10 +168,5 @@ class TeamsRepository @Inject constructor(
                 teamsDao.replaceTournamentTeams(tournamentKey, it)
             }
         }
-    }
-
-    fun removeListener() {
-        justTry { listenerScope?.cancel() }
-        listenerScope = null
     }
 }

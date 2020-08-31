@@ -89,8 +89,8 @@ internal class TeamAdapter(
 
     class TeamViewHolder(private val layout: ExpandableLayout) : RecyclerView.ViewHolder(layout) {
         private val tvName: TextView = layout.binding.tvTitle
-        private val tvScore: MaterialTextView = layout.binding.tvPrimaryDesc
-        private val tvDescription: TextView = layout.binding.tvSecondaryDesc
+        private val tvScore: MaterialTextView = layout.binding.tvDescription
+        private val tvDescription: TextView = layout.binding.tvHiddenDescription
         val btnEdit: Button = layout.binding.btnMainAction
         val btnDelete: Button = layout.binding.btnSecondaryAction
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.ftcscouting.repository.MainRepository
@@ -28,15 +29,13 @@ class MainViewModel @ViewModelInject constructor(
         if (listening) return
         listening = true
 
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.addListener()
-        }
+        viewModelScope.launch(Dispatchers.IO) { repository.addListener() }
     }
 
     fun stopListening() {
         if (!listening) return
 
-        repository.removeListener()
+        viewModelScope.launch(Dispatchers.IO) { repository.removeListener() }
 
         listening = false
     }
@@ -55,6 +54,6 @@ class MainViewModel @ViewModelInject constructor(
     }
 
     override fun onCleared() {
-        stopListening()
+        GlobalScope.launch(Dispatchers.IO) { repository.clear() }
     }
 }

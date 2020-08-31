@@ -3,14 +3,11 @@ package net.gearmaniacs.tournament.repository
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import net.gearmaniacs.core.architecture.MutableNonNullLiveData
-import net.gearmaniacs.core.extensions.justTry
 import net.gearmaniacs.core.extensions.safeCollect
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.generatePushId
@@ -18,6 +15,7 @@ import net.gearmaniacs.core.firebase.ifLoggedIn
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.firebase.listValueEventFlow
 import net.gearmaniacs.core.model.Match
+import net.gearmaniacs.core.utils.AbstractListenerRepository
 import net.gearmaniacs.tournament.ui.activity.TournamentActivity
 import net.theluckycoder.database.dao.MatchesDao
 import javax.inject.Inject
@@ -27,11 +25,9 @@ internal class MatchesRepository @Inject constructor(
     private val tournamentKey: String,
     private val matchesDao: MatchesDao,
     private val tournamentReference: DatabaseReference?
-) {
+) : AbstractListenerRepository() {
 
     private var userTeamNumber = -1
-
-    private var listenerScope: CoroutineScope? = null
 
     val matchesFlow = matchesDao.getAllByTournament(tournamentKey)
     val infoData = MutableNonNullLiveData(emptyList<Match>())
@@ -112,11 +108,8 @@ internal class MatchesRepository @Inject constructor(
         userTeamNumber = number
     }
 
-    suspend fun addListener() = coroutineScope {
-        removeListener()
-        listenerScope = this
-
-        launch {
+    override suspend fun onListenerAdded(scope: CoroutineScope) {
+        scope.launch {
             matchesFlow.collectLatest {
                 coroutineContext.ensureActive()
 
@@ -124,9 +117,9 @@ internal class MatchesRepository @Inject constructor(
             }
         }
 
-        if (!Firebase.isLoggedIn) return@coroutineScope
+        if (!Firebase.isLoggedIn) return
 
-        launch {
+        scope.launch {
             val databaseReference = tournamentReference!!
                 .child(DatabasePaths.KEY_DATA)
                 .child(tournamentKey)
@@ -136,10 +129,5 @@ internal class MatchesRepository @Inject constructor(
                 matchesDao.replaceTournamentMatches(tournamentKey, it)
             }
         }
-    }
-
-    fun removeListener() {
-        justTry { listenerScope?.cancel() }
-        listenerScope = null
     }
 }

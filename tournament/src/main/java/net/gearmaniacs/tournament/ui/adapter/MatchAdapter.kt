@@ -86,8 +86,8 @@ internal class MatchAdapter(
 
     class MatchViewHolder(private val layout: ExpandableLayout) : RecyclerView.ViewHolder(layout) {
         private val tvMatchId: TextView = layout.binding.tvTitle
-        private val tvBasicInfo: TextView = layout.binding.tvPrimaryDesc
-        private val tvDetailedInfo: TextView = layout.binding.tvSecondaryDesc
+        private val tvBasicInfo: TextView = layout.binding.tvDescription
+        private val tvDetailedInfo: TextView = layout.binding.tvHiddenDescription
         val btnEdit: Button = layout.binding.btnMainAction
         val btnDelete: Button = layout.binding.btnSecondaryAction
 

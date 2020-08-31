@@ -49,7 +49,7 @@ android {
             isCrunchPngs = false
         }
         getByName("release") {
-            setManifestPlaceholders(mapOf("firebaseDisabled" to false, "crashlyticsEnabled" to true))
+            manifestPlaceholders(mapOf("firebaseDisabled" to false, "crashlyticsEnabled" to true))
 
             isMinifyEnabled = true
             isShrinkResources = true

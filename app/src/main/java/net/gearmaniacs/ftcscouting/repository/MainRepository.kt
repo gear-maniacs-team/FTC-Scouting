@@ -5,12 +5,9 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import net.gearmaniacs.core.extensions.justTry
 import net.gearmaniacs.core.extensions.safeCollect
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.generatePushId
@@ -22,6 +19,7 @@ import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.UserData
 import net.gearmaniacs.core.model.isNullOrEmpty
+import net.gearmaniacs.core.utils.AbstractListenerRepository
 import net.gearmaniacs.core.utils.AppPreferences
 import net.theluckycoder.database.dao.TeamsDao
 import net.theluckycoder.database.dao.TournamentsDao
@@ -32,9 +30,7 @@ class MainRepository @Inject constructor(
     private val tournamentsDao: TournamentsDao,
     private val teamsDao: TeamsDao,
     private val appPreferences: AppPreferences
-) {
-
-    private var listenerScope: CoroutineScope? = null
+) : AbstractListenerRepository() {
 
     private val tournamentsReference by lazy {
         Firebase.ifLoggedIn {
@@ -105,13 +101,10 @@ class MainRepository @Inject constructor(
         }
     }
 
-    suspend fun addListener() = coroutineScope {
-        removeListener()
-        listenerScope = this
+    override suspend fun onListenerAdded(scope: CoroutineScope) {
+        if (!Firebase.isLoggedIn) return
 
-        if (!Firebase.isLoggedIn) return@coroutineScope
-
-        launch {
+        scope.launch {
             userReference!!.valueEventFlow<UserData>().safeCollect {
                 if (it != null) {
                     appPreferences.userDataNumber.setAndCommit(it.id)
@@ -120,7 +113,7 @@ class MainRepository @Inject constructor(
             }
         }
 
-        launch {
+        scope.launch {
             tournamentsReference!!
                 .child(DatabasePaths.KEY_TOURNAMENTS)
                 .listValueEventFlow { snapshot ->
@@ -135,10 +128,5 @@ class MainRepository @Inject constructor(
                     tournamentsDao.replaceAll(it)
                 }
         }
-    }
-
-    fun removeListener() {
-        justTry { listenerScope?.cancel() }
-        listenerScope = null
     }
 }

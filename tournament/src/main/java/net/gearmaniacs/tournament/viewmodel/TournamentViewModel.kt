@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.gearmaniacs.core.architecture.MutableNonNullLiveData
@@ -57,7 +58,7 @@ internal class TournamentViewModel @ViewModelInject constructor(
     // region Teams Management
 
     fun performTeamsSearch(query: TeamSearchAdapter.Query?) {
-        teamsRepository.performTeamsSearch(query)
+        viewModelScope.launch(Dispatchers.Main.immediate) { teamsRepository.performTeamsSearch(query) }
     }
 
     fun addTeamsFromMatches(teams: List<Team>, matches: List<Match>) {
@@ -189,28 +190,26 @@ internal class TournamentViewModel @ViewModelInject constructor(
         if (listening) return
         listening = true
 
-        viewModelScope.launch(Dispatchers.IO) {
-            tournamentRepository.addListener()
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            teamsRepository.addListener()
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            matchesRepository.addListener()
-        }
+        viewModelScope.launch(Dispatchers.IO) { tournamentRepository.addListener() }
+        viewModelScope.launch(Dispatchers.IO) { teamsRepository.addListener() }
+        viewModelScope.launch(Dispatchers.IO) { matchesRepository.addListener() }
     }
 
     fun stopListening() {
         if (!listening) return
 
-        tournamentRepository.removeListener()
-        teamsRepository.removeListener()
-        matchesRepository.removeListener()
+        viewModelScope.launch(Dispatchers.IO) { tournamentRepository.removeListener() }
+        viewModelScope.launch(Dispatchers.IO) { teamsRepository.removeListener() }
+        viewModelScope.launch(Dispatchers.IO) { matchesRepository.removeListener() }
 
         listening = false
     }
 
     override fun onCleared() {
-        stopListening()
+        GlobalScope.launch(Dispatchers.IO) {
+            tournamentRepository.clear()
+            teamsRepository.clear()
+            matchesRepository.clear()
+        }
     }
 }

@@ -1,4 +1,4 @@
-package net.gearmaniacs.tournament.ui.fragment
+package net.gearmaniacs.core.utils
 
 import android.app.Dialog
 import android.os.Bundle
@@ -6,7 +6,7 @@ import android.widget.FrameLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import net.gearmaniacs.tournament.R
+import net.gearmaniacs.core.R
 
 /**
  * [BottomSheetDialogFragment] that uses a custom

@@ -9,6 +9,7 @@ import android.view.WindowManager
 import androidx.annotation.StringRes
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.textString
+import net.gearmaniacs.core.utils.RoundedBottomSheetDialogFragment
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.databinding.NewTournamentDialogBinding
 

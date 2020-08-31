@@ -46,6 +46,7 @@ fun <T : DatabaseClass<T>> DatabaseReference.listValueEventFlow(
     // If not null, add the key
     val snapshotKey = dataSnapshot.key
     val value = dataSnapshot.getValue(clazz.java)
+
     if (snapshotKey != null && value != null)
         value.also { it.key = snapshotKey }
     else

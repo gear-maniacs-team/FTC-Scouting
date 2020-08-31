@@ -19,7 +19,7 @@ import net.gearmaniacs.ftcscouting.ui.activity.AboutActivity
 import net.gearmaniacs.ftcscouting.ui.activity.TeamInfoActivity
 import net.gearmaniacs.ftcscouting.viewmodel.MainViewModel
 import net.gearmaniacs.login.ui.activity.LoginActivity
-import net.gearmaniacs.tournament.ui.fragment.RoundedBottomSheetDialogFragment
+import net.gearmaniacs.core.utils.RoundedBottomSheetDialogFragment
 import javax.inject.Inject
 
 @AndroidEntryPoint

@@ -1,7 +1,7 @@
 package net.gearmaniacs.ftcscouting.repository
 
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.gearmaniacs.core.firebase.DatabasePaths
@@ -23,9 +23,9 @@ class TeamInfoRepository @Inject constructor(
         if (!Firebase.isLoggedIn)
             return R.string.team_updated
 
-        val task = FirebaseDatabase.getInstance()
+        val task = Firebase.database
             .getReference(DatabasePaths.KEY_USERS)
-            .child(FirebaseAuth.getInstance().currentUser!!.uid)
+            .child(Firebase.auth.currentUser!!.uid)
             .setValue(userData)
 
         return suspendCancellableCoroutine { cont ->
@@ -38,4 +38,5 @@ class TeamInfoRepository @Inject constructor(
 
         }
     }
+
 }
