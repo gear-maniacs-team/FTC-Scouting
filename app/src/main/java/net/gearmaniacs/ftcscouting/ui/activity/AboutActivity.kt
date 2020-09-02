@@ -1,5 +1,6 @@
 package net.gearmaniacs.ftcscouting.ui.activity
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -18,6 +19,7 @@ import net.gearmaniacs.ftcscouting.BuildConfig
 import net.gearmaniacs.ftcscouting.R
 
 @AndroidEntryPoint
+@SuppressLint("UseCompatLoadingForDrawables")
 class AboutActivity : MaterialAboutActivity() {
 
     private class OpenUrlAction(
@@ -117,6 +119,14 @@ class AboutActivity : MaterialAboutActivity() {
                 OpenUrlAction(this, GEAR_MANIACS_WEBSITE)
             )
         )
+        .addItem(
+            MaterialAboutActionItem(
+                getString(R.string.about_follow_instagram),
+                GEAR_MANIACS_INSTAGRAM,
+                getDrawable(R.drawable.ic_about_instagram),
+                OpenUrlAction(this, GEAR_MANIACS_INSTAGRAM)
+            )
+        )
         .build()
 
     private fun getAuthorCard() = MaterialAboutCard.Builder()
@@ -189,6 +199,11 @@ class AboutActivity : MaterialAboutActivity() {
                 License.MIT
             )
             setLibrary(
+                "Material About Library",
+                "https://github.com/daniel-stoneuk/material-about-library",
+                License.MIT
+            )
+            setLibrary(
                 "Licenser",
                 "https://github.com/marcoscgdev/Licenser",
                 License.MIT
@@ -213,9 +228,10 @@ class AboutActivity : MaterialAboutActivity() {
         private const val APP_EMAIL = "gearmaniacsteam@gmail.com"
         private const val DEVELOPER_EMAIL = "mail@theluckycoder.net"
 
-        private const val GEAR_MANIACS_WEBSITE = "https://gearmaniacs.ro/"
-        private const val PRIVACY_POLICY = "https://gearmaniacs.ro/privacy-policy/"
-        private const val AUTHOR_WEBSITE = "http://theluckycoder.net/"
-        private const val AUTHOR_GITHUB = "https://github.com/TheLuckyCoder/"
+        private const val GEAR_MANIACS_WEBSITE = "https://gearmaniacs.ro"
+        private const val GEAR_MANIACS_INSTAGRAM = "https://instagram.com/gearmaniacsteam"
+        private const val PRIVACY_POLICY = "https://gearmaniacs.ro/privacy-policy"
+        private const val AUTHOR_WEBSITE = "http://theluckycoder.net"
+        private const val AUTHOR_GITHUB = "https://github.com/TheLuckyCoder"
     }
 }

@@ -19,7 +19,6 @@ import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.UserData
 import net.gearmaniacs.core.model.isNullOrEmpty
 import net.gearmaniacs.core.utils.AbstractListenerRepository
-import net.gearmaniacs.core.utils.AppPreferences
 import net.gearmaniacs.core.utils.UserDataPreferences
 import net.theluckycoder.database.dao.TeamsDao
 import net.theluckycoder.database.dao.TournamentsDao

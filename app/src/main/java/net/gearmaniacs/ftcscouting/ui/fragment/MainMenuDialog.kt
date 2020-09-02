@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import com.google.firebase.auth.ktx.auth
@@ -13,14 +12,14 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.alertDialog
 import net.gearmaniacs.core.extensions.startActivity
+import net.gearmaniacs.core.utils.RoundedBottomSheetDialogFragment
+import net.gearmaniacs.core.utils.UserDataPreferences
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.databinding.MainMenuDialogBinding
 import net.gearmaniacs.ftcscouting.ui.activity.AboutActivity
 import net.gearmaniacs.ftcscouting.ui.activity.AccountActivity
 import net.gearmaniacs.ftcscouting.viewmodel.MainViewModel
 import net.gearmaniacs.login.ui.activity.LoginActivity
-import net.gearmaniacs.core.utils.RoundedBottomSheetDialogFragment
-import net.gearmaniacs.core.utils.UserDataPreferences
 import javax.inject.Inject
 
 @AndroidEntryPoint

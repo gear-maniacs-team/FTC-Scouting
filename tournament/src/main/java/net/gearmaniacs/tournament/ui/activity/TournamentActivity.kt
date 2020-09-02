@@ -1,12 +1,12 @@
 package net.gearmaniacs.tournament.ui.activity
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -41,25 +41,6 @@ import javax.inject.Qualifier
 
 @AndroidEntryPoint
 class TournamentActivity : AppCompatActivity() {
-
-    companion object {
-        const val ARG_TOURNAMENT_KEY = "tournament_key"
-        const val ARG_USER = "user"
-
-        private const val SAVED_FRAGMENT_INDEX = "tournament_key"
-
-        private const val SPREADSHEET_LOAD_REQUEST_CODE = 1
-        private const val SPREADSHEET_SAVE_REQUEST_CODE = 2
-
-        fun startActivity(context: Context, userData: UserData, tournament: Tournament) {
-            val intent = Intent(context, TournamentActivity::class.java).apply {
-                putExtra(ARG_USER, userData)
-                putExtra(ARG_TOURNAMENT_KEY, tournament.key)
-            }
-
-            context.startActivity(intent)
-        }
-    }
 
     private lateinit var binding: TournamentActivityBinding
     private val viewModel by viewModels<TournamentViewModel>()
@@ -213,13 +194,21 @@ class TournamentActivity : AppCompatActivity() {
                     intent.putExtra(Intent.EXTRA_TITLE, it)
                 }
 
-                startActivityForResult(intent, SPREADSHEET_SAVE_REQUEST_CODE)
+                registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                    it?.data?.data?.let { documentUri ->
+                        viewModel.exportToSpreadsheet(documentUri, teamsList, matchesList)
+                    }
+                }.launch(intent)
             }
             R.id.action_import -> {
                 val intent = getSpreadsheetIntent(Intent.ACTION_OPEN_DOCUMENT)
                 intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
 
-                startActivityForResult(intent, SPREADSHEET_LOAD_REQUEST_CODE)
+                registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                    it?.data?.data?.let { documentUri ->
+                        viewModel.importFromSpreadSheet(documentUri, teamsList, matchesList)
+                    }
+                }.launch(intent)
             }
         }
         return true
@@ -233,22 +222,6 @@ class TournamentActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         viewModel.stopListening()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
-        super.onActivityResult(requestCode, resultCode, resultData)
-
-        if (requestCode == SPREADSHEET_LOAD_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            resultData?.data?.also { documentUri ->
-                viewModel.importFromSpreadSheet(documentUri, teamsList, matchesList)
-            }
-        }
-
-        if (requestCode == SPREADSHEET_SAVE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            resultData?.data?.also { documentUri ->
-                viewModel.exportToSpreadsheet(documentUri, teamsList, matchesList)
-            }
-        }
     }
 
     private fun updateFab(newFragmentTag: String) {
@@ -295,8 +268,25 @@ class TournamentActivity : AppCompatActivity() {
             addCategory(Intent.CATEGORY_OPENABLE)
         }
 
-    /// Provide the tournament key passed by the intent
+    companion object {
+        const val ARG_TOURNAMENT_KEY = "tournament_key"
+        const val ARG_USER = "user"
 
+        private const val SAVED_FRAGMENT_INDEX = "tournament_key"
+
+        fun startActivity(context: Context, userData: UserData, tournament: Tournament) {
+            val intent = Intent(context, TournamentActivity::class.java).apply {
+                putExtra(ARG_USER, userData)
+                putExtra(ARG_TOURNAMENT_KEY, tournament.key)
+            }
+
+            context.startActivity(intent)
+        }
+    }
+
+    /*
+     * Provide the tournament key passed by the intent
+     */
     @Qualifier
     @Target(AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.VALUE_PARAMETER)
     @Retention(AnnotationRetention.RUNTIME)

@@ -22,7 +22,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import net.gearmaniacs.core.extensions.alertDialog
 import net.gearmaniacs.core.extensions.longToast
@@ -36,7 +35,6 @@ import net.gearmaniacs.core.utils.UserDataPreferences
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.databinding.AccountActivityBinding
 import net.gearmaniacs.ftcscouting.viewmodel.TeamInfoViewModel
-import java.lang.Exception
 import javax.inject.Inject
 
 @AndroidEntryPoint

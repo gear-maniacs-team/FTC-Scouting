@@ -7,6 +7,14 @@
         android:name="android.hardware.touchscreen"
         android:required="false" />
 
+    <!-- Needed by the open mail action in the AboutActivity -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:mimeType="text/*" />
+        </intent>
+    </queries>
+
     <application
         android:name=".ScoutingApp"
         android:allowBackup="true"
@@ -42,6 +50,11 @@
             android:name=".ui.activity.AccountActivity"
             android:label="@string/title_account"
             android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name="com.google.firebase.auth.internal.FederatedSignInActivity"
+            android:launchMode="standard"
+            tools:replace="android:launchMode" />
 
         <!-- These do not work in Android Studio 4.1 Beta -->
         <meta-data
