@@ -13,21 +13,12 @@ class AppPreferences @Inject constructor(
 ) {
     private val preferences = FlowSharedPreferences(sharedPreferences)
 
-    val seenIntro = preferences.getBoolean(KEY_SEEN_INTRO)
+    val seenIntro = preferences.getBoolean(SEEN_INTRO)
 
-    val firstStartUp = preferences.getBoolean(KEY_FIRST_STARTUP, true)
-
-    val hasOfflineAccount = preferences.getBoolean(KEY_HAS_OFFLINE_ACCOUNT, true)
-
-    val userDataNumber = preferences.getInt(KEY_TEAM_INFO_NUMBER, -1)
-
-    val userDataName = preferences.getString(KEY_TEAM_INFO_NAME, "")
+    val firstStartUp = preferences.getBoolean(FIRST_STARTUP, true)
 
     private companion object {
-        private const val KEY_SEEN_INTRO = "key_intro_seen"
-        private const val KEY_FIRST_STARTUP = "key_first_start_up"
-        private const val KEY_HAS_OFFLINE_ACCOUNT = "key_has_offline_account"
-        private const val KEY_TEAM_INFO_NUMBER = "key_user_data_number"
-        private const val KEY_TEAM_INFO_NAME = "key_user_data_name"
+        private const val SEEN_INTRO = "key_intro_seen"
+        private const val FIRST_STARTUP = "key_first_start_up"
     }
 }

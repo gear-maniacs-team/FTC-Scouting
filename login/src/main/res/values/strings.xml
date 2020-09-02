@@ -9,6 +9,8 @@
     <string name="action_already_own_account">I already own an account</string>
     <string name="action_use_without_account">Use offline without an account</string>
     <string name="action_sign_out">Sign Out</string>
+    <string name="action_connect">Connect</string>
+    <string name="action_disconnect">Disconnect</string>
     <string name="action_forgot_password">Forgot your password?</string>
     <string name="action_reset_password">Reset Password</string>
 
@@ -29,4 +31,9 @@
     <string name="reset_password_sending">Sending reset email</string>
     <string name="reset_password_email_sent">Email has been sent!</string>
     <string name="reset_password_email_not_sent">The email could not be sent!</string>
+
+    <!-- Providers -->
+    <string name="account_provider_google">Google</string>
+    <string name="account_provider_google_link_success">Linking with Google Account Succeeded</string>
+    <string name="account_provider_google_link_failure">Linking with Google Account Failed</string>
 </resources>

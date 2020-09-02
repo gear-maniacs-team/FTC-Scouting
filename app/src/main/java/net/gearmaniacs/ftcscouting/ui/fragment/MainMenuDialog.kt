@@ -11,15 +11,16 @@ import androidx.fragment.app.activityViewModels
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
+import net.gearmaniacs.core.extensions.alertDialog
 import net.gearmaniacs.core.extensions.startActivity
-import net.gearmaniacs.core.utils.AppPreferences
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.databinding.MainMenuDialogBinding
 import net.gearmaniacs.ftcscouting.ui.activity.AboutActivity
-import net.gearmaniacs.ftcscouting.ui.activity.TeamInfoActivity
+import net.gearmaniacs.ftcscouting.ui.activity.AccountActivity
 import net.gearmaniacs.ftcscouting.viewmodel.MainViewModel
 import net.gearmaniacs.login.ui.activity.LoginActivity
 import net.gearmaniacs.core.utils.RoundedBottomSheetDialogFragment
+import net.gearmaniacs.core.utils.UserDataPreferences
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -31,7 +32,7 @@ class MainMenuDialog : RoundedBottomSheetDialogFragment() {
     private val viewModel by activityViewModels<MainViewModel>()
 
     @Inject
-    lateinit var appPreferences: AppPreferences
+    lateinit var userDataPreferences: UserDataPreferences
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
@@ -57,7 +58,7 @@ class MainMenuDialog : RoundedBottomSheetDialogFragment() {
         } else {
             val defaultDisplayName = currentUser.displayName
             val displayName: String =
-                if (defaultDisplayName.isNullOrBlank()) appPreferences.userDataName.get() else defaultDisplayName
+                if (defaultDisplayName.isNullOrBlank()) userDataPreferences.userTeamName.get() else defaultDisplayName
 
             binding.btnAccountSignIn.isVisible = false
             binding.tvAccountName.text = displayName
@@ -66,20 +67,20 @@ class MainMenuDialog : RoundedBottomSheetDialogFragment() {
             binding.btnAccountSignOut.setOnClickListener {
                 val activity = requireActivity()
 
-                AlertDialog.Builder(activity)
-                    .setTitle(R.string.confirm_sign_out)
-                    .setTitle(R.string.confirm_sign_out_desc)
-                    .setPositiveButton(R.string.action_sign_out) { _, _ ->
-                        dismiss()
+                activity.alertDialog {
+                    setTitle(R.string.confirm_sign_out)
+                    setTitle(R.string.confirm_sign_out_desc)
+                    setPositiveButton(R.string.action_sign_out) { _, _ ->
+                        this@MainMenuDialog.dismiss()
                         Firebase.auth.signOut()
                         viewModel.signOut(activity)
 
                         activity.startActivity<LoginActivity>()
                         activity.finish()
                     }
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .show()
-
+                    setNegativeButton(android.R.string.cancel, null)
+                    show()
+                }
             }
         }
 
@@ -93,7 +94,7 @@ class MainMenuDialog : RoundedBottomSheetDialogFragment() {
 
         binding.btnTeamInfo.setOnClickListener {
             dismiss()
-            TeamInfoActivity.startActivity(requireContext(), viewModel.getUserLiveData().value)
+            requireActivity().startActivity<AccountActivity>()
         }
 
         binding.btnAbout.setOnClickListener {

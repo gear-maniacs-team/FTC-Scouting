@@ -63,7 +63,7 @@
         android:layout_height="wrap_content"
         android:gravity="start"
         android:padding="14dp"
-        android:text="@string/title_team_info"
+        android:text="@string/account_and_team_details"
         android:textAllCaps="false"
         android:textSize="16sp"
         app:cornerRadius="8dp" />

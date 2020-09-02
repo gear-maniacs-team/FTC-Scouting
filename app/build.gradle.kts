@@ -11,12 +11,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion(Versions.compileSdk)
+    compileSdkVersion(Versions.Sdk.compile)
 
     defaultConfig {
         applicationId("net.gearmaniacs.ftcscouting")
-        minSdkVersion(Versions.minSdk)
-        targetSdkVersion(Versions.targetSdk)
+        minSdkVersion(Versions.Sdk.min)
+        targetSdkVersion(Versions.Sdk.target)
         versionCode(Versions.App.versionCode)
         versionName(Versions.App.versionName)
         resConfigs("en")
@@ -70,6 +70,7 @@ dependencies {
     implementation(project(Modules.database))
 
     implementation(Libs.firebase_crashlytics)
+    implementation(Libs.gms_auth)
 
     implementation(Libs.material_intro)
     implementation(Libs.material_about)

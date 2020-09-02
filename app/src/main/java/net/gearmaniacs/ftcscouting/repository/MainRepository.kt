@@ -5,7 +5,6 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import net.gearmaniacs.core.extensions.safeCollect
@@ -21,6 +20,7 @@ import net.gearmaniacs.core.model.UserData
 import net.gearmaniacs.core.model.isNullOrEmpty
 import net.gearmaniacs.core.utils.AbstractListenerRepository
 import net.gearmaniacs.core.utils.AppPreferences
+import net.gearmaniacs.core.utils.UserDataPreferences
 import net.theluckycoder.database.dao.TeamsDao
 import net.theluckycoder.database.dao.TournamentsDao
 import javax.inject.Inject
@@ -29,7 +29,7 @@ import javax.inject.Inject
 class MainRepository @Inject constructor(
     private val tournamentsDao: TournamentsDao,
     private val teamsDao: TeamsDao,
-    private val appPreferences: AppPreferences
+    private val userDataPreferences: UserDataPreferences
 ) : AbstractListenerRepository() {
 
     private val tournamentsReference by lazy {
@@ -47,10 +47,6 @@ class MainRepository @Inject constructor(
         }
     }
 
-    val userDataFlow = appPreferences.userDataNumber.asFlow()
-        .combine(appPreferences.userDataName.asFlow()) { id: Int, name: String ->
-            UserData(id, name)
-        }
     val tournamentsFlow = tournamentsDao.getAllFlow()
 
     suspend fun createNewTournament(userData: UserData?, tournamentName: String) {
@@ -107,8 +103,8 @@ class MainRepository @Inject constructor(
         scope.launch {
             userReference!!.valueEventFlow<UserData>().safeCollect {
                 if (it != null) {
-                    appPreferences.userDataNumber.setAndCommit(it.id)
-                    appPreferences.userDataName.setAndCommit(it.teamName)
+                    userDataPreferences.userTeamNumber.setAndCommit(it.id)
+                    userDataPreferences.userTeamName.setAndCommit(it.teamName)
                 }
             }
         }

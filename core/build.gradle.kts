@@ -9,11 +9,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion(Versions.compileSdk)
+    compileSdkVersion(Versions.Sdk.compile)
 
     defaultConfig {
-        minSdkVersion(Versions.minSdk)
-        targetSdkVersion(Versions.targetSdk)
+        minSdkVersion(Versions.Sdk.min)
+        targetSdkVersion(Versions.Sdk.target)
 
         consumerProguardFiles("core-rules.pro")
 
@@ -58,8 +58,8 @@ dependencies {
     api(Libs.androidx_preference)
     api(Libs.androidx_fragment)
     api(Libs.androidx_lifecycle)
-    api(Libs.androidx_livedata_ktx)
-    api(Libs.androidx_viewmodel_ktx)
+    api(Libs.androidx_livedata)
+    api(Libs.androidx_viewmodel)
 
     api(Libs.firebase_analytics)
     api(Libs.firebase_auth)

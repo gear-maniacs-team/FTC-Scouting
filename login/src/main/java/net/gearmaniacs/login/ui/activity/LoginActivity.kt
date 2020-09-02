@@ -11,6 +11,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
+import net.gearmaniacs.core.extensions.alertDialog
 import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.isLoggedIn
@@ -56,9 +57,16 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
         }
 
         binding.btnUseOffline.setOnClickListener {
-            // TODO Add a warning dialog or sth
-            appPreferences.hasOfflineAccount.set(true)
-            startMainActivity()
+            alertDialog {
+                setTitle("Use offline Account?")
+                setMessage("")
+                // TODO Add a warning
+                setPositiveButton("Agree") { _, _ ->
+                    startMainActivity()
+                }
+                setNegativeButton(android.R.string.cancel, null)
+                show()
+            }
         }
 
         initFragments(savedInstanceState)

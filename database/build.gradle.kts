@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion(Versions.compileSdk)
+    compileSdkVersion(Versions.Sdk.compile)
 
     defaultConfig {
-        minSdkVersion(Versions.minSdk)
-        targetSdkVersion(Versions.targetSdk)
+        minSdkVersion(Versions.Sdk.min)
+        targetSdkVersion(Versions.Sdk.target)
 
         javaCompileOptions {
             annotationProcessorOptions {

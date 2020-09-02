@@ -10,6 +10,8 @@
     <string name="action_edit">Edit</string>
     <string name="action_edit_name">Edit Name</string>
     <string name="action_create_tournament">Create Tournament</string>
+    <string name="action_delete_account">Delete Account</string>
+    <string name="link_your_account">Link your account</string>
     <string name="none">None</string>
     <string name="category_other">Other</string>
     <string name="title_about">About</string>

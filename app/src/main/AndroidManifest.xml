@@ -10,7 +10,7 @@
     <application
         android:name=".ScoutingApp"
         android:allowBackup="true"
-        android:fullBackupContent="true"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -39,8 +39,8 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".ui.activity.TeamInfoActivity"
-            android:label="@string/title_team_info"
+            android:name=".ui.activity.AccountActivity"
+            android:label="@string/title_account"
             android:windowSoftInputMode="adjustPan" />
 
         <!-- These do not work in Android Studio 4.1 Beta -->

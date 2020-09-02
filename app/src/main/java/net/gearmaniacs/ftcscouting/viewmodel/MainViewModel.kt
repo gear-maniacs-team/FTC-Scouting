@@ -9,16 +9,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.gearmaniacs.core.model.Tournament
+import net.gearmaniacs.core.utils.UserDataPreferences
 import net.gearmaniacs.ftcscouting.repository.MainRepository
 import net.theluckycoder.database.di.DatabaseModule
 
 class MainViewModel @ViewModelInject constructor(
+    userDataPreferences: UserDataPreferences,
     private val repository: MainRepository
 ) : ViewModel() {
 
     private var listening = false
 
-    private val userDataLiveData = repository.userDataFlow.asLiveData()
+    private val userDataLiveData = userDataPreferences.userTeamFlow.asLiveData()
     private val tournamentsLiveData = repository.tournamentsFlow.asLiveData()
 
     fun getUserLiveData() = userDataLiveData

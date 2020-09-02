@@ -83,6 +83,7 @@
     <string name="team_info_not_found">No team information found</string>
     <string name="team_info_previous_not_found">No previous team information found</string>
 
+    <string name="color_marker">Color Marker:</string>
     <string name="color_default">Default</string>
     <string name="color_red">Red</string>
     <string name="color_blue">Blue</string>

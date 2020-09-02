@@ -3,8 +3,8 @@ package net.gearmaniacs.ftcscouting.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.updateLayoutParams
@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
+import net.gearmaniacs.core.extensions.alertDialog
 import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.core.firebase.isLoggedIn
@@ -104,8 +105,13 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
     override fun onStart() {
         super.onStart()
         if (!appPreferences.seenIntro.get()) {
-            val intent = Intent(this, IntroActivity::class.java)
-            startActivityForResult(intent, REQUEST_CODE_INTRO)
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == RESULT_OK) {
+                    appPreferences.seenIntro.set(true)
+                } else {
+                    finish()
+                }
+            }.launch(Intent(this, IntroActivity::class.java))
             return
         }
         if (appPreferences.firstStartUp.get()) {
@@ -121,17 +127,6 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
         viewModel.stopListening()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_INTRO) {
-            if (resultCode == RESULT_OK) {
-                appPreferences.seenIntro.set(true)
-            } else {
-                finish()
-            }
-        }
-    }
-
     override fun onClickListener(item: Tournament) {
         TournamentActivity.startActivity(this, userData, item)
     }
@@ -140,17 +135,14 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
         val message =
             if (Firebase.isLoggedIn) R.string.delete_tournament_desc else R.string.delete_tournament_desc_offline
 
-        AlertDialog.Builder(this)
-            .setTitle(R.string.delete_tournament)
-            .setMessage(message)
-            .setPositiveButton(R.string.action_delete) { _, _ ->
+        alertDialog {
+            setTitle(R.string.delete_tournament)
+            setMessage(message)
+            setPositiveButton(R.string.action_delete) { _, _ ->
                 viewModel.deleteTournament(item)
             }
-            .setNegativeButton(android.R.string.cancel, null)
-            .show()
-    }
-
-    private companion object {
-        private const val REQUEST_CODE_INTRO = 100
+            setNegativeButton(android.R.string.cancel, null)
+            show()
+        }
     }
 }
