@@ -29,6 +29,8 @@ android {
                 )
             }
         }
+
+        testInstrumentationRunner("androidx.test.runner.AndroidJUnitRunner")
     }
 
     compileOptions {
@@ -81,6 +83,11 @@ dependencies {
     kapt(Libs.hilt_dagger_compiler)
     kapt(Libs.hilt_android_compiler)
 
-    testImplementation(Libs.tests_androidx)
-    testImplementation(Libs.tests_junit)
+    testImplementation(Libs.Test.junit)
+    testImplementation(Libs.Test.core)
+    androidTestImplementation(Libs.Test.runner)
+    androidTestImplementation(Libs.Test.rules)
+    androidTestImplementation(Libs.Test.espresso_core)
+    androidTestImplementation(Libs.Test.espresso_contrib)
+    androidTestImplementation(Libs.Test.uiautomator)
 }

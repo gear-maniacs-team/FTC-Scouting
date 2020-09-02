@@ -24,6 +24,19 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:id="@+id/btn_tournament_cancel"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@android:string/cancel"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/btn_tournament_action"
+        app:layout_constraintTop_toBottomOf="@+id/et_tournament_name" />
+
+    <Button
         android:id="@+id/btn_tournament_action"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"

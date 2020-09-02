@@ -50,6 +50,13 @@ object Libs {
     val apache_poi = "org.apache.poi:poi:4.0.1"
 
     // Tests
-    val tests_junit = "junit:junit:4.13"
-    val tests_androidx = "androidx.test:core:1.3.0"
+    object Test {
+        val junit = "junit:junit:4.13"
+        val core = "androidx.test:core:1.3.0"
+        val runner = "androidx.test.ext:junit:1.1.2"
+        val rules = "androidx.test:rules:1.3.0"
+        val espresso_core = "androidx.test.espresso:espresso-core:3.3.0"
+        val espresso_contrib = "androidx.test.espresso:espresso-contrib:3.3.0"
+        val uiautomator = "androidx.test.uiautomator:uiautomator:2.2.0"
+    }
 }

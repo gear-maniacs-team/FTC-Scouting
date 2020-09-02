@@ -68,7 +68,7 @@ class MainMenuDialog : RoundedBottomSheetDialogFragment() {
 
                 activity.alertDialog {
                     setTitle(R.string.confirm_sign_out)
-                    setTitle(R.string.confirm_sign_out_desc)
+                    setMessage(R.string.confirm_sign_out_desc)
                     setPositiveButton(R.string.action_sign_out) { _, _ ->
                         this@MainMenuDialog.dismiss()
                         Firebase.auth.signOut()

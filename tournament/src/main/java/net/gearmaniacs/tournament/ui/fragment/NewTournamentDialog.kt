@@ -43,6 +43,10 @@ class NewTournamentDialog : RoundedBottomSheetDialogFragment() {
         binding.etTournamentName.setText(defaultName)
         binding.etTournamentName.requestFocus()
 
+        binding.btnTournamentCancel.setOnClickListener {
+            dismiss()
+        }
+
         binding.btnTournamentAction.setOnClickListener {
             val name = binding.etTournamentName.textString
             actionButtonListener?.invoke(name)
