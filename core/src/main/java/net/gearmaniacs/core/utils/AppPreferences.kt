@@ -15,10 +15,10 @@ class AppPreferences @Inject constructor(
 
     val seenIntro = preferences.getBoolean(SEEN_INTRO)
 
-    val firstStartUp = preferences.getBoolean(FIRST_STARTUP, true)
+    val isLoggedIn = preferences.getBoolean(IS_LOGGED_IN, false)
 
     private companion object {
         private const val SEEN_INTRO = "key_intro_seen"
-        private const val FIRST_STARTUP = "key_first_start_up"
+        private const val IS_LOGGED_IN = "is_logged_in"
     }
 }

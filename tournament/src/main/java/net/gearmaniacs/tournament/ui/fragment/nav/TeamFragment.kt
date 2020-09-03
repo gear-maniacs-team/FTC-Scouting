@@ -38,7 +38,7 @@ internal class TeamFragment : AbstractTournamentFragment(R.layout.recycler_view_
         lastQuery = savedInstanceState?.getParcelable(BUNDLE_QUERY)
     }
 
-    override fun onInflateView(view: View) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val activity = requireActivity()
 
         val fab = activity.findViewById<FloatingActionButton>(R.id.fab)

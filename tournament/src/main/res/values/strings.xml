@@ -80,8 +80,8 @@
     <string name="spreadsheet_import">Import from Spreadsheet</string>
 
     <!-- Team Info -->
-    <string name="team_info_not_found">No team information found</string>
-    <string name="team_info_previous_not_found">No previous team information found</string>
+    <string name="team_details_not_found">No team details found</string>
+    <string name="team_details_previous_not_found">No previous team details found</string>
 
     <string name="color_marker">Color Marker:</string>
     <string name="color_default">Default</string>

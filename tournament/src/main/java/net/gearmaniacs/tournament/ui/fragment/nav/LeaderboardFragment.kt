@@ -1,5 +1,6 @@
 package net.gearmaniacs.tournament.ui.fragment.nav
 
+import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ConcatAdapter
@@ -30,7 +31,7 @@ internal class LeaderboardFragment : AbstractTournamentFragment(R.layout.recycle
     private var matchesList = emptyList<Match>()
     private var observedDataChanged = true
 
-    override fun onInflateView(view: View) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val activity = requireActivity()
 
         val fab = activity.findViewById<FloatingActionButton>(R.id.fab)

@@ -12,7 +12,7 @@ import net.gearmaniacs.ftcscouting.R
 import javax.inject.Inject
 import kotlin.coroutines.resume
 
-class TeamInfoRepository @Inject constructor(
+class AccountRepository @Inject constructor(
     private val userDataPreferences: UserDataPreferences
 ) {
 

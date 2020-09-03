@@ -15,7 +15,7 @@ import net.gearmaniacs.login.databinding.RegisterFragmentBinding
 import net.gearmaniacs.login.interfaces.LoginCallback
 
 @AndroidEntryPoint
-class RegisterFragment : Fragment(R.layout.register_fragment) {
+internal class RegisterFragment : Fragment() {
 
     private var _binding: RegisterFragmentBinding? = null
     private val binding get() = _binding!!
@@ -29,6 +29,10 @@ class RegisterFragment : Fragment(R.layout.register_fragment) {
     ): View {
         _binding = RegisterFragmentBinding.inflate(inflater, container, false)
         val view = binding.root
+
+        binding.toolbar.setNavigationOnClickListener {
+            loginCallback?.showBaseFragment()
+        }
 
         binding.btnEmailRegister.setOnClickListener {
             val etNumber = binding.etTeamNumber
@@ -73,7 +77,7 @@ class RegisterFragment : Fragment(R.layout.register_fragment) {
         }
 
         binding.btnAlreadyOwnAccount.setOnClickListener {
-            loginCallback?.switchFragment()
+            loginCallback?.showSignInFragment()
         }
 
         return view

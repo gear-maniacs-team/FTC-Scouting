@@ -2,7 +2,9 @@
     package="net.gearmaniacs.login">
 
     <application>
-        <activity android:name=".ui.activity.LoginActivity" />
+        <activity
+            android:name=".ui.activity.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar.Transparent" />
 
         <activity android:name=".ui.activity.ResetPasswordActivity" />
     </application>

@@ -1,5 +1,6 @@
 package net.gearmaniacs.tournament.ui.fragment.nav
 
+import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ConcatAdapter
@@ -22,7 +23,7 @@ internal class InfoFragment : AbstractTournamentFragment(R.layout.recycler_view_
 
     private val viewModel by activityViewModels<TournamentViewModel>()
 
-    override fun onInflateView(view: View) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val activity = requireActivity()
 
         val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
@@ -48,8 +49,9 @@ internal class InfoFragment : AbstractTournamentFragment(R.layout.recycler_view_
 
                 emptyViewAdapter.isVisible = it.isEmpty()
             }
-        } else {
             emptyViewAdapter.text = getString(R.string.empty_tab_info)
+        } else {
+            emptyViewAdapter.text = getString(R.string.team_details_not_found)
         }
     }
 

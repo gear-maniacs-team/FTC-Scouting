@@ -1,5 +1,6 @@
 package net.gearmaniacs.tournament.ui.fragment.nav
 
+import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
@@ -29,7 +30,7 @@ internal class MatchFragment
     private val viewModel by activityViewModels<TournamentViewModel>()
     private var nextMatchId = 1
 
-    override fun onInflateView(view: View) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val activity = activity ?: return
 
         val fab = activity.findViewById<FloatingActionButton>(R.id.fab)

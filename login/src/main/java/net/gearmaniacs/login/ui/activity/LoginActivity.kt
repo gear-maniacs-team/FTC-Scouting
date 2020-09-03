@@ -12,6 +12,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.alertDialog
+import net.gearmaniacs.core.extensions.hideKeyboard
 import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.isLoggedIn
@@ -20,8 +21,9 @@ import net.gearmaniacs.core.utils.AppPreferences
 import net.gearmaniacs.login.R
 import net.gearmaniacs.login.databinding.LoginActivityBinding
 import net.gearmaniacs.login.interfaces.LoginCallback
-import net.gearmaniacs.login.ui.fragment.LoginFragment
+import net.gearmaniacs.login.ui.fragment.LoginBaseFragment
 import net.gearmaniacs.login.ui.fragment.RegisterFragment
+import net.gearmaniacs.login.ui.fragment.SignInFragment
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -29,10 +31,12 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
 
     private lateinit var binding: LoginActivityBinding
     private lateinit var auth: FirebaseAuth
-    private var isLoginFragmentActive = true
 
-    private lateinit var loginFragment: LoginFragment
+    private lateinit var loginBaseFragment: LoginBaseFragment
+    private lateinit var signInFragment: SignInFragment
     private lateinit var registerFragment: RegisterFragment
+
+    private var activeFragmentTag = LoginBaseFragment.TAG
 
     @Inject
     lateinit var mainActivityClass: MainActivityClass
@@ -56,24 +60,11 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
             return
         }
 
-        binding.btnUseOffline.setOnClickListener {
-            alertDialog {
-                setTitle("Use offline Account?")
-                setMessage("")
-                // TODO Add a warning
-                setPositiveButton("Agree") { _, _ ->
-                    startMainActivity()
-                }
-                setNegativeButton(android.R.string.cancel, null)
-                show()
-            }
-        }
-
         initFragments(savedInstanceState)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putBoolean(BUNDLE_IS_LOGIN_ACTIVE, isLoginFragmentActive)
+        outState.putString(BUNDLE_FRAGMENT_ACTIVE, activeFragmentTag)
         super.onSaveInstanceState(outState)
     }
 
@@ -84,7 +75,12 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
             startMainActivity()
     }
 
-    override fun onLogin(email: String, password: String) {
+    override fun onBackPressed() {
+        if (activeFragmentTag == SignInFragment.TAG || activeFragmentTag == RegisterFragment.TAG)
+            showBaseFragment()
+    }
+
+    override fun onSignIn(email: String, password: String) {
         binding.pbLogin.isRefreshing = true
 
         auth.signInWithEmailAndPassword(email, password)
@@ -121,48 +117,54 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     override fun isWorking(): Boolean = binding.pbLogin.isRefreshing
 
     private fun initFragments(savedInstanceState: Bundle?) {
-        loginFragment =
-            supportFragmentManager.findFragmentByTag(LoginFragment.TAG) as? LoginFragment?
-                ?: LoginFragment()
+        loginBaseFragment =
+            supportFragmentManager.findFragmentByTag(LoginBaseFragment.TAG) as? LoginBaseFragment?
+                ?: LoginBaseFragment()
+
+        signInFragment =
+            supportFragmentManager.findFragmentByTag(SignInFragment.TAG) as? SignInFragment?
+                ?: SignInFragment()
 
         registerFragment =
             supportFragmentManager.findFragmentByTag(RegisterFragment.TAG) as? RegisterFragment?
                 ?: RegisterFragment()
 
+        loginBaseFragment.loginCallback = this
+        signInFragment.loginCallback = this
+        registerFragment.loginCallback = this
+
         val fade = MaterialFadeThrough().apply {
             duration = FADE_DURATION
         }
 
-        loginFragment.enterTransition = fade
+        signInFragment.enterTransition = fade
         registerFragment.enterTransition = fade
 
-        isLoginFragmentActive =
-            savedInstanceState?.getBoolean(BUNDLE_IS_LOGIN_ACTIVE, true) ?: true
+        activeFragmentTag =
+            savedInstanceState?.getString(BUNDLE_FRAGMENT_ACTIVE) ?: LoginBaseFragment.TAG
 
         supportFragmentManager.commit {
             if (savedInstanceState == null) {
-                add(R.id.fragment_placeholder, loginFragment, LoginFragment.TAG)
+                add(R.id.fragment_placeholder, loginBaseFragment, LoginBaseFragment.TAG)
+                add(R.id.fragment_placeholder, signInFragment, SignInFragment.TAG)
                 add(R.id.fragment_placeholder, registerFragment, RegisterFragment.TAG)
             }
 
-            if (isLoginFragmentActive) {
-                loginFragment.loginCallback = this@LoginActivity
-                hide(registerFragment)
-            } else {
-                registerFragment.loginCallback = this@LoginActivity
-                hide(loginFragment)
+            when (activeFragmentTag) {
+                SignInFragment.TAG -> {
+                    hide(loginBaseFragment)
+                    hide(registerFragment)
+                }
+                RegisterFragment.TAG -> {
+                    hide(loginBaseFragment)
+                    hide(signInFragment)
+                }
+                else -> {
+                    hide(signInFragment)
+                    hide(registerFragment)
+                }
             }
         }
-    }
-
-    override fun switchFragment() {
-        // Don't allow fragment switching while processing a request
-        if (binding.pbLogin.isRefreshing) return
-
-        if (!isLoginFragmentActive)
-            showLoginFragment()
-        else
-            showRegisterFragment()
     }
 
     private fun registerUser(userData: UserData) {
@@ -182,30 +184,57 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
             }
     }
 
-    private fun showLoginFragment() {
-        isLoginFragmentActive = true
-        loginFragment.loginCallback = this
-        registerFragment.loginCallback = null
+    override fun showSignInFragment() {
+        if (binding.pbLogin.isRefreshing) return
+        hideKeyboard()
+        activeFragmentTag = SignInFragment.TAG
 
         supportFragmentManager.commit {
-            show(loginFragment)
+            hide(loginBaseFragment)
+            show(signInFragment)
             hide(registerFragment)
         }
     }
 
-    private fun showRegisterFragment() {
-        isLoginFragmentActive = false
-        loginFragment.loginCallback = null
-        registerFragment.loginCallback = this
+    override fun showRegisterFragment() {
+        if (binding.pbLogin.isRefreshing) return
+        hideKeyboard()
+        activeFragmentTag = RegisterFragment.TAG
 
         supportFragmentManager.commit {
-            hide(loginFragment)
+            hide(loginBaseFragment)
+            hide(signInFragment)
             show(registerFragment)
         }
     }
 
+    override fun showBaseFragment() {
+        if (binding.pbLogin.isRefreshing) return
+        hideKeyboard()
+        activeFragmentTag = LoginBaseFragment.TAG
+
+        supportFragmentManager.commit {
+            show(loginBaseFragment)
+            hide(signInFragment)
+            hide(registerFragment)
+        }
+    }
+
+    override fun useOfflineAccount() {
+        alertDialog {
+            setTitle("Use offline Account?")
+            setMessage("")
+            // TODO Add a warning
+            setPositiveButton("Agree") { _, _ ->
+                startMainActivity()
+            }
+            setNegativeButton(android.R.string.cancel, null)
+            show()
+        }
+    }
+
     private fun startMainActivity() {
-        appPreferences.firstStartUp.set(false)
+        appPreferences.isLoggedIn.set(true)
 
         val mainActivityClass = Class.forName(mainActivityClass.value)
         val intent = Intent(this, mainActivityClass)
@@ -219,7 +248,7 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
 
         private const val TAG = "LoginActivity"
 
-        private const val BUNDLE_IS_LOGIN_ACTIVE = "login_fragment_active"
+        private const val BUNDLE_FRAGMENT_ACTIVE = "fragment_active"
     }
 
     class MainActivityClass(val value: String)

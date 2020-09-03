@@ -10,14 +10,14 @@ import net.gearmaniacs.core.extensions.isValidEmail
 import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.core.extensions.textString
 import net.gearmaniacs.login.R
-import net.gearmaniacs.login.databinding.LoginFragmentBinding
+import net.gearmaniacs.login.databinding.SignInFragmentBinding
 import net.gearmaniacs.login.interfaces.LoginCallback
 import net.gearmaniacs.login.ui.activity.ResetPasswordActivity
 
 @AndroidEntryPoint
-class LoginFragment : Fragment(R.layout.login_fragment) {
+internal class SignInFragment : Fragment() {
 
-    private var _binding: LoginFragmentBinding? = null
+    private var _binding: SignInFragmentBinding? = null
     private val binding get() = _binding!!
 
     var loginCallback: LoginCallback? = null
@@ -27,8 +27,12 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = LoginFragmentBinding.inflate(inflater, container, false)
+        _binding = SignInFragmentBinding.inflate(inflater, container, false)
         val view = binding.root
+
+        binding.toolbar.setNavigationOnClickListener {
+            loginCallback?.showBaseFragment()
+        }
 
         binding.btnEmailSignIn.setOnClickListener {
             val etEmail = binding.etEmail
@@ -45,11 +49,11 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
                 etPassword.error = getString(R.string.error_invalid_password)
 
             if (etEmail.error == null && etPassword.error == null)
-                loginCallback?.onLogin(email, password)
+                loginCallback?.onSignIn(email, password)
         }
 
         binding.btnNoAccount.setOnClickListener {
-            loginCallback?.switchFragment()
+            loginCallback?.showRegisterFragment()
         }
 
         binding.btnForgotPassword.setOnClickListener {
@@ -67,6 +71,6 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
     }
 
     companion object {
-        const val TAG = "LoginFragment"
+        const val TAG = "SignInFragment"
     }
 }

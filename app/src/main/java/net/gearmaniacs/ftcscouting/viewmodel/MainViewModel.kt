@@ -1,6 +1,5 @@
 package net.gearmaniacs.ftcscouting.viewmodel
 
-import android.content.Context
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
@@ -11,7 +10,6 @@ import kotlinx.coroutines.launch
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.utils.UserDataPreferences
 import net.gearmaniacs.ftcscouting.repository.MainRepository
-import net.theluckycoder.database.di.DatabaseModule
 
 class MainViewModel @ViewModelInject constructor(
     userDataPreferences: UserDataPreferences,
@@ -48,11 +46,6 @@ class MainViewModel @ViewModelInject constructor(
 
     fun deleteTournament(tournament: Tournament) = viewModelScope.launch(Dispatchers.IO) {
         repository.deleteTournament(tournament.key)
-    }
-
-    fun signOut(context: Context) = viewModelScope.launch(Dispatchers.IO) {
-        DatabaseModule.providesAppDatabase(context.applicationContext)
-            .clearAllTables()
     }
 
     override fun onCleared() {

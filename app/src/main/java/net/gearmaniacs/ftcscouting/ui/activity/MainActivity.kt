@@ -45,10 +45,10 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (appPreferences.firstStartUp.get()) {
+        if (!appPreferences.isLoggedIn.get()) {
             // If the user is already logged in
             if (Firebase.isLoggedIn)
-                appPreferences.firstStartUp.set(false)
+                appPreferences.isLoggedIn.set(true)
             else
                 return
         }
@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
             }.launch(Intent(this, IntroActivity::class.java))
             return
         }
-        if (appPreferences.firstStartUp.get()) {
+        if (!appPreferences.isLoggedIn.get()) {
             startActivity<LoginActivity>()
             return
         }

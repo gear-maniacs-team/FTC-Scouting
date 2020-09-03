@@ -20,6 +20,7 @@ import net.gearmaniacs.ftcscouting.ui.activity.AboutActivity
 import net.gearmaniacs.ftcscouting.ui.activity.AccountActivity
 import net.gearmaniacs.ftcscouting.viewmodel.MainViewModel
 import net.gearmaniacs.login.ui.activity.LoginActivity
+import net.theluckycoder.database.SignOutCleaner
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -72,7 +73,7 @@ class MainMenuDialog : RoundedBottomSheetDialogFragment() {
                     setPositiveButton(R.string.action_sign_out) { _, _ ->
                         this@MainMenuDialog.dismiss()
                         Firebase.auth.signOut()
-                        viewModel.signOut(activity)
+                        SignOutCleaner().run()
 
                         activity.startActivity<LoginActivity>()
                         activity.finish()

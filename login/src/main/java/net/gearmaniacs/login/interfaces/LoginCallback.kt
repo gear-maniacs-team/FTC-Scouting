@@ -2,13 +2,13 @@ package net.gearmaniacs.login.interfaces
 
 import net.gearmaniacs.core.model.UserData
 
-interface LoginCallback {
+internal interface LoginCallback : LoginBaseCallback {
 
-    fun onLogin(email: String, password: String)
+    fun onSignIn(email: String, password: String)
 
     fun onRegister(userData: UserData, email: String, password: String)
 
-    fun switchFragment()
+    fun showBaseFragment()
 
     fun isWorking(): Boolean
 }

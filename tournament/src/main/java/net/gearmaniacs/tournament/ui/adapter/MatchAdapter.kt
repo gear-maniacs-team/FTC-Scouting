@@ -58,6 +58,15 @@ internal class MatchAdapter(
         }
         val holder = MatchViewHolder(view)
 
+        holder.itemView.setOnLongClickListener {
+            val pos = holder.bindingAdapterPosition
+
+            if (pos != -1)
+                listener.onClickListener(getItem(pos))
+
+            true
+        }
+
         holder.btnEdit.setOnClickListener {
             val pos = holder.bindingAdapterPosition
 

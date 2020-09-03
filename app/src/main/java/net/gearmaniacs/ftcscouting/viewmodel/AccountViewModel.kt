@@ -1,7 +1,6 @@
 package net.gearmaniacs.ftcscouting.viewmodel
 
 import android.app.Application
-import android.content.Context
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,11 +10,10 @@ import kotlinx.coroutines.withContext
 import net.gearmaniacs.core.extensions.app
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.core.model.UserData
-import net.gearmaniacs.ftcscouting.repository.TeamInfoRepository
-import net.theluckycoder.database.di.DatabaseModule
+import net.gearmaniacs.ftcscouting.repository.AccountRepository
 
-class TeamInfoViewModel @ViewModelInject constructor(
-    private val repository: TeamInfoRepository,
+class AccountViewModel @ViewModelInject constructor(
+    private val repository: AccountRepository,
     application: Application
 ) : AndroidViewModel(application) {
 
@@ -25,10 +23,5 @@ class TeamInfoViewModel @ViewModelInject constructor(
         withContext(Dispatchers.Main) {
             app.toast(stringInt)
         }
-    }
-
-    fun signOut(context: Context) = viewModelScope.launch(Dispatchers.IO) {
-        DatabaseModule.providesAppDatabase(context.applicationContext)
-            .clearAllTables()
     }
 }

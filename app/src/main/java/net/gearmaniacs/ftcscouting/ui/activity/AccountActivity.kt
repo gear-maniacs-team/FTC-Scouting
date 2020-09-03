@@ -34,13 +34,14 @@ import net.gearmaniacs.core.model.isNullOrEmpty
 import net.gearmaniacs.core.utils.UserDataPreferences
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.databinding.AccountActivityBinding
-import net.gearmaniacs.ftcscouting.viewmodel.TeamInfoViewModel
+import net.gearmaniacs.ftcscouting.viewmodel.AccountViewModel
+import net.theluckycoder.database.SignOutCleaner
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class AccountActivity : AppCompatActivity() {
 
-    private val viewModel by viewModels<TeamInfoViewModel>()
+    private val viewModel by viewModels<AccountViewModel>()
     private lateinit var binding: AccountActivityBinding
 
     @Inject
@@ -76,7 +77,7 @@ class AccountActivity : AppCompatActivity() {
                 setMessage(R.string.confirm_sign_out_desc)
                 setPositiveButton(R.string.action_sign_out) { _, _ ->
                     Firebase.auth.signOut()
-                    viewModel.signOut(this@AccountActivity)
+                    SignOutCleaner().run()
                 }
                 setNegativeButton(android.R.string.cancel, null)
                 show()
@@ -86,7 +87,7 @@ class AccountActivity : AppCompatActivity() {
         val originalUserData = userDataPreferences.userTeam
 
         if (originalUserData.isNullOrEmpty()) {
-            longToast(R.string.team_info_previous_not_found)
+            longToast(R.string.team_details_previous_not_found)
         } else {
             binding.etTeamNumber.setText(originalUserData.id.toString())
             binding.etTeamName.setText(originalUserData.teamName)
@@ -102,7 +103,7 @@ class AccountActivity : AppCompatActivity() {
             if (teamName.isEmpty())
                 binding.etTeamName.error = getString(R.string.error_invalid_team_name)
 
-            if (binding.etTeamNumber.error == null || binding.etTeamName.error == null)
+            if (binding.etTeamNumber.error != null || binding.etTeamName.error != null)
                 return@setOnClickListener
 
             viewModel.updateUserData(UserData(number, teamName))
