@@ -26,7 +26,7 @@ import kotlinx.coroutines.tasks.await
 import net.gearmaniacs.core.extensions.alertDialog
 import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.extensions.textString
-import net.gearmaniacs.core.extensions.toIntOrDefault
+import net.gearmaniacs.core.extensions.toIntOrElse
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.model.UserData
@@ -94,7 +94,7 @@ class AccountActivity : AppCompatActivity() {
         }
 
         binding.btnUpdateTeamDetails.setOnClickListener {
-            val number = binding.etTeamNumber.textString.toIntOrDefault(-1)
+            val number = binding.etTeamNumber.textString.toIntOrElse(-1)
             val teamName = binding.etTeamName.textString.trim()
 
             if (number < 0)

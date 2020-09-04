@@ -13,11 +13,14 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.transition.TransitionManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import net.gearmaniacs.core.view.CounterView
 import net.gearmaniacs.core.extensions.textString
-import net.gearmaniacs.core.extensions.toIntOrDefault
+import net.gearmaniacs.core.extensions.toIntOrElse
 import net.gearmaniacs.core.model.AutonomousData
 import net.gearmaniacs.core.model.ColorMarker
 import net.gearmaniacs.core.model.EndGameData
@@ -78,6 +81,10 @@ internal class EditTeamDialog : DialogFragment() {
     private var teleOpScore = 0
     private var endGameScore = 0
 
+    init {
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
@@ -89,25 +96,20 @@ internal class EditTeamDialog : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = EditTeamDialogBinding.inflate(inflater, container, false)
-        val view = binding.root
 
-        binding.bottomBar.setNavigationIcon(R.drawable.ic_close)
         binding.bottomBar.setNavigationOnClickListener { dismiss() }
-
         binding.bottomBar.doOnPreDraw { bottom_bar ->
             binding.content.layoutContent.updatePadding(bottom = (bottom_bar.height * 1.6f).toInt())
         }
 
-        return view
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        if (!transitionPlayed) {
-            transitionPlayed = true
-            dialog?.window?.setWindowAnimations(R.style.FullScreenDialogStyle)
+        lifecycleScope.launch {
+            delay(50L)
+            binding.fabDone.hide()
+            delay(400L)
+            binding.fabDone.show()
         }
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -121,7 +123,7 @@ internal class EditTeamDialog : DialogFragment() {
             updateTotalScore()
         }
 
-        binding.fabEditTeamDone.setOnClickListener {
+        binding.fabDone.setOnClickListener {
             // Parse Team data
             val autonomousData = parseAutonomousData(content)
             val teleOpData = parseTeleOpData(content)
@@ -136,7 +138,7 @@ internal class EditTeamDialog : DialogFragment() {
             val notesText = content.etNotes.textString
             val parsedTeam = Team(
                 key = team?.key.orEmpty(),
-                id = content.etTeamNumber.textString.toIntOrDefault(),
+                id = content.etTeamNumber.textString.toIntOrElse(),
                 name = content.etTeamName.textString,
                 autonomousData = autonomousData.takeIf { it.isNotEmpty() },
                 teleOpData = teleOpData.takeIf { it.isNotEmpty() },
@@ -160,6 +162,15 @@ internal class EditTeamDialog : DialogFragment() {
         updateTeleOpScore(teleOpScore)
         updateEndGameScore(endGameScore)
         updateTotalScore()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        if (!transitionPlayed) {
+            transitionPlayed = true
+            dialog?.window?.setWindowAnimations(R.style.FullScreenDialogStyle)
+        }
     }
 
     override fun onDestroy() {
@@ -258,16 +269,16 @@ internal class EditTeamDialog : DialogFragment() {
     )
 
     private fun parseTeleOpData(content: EditTeamContentDialogBinding) = TeleOpData(
-        content.etDeliveredStones.textString.toIntOrDefault(),
-        content.etPlacedStones.textString.toIntOrDefault(),
-        content.etSkyscraperHeight.textString.toIntOrDefault()
+        content.etDeliveredStones.textString.toIntOrElse(),
+        content.etPlacedStones.textString.toIntOrElse(),
+        content.etSkyscraperHeight.textString.toIntOrElse()
     )
 
     private fun parseEndGameData(): EndGameData {
         val content = binding.content
         val capLevel =
             if (content.swCapPlaced.isChecked) content.etCapLevel.textString
-                .toIntOrDefault() else -1
+                .toIntOrElse() else -1
 
         return EndGameData(
             content.swMoveFoundation.isChecked,

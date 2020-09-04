@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.isValidEmail
 import net.gearmaniacs.core.extensions.textString
-import net.gearmaniacs.core.extensions.toIntOrDefault
+import net.gearmaniacs.core.extensions.toIntOrElse
 import net.gearmaniacs.core.model.UserData
 import net.gearmaniacs.login.R
 import net.gearmaniacs.login.databinding.RegisterFragmentBinding
@@ -41,7 +41,7 @@ internal class RegisterFragment : Fragment() {
             val etPassword = binding.etPassword
             val etConfirmPassword = binding.etConfirmPassword
 
-            val number = etNumber.textString.toIntOrDefault(-1)
+            val number = etNumber.textString.toIntOrElse(-1)
             val name = etName.textString
             val email = etEmail.textString
             val password = etPassword.textString

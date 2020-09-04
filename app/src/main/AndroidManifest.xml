@@ -11,7 +11,7 @@
     <queries>
         <intent>
             <action android:name="android.intent.action.SENDTO" />
-            <data android:mimeType="text/*" />
+            <data android:mimeType="text/plain" />
         </intent>
     </queries>
 

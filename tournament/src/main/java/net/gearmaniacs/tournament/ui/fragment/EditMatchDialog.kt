@@ -8,9 +8,12 @@ import androidx.core.view.doOnPreDraw
 import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import net.gearmaniacs.core.extensions.textString
-import net.gearmaniacs.core.extensions.toIntOrDefault
+import net.gearmaniacs.core.extensions.toIntOrElse
 import net.gearmaniacs.core.model.Alliance
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.tournament.R
@@ -46,11 +49,16 @@ internal class EditMatchDialog : DialogFragment() {
         _binding = EditMatchDialogBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        binding.bottomBar.setNavigationIcon(R.drawable.ic_close)
         binding.bottomBar.setNavigationOnClickListener { dismiss() }
-
         binding.bottomBar.doOnPreDraw { bottom_bar ->
             binding.content.layoutContent.updatePadding(bottom = (bottom_bar.height * 1.6f).toInt())
+        }
+
+        lifecycleScope.launch {
+            delay(50L)
+            binding.fabDone.hide()
+            delay(400L)
+            binding.fabDone.show()
         }
 
         return view
@@ -72,23 +80,23 @@ internal class EditMatchDialog : DialogFragment() {
 
         content.etMatchNumber.setText(nextMatchId.toString())
 
-        binding.fabEditMatchDone.setOnClickListener {
+        binding.fabDone.setOnClickListener {
             // Parse Match data
             val redAlliance = Alliance(
-                firstTeam = content.etRedFirstTeam.textString.toIntOrDefault(),
-                secondTeam = content.etRedSecondTeam.textString.toIntOrDefault(),
-                score = content.etRedScore.textString.toIntOrDefault()
+                firstTeam = content.etRedFirstTeam.textString.toIntOrElse(),
+                secondTeam = content.etRedSecondTeam.textString.toIntOrElse(),
+                score = content.etRedScore.textString.toIntOrElse()
             )
 
             val blueAlliance = Alliance(
-                firstTeam = content.etBlueFirstTeam.textString.toIntOrDefault(),
-                secondTeam = content.etBlueSecondTeam.textString.toIntOrDefault(),
-                score = content.etBlueScore.textString.toIntOrDefault()
+                firstTeam = content.etBlueFirstTeam.textString.toIntOrElse(),
+                secondTeam = content.etBlueSecondTeam.textString.toIntOrElse(),
+                score = content.etBlueScore.textString.toIntOrElse()
             )
 
             val parsedMatch = Match(
                 match?.key.orEmpty(),
-                id = content.etMatchNumber.textString.toIntOrDefault(),
+                id = content.etMatchNumber.textString.toIntOrElse(),
                 redAlliance = redAlliance,
                 blueAlliance = blueAlliance
             )
