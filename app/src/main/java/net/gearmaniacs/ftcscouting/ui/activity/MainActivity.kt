@@ -71,16 +71,6 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (!isLoggedIn) {
-            // If the user is already logged in
-            if (Firebase.isLoggedIn) {
-                lifecycleScope.launch {
-                    appPreferences.setLoggedIn(true)
-                }
-            } else
-                return
-        }
-
         binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.bottomAppBar)
@@ -132,12 +122,14 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
 
     override fun onStart() {
         super.onStart()
-        if (!isLoggedIn) {
-            startActivity<LoginActivity>()
-            return
+        if (isLoggedIn)
+            viewModel.startListening()
+        else {
+            if (Firebase.isLoggedIn) {
+                lifecycleScope.launch { appPreferences.setLoggedIn(true) }
+            } else
+                startActivity<LoginActivity>()
         }
-
-        viewModel.startListening()
     }
 
     override fun onStop() {

@@ -67,7 +67,6 @@ abstract class TournamentsDao {
         if (listToInsert.isNotEmpty())
             insert(list)
 
-        //val commonKeys = currentKeysSet intersect newKeysSet
         currentKeysSet.retainAll(newKeysSet)
         val listToUpdate = list
             .filter { currentKeysSet.contains(it.key) && !currentList.contains(it) }

@@ -9,6 +9,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.alertDialog
 import net.gearmaniacs.core.extensions.startActivity
@@ -20,6 +21,7 @@ import net.gearmaniacs.ftcscouting.ui.activity.AccountActivity
 import net.gearmaniacs.ftcscouting.viewmodel.MainViewModel
 import net.gearmaniacs.login.ui.activity.LoginActivity
 import net.theluckycoder.database.SignOutCleaner
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainMenuDialog : RoundedBottomSheetDialogFragment() {
@@ -28,6 +30,9 @@ class MainMenuDialog : RoundedBottomSheetDialogFragment() {
     private val binding get() = _binding!!
 
     private val viewModel by activityViewModels<MainViewModel>()
+
+    @Inject
+    lateinit var signOutCleaner: Lazy<SignOutCleaner>
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).also {
@@ -69,7 +74,7 @@ class MainMenuDialog : RoundedBottomSheetDialogFragment() {
                     setPositiveButton(R.string.action_sign_out) { _, _ ->
                         this@MainMenuDialog.dismiss()
                         Firebase.auth.signOut()
-                        SignOutCleaner().run()
+                        signOutCleaner.get().run()
 
                         activity.startActivity<LoginActivity>()
                         activity.finish()

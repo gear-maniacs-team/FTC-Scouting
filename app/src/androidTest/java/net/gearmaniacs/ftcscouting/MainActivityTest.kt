@@ -27,8 +27,8 @@ class MainActivityTest {
     fun testSetup() {
         activity.scenario.onActivity {
             runBlocking {
-                it.appPreferences.isLoggedIn.setAndCommit(true)
-                it.appPreferences.seenIntro.setAndCommit(true)
+                it.appPreferences.setLoggedIn(true)
+                it.appPreferences.setSeenIntro(true)
             }
         }
     }

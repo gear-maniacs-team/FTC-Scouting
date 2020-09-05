@@ -20,6 +20,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -37,6 +38,7 @@ import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.databinding.AccountActivityBinding
 import net.gearmaniacs.ftcscouting.viewmodel.AccountViewModel
 import net.theluckycoder.database.SignOutCleaner
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AccountActivity : AppCompatActivity() {
@@ -45,6 +47,9 @@ class AccountActivity : AppCompatActivity() {
     private lateinit var binding: AccountActivityBinding
 
     private var linkedWithGoogle = false
+
+    @Inject
+    lateinit var signOutCleaner: Lazy<SignOutCleaner>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +79,7 @@ class AccountActivity : AppCompatActivity() {
                 setMessage(R.string.confirm_sign_out_desc)
                 setPositiveButton(R.string.action_sign_out) { _, _ ->
                     Firebase.auth.signOut()
-                    SignOutCleaner().run()
+                    signOutCleaner.get().run()
                 }
                 setNegativeButton(android.R.string.cancel, null)
                 show()
@@ -90,7 +95,7 @@ class AccountActivity : AppCompatActivity() {
             binding.etTeamName.setText(originalUserData.teamName)
         }
 
-        binding.btnUpdateTeamDetails.setOnClickListener {
+        binding.btnUpdateUserTeam.setOnClickListener {
             val number = binding.etTeamNumber.textString.toIntOrElse(-1)
             val teamName = binding.etTeamName.textString.trim()
 
