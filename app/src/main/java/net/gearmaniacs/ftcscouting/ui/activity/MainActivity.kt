@@ -9,16 +9,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import net.gearmaniacs.core.extensions.alertDialog
 import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.model.Tournament
-import net.gearmaniacs.core.model.UserData
+import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.core.utils.AppPreferences
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.databinding.MainActivityBinding
@@ -37,19 +41,43 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
     private lateinit var binding: MainActivityBinding
     private val viewModel by viewModels<MainViewModel>()
 
-    private lateinit var userData: UserData
+    private lateinit var userTeam: UserTeam
+
+    private var isLoggedIn = false
 
     @Inject
     lateinit var appPreferences: AppPreferences
 
+    init {
+        lifecycleScope.launchWhenCreated {
+            appPreferences.isLoggedInFlow.collect { isLoggedIn = it }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            val hasSeenIntro = appPreferences.seenIntroFlow.first()
+
+            if (!hasSeenIntro) {
+                registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                    if (result.resultCode == RESULT_OK) {
+                        lifecycleScope.launch { appPreferences.setSeenIntro(true) }
+                    } else {
+                        finish()
+                    }
+                }.launch(Intent(this@MainActivity, IntroActivity::class.java))
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (!appPreferences.isLoggedIn.get()) {
+        if (!isLoggedIn) {
             // If the user is already logged in
-            if (Firebase.isLoggedIn)
-                appPreferences.isLoggedIn.set(true)
-            else
+            if (Firebase.isLoggedIn) {
+                lifecycleScope.launch {
+                    appPreferences.setLoggedIn(true)
+                }
+            } else
                 return
         }
 
@@ -92,9 +120,9 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
             }
         }
 
-        observe(viewModel.getUserLiveData()) {
+        observe(viewModel.getUserTeamLiveData()) {
             if (it != null)
-                userData = it
+                userTeam = it
         }
 
         observe(viewModel.getTournamentsLiveData()) { list ->
@@ -104,17 +132,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
 
     override fun onStart() {
         super.onStart()
-        if (!appPreferences.seenIntro.get()) {
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == RESULT_OK) {
-                    appPreferences.seenIntro.set(true)
-                } else {
-                    finish()
-                }
-            }.launch(Intent(this, IntroActivity::class.java))
-            return
-        }
-        if (!appPreferences.isLoggedIn.get()) {
+        if (!isLoggedIn) {
             startActivity<LoginActivity>()
             return
         }
@@ -128,7 +146,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
     }
 
     override fun onClickListener(item: Tournament) {
-        TournamentActivity.startActivity(this, userData, item)
+        TournamentActivity.startActivity(this, userTeam, item)
     }
 
     override fun onLongClickListener(item: Tournament) {

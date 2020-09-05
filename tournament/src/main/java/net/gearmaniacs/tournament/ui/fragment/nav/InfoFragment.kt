@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.observeNonNull
-import net.gearmaniacs.core.model.UserData
+import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.core.model.isNullOrEmpty
 import net.gearmaniacs.core.utils.EmptyViewAdapter
 import net.gearmaniacs.core.view.FabRecyclerView
@@ -41,7 +41,7 @@ internal class InfoFragment : AbstractTournamentFragment(R.layout.recycler_view_
             adapter = ConcatAdapter(emptyViewAdapter, infoAdapter)
         }
 
-        val user = activity.intent.getParcelableExtra<UserData>(TournamentActivity.ARG_USER)
+        val user = activity.intent.getParcelableExtra<UserTeam>(TournamentActivity.ARG_USER)
 
         if (!user.isNullOrEmpty()) {
             activity.observeNonNull(viewModel.getInfoLiveData(user)) {

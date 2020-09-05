@@ -6,7 +6,7 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
 @Parcelize
-data class UserData(
+data class UserTeam(
     val id: Int,
     val teamName: String
 ) : Parcelable {
@@ -14,11 +14,11 @@ data class UserData(
     constructor() : this(-1, "")
 }
 
-val UserData.isEmpty: Boolean
+val UserTeam.isEmpty: Boolean
     get() = id == -1 && teamName.isEmpty()
 
 @OptIn(ExperimentalContracts::class)
-fun UserData?.isNullOrEmpty(): Boolean {
+fun UserTeam?.isNullOrEmpty(): Boolean {
     contract {
         returns(false) implies (this@isNullOrEmpty != null)
     }

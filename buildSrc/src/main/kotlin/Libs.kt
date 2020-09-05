@@ -20,6 +20,8 @@ object Libs {
     val androidx_livedata = "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.lifecycle}"
     val androidx_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.lifecycle}"
 
+    val datastore_preferences = "androidx.datastore:datastore-preferences:1.0.0-alpha01"
+
     // Room
     val room_runtime = "androidx.room:room-runtime:${Versions.room}"
     val room_ktx = "androidx.room:room-ktx:${Versions.room}"
@@ -46,7 +48,6 @@ object Libs {
     val material_intro = "com.heinrichreimersoftware:material-intro:2.0.0"
     val material_about = "com.github.daniel-stoneuk:material-about-library:3.2.0-rc01"
     val licenser = "com.github.marcoscgdev:Licenser:2.0.0"
-    val flow_preferences = "com.github.tfcporciuncula:flow-preferences:1.3.2"
     val apache_poi = "org.apache.poi:poi:4.0.1"
 
     // Tests

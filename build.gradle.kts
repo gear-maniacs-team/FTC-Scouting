@@ -23,7 +23,7 @@ allprojects {
 }
 
 plugins {
-    id("com.github.ben-manes.versions") version "0.29.0"
+    id("com.github.ben-manes.versions") version "0.30.0"
 }
 
 tasks.register("clean", Delete::class) {

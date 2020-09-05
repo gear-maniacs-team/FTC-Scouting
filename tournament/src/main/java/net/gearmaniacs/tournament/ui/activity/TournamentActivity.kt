@@ -27,7 +27,7 @@ import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.Tournament
-import net.gearmaniacs.core.model.UserData
+import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.databinding.TournamentActivityBinding
 import net.gearmaniacs.tournament.ui.fragment.AbstractTournamentFragment
@@ -274,9 +274,9 @@ class TournamentActivity : AppCompatActivity() {
 
         private const val SAVED_FRAGMENT_INDEX = "tournament_key"
 
-        fun startActivity(context: Context, userData: UserData, tournament: Tournament) {
+        fun startActivity(context: Context, userTeam: UserTeam, tournament: Tournament) {
             val intent = Intent(context, TournamentActivity::class.java).apply {
-                putExtra(ARG_USER, userData)
+                putExtra(ARG_USER, userTeam)
                 putExtra(ARG_TOURNAMENT_KEY, tournament.key)
             }
 

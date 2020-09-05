@@ -61,11 +61,11 @@ dependencies {
     api(Libs.androidx_livedata)
     api(Libs.androidx_viewmodel)
 
+    api(Libs.datastore_preferences)
+
     api(Libs.firebase_analytics)
     api(Libs.firebase_auth)
     api(Libs.firebase_database)
-
-    api(Libs.flow_preferences)
 
     api(Libs.room_runtime)
     api(Libs.room_ktx)

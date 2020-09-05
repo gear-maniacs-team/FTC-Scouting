@@ -13,7 +13,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.alertDialog
 import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.core.utils.RoundedBottomSheetDialogFragment
-import net.gearmaniacs.core.utils.UserDataPreferences
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.databinding.MainMenuDialogBinding
 import net.gearmaniacs.ftcscouting.ui.activity.AboutActivity
@@ -21,7 +20,6 @@ import net.gearmaniacs.ftcscouting.ui.activity.AccountActivity
 import net.gearmaniacs.ftcscouting.viewmodel.MainViewModel
 import net.gearmaniacs.login.ui.activity.LoginActivity
 import net.theluckycoder.database.SignOutCleaner
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainMenuDialog : RoundedBottomSheetDialogFragment() {
@@ -31,13 +29,10 @@ class MainMenuDialog : RoundedBottomSheetDialogFragment() {
 
     private val viewModel by activityViewModels<MainViewModel>()
 
-    @Inject
-    lateinit var userDataPreferences: UserDataPreferences
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        setExpanded(dialog)
-        return dialog
+        return super.onCreateDialog(savedInstanceState).also {
+            setExpanded(it)
+        }
     }
 
     override fun onCreateView(
@@ -57,8 +52,9 @@ class MainMenuDialog : RoundedBottomSheetDialogFragment() {
             binding.layoutAccount.isVisible = false
         } else {
             val defaultDisplayName = currentUser.displayName
+            val teamName = viewModel.getUserTeamLiveData().value?.teamName.orEmpty()
             val displayName: String =
-                if (defaultDisplayName.isNullOrBlank()) userDataPreferences.userTeamName.get() else defaultDisplayName
+                if (defaultDisplayName.isNullOrBlank()) teamName else defaultDisplayName
 
             binding.btnAccountSignIn.isVisible = false
             binding.tvAccountName.text = displayName
@@ -94,7 +90,7 @@ class MainMenuDialog : RoundedBottomSheetDialogFragment() {
 
         binding.btnTeamInfo.setOnClickListener {
             dismiss()
-            requireActivity().startActivity<AccountActivity>()
+            AccountActivity.startActivity(requireContext(), viewModel.getUserTeamLiveData().value)
         }
 
         binding.btnAbout.setOnClickListener {

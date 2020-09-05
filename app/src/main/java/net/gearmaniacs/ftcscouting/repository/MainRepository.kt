@@ -16,10 +16,10 @@ import net.gearmaniacs.core.firebase.listValueEventFlow
 import net.gearmaniacs.core.firebase.valueEventFlow
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.Tournament
-import net.gearmaniacs.core.model.UserData
+import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.core.model.isNullOrEmpty
 import net.gearmaniacs.core.utils.AbstractListenerRepository
-import net.gearmaniacs.core.utils.UserDataPreferences
+import net.gearmaniacs.core.utils.UserTeamPreferences
 import net.theluckycoder.database.dao.TeamsDao
 import net.theluckycoder.database.dao.TournamentsDao
 import javax.inject.Inject
@@ -28,7 +28,7 @@ import javax.inject.Inject
 class MainRepository @Inject constructor(
     private val tournamentsDao: TournamentsDao,
     private val teamsDao: TeamsDao,
-    private val userDataPreferences: UserDataPreferences
+    private val userDataPreferences: UserTeamPreferences
 ) : AbstractListenerRepository() {
 
     private val tournamentsReference by lazy {
@@ -48,7 +48,7 @@ class MainRepository @Inject constructor(
 
     val tournamentsFlow = tournamentsDao.getAllFlow()
 
-    suspend fun createNewTournament(userData: UserData?, tournamentName: String) {
+    suspend fun createNewTournament(userTeam: UserTeam?, tournamentName: String) {
         val tournamentKey = if (Firebase.isLoggedIn) {
             val ref = tournamentsReference!!
                 .child(DatabasePaths.KEY_TOURNAMENTS)
@@ -60,9 +60,9 @@ class MainRepository @Inject constructor(
 
         tournamentsDao.insert(Tournament(tournamentKey, tournamentName))
 
-        if (!userData.isNullOrEmpty()) {
+        if (!userTeam.isNullOrEmpty()) {
             val teamKey = Firebase.generatePushId()
-            val team = Team(teamKey, tournamentKey, userData.id, userData.teamName)
+            val team = Team(teamKey, tournamentKey, userTeam.id, userTeam.teamName)
 
             teamsDao.insert(team)
 
@@ -100,11 +100,9 @@ class MainRepository @Inject constructor(
         if (!Firebase.isLoggedIn) return
 
         scope.launch {
-            userReference!!.valueEventFlow<UserData>().safeCollect {
-                if (it != null) {
-                    userDataPreferences.userTeamNumber.setAndCommit(it.id)
-                    userDataPreferences.userTeamName.setAndCommit(it.teamName)
-                }
+            userReference!!.valueEventFlow<UserTeam>().safeCollect {
+                if (it != null)
+                    userDataPreferences.updateUserTeam(it)
             }
         }
 

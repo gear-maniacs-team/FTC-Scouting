@@ -22,6 +22,10 @@ abstract class TournamentsDao {
     @Query("SELECT * from skystone_tournament WHERE `key` = :tournamentKey")
     abstract fun getFlow(tournamentKey: String): Flow<Tournament?>
 
+    /*
+     * Avoid using OnConflictStrategy.REPLACE for Tournaments insertion
+     * It will delete all teams and matches linked to that Tournament on replacement
+     */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun insert(tournament: Tournament)
 
@@ -45,7 +49,11 @@ abstract class TournamentsDao {
 
     @Transaction
     open suspend fun replaceAll(list: List<Tournament>) {
-        // TODO: Find a way to improve this?
+        // TODO: Find a way to improve this
+        // Because of how the parent-child relation between Tournament and Team and Match
+        // We cannot just delete everything and insert the new list
+        // Instead we have to execute the insertions, deletion and updates individually
+
         val currentList = getAll()
         val currentKeysSet = currentList.mapTo(HashSet(currentList.size)) { it.key }
 
@@ -59,10 +67,11 @@ abstract class TournamentsDao {
         if (listToInsert.isNotEmpty())
             insert(list)
 
-        val commonKeys = currentKeysSet intersect newKeysSet
+        //val commonKeys = currentKeysSet intersect newKeysSet
+        currentKeysSet.retainAll(newKeysSet)
         val listToUpdate = list
-            .filter { commonKeys.contains(it.key) }
-            .filterNot { currentList.contains(it) }
+            .filter { currentKeysSet.contains(it.key) && !currentList.contains(it) }
+
         if (listToUpdate.isNotEmpty())
             update(listToUpdate)
     }

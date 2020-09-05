@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.gearmaniacs.core.extensions.app
 import net.gearmaniacs.core.extensions.toast
-import net.gearmaniacs.core.model.UserData
+import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.ftcscouting.repository.AccountRepository
 
 class AccountViewModel @ViewModelInject constructor(
@@ -17,8 +17,8 @@ class AccountViewModel @ViewModelInject constructor(
     application: Application
 ) : AndroidViewModel(application) {
 
-    fun updateUserData(userData: UserData) = viewModelScope.launch(Dispatchers.IO) {
-        val stringInt = repository.updateUserData(userData)
+    fun updateUserData(userTeam: UserTeam) = viewModelScope.launch(Dispatchers.IO) {
+        val stringInt = repository.updateUserData(userTeam)
 
         withContext(Dispatchers.Main) {
             app.toast(stringInt)

@@ -15,6 +15,7 @@ import com.heinrichreimersoftware.materialintro.app.SlideFragment
 import com.heinrichreimersoftware.materialintro.slide.FragmentSlide
 import com.heinrichreimersoftware.materialintro.slide.SimpleSlide
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.runBlocking
 import net.gearmaniacs.core.extensions.justTry
 import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.utils.AppPreferences
@@ -59,7 +60,7 @@ class IntroActivity : IntroActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (appPreferences.seenIntro.get()) {
+        if (runBlocking { appPreferences.seenIntro() }) {
             finish()
             return
         }

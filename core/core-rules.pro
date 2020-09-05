@@ -5,4 +5,4 @@
 -keepclassmembers class net.gearmaniacs.core.model.TeleOpData { *; }
 -keepclassmembers class net.gearmaniacs.core.model.EndGameData { *; }
 -keepclassmembers class net.gearmaniacs.core.model.Team { *; }
--keepclassmembers class net.gearmaniacs.core.model.UserData { *; }
+-keepclassmembers class net.gearmaniacs.core.model.UserTeam { *; }

@@ -5,18 +5,20 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.transition.MaterialFadeThrough
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import net.gearmaniacs.core.extensions.alertDialog
 import net.gearmaniacs.core.extensions.hideKeyboard
 import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.isLoggedIn
-import net.gearmaniacs.core.model.UserData
+import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.core.utils.AppPreferences
 import net.gearmaniacs.login.R
 import net.gearmaniacs.login.databinding.LoginActivityBinding
@@ -97,7 +99,7 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
             }
     }
 
-    override fun onRegister(userData: UserData, email: String, password: String) {
+    override fun onRegister(userTeam: UserTeam, email: String, password: String) {
         binding.pbLogin.isRefreshing = true
 
         auth.createUserWithEmailAndPassword(email, password)
@@ -106,7 +108,7 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
 
                 if (task.isSuccessful) {
                     Log.d(TAG, "registerWithEmail:success")
-                    registerUser(userData)
+                    registerUser(userTeam)
                 } else {
                     Log.w(TAG, "registerWithEmail:failure")
                     longToast("Registration failed.")
@@ -167,11 +169,11 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
         }
     }
 
-    private fun registerUser(userData: UserData) {
+    private fun registerUser(userTeam: UserTeam) {
         Firebase.database
             .getReference(DatabasePaths.KEY_USERS)
             .child(auth.currentUser!!.uid)
-            .setValue(userData) { error, _ ->
+            .setValue(userTeam) { error, _ ->
                 binding.pbLogin.isRefreshing = false
 
                 if (error == null) {
@@ -234,7 +236,9 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     }
 
     private fun startMainActivity() {
-        appPreferences.isLoggedIn.set(true)
+        lifecycleScope.launch {
+            appPreferences.setLoggedIn(true)
+        }
 
         val mainActivityClass = Class.forName(mainActivityClass.value)
         val intent = Intent(this, mainActivityClass)

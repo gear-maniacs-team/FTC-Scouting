@@ -6,19 +6,18 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.isLoggedIn
-import net.gearmaniacs.core.model.UserData
-import net.gearmaniacs.core.utils.UserDataPreferences
+import net.gearmaniacs.core.model.UserTeam
+import net.gearmaniacs.core.utils.UserTeamPreferences
 import net.gearmaniacs.ftcscouting.R
 import javax.inject.Inject
 import kotlin.coroutines.resume
 
 class AccountRepository @Inject constructor(
-    private val userDataPreferences: UserDataPreferences
+    private val userDataPreferences: UserTeamPreferences
 ) {
 
-    suspend fun updateUserData(userData: UserData): Int {
-        userDataPreferences.userTeamNumber.set(userData.id)
-        userDataPreferences.userTeamName.set(userData.teamName)
+    suspend fun updateUserData(userTeam: UserTeam): Int {
+        userDataPreferences.updateUserTeam(userTeam)
 
         if (!Firebase.isLoggedIn)
             return R.string.team_details_updated
@@ -26,7 +25,7 @@ class AccountRepository @Inject constructor(
         val task = Firebase.database
             .getReference(DatabasePaths.KEY_USERS)
             .child(Firebase.auth.currentUser!!.uid)
-            .setValue(userData)
+            .setValue(userTeam)
 
         return suspendCancellableCoroutine { cont ->
 

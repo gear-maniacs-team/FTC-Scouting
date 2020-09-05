@@ -1,5 +1,7 @@
 package net.gearmaniacs.ftcscouting.ui.activity
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -29,23 +31,18 @@ import net.gearmaniacs.core.extensions.textString
 import net.gearmaniacs.core.extensions.toIntOrElse
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.core.firebase.isLoggedIn
-import net.gearmaniacs.core.model.UserData
+import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.core.model.isNullOrEmpty
-import net.gearmaniacs.core.utils.UserDataPreferences
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.databinding.AccountActivityBinding
 import net.gearmaniacs.ftcscouting.viewmodel.AccountViewModel
 import net.theluckycoder.database.SignOutCleaner
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class AccountActivity : AppCompatActivity() {
 
     private val viewModel by viewModels<AccountViewModel>()
     private lateinit var binding: AccountActivityBinding
-
-    @Inject
-    lateinit var userDataPreferences: UserDataPreferences
 
     private var linkedWithGoogle = false
 
@@ -84,7 +81,7 @@ class AccountActivity : AppCompatActivity() {
             }
         }
 
-        val originalUserData = userDataPreferences.userTeam
+        val originalUserData = intent.getParcelableExtra<UserTeam>(ARG_USER_TEAM)
 
         if (originalUserData.isNullOrEmpty()) {
             longToast(R.string.team_details_previous_not_found)
@@ -106,7 +103,7 @@ class AccountActivity : AppCompatActivity() {
             if (binding.etTeamNumber.error != null || binding.etTeamName.error != null)
                 return@setOnClickListener
 
-            viewModel.updateUserData(UserData(number, teamName))
+            viewModel.updateUserData(UserTeam(number, teamName))
         }
     }
 
@@ -184,10 +181,17 @@ class AccountActivity : AppCompatActivity() {
 
     private fun MaterialButton.setButtonConnected(connected: Boolean) {
         setText(if (connected) R.string.action_disconnect else R.string.action_connect)
-        //setTextColor(if ())
     }
 
     companion object {
         private val TAG = AccountActivity::class.simpleName!!
+
+        private const val ARG_USER_TEAM = "user_team"
+
+        fun startActivity(context: Context, userTeam: UserTeam?) {
+            val intent = Intent(context, AccountActivity::class.java)
+            intent.putExtra(ARG_USER_TEAM, userTeam)
+            context.startActivity(intent)
+        }
     }
 }

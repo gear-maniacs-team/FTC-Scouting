@@ -8,11 +8,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.gearmaniacs.core.model.Tournament
-import net.gearmaniacs.core.utils.UserDataPreferences
+import net.gearmaniacs.core.utils.UserTeamPreferences
 import net.gearmaniacs.ftcscouting.repository.MainRepository
 
 class MainViewModel @ViewModelInject constructor(
-    userDataPreferences: UserDataPreferences,
+    userDataPreferences: UserTeamPreferences,
     private val repository: MainRepository
 ) : ViewModel() {
 
@@ -21,7 +21,7 @@ class MainViewModel @ViewModelInject constructor(
     private val userDataLiveData = userDataPreferences.userTeamFlow.asLiveData()
     private val tournamentsLiveData = repository.tournamentsFlow.asLiveData()
 
-    fun getUserLiveData() = userDataLiveData
+    fun getUserTeamLiveData() = userDataLiveData
 
     fun getTournamentsLiveData() = tournamentsLiveData
 
@@ -41,7 +41,7 @@ class MainViewModel @ViewModelInject constructor(
     }
 
     fun createNewTournament(tournamentName: String) = viewModelScope.launch(Dispatchers.IO) {
-        repository.createNewTournament(getUserLiveData().value, tournamentName)
+        repository.createNewTournament(userDataLiveData.value, tournamentName)
     }
 
     fun deleteTournament(tournament: Tournament) = viewModelScope.launch(Dispatchers.IO) {

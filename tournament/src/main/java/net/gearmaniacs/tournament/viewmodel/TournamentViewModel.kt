@@ -17,7 +17,7 @@ import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.TeamPower
-import net.gearmaniacs.core.model.UserData
+import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.repository.MatchesRepository
 import net.gearmaniacs.tournament.repository.TeamsRepository
@@ -40,8 +40,8 @@ internal class TournamentViewModel @ViewModelInject constructor(
 
     private var listening = false
 
-    fun getInfoLiveData(userData: UserData): NonNullLiveData<List<Match>> {
-        matchesRepository.setUserTeamNumber(userData.id)
+    fun getInfoLiveData(userTeam: UserTeam): NonNullLiveData<List<Match>> {
+        matchesRepository.setUserTeamNumber(userTeam.id)
         return matchesRepository.infoData
     }
 
