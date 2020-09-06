@@ -18,7 +18,7 @@ import net.gearmaniacs.login.ui.activity.ResetPasswordActivity
 internal class SignInFragment : Fragment() {
 
     private var _binding: SignInFragmentBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     var loginCallback: LoginCallback? = null
 

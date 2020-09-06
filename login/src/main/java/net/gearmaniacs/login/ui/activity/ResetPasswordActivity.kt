@@ -4,17 +4,17 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.isValidEmail
 import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.extensions.textString
-import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.login.R
 import net.gearmaniacs.login.databinding.ResetPasswordActivityBinding
 
 @AndroidEntryPoint
-class ResetPasswordActivity : AppCompatActivity() {
+internal class ResetPasswordActivity : AppCompatActivity() {
 
     private lateinit var binding: ResetPasswordActivityBinding
 
@@ -29,7 +29,6 @@ class ResetPasswordActivity : AppCompatActivity() {
         binding.pbResetPassword.isEnabled = false
 
         binding.btnResetPassword.setOnClickListener {
-            val auth = FirebaseAuth.getInstance()
             val email = binding.etEmail.textString
             val appContext = applicationContext
 
@@ -38,10 +37,10 @@ class ResetPasswordActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            appContext.toast(R.string.reset_password_sending)
+            appContext.longToast(R.string.reset_password_sending)
             startLoading()
 
-            auth.sendPasswordResetEmail(email)
+            Firebase.auth.sendPasswordResetEmail(email)
                 .addOnCompleteListener { task ->
                     stopLoading()
 

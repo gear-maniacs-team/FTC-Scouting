@@ -3,14 +3,19 @@ package net.gearmaniacs.core.extensions
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.view.View
+import android.graphics.Color
+import android.util.TypedValue
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
+import androidx.annotation.StyleRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
+import androidx.core.content.res.use
 import androidx.fragment.app.Fragment
 
 
@@ -54,4 +59,28 @@ fun Activity.hideKeyboard() {
         val imm = getSystemService<InputMethodManager>()
         imm?.hideSoftInputFromWindow(it.windowToken, 0)
     }
+}
+
+/**
+ * Retrieve a color from the current [android.content.res.Resources.Theme].
+ */
+@ColorInt
+fun Context.themeColor(
+    @AttrRes themeAttrId: Int
+): Int {
+    return obtainStyledAttributes(
+        intArrayOf(themeAttrId)
+    ).use {
+        it.getColor(0, Color.MAGENTA)
+    }
+}
+
+/**
+ * Retrieve a style from the current [android.content.res.Resources.Theme].
+ */
+@StyleRes
+fun Context.themeStyle(@AttrRes attr: Int): Int {
+    val tv = TypedValue()
+    theme.resolveAttribute(attr, tv, true)
+    return tv.data
 }

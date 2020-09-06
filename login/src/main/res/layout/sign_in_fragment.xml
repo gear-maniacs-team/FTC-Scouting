@@ -20,6 +20,7 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             android:fitsSystemWindows="true"
+            android:transitionName="primary_color_content"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"

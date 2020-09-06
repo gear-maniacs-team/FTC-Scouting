@@ -6,3 +6,6 @@
 -keepclassmembers class net.gearmaniacs.core.model.EndGameData { *; }
 -keepclassmembers class net.gearmaniacs.core.model.Team { *; }
 -keepclassmembers class net.gearmaniacs.core.model.UserTeam { *; }
+
+# Datastore Library - Temporary
+-keep class androidx.datastore.preferences.* { *; }

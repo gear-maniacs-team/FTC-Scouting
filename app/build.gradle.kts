@@ -78,6 +78,8 @@ dependencies {
     implementation(Libs.material_about)
     implementation(Libs.licenser)
 
+    kapt(Libs.room_compiler)
+
     implementation(Libs.hilt_dagger_android)
     implementation(Libs.hilt_lifecycle)
     kapt(Libs.hilt_dagger_compiler)

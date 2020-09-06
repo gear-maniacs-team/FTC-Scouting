@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import dagger.hilt.android.AndroidEntryPoint
+import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.login.databinding.LoginBaseFragmentBinding
 import net.gearmaniacs.login.interfaces.LoginBaseCallback
 
@@ -13,7 +14,7 @@ import net.gearmaniacs.login.interfaces.LoginBaseCallback
 internal class LoginBaseFragment : Fragment() {
 
     private var _binding: LoginBaseFragmentBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     var loginCallback: LoginBaseCallback? = null
 
@@ -23,6 +24,11 @@ internal class LoginBaseFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = LoginBaseFragmentBinding.inflate(inflater, container, false)
+
+        binding.ivLogo.setOnLongClickListener {
+            requireContext().toast("G.E.A.R.S. FTW!")
+            true
+        }
 
         binding.btnSignIn.setOnClickListener {
             loginCallback?.showSignInFragment()

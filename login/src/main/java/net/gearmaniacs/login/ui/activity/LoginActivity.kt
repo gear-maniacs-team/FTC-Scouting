@@ -1,11 +1,13 @@
 package net.gearmaniacs.login.ui.activity
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialFadeThrough
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -16,6 +18,7 @@ import kotlinx.coroutines.launch
 import net.gearmaniacs.core.extensions.alertDialog
 import net.gearmaniacs.core.extensions.hideKeyboard
 import net.gearmaniacs.core.extensions.longToast
+import net.gearmaniacs.core.extensions.themeColor
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.model.UserTeam
@@ -135,12 +138,9 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
         signInFragment.loginCallback = this
         registerFragment.loginCallback = this
 
-        val fade = MaterialFadeThrough().apply {
-            duration = FADE_DURATION
+        loginBaseFragment.enterTransition = MaterialFadeThrough().apply {
+            duration = 150L
         }
-
-        signInFragment.enterTransition = fade
-        registerFragment.enterTransition = fade
 
         activeFragmentTag =
             savedInstanceState?.getString(BUNDLE_FRAGMENT_ACTIVE) ?: LoginBaseFragment.TAG
@@ -192,8 +192,13 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
         activeFragmentTag = SignInFragment.TAG
 
         supportFragmentManager.commit {
-            hide(loginBaseFragment)
+            if (loginBaseFragment.isVisible) {
+                signInFragment.sharedElementEnterTransition = getMaterialContainerTransition()
+                addSharedElement(loginBaseFragment.binding.layoutContent, "primary_color_content")
+            }
+
             show(signInFragment)
+            hide(loginBaseFragment)
             hide(registerFragment)
         }
     }
@@ -204,6 +209,11 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
         activeFragmentTag = RegisterFragment.TAG
 
         supportFragmentManager.commit {
+            if (loginBaseFragment.isVisible) {
+                registerFragment.sharedElementEnterTransition = getMaterialContainerTransition()
+                addSharedElement(loginBaseFragment.binding.btnSignUp, "register_layout_content")
+            }
+
             hide(loginBaseFragment)
             hide(signInFragment)
             show(registerFragment)
@@ -247,9 +257,14 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
         finish()
     }
 
-    private companion object {
-        private const val FADE_DURATION = 150L
+    private fun getMaterialContainerTransition() = MaterialContainerTransform().apply {
+        drawingViewId = R.id.fragment_placeholder
+        duration = 650.toLong()
+        scrimColor = Color.TRANSPARENT
+        setAllContainerColors(themeColor(R.attr.colorSurface))
+    }
 
+    private companion object {
         private const val TAG = "LoginActivity"
 
         private const val BUNDLE_FRAGMENT_ACTIVE = "fragment_active"

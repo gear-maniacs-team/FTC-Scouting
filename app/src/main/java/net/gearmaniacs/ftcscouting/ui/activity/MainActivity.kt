@@ -75,10 +75,10 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
         setContentView(binding.root)
         setSupportActionBar(binding.bottomAppBar)
 
-        val adapter = TournamentAdapter(this)
+        val tournamentAdapter = TournamentAdapter(this)
 
         val recyclerView = binding.content.rvTournament
-        recyclerView.adapter = adapter
+        recyclerView.adapter = tournamentAdapter
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.addItemDecoration(
@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
         }
 
         observe(viewModel.getTournamentsLiveData()) { list ->
-            adapter.submitList(list ?: emptyList())
+            tournamentAdapter.submitList(list ?: emptyList())
         }
     }
 

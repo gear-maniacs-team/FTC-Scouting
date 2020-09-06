@@ -18,7 +18,7 @@ import net.gearmaniacs.login.interfaces.LoginCallback
 internal class RegisterFragment : Fragment() {
 
     private var _binding: RegisterFragmentBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     var loginCallback: LoginCallback? = null
 
@@ -73,7 +73,9 @@ internal class RegisterFragment : Fragment() {
                 etEmail.error == null &&
                 etPassword.error == null &&
                 etConfirmPassword.error == null
-            ) loginCallback?.onRegister(UserTeam(number, name), email, password)
+            ) {
+                loginCallback?.onRegister(UserTeam(number, name), email, password)
+            }
         }
 
         binding.btnAlreadyOwnAccount.setOnClickListener {

@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
+    android:transitionName="register_layout_content"
     tools:context=".ui.fragment.RegisterFragment">
 
     <com.google.android.material.appbar.AppBarLayout

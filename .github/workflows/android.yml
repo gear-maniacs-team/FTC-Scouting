@@ -5,30 +5,8 @@ on:
     branches: [ skystone ]
 
 jobs:
-  tests:
-    name: Run Unit Tests
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: Cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle
-      - name: Unit tests
-        run: bash ./gradlew test --stacktrace
-
-  apk:
-    name: Generate APK
+  tests-apk:
+    name: Run Unit Tests and generate APK
     runs-on: ubuntu-latest
 
     steps:
@@ -53,30 +31,5 @@ jobs:
         with:
           name: app
           path: app/build/outputs/apk/debug/app-debug.apk
-
-  integration-tests:
-    name: Run Integration Tests
-    runs-on: macOS-latest
-    strategy:
-      matrix:
-        api-level: [28, 29]
-        target: [google_apis]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle
-      - name: Run Emulator
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: ${{ matrix.api-level }}
-          target: ${{ matrix.target }}
-          arch: x86_64
-          profile: Nexus 6
-          script: bash ./gradlew connectedCheck
+      - name: Unit tests
+        run: bash ./gradlew test --stacktrace
