@@ -8,17 +8,17 @@ import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import net.gearmaniacs.core.model.TeamPower
+import net.gearmaniacs.core.model.RankedTeam
 import net.gearmaniacs.tournament.R
 
 internal class LeaderboardAdapter :
     RecyclerView.Adapter<LeaderboardAdapter.LeaderboardViewHolder>() {
 
     private companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TeamPower>() {
-            override fun areItemsTheSame(old: TeamPower, new: TeamPower) = old.id == new.id
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<RankedTeam>() {
+            override fun areItemsTheSame(old: RankedTeam, new: RankedTeam) = old.id == new.id
 
-            override fun areContentsTheSame(old: TeamPower, new: TeamPower) = old == new
+            override fun areContentsTheSame(old: RankedTeam, new: RankedTeam) = old == new
         }
     }
 
@@ -30,15 +30,15 @@ internal class LeaderboardAdapter :
         setHasStableIds(true)
     }
 
-    private fun getItem(position: Int): TeamPower = differ.currentList[position]
+    private fun getItem(position: Int): RankedTeam = differ.currentList[position]
 
-    fun submitList(list: List<TeamPower>) {
+    fun submitList(list: List<RankedTeam>) {
         if (list.isEmpty()) {
             highestScore = 0
             lowestScore = 0
         } else {
-            highestScore = list.first().power.toInt()
-            lowestScore = list.last().power.toInt()
+            highestScore = list.first().score.toInt()
+            lowestScore = list.last().score.toInt()
         }
 
         differ.submitList(list)
@@ -61,10 +61,10 @@ internal class LeaderboardAdapter :
         val context = holder.itemView.context
 
         holder.tvName.text = context.getString(R.string.team_id_name, team.id, team.name)
-        holder.tvScore.text = team.power.toString()
+        holder.tvScore.text = team.score.toString()
 
         holder.pbScore.max = highestScore - lowestScore
-        holder.pbScore.progress = team.power.toInt() - lowestScore
+        holder.pbScore.progress = team.score.toInt() - lowestScore
     }
 
     class LeaderboardViewHolder(view: View) : RecyclerView.ViewHolder(view) {

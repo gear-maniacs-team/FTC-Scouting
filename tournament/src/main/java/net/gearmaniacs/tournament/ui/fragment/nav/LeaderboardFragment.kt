@@ -3,13 +3,13 @@ package net.gearmaniacs.tournament.ui.fragment.nav
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.extensions.observeNonNull
@@ -84,7 +84,7 @@ internal class LeaderboardFragment : AbstractTournamentFragment(R.layout.recycle
     override fun getFragmentTag() = fragmentTag
 
     private fun refreshData() {
-        GlobalScope.launch(Dispatchers.Main.immediate) {
+        lifecycleScope.launch(Dispatchers.Main.immediate) {
             // TODO: Refactor getMatchesLiveData() observable into Response<List<TeamPower>, String>
             val response = viewModel.refreshLeaderboardData(teamsList, matchesList)
             emptyViewAdapter.text = response

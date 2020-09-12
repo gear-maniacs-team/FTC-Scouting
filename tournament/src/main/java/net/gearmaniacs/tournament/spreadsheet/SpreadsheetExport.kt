@@ -5,7 +5,7 @@ import net.gearmaniacs.core.model.EndGameData
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.PreferredZone
 import net.gearmaniacs.core.model.Team
-import net.gearmaniacs.core.model.TeamPower
+import net.gearmaniacs.core.model.RankedTeam
 import net.gearmaniacs.core.model.TeleOpData
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import java.io.IOException
@@ -93,7 +93,7 @@ internal class SpreadsheetExport {
         }
     }
 
-    private fun exportOpr(powerList: List<TeamPower>) {
+    private fun exportOpr(powerList: List<RankedTeam>) {
         val sheet = workBook.createSheet(SpreadsheetFields.OPR_SHEET)
 
         val headerRow = sheet.createRow(0)
@@ -108,7 +108,7 @@ internal class SpreadsheetExport {
 
             row.createCell(0).setCellValue(teamPower.id.toDouble())
             row.createCell(1).setCellValue(teamPower.name)
-            row.createCell(2).setCellValue(teamPower.power.toDouble())
+            row.createCell(2).setCellValue(teamPower.score.toDouble())
         }
     }
 
@@ -119,7 +119,7 @@ internal class SpreadsheetExport {
         }
     }
 
-    fun export(teamList: List<Team>, matchList: List<Match>, powerList: List<TeamPower>) {
+    fun export(teamList: List<Team>, matchList: List<Match>, powerList: List<RankedTeam>) {
         exportTeams(teamList)
         exportMatches(matchList)
         exportOpr(powerList)

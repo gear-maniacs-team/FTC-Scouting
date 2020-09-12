@@ -11,7 +11,7 @@ data class Tournament(
     @get:Exclude @set:Exclude override var key: String,
     @ColumnInfo(name = "name")
     val name: String
-) : DatabaseClass<Tournament>() {
+) : DatabaseClass<Tournament> {
 
     override fun compareTo(other: Tournament): Int = name.compareTo(other.name)
 }

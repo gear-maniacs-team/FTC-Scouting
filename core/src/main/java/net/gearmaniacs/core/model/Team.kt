@@ -27,11 +27,14 @@ data class AutonomousData(
     @Suppress("unused") // Needed for Firebase
     constructor() : this(false, false, 0, 0, 0)
 
+    @Exclude
     fun isEmpty(): Boolean =
         !repositionFoundation && deliveredSkystones == 0 && deliveredStones == 0 && placedStones == 0 && !navigated
 
+    @Exclude
     fun isNotEmpty(): Boolean = !isEmpty()
 
+    @Exclude
     fun score(): Int {
         var score = 0
 
@@ -63,10 +66,13 @@ data class TeleOpData(
     @Suppress("unused") // Needed for Firebase
     constructor() : this(0, 0, 0)
 
+    @Exclude
     fun isEmpty(): Boolean = deliveredStones == 0 && placedStones == 0 && skyscraperHeight == 0
 
+    @Exclude
     fun isNotEmpty(): Boolean = !isEmpty()
 
+    @Exclude
     fun score(): Int = deliveredStones + placedStones + skyscraperHeight * 2
 }
 
@@ -83,10 +89,13 @@ data class EndGameData(
     @Suppress("unused") // Needed for Firebase
     constructor() : this(false, false, -1)
 
+    @Exclude
     fun isEmpty(): Boolean = !moveFoundation && !parked && capLevel < 0
 
+    @Exclude
     fun isNotEmpty(): Boolean = !isEmpty()
 
+    @Exclude
     fun score(): Int {
         var score = 0
 
@@ -119,9 +128,9 @@ data class Team(
     @ColumnInfo(name = "tournament_key")
     @get:Exclude val tournamentKey: String = "",
     @ColumnInfo(name = "id")
-    val id: Int,
+    override val id: Int,
     @ColumnInfo(name = "name")
-    val name: String? = null,
+    override val name: String? = null,
     @Embedded(prefix = "auto_") val autonomousData: AutonomousData? = null,
     @Embedded(prefix = "teleop_") val teleOpData: TeleOpData? = null,
     @Embedded(prefix = "end_") val endGameData: EndGameData? = null,
@@ -131,17 +140,21 @@ data class Team(
     val preferredZone: Int = PreferredZone.NONE,
     @ColumnInfo(name = "notes")
     val notes: String? = null
-) : DatabaseClass<Team>(), Parcelable {
+) : BaseTeam(id, name), DatabaseClass<Team>, Parcelable {
 
     constructor() : this("", "", 0)
 
     override fun compareTo(other: Team): Int = id.compareTo(other.id)
 
+    @Exclude
     fun autonomousScore(): Int = autonomousData?.score() ?: 0
 
+    @Exclude
     fun teleOpScore() = teleOpData?.score() ?: 0
 
+    @Exclude
     fun endGameScore(): Int = endGameData?.score() ?: 0
 
+    @Exclude
     fun score(): Int = autonomousScore() + teleOpScore() + endGameScore()
 }

@@ -16,7 +16,7 @@ import net.gearmaniacs.core.extensions.app
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Team
-import net.gearmaniacs.core.model.TeamPower
+import net.gearmaniacs.core.model.RankedTeam
 import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.repository.MatchesRepository
@@ -33,7 +33,7 @@ internal class TournamentViewModel @ViewModelInject constructor(
     application: Application
 ) : AndroidViewModel(application) {
 
-    private val leaderboardData = MutableNonNullLiveData(emptyList<TeamPower>())
+    private val leaderboardData = MutableNonNullLiveData(emptyList<RankedTeam>())
     private val tournamentData = tournamentRepository.tournamentFlow.asLiveData()
     private val teamsData = teamsRepository.teamsFlows.asLiveData()
     private val matchesData = matchesRepository.matchesFlow.asLiveData()
@@ -53,7 +53,7 @@ internal class TournamentViewModel @ViewModelInject constructor(
 
     fun getMatchesLiveData() = matchesData
 
-    fun getLeaderboardLiveData(): NonNullLiveData<List<TeamPower>> = leaderboardData
+    fun getLeaderboardLiveData(): NonNullLiveData<List<RankedTeam>> = leaderboardData
 
     // region Teams Management
 

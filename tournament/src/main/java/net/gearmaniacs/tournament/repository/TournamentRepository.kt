@@ -10,11 +10,11 @@ import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.firebase.valueEventFlow
 import net.gearmaniacs.core.model.Match
+import net.gearmaniacs.core.model.RankedTeam
 import net.gearmaniacs.core.model.Team
-import net.gearmaniacs.core.model.TeamPower
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.utils.AbstractListenerRepository
-import net.gearmaniacs.tournament.opr.PowerRanking
+import net.gearmaniacs.tournament.opr.OffensivePowerRanking
 import net.gearmaniacs.tournament.ui.activity.TournamentActivity
 import net.theluckycoder.database.dao.TournamentsDao
 import java.text.DecimalFormat
@@ -61,25 +61,20 @@ internal class TournamentRepository @Inject constructor(
         }
     }
 
-    suspend fun generateOprList(teams: List<Team>, matches: List<Match>): List<TeamPower> {
-        return try {
-            val decimalFormat = DecimalFormat("#.##")
-            decimalFormat.decimalFormatSymbols = DecimalFormatSymbols().apply {
-                decimalSeparator = '.'
-            }
-
-            val rankings = PowerRanking(teams, matches).generatePowerRankings()
-
-            // Format the power of each Team to only keep the first to decimals
-            rankings.forEach {
-                it.power = decimalFormat.format(it.power).toFloat()
-            }
-
-            rankings
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emptyList()
+    suspend fun generateOprList(teams: List<Team>, matches: List<Match>): List<RankedTeam> {
+        val decimalFormat = DecimalFormat("#.##")
+        decimalFormat.decimalFormatSymbols = DecimalFormatSymbols().apply {
+            decimalSeparator = '.'
         }
+
+        val rankings = OffensivePowerRanking.computeMMSE(matches, teams) ?: emptyList()
+
+        // Format the power of each Team to only keep the first to decimals
+        rankings.forEach {
+            it.score = decimalFormat.format(it.score).toDouble()
+        }
+
+        return rankings
     }
 
     override suspend fun onListenerAdded(scope: CoroutineScope) {

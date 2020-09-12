@@ -1,122 +1,130 @@
 package net.gearmaniacs.tournament.opr
 
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import kotlin.math.pow
-import kotlin.math.abs
+class Matrix(val rows: Int, val columns: Int) {
 
-internal object Matrix {
+    private val mat = Array(rows) { DoubleArray(columns) }
 
-    fun multiply(matrix: Array<DoubleArray>, vector: DoubleArray): DoubleArray {
-        val rows = matrix.size
-        val columns = matrix[0].size
+    fun getArrayCopy() = mat.clone()
 
+    fun getArray() = mat
+
+    operator fun get(row: Int, column: Int): Double {
+        require(row in 0 until rows) { "Invalid row index: $row (Rows Count: $rows)" }
+        require(column in 0 until columns) { "Invalid column index: $column (Rows Count: $columns)" }
+        return mat[row][column]
+    }
+
+    operator fun set(row: Int, column: Int, value: Double) {
+        require(row in 0 until rows) { "Invalid row index: $row (Rows Count: $rows)" }
+        require(column in 0 until columns) { "Invalid column index: $column (Rows Count: $columns)" }
+        mat[row][column] = value
+    }
+
+    operator fun plus(matrix: Matrix): Matrix {
+        require(rows == matrix.rows)
+        require(columns == matrix.columns)
+        val resultMatrix = Matrix(rows, columns)
+
+        for (row in 0 until rows)
+            for (column in 0 until columns)
+                resultMatrix.mat[row][column] = mat[row][column] + matrix.mat[row][column]
+
+        return resultMatrix
+    }
+
+    operator fun times(vector: DoubleArray): DoubleArray {
         val result = DoubleArray(rows)
 
         for (row in 0 until rows) {
             var sum = 0.0
+
             for (column in 0 until columns)
-                sum += matrix[row][column] * vector[column]
+                sum += mat[row][column] * vector[column]
+
             result[row] = sum
         }
 
         return result
     }
 
-    private fun determinant(matrix: Array<DoubleArray>): Double {
-        val size = matrix.size
-        var determinant = 1.0
+    operator fun times(matrix: Matrix): Matrix {
+        require(matrix.rows == columns) { "matrix.rows (${matrix.rows}) != this.columns ($columns)" }
 
-        for (i in matrix.indices) {
-            var pivotElement = matrix[i][i]
-            var pivotRow = i
+        val resultMatrix = Matrix(rows, matrix.columns)
+        val columnsArray = DoubleArray(columns)
 
-            for (row in i + 1 until size) {
-                if (abs(matrix[row][i]) > abs(pivotElement)) {
-                    pivotElement = matrix[row][i]
-                    pivotRow = row
-                }
+        for (i in 0 until matrix.columns) {
+            for (j in 0 until columns)
+                columnsArray[j] = matrix.mat[j][i]
+
+            for (k in 0 until rows) {
+                var rowsSum = 0.0
+                for (l in 0 until columns)
+                    rowsSum += mat[k][l] * columnsArray[l]
+
+                resultMatrix.mat[k][i] = rowsSum
             }
-
-            if (pivotElement == 0.0)
-                return 0.0
-
-            if (pivotRow != i) {
-                val temp = matrix[i]
-                matrix[i] = matrix[pivotRow]
-                matrix[pivotRow] = temp
-
-                determinant *= -1.0
-            }
-            determinant *= pivotElement
-
-            for (row in i + 1 until size)
-                for (col in i + 1 until size)
-                    matrix[row][col] -= matrix[row][i] * matrix[i][col] / pivotElement
         }
 
-        return determinant
+        return resultMatrix
     }
 
-    suspend fun invert(matrix: Array<DoubleArray>): Array<DoubleArray> = coroutineScope {
-        val size = matrix.size
-        val inverse = Array(size) { DoubleArray(size) }
+    operator fun times(n: Double): Matrix {
+        val matrix = Matrix(rows, columns)
 
-        fun minorAndCofactors(matrix: Array<DoubleArray>, index: Int, inverse: Array<DoubleArray>) {
-            // Create an array which is used for all calculations to avoid extra allocations
-            val minorCacheResult = Array(matrix.size - 1) { DoubleArray(matrix.size - 1) }
+        for (row in 0 until rows)
+            for (column in 0 until columns)
+                matrix.mat[row][column] = n * mat[row][column]
 
-            for (j in matrix[index].indices) {
-                val determinant = determinant(minor(matrix, index, j, minorCacheResult))
-                inverse[index][j] = (-1.0).pow((index + j).toDouble()) * determinant
-            }
-        }
-
-        val firstHalf = launch {
-            for (i in 0 until size / 2)
-                minorAndCofactors(matrix, i, inverse)
-        }
-
-        for (i in matrix.size / 2 until size)
-            minorAndCofactors(matrix, i, inverse)
-
-        firstHalf.join()
-
-        // adjugate and determinant
-        val det = 1.0 / determinant(matrix)
-        for (i in inverse.indices) {
-            for (j in 0..i) {
-                val temp = inverse[i][j]
-                inverse[i][j] = inverse[j][i] * det
-                inverse[j][i] = temp * det
-            }
-        }
-
-        inverse
+        return matrix
     }
 
-    private fun minor(
-        matrix: Array<DoubleArray>,
-        row: Int,
-        column: Int,
-        result: Array<DoubleArray>
-    ): Array<DoubleArray> {
-        if (result.size != matrix.size - 1 || result[0].size != matrix.size - 1)
-            return minor(matrix, row, column)
+    fun getMatrix(array: IntArray, n: Int, n2: Int): Matrix {
+        val matrix = Matrix(array.size, n2 - n + 1)
 
-        for (i in matrix.indices) {
-            if (i == row)
-                continue
+        for (i in array.indices)
+            for (j in n..n2)
+                matrix[i, j - n] = this[array[i], j]
 
-            for (j in matrix[i].indices) {
-                if (j != column)
-                    result[if (i < row) i else i - 1][if (j < column) j else j - 1] = matrix[i][j]
-            }
-        }
-
-        return result
+        return matrix
     }
 
-    private fun minor(matrix: Array<DoubleArray>, row: Int, column: Int): Array<DoubleArray> =
-        minor(matrix, row, column, Array(matrix.size - 1) { DoubleArray(matrix.size - 1) })
+    fun setMatrix(rowStart: Int, rowEnd: Int, columnStart: Int, columnEnd: Int, matrix: Matrix) {
+        for (i in rowStart..rowEnd) {
+            for (j in columnStart..columnEnd) {
+                this[i, j] = matrix[i - rowStart, j - columnStart]
+            }
+        }
+    }
+
+    fun setRows(rowStart: Int, rowEnd: Int, column: Int, array: DoubleArray) {
+        for (i in rowStart..rowEnd)
+            this[i, column] = array[i - rowStart]
+    }
+
+    fun transpose(): Matrix {
+        val matrix = Matrix(columns, rows)
+
+        for (i in 0 until rows)
+            for (j in 0 until columns)
+                matrix.mat[j][i] = mat[i][j]
+
+        return matrix
+    }
+
+    fun inverse(): Matrix {
+        require(rows == columns)
+        return LUDecomposition(this).solve(identity(rows))
+    }
+
+    companion object {
+        fun identity(size: Int): Matrix {
+            val matrix = Matrix(size, size)
+
+            for (i in 0 until size)
+                matrix[i, i] = 1.0
+
+            return matrix
+        }
+    }
 }

@@ -49,7 +49,7 @@ data class Match(
     val id: Int,
     @Embedded(prefix = "red_") val redAlliance: Alliance,
     @Embedded(prefix = "blue_") val blueAlliance: Alliance
-) : DatabaseClass<Match>(), Parcelable {
+) : DatabaseClass<Match>, Parcelable {
 
     constructor() : this("", "", 0, Alliance(), Alliance())
 
