@@ -3,7 +3,6 @@ package net.gearmaniacs.login.ui.activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
@@ -11,17 +10,13 @@ import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialFadeThrough
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import net.gearmaniacs.core.extensions.alertDialog
 import net.gearmaniacs.core.extensions.hideKeyboard
-import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.extensions.themeColor
-import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.isLoggedIn
-import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.core.utils.AppPreferences
 import net.gearmaniacs.login.R
 import net.gearmaniacs.login.databinding.LoginActivityBinding
@@ -55,10 +50,6 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
         setContentView(binding.root)
 
         auth = Firebase.auth
-        with(binding.pbLogin) {
-            isEnabled = false
-            setColorSchemeResources(R.color.colorPrimary)
-        }
 
         if (Firebase.isLoggedIn) {
             // If the user is logged in the MainActivity will be launched in onStart
@@ -84,42 +75,6 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
         if (activeFragmentTag == SignInFragment.TAG || activeFragmentTag == RegisterFragment.TAG)
             showBaseFragment()
     }
-
-    override fun onSignIn(email: String, password: String) {
-        binding.pbLogin.isRefreshing = true
-
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                binding.pbLogin.isRefreshing = false
-
-                if (task.isSuccessful) {
-                    Log.d(TAG, "signInWithEmail:success")
-                    startMainActivity()
-                } else {
-                    Log.w(TAG, "signInWithEmail:failure", task.exception)
-                    longToast("Login failed")
-                }
-            }
-    }
-
-    override fun onRegister(userTeam: UserTeam, email: String, password: String) {
-        binding.pbLogin.isRefreshing = true
-
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                binding.pbLogin.isRefreshing = false
-
-                if (task.isSuccessful) {
-                    Log.d(TAG, "registerWithEmail:success")
-                    registerUser(userTeam)
-                } else {
-                    Log.w(TAG, "registerWithEmail:failure")
-                    longToast("Registration failed.")
-                }
-            }
-    }
-
-    override fun isWorking(): Boolean = binding.pbLogin.isRefreshing
 
     private fun initFragments(savedInstanceState: Bundle?) {
         loginBaseFragment =
@@ -169,25 +124,7 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
         }
     }
 
-    private fun registerUser(userTeam: UserTeam) {
-        Firebase.database
-            .getReference(DatabasePaths.KEY_USERS)
-            .child(auth.currentUser!!.uid)
-            .setValue(userTeam) { error, _ ->
-                binding.pbLogin.isRefreshing = false
-
-                if (error == null) {
-                    Log.d(TAG, "registerInDatabase:success")
-                    startMainActivity()
-                } else {
-                    Log.w(TAG, "registerInDatabase:failure")
-                    longToast(R.string.error_register_failed)
-                }
-            }
-    }
-
     override fun showSignInFragment() {
-        if (binding.pbLogin.isRefreshing) return
         hideKeyboard()
         activeFragmentTag = SignInFragment.TAG
 
@@ -204,7 +141,6 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     }
 
     override fun showRegisterFragment() {
-        if (binding.pbLogin.isRefreshing) return
         hideKeyboard()
         activeFragmentTag = RegisterFragment.TAG
 
@@ -221,7 +157,6 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     }
 
     override fun showBaseFragment() {
-        if (binding.pbLogin.isRefreshing) return
         hideKeyboard()
         activeFragmentTag = LoginBaseFragment.TAG
 
@@ -230,6 +165,10 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
             hide(signInFragment)
             hide(registerFragment)
         }
+    }
+
+    override fun finishActivity() {
+        startMainActivity()
     }
 
     override fun useOfflineAccount() {

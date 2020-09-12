@@ -30,6 +30,8 @@ android {
 dependencies {
     implementation(project(Modules.core))
 
+    api(Libs.gms_auth)
+
     implementation(Libs.hilt_dagger_android)
     implementation(Libs.hilt_lifecycle)
     kapt(Libs.hilt_dagger_compiler)

@@ -1,14 +1,14 @@
 package net.gearmaniacs.login.interfaces
 
-import net.gearmaniacs.core.model.UserTeam
+internal interface LoginCallback {
 
-internal interface LoginCallback : LoginBaseCallback {
+    fun showSignInFragment()
 
-    fun onSignIn(email: String, password: String)
-
-    fun onRegister(userTeam: UserTeam, email: String, password: String)
+    fun showRegisterFragment()
 
     fun showBaseFragment()
 
-    fun isWorking(): Boolean
+    fun useOfflineAccount()
+
+    fun finishActivity()
 }

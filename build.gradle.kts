@@ -9,7 +9,7 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}")
         classpath("org.jetbrains.kotlin:kotlin-android-extensions:${Versions.kotlin}")
         classpath("com.google.gms:google-services:4.3.3")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:2.2.1")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:2.3.0")
         classpath("com.google.dagger:hilt-android-gradle-plugin:${Versions.daggerHilt}")
     }
 }
@@ -23,7 +23,7 @@ allprojects {
 }
 
 plugins {
-    id("com.github.ben-manes.versions") version "0.30.0"
+    id("com.github.ben-manes.versions") version "0.31.0"
 }
 
 tasks.register("clean", Delete::class) {

@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.login.databinding.LoginBaseFragmentBinding
-import net.gearmaniacs.login.interfaces.LoginBaseCallback
+import net.gearmaniacs.login.interfaces.LoginCallback
 
 @AndroidEntryPoint
 internal class LoginBaseFragment : Fragment() {
@@ -16,7 +16,7 @@ internal class LoginBaseFragment : Fragment() {
     private var _binding: LoginBaseFragmentBinding? = null
     val binding get() = _binding!!
 
-    var loginCallback: LoginBaseCallback? = null
+    var loginCallback: LoginCallback? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,

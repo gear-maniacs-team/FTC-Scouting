@@ -30,7 +30,7 @@ object Libs {
     // Firebase
     val firebase_analytics = "com.google.firebase:firebase-analytics-ktx:17.5.0"
     val firebase_database = "com.google.firebase:firebase-database-ktx:19.4.0"
-    val firebase_auth = "com.google.firebase:firebase-auth-ktx:19.3.2"
+    val firebase_auth = "com.google.firebase:firebase-auth-ktx:19.4.0"
     val firebase_crashlytics = "com.google.firebase:firebase-crashlytics:17.2.1"
 
     // GMS

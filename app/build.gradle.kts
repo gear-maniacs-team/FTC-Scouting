@@ -72,7 +72,6 @@ dependencies {
     implementation(project(Modules.database))
 
     implementation(Libs.firebase_crashlytics)
-    implementation(Libs.gms_auth)
 
     implementation(Libs.material_intro)
     implementation(Libs.material_about)
@@ -92,4 +91,8 @@ dependencies {
     androidTestImplementation(Libs.Test.espresso_core)
     androidTestImplementation(Libs.Test.espresso_contrib)
     androidTestImplementation(Libs.Test.uiautomator)
+}
+
+kapt {
+    correctErrorTypes = true
 }

@@ -137,6 +137,7 @@ class AccountActivity : AppCompatActivity() {
         val signInClient = GoogleSignIn.getClient(this, gso)
 
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            val context = applicationContext
             GlobalScope.launch(Dispatchers.Main.immediate) {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
 
@@ -149,12 +150,12 @@ class AccountActivity : AppCompatActivity() {
                     updateLinkedProviders()
 
                     if (linkTask.isSuccessful)
-                        toast(R.string.account_provider_google_link_success)
+                        context.toast(R.string.account_provider_google_link_success)
                     else
                         throw IllegalStateException("Could not link account with Google")
                 } catch (e: Exception) {
                     Log.w(TAG, "Google Account linking failed", e)
-                    longToast(R.string.account_provider_google_link_failure)
+                    context.longToast(R.string.account_provider_google_link_failure)
                 }
 
                 binding.btnConnectGoogle.isEnabled = true

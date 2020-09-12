@@ -14,7 +14,7 @@ object Versions {
         const val target = 30
     }
 
-    const val kotlin = "1.4.0"
+    const val kotlin = "1.4.10"
     const val kotlinCoroutines = "1.3.9"
     const val room = "2.2.5"
     const val daggerHilt = "2.28.3-alpha"

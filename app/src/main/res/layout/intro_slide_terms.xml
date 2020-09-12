@@ -44,7 +44,7 @@
         android:gravity="center"
         android:text="@string/agree_terms_and_conditions"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textSize="16sp"
+        android:textSize="17sp"
         app:layout_parallaxFactor="0.4"
         tools:ignore="UnusedAttribute" />
 

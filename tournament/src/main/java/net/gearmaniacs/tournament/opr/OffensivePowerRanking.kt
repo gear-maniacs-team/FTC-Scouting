@@ -1,6 +1,5 @@
 package net.gearmaniacs.tournament.opr
 
-import android.util.Log
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import net.gearmaniacs.core.model.BaseTeam
@@ -121,10 +120,8 @@ object OffensivePowerRanking {
         matchesMatrix.setRows(0, playedMatchesCount - 1, 0, redMatchesScore)
         matchesMatrix.setRows(playedMatchesCount, 2 * playedMatchesCount - 1, 0, blueMatchesScore)
 
-        Log.v("OPR", "mean: $meanTeamScore")
-
         return coroutineScope {
-            // compute inverse of match matrix (Ao' Ao + mmse*I)
+            // Compute inverse of matches matrix (alliancesMatrix' * alliancesMatrix + I * mmse)
             val matchMatrixInverse = async {
                 try {
                     (alliancesMatrix.transpose() * alliancesMatrix).plus(Matrix.identity(teamCount) * mmse)
@@ -134,7 +131,7 @@ object OffensivePowerRanking {
                 }
             }
 
-            // compute OPRs
+            // Compute OPRs
             val temp = alliancesMatrix.transpose() * matchesMatrix
             val oprMatrix = (matchMatrixInverse.await() ?: return@coroutineScope null) * temp
 

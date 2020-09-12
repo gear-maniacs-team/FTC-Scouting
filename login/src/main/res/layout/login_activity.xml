@@ -6,19 +6,10 @@
     android:fitsSystemWindows="true"
     tools:context=".ui.activity.LoginActivity">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/pb_login"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_placeholder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragment_placeholder"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="?actionBarSize"
-            android:fitsSystemWindows="true" />
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        android:fitsSystemWindows="true" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

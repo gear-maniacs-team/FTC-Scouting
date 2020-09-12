@@ -3,8 +3,8 @@ package net.gearmaniacs.ftcscouting
 import kotlinx.coroutines.runBlocking
 import net.gearmaniacs.core.model.Alliance
 import net.gearmaniacs.core.model.Match
-import net.gearmaniacs.core.model.TeamPower
-import net.gearmaniacs.tournament.opr.PowerRanking
+import net.gearmaniacs.core.model.RankedTeam
+import net.gearmaniacs.tournament.opr.OffensivePowerRanking
 import org.junit.Test
 
 class PowerRankingTest {
@@ -107,8 +107,8 @@ class PowerRankingTest {
 
     @Test
     fun checkPowerRanking_firstAndLastTeam() {
-        val firstResult = TeamPower(id = 77, name = "", power = 232.48538f)
-        val lastResult = TeamPower(id = 44, name = "", power = -2.6085517f)
+        val firstResult = RankedTeam(id = 77, name = "", score = 232.48538)
+        val lastResult = RankedTeam(id = 44, name = "", score = -2.6085517)
 
         val matches = ArrayList<Match>(redAlliances.size)
 
@@ -116,12 +116,12 @@ class PowerRankingTest {
             matches.add(Match("", "", i, redAlliances[i], blueAlliances[i]))
         }
 
-        val powerRanking = PowerRanking(emptyList(), matches)
         runBlocking {
-            val results = powerRanking.generatePowerRankings()
+            val results = OffensivePowerRanking.computeOpr(matches)
+            results ?: throw IllegalStateException("OPR could not be computed")
 
             results.forEach {
-                println(it.power)
+                println(it.score)
             }
 
             assert(results.first() == firstResult)
