@@ -70,8 +70,8 @@ internal class TournamentRepository @Inject constructor(
         val rankings = OffensivePowerRanking.computeMMSE(matches, teams) ?: emptyList()
 
         // Format the power of each Team to only keep the first to decimals
-        rankings.forEach {
-            it.score = decimalFormat.format(it.score).toDouble()
+        rankings.map {
+            it.copy(score = decimalFormat.format(it.score).toDouble())
         }
 
         return rankings

@@ -51,6 +51,11 @@ internal class RegisterFragment : Fragment() {
             loginCallback?.showBaseFragment()
         }
 
+        with(binding.pbRegister) {
+            isEnabled = false
+            setColorSchemeResources(R.color.colorPrimary)
+        }
+
         binding.btnEmailRegister.setOnClickListener {
             val etNumber = binding.etTeamNumber
             val etName = binding.etTeamName
@@ -91,7 +96,7 @@ internal class RegisterFragment : Fragment() {
                 etPassword.error == null &&
                 etConfirmPassword.error == null
             ) {
-                register(UserTeam(number, name), email, password)
+                registerEmail(UserTeam(number, name), email, password)
             }
         }
 
@@ -106,7 +111,7 @@ internal class RegisterFragment : Fragment() {
             requireActivity().registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 lifecycleScope.launch(Dispatchers.Main.immediate) {
                     ensureActive()
-                    setIsLoading(false)
+                    setIsLoading(true)
                     val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
 
                     try {
@@ -126,7 +131,7 @@ internal class RegisterFragment : Fragment() {
                         requireContext().longToast(R.string.account_provider_google_sign_in_failure)
                     }
 
-                    setIsLoading(true)
+                    setIsLoading(false)
                 }
             }.launch(signInClient.signInIntent)
         }
@@ -144,7 +149,7 @@ internal class RegisterFragment : Fragment() {
         super.onDestroy()
     }
 
-    private fun register(userTeam: UserTeam, email: String, password: String) {
+    private fun registerEmail(userTeam: UserTeam, email: String, password: String) {
         setIsLoading(true)
 
         Firebase.auth.createUserWithEmailAndPassword(email, password)
@@ -175,10 +180,10 @@ internal class RegisterFragment : Fragment() {
             }
     }
 
-    private fun setIsLoading(enabled: Boolean) {
+    private fun setIsLoading(loading: Boolean) {
         with(binding) {
-            linearLayout.isEnabled = enabled
-            pbRegister.isRefreshing = !enabled
+            linearLayout.isEnabled = !loading
+            pbRegister.isRefreshing = loading
         }
     }
 

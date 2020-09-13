@@ -6,7 +6,7 @@ on:
 
 jobs:
   tests-apk:
-    name: Run Unit Tests and generate APK
+    name: Generate APK
     runs-on: ubuntu-latest
 
     steps:
@@ -31,5 +31,3 @@ jobs:
         with:
           name: app
           path: app/build/outputs/apk/debug/app-debug.apk
-      - name: Unit tests
-        run: bash ./gradlew test --stacktrace

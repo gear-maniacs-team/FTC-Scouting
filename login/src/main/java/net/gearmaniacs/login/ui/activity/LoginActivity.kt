@@ -3,6 +3,7 @@ package net.gearmaniacs.login.ui.activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
@@ -12,6 +13,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import net.gearmaniacs.core.extensions.alertDialog
 import net.gearmaniacs.core.extensions.hideKeyboard
@@ -42,7 +45,26 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     lateinit var mainActivityClass: MainActivityClass
 
     @Inject
+    lateinit var introActivityClass: IntroActivityClass
+
+    @Inject
     lateinit var appPreferences: AppPreferences
+
+    init {
+        lifecycleScope.launchWhenResumed {
+            val hasSeenIntro = appPreferences.seenIntroFlow.first()
+
+            if (!hasSeenIntro) {
+                registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                    if (result.resultCode == RESULT_OK) {
+                        lifecycleScope.launch { appPreferences.setSeenIntro(true) }
+                    } else {
+                        finish()
+                    }
+                }.launch(Intent(this@LoginActivity, Class.forName(introActivityClass.value)))
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -185,7 +207,7 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     }
 
     private fun startMainActivity() {
-        lifecycleScope.launch {
+        GlobalScope.launch {
             appPreferences.setLoggedIn(true)
         }
 
@@ -203,11 +225,13 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
         setAllContainerColors(themeColor(R.attr.colorSurface))
     }
 
+    class MainActivityClass(val value: String)
+
+    class IntroActivityClass(val value: String)
+
     private companion object {
         private const val TAG = "LoginActivity"
 
         private const val BUNDLE_FRAGMENT_ACTIVE = "fragment_active"
     }
-
-    class MainActivityClass(val value: String)
 }

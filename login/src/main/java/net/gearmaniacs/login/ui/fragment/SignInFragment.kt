@@ -83,7 +83,7 @@ internal class SignInFragment : Fragment() {
             requireActivity().registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 lifecycleScope.launch(Dispatchers.Main.immediate) {
                     ensureActive()
-                    setIsLoading(false)
+                    setIsLoading(true)
                     val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
 
                     try {
@@ -103,7 +103,7 @@ internal class SignInFragment : Fragment() {
                         requireContext().longToast(R.string.account_provider_google_sign_in_failure)
                     }
 
-                    setIsLoading(true)
+                    setIsLoading(false)
                 }
             }.launch(signInClient.signInIntent)
         }
@@ -119,10 +119,10 @@ internal class SignInFragment : Fragment() {
         return view
     }
 
-    private fun setIsLoading(enabled: Boolean) {
+    private fun setIsLoading(loading: Boolean) {
         with(binding) {
-            constraintLayout.isEnabled = enabled
-            pbSignIn.isRefreshing = !enabled
+            constraintLayout.isEnabled = !loading
+            pbSignIn.isRefreshing = loading
         }
     }
 

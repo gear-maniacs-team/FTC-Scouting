@@ -17,6 +17,8 @@
 
     <string name="confirm_sign_out">Are you sure you want to Sign Out?</string>
     <string name="confirm_sign_out_desc">No data will be list in the process!</string>
+    <string name="confirm_account_delete">Are you absolutely sure oyu want to delete your account?</string>
+    <string name="confirm_account_delete_desc">All data, synchronized between all your devices will be lost!</string>
 
     <!-- Login/Register Errors Password -->
     <string name="error_invalid_team_number">Team Number is invalid</string>

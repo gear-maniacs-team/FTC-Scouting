@@ -1,9 +1,7 @@
 package net.gearmaniacs.ftcscouting.ui.activity
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.doOnPreDraw
@@ -15,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import net.gearmaniacs.core.extensions.alertDialog
 import net.gearmaniacs.core.extensions.observe
@@ -51,20 +48,6 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
     init {
         lifecycleScope.launchWhenCreated {
             appPreferences.isLoggedInFlow.collect { isLoggedIn = it }
-        }
-
-        lifecycleScope.launchWhenStarted {
-            val hasSeenIntro = appPreferences.seenIntroFlow.first()
-
-            if (!hasSeenIntro) {
-                registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                    if (result.resultCode == RESULT_OK) {
-                        lifecycleScope.launch { appPreferences.setSeenIntro(true) }
-                    } else {
-                        finish()
-                    }
-                }.launch(Intent(this@MainActivity, IntroActivity::class.java))
-            }
         }
     }
 

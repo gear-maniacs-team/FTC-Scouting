@@ -17,8 +17,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.button.MaterialButton
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,10 +29,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import net.gearmaniacs.core.extensions.alertDialog
+import net.gearmaniacs.core.extensions.isNetworkAvailable
 import net.gearmaniacs.core.extensions.longToast
 import net.gearmaniacs.core.extensions.textString
 import net.gearmaniacs.core.extensions.toIntOrElse
 import net.gearmaniacs.core.extensions.toast
+import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.core.model.isNullOrEmpty
@@ -86,6 +90,22 @@ class AccountActivity : AppCompatActivity() {
             }
         }
 
+        binding.btnAccountDelete.setOnClickListener {
+            val user = Firebase.auth.currentUser
+
+            if (user != null && isNetworkAvailable()) {
+                alertDialog {
+                    setTitle(R.string.confirm_account_delete)
+                    setMessage(R.string.confirm_account_delete_desc)
+                    setPositiveButton(R.string.action_delete_account) { _, _ ->
+                        deleteAccount(user)
+                    }
+                    setNegativeButton(android.R.string.cancel, null)
+                    show()
+                }
+            }
+        }
+
         val originalUserData = intent.getParcelableExtra<UserTeam>(ARG_USER_TEAM)
 
         if (originalUserData.isNullOrEmpty()) {
@@ -109,6 +129,22 @@ class AccountActivity : AppCompatActivity() {
                 return@setOnClickListener
 
             viewModel.updateUserData(UserTeam(number, teamName))
+        }
+    }
+
+    private fun deleteAccount(user: FirebaseUser) {
+        binding.layoutAccount.isEnabled = false
+
+        Firebase.database
+            .getReference(DatabasePaths.KEY_SKYSTONE)
+            .child(user.uid)
+            .setValue(null)
+            .addOnCompleteListener {
+                signOutCleaner.get().run()
+            }
+
+        user.delete().addOnSuccessListener {
+            finish()
         }
     }
 
