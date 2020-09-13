@@ -195,10 +195,9 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
 
     override fun useOfflineAccount() {
         alertDialog {
-            setTitle("Use offline Account?")
-            setMessage("")
-            // TODO Add a warning
-            setPositiveButton("Agree") { _, _ ->
+            setTitle(R.string.confirm_use_offline_account)
+            setMessage(R.string.confirm_use_offline_account_desc)
+            setPositiveButton(R.string.action_use_offline) { _, _ ->
                 startMainActivity()
             }
             setNegativeButton(android.R.string.cancel, null)

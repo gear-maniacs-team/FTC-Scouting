@@ -17,7 +17,7 @@ import net.gearmaniacs.core.utils.RoundedBottomSheetDialogFragment
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.databinding.MainMenuDialogBinding
 import net.gearmaniacs.ftcscouting.ui.activity.AboutActivity
-import net.gearmaniacs.ftcscouting.ui.activity.AccountActivity
+import net.gearmaniacs.login.ui.activity.AccountActivity
 import net.gearmaniacs.ftcscouting.viewmodel.MainViewModel
 import net.gearmaniacs.login.ui.activity.LoginActivity
 import net.theluckycoder.database.SignOutCleaner

@@ -1,4 +1,4 @@
-package net.gearmaniacs.ftcscouting.viewmodel
+package net.gearmaniacs.login.viewmodel
 
 import android.app.Application
 import androidx.hilt.lifecycle.ViewModelInject
@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 import net.gearmaniacs.core.extensions.app
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.core.model.UserTeam
-import net.gearmaniacs.ftcscouting.repository.AccountRepository
+import net.gearmaniacs.login.repository.AccountRepository
 
 class AccountViewModel @ViewModelInject constructor(
     private val repository: AccountRepository,

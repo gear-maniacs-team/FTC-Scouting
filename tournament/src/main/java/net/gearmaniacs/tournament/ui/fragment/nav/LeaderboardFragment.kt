@@ -85,7 +85,7 @@ internal class LeaderboardFragment : AbstractTournamentFragment(R.layout.recycle
 
     private fun refreshData() {
         lifecycleScope.launch(Dispatchers.Main.immediate) {
-            // TODO: Refactor getMatchesLiveData() observable into Response<List<TeamPower>, String>
+            // Refactor getMatchesLiveData() observable into Response<List<TeamPower>, String>?
             val response = viewModel.refreshLeaderboardData(teamsList, matchesList)
             emptyViewAdapter.text = response
         }

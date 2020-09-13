@@ -1,4 +1,4 @@
-package net.gearmaniacs.ftcscouting.repository
+package net.gearmaniacs.login.repository
 
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
@@ -8,7 +8,7 @@ import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.core.utils.UserTeamPreferences
-import net.gearmaniacs.ftcscouting.R
+import net.gearmaniacs.login.R
 import javax.inject.Inject
 import kotlin.coroutines.resume
 

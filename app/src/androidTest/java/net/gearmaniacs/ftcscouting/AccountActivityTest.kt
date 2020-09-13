@@ -5,7 +5,7 @@ import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import net.gearmaniacs.ftcscouting.ui.activity.AccountActivity
+import net.gearmaniacs.login.ui.activity.AccountActivity
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

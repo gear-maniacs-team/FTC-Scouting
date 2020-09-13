@@ -29,8 +29,9 @@ android {
 
 dependencies {
     implementation(project(Modules.core))
+    implementation(project(Modules.database))
 
-    api(Libs.gms_auth)
+    implementation(Libs.gms_auth)
 
     implementation(Libs.hilt_dagger_android)
     implementation(Libs.hilt_lifecycle)

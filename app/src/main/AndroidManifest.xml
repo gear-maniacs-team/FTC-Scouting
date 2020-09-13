@@ -47,11 +47,6 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".ui.activity.AccountActivity"
-            android:label="@string/title_account"
-            android:windowSoftInputMode="adjustPan" />
-
-        <activity
             android:name="com.google.firebase.auth.internal.FederatedSignInActivity"
             android:launchMode="standard"
             tools:replace="android:launchMode" />

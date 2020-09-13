@@ -20,4 +20,13 @@
 
     <string name="prompt_team_number">Team Number</string>
     <string name="prompt_team_name">Team Name</string>
+
+    <!-- Account and Team Details -->
+    <string name="title_account">Account</string>
+    <string name="team_details_not_found">No Team Details found. Go to Account &amp; Team Details to set them</string>
+    <string name="team_details_previous_not_found">No previous Team Details found</string>
+    <string name="account_and_team_details">Account &amp; Team Details</string>
+    <string name="team_details">Team Details</string>
+    <string name="team_details_updated">Team Details Updated</string>
+    <string name="team_details_update_error">Team Details could not be updated</string>
 </resources>

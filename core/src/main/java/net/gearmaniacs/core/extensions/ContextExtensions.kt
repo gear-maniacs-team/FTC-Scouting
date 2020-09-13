@@ -27,8 +27,6 @@ inline fun <reified T : Activity> Context.startActivity() =
 
 fun Context.getColorCompat(@ColorRes colorRes: Int) = ContextCompat.getColor(this, colorRes)
 
-fun Fragment.getColor(@ColorRes colorRes: Int) = ContextCompat.getColor(requireContext(), colorRes)
-
 fun Context.toast(text: CharSequence) {
     Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
 }
@@ -88,6 +86,7 @@ fun Context.themeStyle(@AttrRes attr: Int): Int {
     return tv.data
 }
 
+@Suppress("DEPRECATION")
 fun Context.isNetworkAvailable(): Boolean {
     val connectivityManager = getSystemService<ConnectivityManager>() ?: return false
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

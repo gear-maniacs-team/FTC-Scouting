@@ -7,5 +7,10 @@
             android:theme="@style/AppTheme.NoActionBar.Transparent" />
 
         <activity android:name=".ui.activity.ResetPasswordActivity" />
+
+        <activity
+            android:name=".ui.activity.AccountActivity"
+            android:label="@string/title_account"
+            android:windowSoftInputMode="adjustPan" />
     </application>
 </manifest>

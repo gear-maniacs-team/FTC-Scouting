@@ -1,10 +1,4 @@
 <resources>
-    <string name="title_account">Account</string>
-    <string name="account_and_team_details">Account &amp; Team Details</string>
-    <string name="team_details">Team Details</string>
-    <string name="team_details_updated">Team Details Updated</string>
-    <string name="team_details_update_error">Team Details could not be updated</string>
-
     <!-- Intro -->
     <string name="intro_title_1">Manage Teams &amp; Matches</string>
     <string name="intro_title_2">Instant Synchronization</string>

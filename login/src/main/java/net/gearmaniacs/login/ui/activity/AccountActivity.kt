@@ -1,4 +1,4 @@
-package net.gearmaniacs.ftcscouting.ui.activity
+package net.gearmaniacs.login.ui.activity
 
 import android.content.Context
 import android.content.Intent
@@ -35,12 +35,13 @@ import net.gearmaniacs.core.extensions.textString
 import net.gearmaniacs.core.extensions.toIntOrElse
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.core.firebase.DatabasePaths
+import net.gearmaniacs.core.firebase.FirebaseConstants
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.core.model.isNullOrEmpty
-import net.gearmaniacs.ftcscouting.R
-import net.gearmaniacs.ftcscouting.databinding.AccountActivityBinding
-import net.gearmaniacs.ftcscouting.viewmodel.AccountViewModel
+import net.gearmaniacs.login.R
+import net.gearmaniacs.login.databinding.AccountActivityBinding
+import net.gearmaniacs.login.viewmodel.AccountViewModel
 import net.theluckycoder.database.SignOutCleaner
 import javax.inject.Inject
 
@@ -166,7 +167,7 @@ class AccountActivity : AppCompatActivity() {
     private fun linkWithGoogle() {
         binding.btnConnectGoogle.isEnabled = false
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestIdToken(FirebaseConstants.WEB_CLIENT_ID)
             .requestEmail()
             .build()
 
