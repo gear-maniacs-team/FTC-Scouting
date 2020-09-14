@@ -13,7 +13,7 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.core.firebase.isLoggedIn
-import net.gearmaniacs.core.model.Team
+import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.core.utils.EmptyViewAdapter
 import net.gearmaniacs.core.view.FabRecyclerView
 import net.gearmaniacs.tournament.R

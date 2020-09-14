@@ -22,14 +22,13 @@ import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 internal class InfoFragment : AbstractTournamentFragment(R.layout.recycler_view_layout) {
 
     private val viewModel by activityViewModels<TournamentViewModel>()
+    private lateinit var fab: FloatingActionButton
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val activity = requireActivity()
 
-        val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
+        fab = activity.findViewById(R.id.fab)
         val recyclerView = view.findViewById<FabRecyclerView>(R.id.recycler_view)
-
-        fab.hide()
 
         val emptyViewAdapter = EmptyViewAdapter()
         emptyViewAdapter.text = getString(R.string.empty_tab_info)
@@ -53,6 +52,11 @@ internal class InfoFragment : AbstractTournamentFragment(R.layout.recycler_view_
         } else {
             emptyViewAdapter.text = getString(R.string.team_details_not_found)
         }
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        if (!hidden && fab.isOrWillBeShown)
+            fab.hide()
     }
 
     override fun fabClickListener() = Unit

@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textview.MaterialTextView
-import net.gearmaniacs.core.model.ColorMarker
-import net.gearmaniacs.core.model.PreferredZone
-import net.gearmaniacs.core.model.Team
+import net.gearmaniacs.core.model.enums.ColorMarker
+import net.gearmaniacs.core.model.enums.PreferredZone
+import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.core.view.ExpandableLayout
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.interfaces.RecyclerViewItemListener
@@ -113,7 +113,7 @@ internal class TeamAdapter(
         fun bind(team: Team) {
             val context = itemView.context
 
-            tvName.text = context.getString(R.string.team_id_name, team.id, team.name.orEmpty())
+            tvName.text = context.getString(R.string.team_id_name, team.number, team.name.orEmpty())
             tvScore.text = context.getString(R.string.team_predicted_score, team.score())
 
             // Color Marker

@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/edit_team_dialog">
+    tools:showIn="@layout/edit_team_dialog"
+    tools:context=".ui.activity.TournamentActivity">
 
     <LinearLayout
         android:id="@+id/layout_content"
@@ -75,53 +76,63 @@
             android:textStyle="bold" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/sw_reposition_foundation"
+            android:id="@+id/sw_auto_wobble_delivery"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="6dp"
-            android:text="@string/prompt_reposition_foundation"
+            android:text="@string/prompt_wobble_delivery"
             android:textSize="16sp" />
 
+        <net.gearmaniacs.core.view.CounterView
+            android:id="@+id/ct_auto_low_goal"
+            style="@style/CounterViewEditStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            app:max="3"
+            app:text="@string/prompt_low_goal" />
+
+        <net.gearmaniacs.core.view.CounterView
+            android:id="@+id/ct_auto_mid_goal"
+            style="@style/CounterViewEditStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            app:max="3"
+            app:text="@string/prompt_mid_goal" />
+
+        <net.gearmaniacs.core.view.CounterView
+            android:id="@+id/ct_auto_high_goal"
+            style="@style/CounterViewEditStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            app:max="3"
+            app:text="@string/prompt_high_goal" />
+
+        <net.gearmaniacs.core.view.CounterView
+            android:id="@+id/ct_auto_power_shot"
+            style="@style/CounterViewEditStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            app:max="3"
+            app:text="@string/prompt_power_shot" />
+
         <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/sw_navigated"
+            android:id="@+id/sw_auto_parking"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:layout_marginEnd="6dp"
             android:text="@string/prompt_navigation"
             android:textSize="16sp" />
-
-        <net.gearmaniacs.core.view.CounterView
-            android:id="@+id/ct_delivered_skystones"
-            style="@style/CounterViewEditStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_marginEnd="6dp"
-            app:max="2"
-            app:text="@string/prompt_delivered_skystones" />
-
-        <net.gearmaniacs.core.view.CounterView
-            android:id="@+id/ct_delivered_stones"
-            style="@style/CounterViewEditStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_marginEnd="6dp"
-            app:max="4"
-            app:text="@string/prompt_delivered_stones" />
-
-        <net.gearmaniacs.core.view.CounterView
-            android:id="@+id/ct_placed_stones"
-            style="@style/CounterViewEditStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_marginEnd="6dp"
-            app:max="6"
-            app:text="@string/prompt_placed_stones" />
 
         <TextView
             android:id="@+id/tv_autonomous_score"
@@ -135,84 +146,47 @@
             tools:text="@string/autonomous_score" />
 
         <TextView
-            android:id="@+id/tv_teleop"
+            android:id="@+id/tv_driver_controlled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="@string/period_teleop"
+            android:text="@string/period_driver_controlled"
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"
-            android:textStyle="bold"
-            tools:layout_editor_absoluteX="16dp" />
+            android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_delivered_stones"
-                style="@style/TextInputLayoutTheme"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="0.5">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_delivered_stones"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/prompt_delivered_stones"
-                    android:inputType="number"
-                    android:maxLength="2"
-                    android:nextFocusDown="@id/et_placed_stones" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_placed_stones"
-                style="@style/TextInputLayoutTheme"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="6dp"
-                android:layout_weight="0.5">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_placed_stones"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/prompt_placed_stones"
-                    android:inputType="number"
-                    android:maxLength="2"
-                    android:nextFocusDown="@id/et_skyscraper_height" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </LinearLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_skyscraper_height"
-            style="@style/TextInputLayoutTheme"
+        <net.gearmaniacs.core.view.CounterView
+            android:id="@+id/ct_low_goal"
+            style="@style/CounterViewEditStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="6dp">
+            android:layout_marginEnd="6dp"
+            app:max="30"
+            app:text="@string/prompt_low_goal" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_skyscraper_height"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/prompt_skyscraper_height"
-                android:inputType="number"
-                android:maxLength="2" />
-        </com.google.android.material.textfield.TextInputLayout>
+        <net.gearmaniacs.core.view.CounterView
+            android:id="@+id/ct_mid_goal"
+            style="@style/CounterViewEditStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            app:max="30"
+            app:text="@string/prompt_mid_goal" />
+
+        <net.gearmaniacs.core.view.CounterView
+            android:id="@+id/ct_high_goal"
+            style="@style/CounterViewEditStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            app:max="30"
+            app:text="@string/prompt_high_goal" />
 
         <TextView
-            android:id="@+id/tv_teleop_score"
+            android:id="@+id/tv_driver_controlled_score"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
@@ -220,7 +194,7 @@
             android:layout_marginEnd="6dp"
             android:textColor="@color/colorSecondary"
             android:textSize="15.5sp"
-            tools:text="@string/teleop_score" />
+            tools:text="@string/driver_controlled_score" />
 
         <TextView
             android:id="@+id/tv_endgame"
@@ -232,61 +206,80 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/sw_parking"
+        <net.gearmaniacs.core.view.CounterView
+            android:id="@+id/ct_power_shot"
+            style="@style/CounterViewEditStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            app:max="3"
+            app:text="@string/prompt_power_shot" />
+
+        <net.gearmaniacs.core.view.CounterView
+            android:id="@+id/ct_wobble_rings"
+            style="@style/CounterViewEditStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            app:max="10"
+            app:text="@string/prompt_wobble_rings" />
+
+        <TextView
+            android:id="@+id/tv_wobble_delivery"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="6dp"
-            android:text="@string/prompt_parking"
+            android:text="@string/prompt_wobble_delivery_zone"
+            android:textColor="?android:textColorPrimary"
             android:textSize="16sp" />
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/sw_move_foundation"
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggle_wobble_delivery"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:layout_marginEnd="6dp"
-            android:text="@string/prompt_move_foundation"
-            android:textSize="16sp" />
+            android:gravity="center_horizontal"
+            app:checkedButton="@id/rb_wobble_delivery_none"
+            app:selectionRequired="true"
+            app:singleSelection="true">
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/sw_cap_placed"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_marginEnd="6dp"
-            android:text="@string/prompt_cap_placed"
-            android:textSize="16sp" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_cap_level"
-            style="@style/TextInputLayoutTheme"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="6dp"
-            android:visibility="gone"
-            tools:visibility="visible">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_cap_level"
-                android:layout_width="match_parent"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/rb_wobble_delivery_none"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_cap_level"
-                android:inputType="number"
-                android:maxLength="2"
-                android:text="0" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:text="@string/none"
+                android:textSize="16sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/rb_wobble_delivery_start_line"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/prompt_wobble_delivery_start_line"
+                android:textSize="16sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/rb_wobble_delivery_dead_zone"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/prompt_wobble_delivery_dead_zone"
+                android:textSize="16sp" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <TextView
             android:id="@+id/tv_endgame_score"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="6dp"
             android:textColor="@color/colorSecondary"
             android:textSize="15.5sp"
@@ -369,16 +362,6 @@
                 app:chipIcon="@drawable/ic_circle"
                 app:chipIconEnabled="true"
                 app:chipIconTint="@color/marker_green" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/color_marker_purple"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/color_purple"
-                app:chipIcon="@drawable/ic_circle"
-                app:chipIconEnabled="true"
-                app:chipIconTint="@color/marker_purple" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/color_marker_yellow"

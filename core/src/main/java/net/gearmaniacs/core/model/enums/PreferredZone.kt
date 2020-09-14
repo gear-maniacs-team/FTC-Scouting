@@ -1,4 +1,4 @@
-package net.gearmaniacs.core.model
+package net.gearmaniacs.core.model.enums
 
 object PreferredZone {
     const val NONE = 0

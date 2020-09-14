@@ -10,8 +10,8 @@ import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.firebase.valueEventFlow
 import net.gearmaniacs.core.model.Match
-import net.gearmaniacs.core.model.RankedTeam
-import net.gearmaniacs.core.model.Team
+import net.gearmaniacs.core.model.team.RankedTeam
+import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.utils.AbstractListenerRepository
 import net.gearmaniacs.tournament.opr.OffensivePowerRanking

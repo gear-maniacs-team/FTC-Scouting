@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    android:transitionName="register_layout_content"
     tools:context=".ui.fragment.RegisterFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -32,7 +31,8 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:transitionName="register_layout_content">
 
             <LinearLayout
                 android:id="@+id/linear_layout"
@@ -167,7 +167,7 @@
                     android:layout_marginStart="48dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="48dp"
-                    android:background="@color/colorBackgroundLight"/>
+                    android:background="@color/colorBackgroundLight" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_register_google"

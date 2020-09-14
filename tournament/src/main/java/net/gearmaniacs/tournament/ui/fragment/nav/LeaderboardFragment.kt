@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.extensions.observeNonNull
 import net.gearmaniacs.core.model.Match
-import net.gearmaniacs.core.model.Team
+import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.core.utils.EmptyViewAdapter
 import net.gearmaniacs.core.view.FabRecyclerView
 import net.gearmaniacs.tournament.R
@@ -26,6 +26,7 @@ internal class LeaderboardFragment : AbstractTournamentFragment(R.layout.recycle
 
     private val viewModel by activityViewModels<TournamentViewModel>()
     private lateinit var emptyViewAdapter: EmptyViewAdapter
+    private lateinit var fab: FloatingActionButton
 
     private var teamsList = emptyList<Team>()
     private var matchesList = emptyList<Match>()
@@ -34,10 +35,8 @@ internal class LeaderboardFragment : AbstractTournamentFragment(R.layout.recycle
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val activity = requireActivity()
 
-        val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
+        fab = activity.findViewById(R.id.fab)
         val recyclerView = view.findViewById<FabRecyclerView>(R.id.recycler_view)
-
-        fab.hide()
 
         emptyViewAdapter = EmptyViewAdapter()
         emptyViewAdapter.text = getString(R.string.empty_tab_leaderboard)
@@ -72,6 +71,9 @@ internal class LeaderboardFragment : AbstractTournamentFragment(R.layout.recycle
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
+        if (!hidden && fab.isOrWillBeShown)
+            fab.hide()
+
         if (!hidden && observedDataChanged) {
             // Only recompute the Leaderboard data when needed
             observedDataChanged = false

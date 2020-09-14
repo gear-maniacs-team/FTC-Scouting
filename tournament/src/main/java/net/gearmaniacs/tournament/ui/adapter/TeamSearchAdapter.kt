@@ -21,7 +21,6 @@ class TeamSearchAdapter(
         redMarker = true,
         blueMarker = true,
         greenMarker = true,
-        purpleMarker = true,
         yellowMarker = true
     )
     private var isBindingView = false
@@ -59,7 +58,6 @@ class TeamSearchAdapter(
                     redMarker = binding.colorMarkerRed.isChecked,
                     blueMarker = binding.colorMarkerBlue.isChecked,
                     greenMarker = binding.colorMarkerGreen.isChecked,
-                    purpleMarker = binding.colorMarkerPurple.isChecked,
                     yellowMarker = binding.colorMarkerYellow.isChecked,
                 )
                 queryListener.onQueryChange(query)
@@ -79,7 +77,6 @@ class TeamSearchAdapter(
             colorMarkerRed.isChecked = query.redMarker
             colorMarkerBlue.isChecked = query.blueMarker
             colorMarkerGreen.isChecked = query.greenMarker
-            colorMarkerPurple.isChecked = query.purpleMarker
             colorMarkerYellow.isChecked = query.yellowMarker
         }
 
@@ -96,12 +93,11 @@ class TeamSearchAdapter(
         val redMarker: Boolean,
         val blueMarker: Boolean,
         val greenMarker: Boolean,
-        val purpleMarker: Boolean,
         val yellowMarker: Boolean
     ) : Parcelable {
 
         fun isEmpty() =
-            name.isEmpty() && defaultMarker && redMarker && blueMarker && greenMarker && purpleMarker && yellowMarker
+            name.isEmpty() && defaultMarker && redMarker && blueMarker && greenMarker && yellowMarker
     }
 
     fun interface QueryListener {

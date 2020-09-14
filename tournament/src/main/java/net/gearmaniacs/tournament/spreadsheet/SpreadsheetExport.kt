@@ -1,12 +1,12 @@
 package net.gearmaniacs.tournament.spreadsheet
 
-import net.gearmaniacs.core.model.AutonomousData
-import net.gearmaniacs.core.model.EndGameData
 import net.gearmaniacs.core.model.Match
-import net.gearmaniacs.core.model.PreferredZone
-import net.gearmaniacs.core.model.Team
-import net.gearmaniacs.core.model.RankedTeam
-import net.gearmaniacs.core.model.TeleOpData
+import net.gearmaniacs.core.model.enums.PreferredZone
+import net.gearmaniacs.core.model.team.AutonomousPeriod
+import net.gearmaniacs.core.model.team.ControlledPeriod
+import net.gearmaniacs.core.model.team.EndGamePeriod
+import net.gearmaniacs.core.model.team.RankedTeam
+import net.gearmaniacs.core.model.team.Team
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import java.io.IOException
 import java.io.OutputStream
@@ -31,7 +31,7 @@ internal class SpreadsheetExport {
             val row = sheet.createRow(index + 1)
             var column = 0
 
-            row.createCell(column++).setCellValue(team.id.toDouble())
+            row.createCell(column++).setCellValue(team.number.toDouble())
             row.createCell(column++).setCellValue(team.name)
 
             val preferredZone = when (team.preferredZone) {
@@ -42,25 +42,25 @@ internal class SpreadsheetExport {
             row.createCell(column++).setCellValue(preferredZone)
             row.createCell(column++).setCellValue(team.notes.orEmpty())
 
-            // TeleOp
-            val teleOp = team.teleOpData ?: TeleOpData()
-            row.createCell(column++).setCellValue(teleOp.deliveredStones.toDouble())
-            row.createCell(column++).setCellValue(teleOp.placedStones.toDouble())
-            row.createCell(column++).setCellValue(teleOp.skyscraperHeight.toDouble())
+            // Driver Controlled
+            val controlled = team.controlledPeriod ?: ControlledPeriod()
+            row.createCell(column++).setCellValue(controlled.lowGoal.toDouble())
+            row.createCell(column++).setCellValue(controlled.midGoal.toDouble())
+            row.createCell(column++).setCellValue(controlled.highGoal.toDouble())
 
             // Autonomous
-            val autonomous = team.autonomousData ?: AutonomousData()
-            row.createCell(column++).setCellValue(autonomous.repositionFoundation)
-            row.createCell(column++).setCellValue(autonomous.navigated)
-            row.createCell(column++).setCellValue(autonomous.deliveredSkystones.toDouble())
-            row.createCell(column++).setCellValue(autonomous.deliveredStones.toDouble())
-            row.createCell(column++).setCellValue(autonomous.placedStones.toDouble())
+            val autonomous = team.autonomousPeriod ?: AutonomousPeriod()
+            row.createCell(column++).setCellValue(autonomous.wobbleDelivery)
+            row.createCell(column++).setCellValue(autonomous.lowGoal.toDouble())
+            row.createCell(column++).setCellValue(autonomous.midGoal.toDouble())
+            row.createCell(column++).setCellValue(autonomous.highGoal.toDouble())
+            row.createCell(column++).setCellValue(autonomous.parked)
 
             // End Game
-            val endGame = team.endGameData ?: EndGameData()
-            row.createCell(column++).setCellValue(endGame.moveFoundation)
-            row.createCell(column++).setCellValue(endGame.parked)
-            row.createCell(column++).setCellValue(endGame.capLevel.toDouble())
+            val endGame = team.endGamePeriod ?: EndGamePeriod()
+            row.createCell(column++).setCellValue(endGame.powerShot.toDouble())
+            row.createCell(column++).setCellValue(endGame.wobbleRings.toDouble())
+            // TODO: Wobble Zone
 
             // Predicted Score
             row.createCell(column).setCellValue(team.score().toDouble())
@@ -106,9 +106,9 @@ internal class SpreadsheetExport {
         powerList.forEachIndexed { index, teamPower ->
             val row = sheet.createRow(index + 1)
 
-            row.createCell(0).setCellValue(teamPower.id.toDouble())
+            row.createCell(0).setCellValue(teamPower.number.toDouble())
             row.createCell(1).setCellValue(teamPower.name)
-            row.createCell(2).setCellValue(teamPower.score.toDouble())
+            row.createCell(2).setCellValue(teamPower.score)
         }
     }
 

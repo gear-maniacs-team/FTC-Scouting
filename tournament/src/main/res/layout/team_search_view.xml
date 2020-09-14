@@ -76,17 +76,6 @@
             app:chipIconTint="@color/marker_green" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/color_marker_purple"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/color_purple"
-            app:chipIcon="@drawable/ic_circle"
-            app:chipIconEnabled="true"
-            app:chipIconTint="@color/marker_purple" />
-
-        <com.google.android.material.chip.Chip
             android:id="@+id/color_marker_yellow"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"

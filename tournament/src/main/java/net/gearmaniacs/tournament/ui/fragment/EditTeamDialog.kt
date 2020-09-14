@@ -9,24 +9,24 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.RadioGroup
 import androidx.core.view.doOnPreDraw
-import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.transition.TransitionManager
+import com.google.android.material.button.MaterialButtonToggleGroup
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import net.gearmaniacs.core.view.CounterView
 import net.gearmaniacs.core.extensions.textString
 import net.gearmaniacs.core.extensions.toIntOrElse
-import net.gearmaniacs.core.model.AutonomousData
-import net.gearmaniacs.core.model.ColorMarker
-import net.gearmaniacs.core.model.EndGameData
-import net.gearmaniacs.core.model.PreferredZone
-import net.gearmaniacs.core.model.Team
-import net.gearmaniacs.core.model.TeleOpData
+import net.gearmaniacs.core.model.enums.ColorMarker
+import net.gearmaniacs.core.model.enums.PreferredZone
+import net.gearmaniacs.core.model.enums.WobbleDeliveryZone
+import net.gearmaniacs.core.model.team.AutonomousPeriod
+import net.gearmaniacs.core.model.team.ControlledPeriod
+import net.gearmaniacs.core.model.team.EndGamePeriod
+import net.gearmaniacs.core.model.team.Team
+import net.gearmaniacs.core.view.CounterView
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.databinding.EditTeamContentDialogBinding
 import net.gearmaniacs.tournament.databinding.EditTeamDialogBinding
@@ -54,6 +54,7 @@ internal class EditTeamDialog : DialogFragment() {
     ) : RadioGroup.OnCheckedChangeListener,
         CompoundButton.OnCheckedChangeListener,
         TextWatcher,
+        MaterialButtonToggleGroup.OnButtonCheckedListener,
         CounterView.CounterChangeListener {
 
         override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) = listener()
@@ -69,6 +70,12 @@ internal class EditTeamDialog : DialogFragment() {
         override fun onIncrement(count: Int) = listener()
 
         override fun onDecrement(count: Int) = listener()
+
+        override fun onButtonChecked(
+            group: MaterialButtonToggleGroup?,
+            checkedId: Int,
+            isChecked: Boolean
+        ) = listener()
     }
 
     private var _binding: EditTeamDialogBinding? = null
@@ -80,10 +87,6 @@ internal class EditTeamDialog : DialogFragment() {
     private var autonomousScore = 0
     private var teleOpScore = 0
     private var endGameScore = 0
-
-    init {
-
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,18 +119,11 @@ internal class EditTeamDialog : DialogFragment() {
         val team = arguments?.getParcelable<Team>(ARG_TEAM)
         val content = binding.content
 
-        content.swCapPlaced.setOnCheckedChangeListener { _, isChecked ->
-            TransitionManager.beginDelayedTransition(content.layoutContent)
-            content.layoutCapLevel.isVisible = isChecked
-            updateEndGameScore()
-            updateTotalScore()
-        }
-
         binding.fabDone.setOnClickListener {
             // Parse Team data
-            val autonomousData = parseAutonomousData(content)
-            val teleOpData = parseTeleOpData(content)
-            val endGameData = parseEndGameData()
+            val autonomousPeriod = parseAutonomousPeriod(content)
+            val controlledPeriod = parseControlledPeriod(content)
+            val endGamePeriod = parseEndGameData(content)
 
             val preferredZone = when {
                 content.rbZoneBuilding.isChecked -> PreferredZone.BUILDING
@@ -138,11 +134,11 @@ internal class EditTeamDialog : DialogFragment() {
             val notesText = content.etNotes.textString
             val parsedTeam = Team(
                 key = team?.key.orEmpty(),
-                id = content.etTeamNumber.textString.toIntOrElse(),
+                number = content.etTeamNumber.textString.toIntOrElse(),
                 name = content.etTeamName.textString,
-                autonomousData = autonomousData.takeIf { it.isNotEmpty() },
-                teleOpData = teleOpData.takeIf { it.isNotEmpty() },
-                endGameData = endGameData.takeIf { it.isNotEmpty() },
+                autonomousPeriod = autonomousPeriod.takeIf { it.isNotEmpty() },
+                controlledPeriod = controlledPeriod.takeIf { it.isNotEmpty() },
+                endGamePeriod = endGamePeriod.takeIf { it.isNotEmpty() },
                 colorMarker = parseColorMarker(),
                 preferredZone = preferredZone,
                 notes = notesText.takeIf { it.isNotBlank() }
@@ -159,7 +155,7 @@ internal class EditTeamDialog : DialogFragment() {
             restoreTeamData(team)
 
         updateAutonomousScore(autonomousScore)
-        updateTeleOpScore(teleOpScore)
+        updateControlledScore(teleOpScore)
         updateEndGameScore(endGameScore)
         updateTotalScore()
     }
@@ -184,7 +180,7 @@ internal class EditTeamDialog : DialogFragment() {
             updateTotalScore()
         }
         val teleOpListener = DataChangeListener {
-            updateTeleOpScore()
+            updateControlledScore()
             updateTotalScore()
         }
         val endGameListener = DataChangeListener {
@@ -193,50 +189,53 @@ internal class EditTeamDialog : DialogFragment() {
         }
 
         with(binding.content) {
-            swRepositionFoundation.setOnCheckedChangeListener(autonomousListener)
-            swNavigated.setOnCheckedChangeListener(autonomousListener)
-            ctDeliveredSkystones.changeListener = autonomousListener
-            ctDeliveredStones.changeListener = autonomousListener
-            ctPlacedStones.changeListener = autonomousListener
-            etDeliveredStones.addTextChangedListener(teleOpListener)
-            etPlacedStones.addTextChangedListener(teleOpListener)
-            etSkyscraperHeight.addTextChangedListener(teleOpListener)
-            swMoveFoundation.setOnCheckedChangeListener(endGameListener)
-            swParking.setOnCheckedChangeListener(endGameListener)
-            etCapLevel.addTextChangedListener(endGameListener)
+            swAutoWobbleDelivery.setOnCheckedChangeListener(autonomousListener)
+            ctAutoLowGoal.changeListener = autonomousListener
+            ctAutoMidGoal.changeListener = autonomousListener
+            ctAutoHighGoal.changeListener = autonomousListener
+            ctAutoPowerShot.changeListener = autonomousListener
+            swAutoParking.setOnCheckedChangeListener(autonomousListener)
+            ctLowGoal.changeListener = teleOpListener
+            ctMidGoal.changeListener = teleOpListener
+            ctHighGoal.changeListener = teleOpListener
+            ctPowerShot.changeListener = endGameListener
+            ctPowerShot.changeListener = endGameListener
+            ctWobbleRings.changeListener = endGameListener
+            toggleWobbleDelivery.addOnButtonCheckedListener(endGameListener)
         }
     }
 
     private fun restoreTeamData(team: Team) {
         with(binding.content) {
-            etTeamNumber.setText(team.id.toString())
+            etTeamNumber.setText(team.number.toString())
             etTeamName.setText(team.name)
 
-            team.autonomousData?.let {
-                swRepositionFoundation.isChecked = it.repositionFoundation
-                swNavigated.isChecked = it.navigated
-                ctDeliveredSkystones.counter = it.deliveredSkystones
-                ctDeliveredStones.counter = it.deliveredStones
-                ctPlacedStones.counter = it.placedStones
+            team.autonomousPeriod?.let {
+                swAutoWobbleDelivery.isChecked = it.wobbleDelivery
+                ctAutoLowGoal.counter = it.lowGoal
+                ctAutoMidGoal.counter = it.midGoal
+                ctAutoHighGoal.counter = it.highGoal
+                ctAutoPowerShot.counter = it.powerShot
+                swAutoParking.isChecked = it.parked
 
                 autonomousScore = it.score()
             }
 
-            team.teleOpData?.let {
-                etDeliveredStones.setText(it.deliveredStones.toString())
-                etPlacedStones.setText(it.placedStones.toString())
-                etSkyscraperHeight.setText(it.skyscraperHeight.toString())
+            team.controlledPeriod?.let {
+                ctLowGoal.counter = it.lowGoal
+                ctMidGoal.counter = it.midGoal
+                ctHighGoal.counter = it.highGoal
 
                 teleOpScore = it.score()
             }
 
-            team.endGameData?.let {
-                swMoveFoundation.isChecked = it.moveFoundation
-                swParking.isChecked = it.parked
-
-                if (it.capLevel >= 0) {
-                    swCapPlaced.isChecked = true
-                    etCapLevel.setText(it.capLevel.toString())
+            team.endGamePeriod?.let {
+                ctPowerShot.counter = it.powerShot
+                ctWobbleRings.counter = it.wobbleRings
+                when (it.wobbleDeliveryZone) {
+                    WobbleDeliveryZone.NONE -> rbWobbleDeliveryNone.isChecked = true
+                    WobbleDeliveryZone.START_LINE -> rbWobbleDeliveryStartLine.isChecked = true
+                    WobbleDeliveryZone.DEAD_ZONE -> rbWobbleDeliveryDeadZone.isChecked = true
                 }
 
                 endGameScore = it.score()
@@ -246,7 +245,6 @@ internal class EditTeamDialog : DialogFragment() {
                 ColorMarker.RED -> colorMarkerRed.isChecked = true
                 ColorMarker.BLUE -> colorMarkerBlue.isChecked = true
                 ColorMarker.GREEN -> colorMarkerGreen.isChecked = true
-                ColorMarker.PURPLE -> colorMarkerPurple.isChecked = true
                 ColorMarker.YELLOW -> colorMarkerYellow.isChecked = true
                 else -> colorMarkerDefault.isChecked = true
             }
@@ -260,32 +258,30 @@ internal class EditTeamDialog : DialogFragment() {
         }
     }
 
-    private fun parseAutonomousData(content: EditTeamContentDialogBinding) = AutonomousData(
-        content.swRepositionFoundation.isChecked,
-        content.swNavigated.isChecked,
-        content.ctDeliveredSkystones.counter,
-        content.ctDeliveredStones.counter,
-        content.ctPlacedStones.counter
+    private fun parseAutonomousPeriod(content: EditTeamContentDialogBinding) = AutonomousPeriod(
+        wobbleDelivery = content.swAutoWobbleDelivery.isChecked,
+        lowGoal = content.ctAutoLowGoal.counter,
+        midGoal = content.ctAutoMidGoal.counter,
+        highGoal = content.ctAutoHighGoal.counter,
+        powerShot = content.ctAutoPowerShot.counter,
+        parked = content.swAutoParking.isChecked
     )
 
-    private fun parseTeleOpData(content: EditTeamContentDialogBinding) = TeleOpData(
-        content.etDeliveredStones.textString.toIntOrElse(),
-        content.etPlacedStones.textString.toIntOrElse(),
-        content.etSkyscraperHeight.textString.toIntOrElse()
+    private fun parseControlledPeriod(content: EditTeamContentDialogBinding) = ControlledPeriod(
+        lowGoal = content.ctLowGoal.counter,
+        midGoal = content.ctMidGoal.counter,
+        highGoal = content.ctHighGoal.counter
     )
 
-    private fun parseEndGameData(): EndGameData {
-        val content = binding.content
-        val capLevel =
-            if (content.swCapPlaced.isChecked) content.etCapLevel.textString
-                .toIntOrElse() else -1
-
-        return EndGameData(
-            content.swMoveFoundation.isChecked,
-            content.swParking.isChecked,
-            capLevel
-        )
-    }
+    private fun parseEndGameData(content: EditTeamContentDialogBinding) = EndGamePeriod(
+        powerShot = content.ctPowerShot.counter,
+        wobbleRings = content.ctWobbleRings.counter,
+        wobbleDeliveryZone = when (content.toggleWobbleDelivery.checkedButtonId) {
+            content.rbWobbleDeliveryStartLine.id -> WobbleDeliveryZone.START_LINE
+            content.rbWobbleDeliveryDeadZone.id -> WobbleDeliveryZone.DEAD_ZONE
+            else -> WobbleDeliveryZone.NONE
+        }
+    )
 
     private fun parseColorMarker(): Int {
         val content = binding.content
@@ -294,7 +290,6 @@ internal class EditTeamDialog : DialogFragment() {
             content.colorMarkerRed.id -> ColorMarker.RED
             content.colorMarkerBlue.id -> ColorMarker.BLUE
             content.colorMarkerGreen.id -> ColorMarker.GREEN
-            content.colorMarkerPurple.id -> ColorMarker.PURPLE
             content.colorMarkerYellow.id -> ColorMarker.YELLOW
             else -> ColorMarker.DEFAULT
         }
@@ -302,22 +297,23 @@ internal class EditTeamDialog : DialogFragment() {
 
     private fun updateAutonomousScore(score: Int = -1) {
         val newScore =
-            if (score == -1) parseAutonomousData(binding.content).score() else score
+            if (score == -1) parseAutonomousPeriod(binding.content).score() else score
 
         autonomousScore = newScore
         binding.content.tvAutonomousScore.text = getString(R.string.autonomous_score, newScore)
     }
 
-    private fun updateTeleOpScore(score: Int = -1) {
+    private fun updateControlledScore(score: Int = -1) {
         val newScore =
-            if (score == -1) parseTeleOpData(binding.content).score() else score
+            if (score == -1) parseControlledPeriod(binding.content).score() else score
 
         teleOpScore = newScore
-        binding.content.tvTeleopScore.text = getString(R.string.teleop_score, newScore)
+        binding.content.tvDriverControlledScore.text =
+            getString(R.string.driver_controlled_score, newScore)
     }
 
     private fun updateEndGameScore(score: Int = -1) {
-        val newScore = if (score == -1) parseEndGameData().score() else score
+        val newScore = if (score == -1) parseEndGameData(binding.content).score() else score
 
         endGameScore = newScore
         binding.content.tvEndgameScore.text = getString(R.string.endgame_score, newScore)

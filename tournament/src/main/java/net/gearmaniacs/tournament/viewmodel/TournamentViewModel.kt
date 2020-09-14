@@ -15,9 +15,9 @@ import net.gearmaniacs.core.architecture.NonNullLiveData
 import net.gearmaniacs.core.extensions.app
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.core.model.Match
-import net.gearmaniacs.core.model.Team
-import net.gearmaniacs.core.model.RankedTeam
 import net.gearmaniacs.core.model.UserTeam
+import net.gearmaniacs.core.model.team.RankedTeam
+import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.repository.MatchesRepository
 import net.gearmaniacs.tournament.repository.TeamsRepository
@@ -62,7 +62,7 @@ internal class TournamentViewModel @ViewModelInject constructor(
     }
 
     fun addTeamsFromMatches(teams: List<Team>, matches: List<Match>) {
-        val existingTeamIds = teams.map { it.id }
+        val existingTeamIds = teams.map { it.number }
 
         viewModelScope.launch(Dispatchers.Default) {
             val teamIds = HashSet<Int>(matches.size)
@@ -77,7 +77,7 @@ internal class TournamentViewModel @ViewModelInject constructor(
             val newTeamsList = teamIds.asSequence()
                 .filter { it > 0 }
                 .filterNot { existingTeamIds.contains(it) }
-                .map { Team(key = "", id = it) }
+                .map { Team(key = "", number = it) }
                 .toList()
 
             teamsRepository.addTeams(newTeamsList)

@@ -18,8 +18,8 @@ import net.gearmaniacs.core.firebase.generatePushId
 import net.gearmaniacs.core.firebase.ifLoggedIn
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.firebase.listValueEventFlow
-import net.gearmaniacs.core.model.ColorMarker
-import net.gearmaniacs.core.model.Team
+import net.gearmaniacs.core.model.enums.ColorMarker
+import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.core.utils.AbstractListenerRepository
 import net.gearmaniacs.tournament.ui.activity.TournamentActivity
 import net.gearmaniacs.tournament.ui.adapter.TeamSearchAdapter
@@ -123,7 +123,6 @@ internal class TeamsRepository @Inject constructor(
                             || (query.redMarker && it.colorMarker == ColorMarker.RED)
                             || (query.blueMarker && it.colorMarker == ColorMarker.BLUE)
                             || (query.greenMarker && it.colorMarker == ColorMarker.GREEN)
-                            || (query.purpleMarker && it.colorMarker == ColorMarker.PURPLE)
                             || (query.yellowMarker && it.colorMarker == ColorMarker.YELLOW)
                 }
 
@@ -131,7 +130,7 @@ internal class TeamsRepository @Inject constructor(
                     val pattern = "(?i).*(${query.name}).*".toPattern()
 
                     newList = newList.filter {
-                        pattern.matcher(it.id.toString() + ' ' + it.name.orEmpty()).matches()
+                        pattern.matcher(it.number.toString() + ' ' + it.name.orEmpty()).matches()
                     }
                 }
 

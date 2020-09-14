@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import net.gearmaniacs.core.model.RankedTeam
+import net.gearmaniacs.core.model.team.RankedTeam
 import net.gearmaniacs.tournament.R
 
 internal class LeaderboardAdapter :
@@ -16,7 +16,7 @@ internal class LeaderboardAdapter :
 
     private companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<RankedTeam>() {
-            override fun areItemsTheSame(old: RankedTeam, new: RankedTeam) = old.id == new.id
+            override fun areItemsTheSame(old: RankedTeam, new: RankedTeam) = old.number == new.number
 
             override fun areContentsTheSame(old: RankedTeam, new: RankedTeam) = old == new
         }
@@ -46,7 +46,7 @@ internal class LeaderboardAdapter :
 
     override fun getItemCount() = differ.currentList.size
 
-    override fun getItemId(position: Int) = getItem(position).id.hashCode().toLong()
+    override fun getItemId(position: Int) = getItem(position).number.hashCode().toLong()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = LeaderboardViewHolder(
         LayoutInflater.from(parent.context).inflate(
@@ -60,7 +60,7 @@ internal class LeaderboardAdapter :
         val team = getItem(position)
         val context = holder.itemView.context
 
-        holder.tvName.text = context.getString(R.string.team_id_name, team.id, team.name)
+        holder.tvName.text = context.getString(R.string.team_id_name, team.number, team.name)
         holder.tvScore.text = team.score.toString()
 
         holder.pbScore.max = highestScore - lowestScore

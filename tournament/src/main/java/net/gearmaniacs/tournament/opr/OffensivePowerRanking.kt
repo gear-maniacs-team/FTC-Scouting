@@ -2,11 +2,11 @@ package net.gearmaniacs.tournament.opr
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import net.gearmaniacs.core.model.BaseTeam
+import net.gearmaniacs.core.model.team.BaseTeam
 import net.gearmaniacs.core.model.Match
-import net.gearmaniacs.core.model.RankedTeam
+import net.gearmaniacs.core.model.team.RankedTeam
 
-object OffensivePowerRanking {
+internal object OffensivePowerRanking {
 
     /**
      * Creates a list with all the team numbers from the matches
@@ -35,7 +35,7 @@ object OffensivePowerRanking {
                 BaseTeam(
                     teamNumber,
                     // If available add the name to the team number
-                    teamsList.find { it.id == teamNumber }?.name.orEmpty()
+                    teamsList.find { it.number == teamNumber }?.name.orEmpty()
                 )
             }
             .toList()
@@ -137,7 +137,7 @@ object OffensivePowerRanking {
 
             allTeams.mapIndexed { index, team ->
                 RankedTeam(
-                    team.id,
+                    team.number,
                     team.name.orEmpty(),
                     score = oprMatrix[index, 0] + meanTeamScore
                 )
@@ -145,10 +145,8 @@ object OffensivePowerRanking {
         }
     }
 
-    private fun List<BaseTeam>.indexOf(teamId: Int): Int {
-        return indexOfFirst {
-            it.id == teamId
-        }
+    private fun List<BaseTeam>.indexOf(teamId: Int): Int = indexOfFirst {
+        it.number == teamId
     }
 
     /**

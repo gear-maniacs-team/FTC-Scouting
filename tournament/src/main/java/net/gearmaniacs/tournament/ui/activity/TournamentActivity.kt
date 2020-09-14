@@ -25,7 +25,7 @@ import dagger.hilt.android.scopes.ActivityScoped
 import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.model.Match
-import net.gearmaniacs.core.model.Team
+import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.tournament.R

@@ -13,13 +13,13 @@ import net.gearmaniacs.core.model.Tournament
 @Dao
 abstract class TournamentsDao {
 
-    @Query("SELECT * from skystone_tournament")
+    @Query("SELECT * from tournament")
     abstract suspend fun getAll(): List<Tournament>
 
-    @Query("SELECT * from skystone_tournament ORDER BY name ASC")
+    @Query("SELECT * from tournament ORDER BY name ASC")
     abstract fun getAllFlow(): Flow<List<Tournament>>
 
-    @Query("SELECT * from skystone_tournament WHERE `key` = :tournamentKey")
+    @Query("SELECT * from tournament WHERE `key` = :tournamentKey")
     abstract fun getFlow(tournamentKey: String): Flow<Tournament?>
 
     /*
@@ -38,20 +38,20 @@ abstract class TournamentsDao {
     @Update(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun update(list: List<Tournament>)
 
-    @Query("DELETE from skystone_tournament WHERE `key` = :tournamentKey")
+    @Query("DELETE from tournament WHERE `key` = :tournamentKey")
     abstract suspend fun delete(tournamentKey: String)
 
     @Delete
     abstract suspend fun delete(list: List<Tournament>)
 
-    @Query("DELETE from skystone_tournament")
+    @Query("DELETE from tournament")
     abstract suspend fun deleteAll()
 
     @Transaction
     open suspend fun replaceAll(list: List<Tournament>) {
         // TODO: Find a way to improve this
         // Because of how the parent-child relation between Tournament and Team and Match
-        // We cannot just delete everything and insert the new list
+        // We cannot just delete everything and insert the new list of tournaments
         // Instead we have to execute the insertions, deletion and updates individually
 
         val currentList = getAll()

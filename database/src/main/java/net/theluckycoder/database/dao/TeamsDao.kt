@@ -6,12 +6,12 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
-import net.gearmaniacs.core.model.Team
+import net.gearmaniacs.core.model.team.Team
 
 @Dao
 abstract class TeamsDao {
 
-    @Query("SELECT * FROM skystone_teams WHERE tournament_key = :tournamentKey ORDER BY id ASC")
+    @Query("SELECT * FROM ultimate_goal_teams WHERE tournament_key = :tournamentKey ORDER BY number ASC")
     abstract fun getAllByTournament(tournamentKey: String): Flow<List<Team>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -20,10 +20,10 @@ abstract class TeamsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insert(list: List<Team>)
 
-    @Query("DELETE from skystone_teams WHERE `key` = :teamKey")
+    @Query("DELETE from ultimate_goal_teams WHERE `key` = :teamKey")
     abstract suspend fun delete(teamKey: String)
 
-    @Query("DELETE from skystone_teams WHERE tournament_key = :tournamentKey")
+    @Query("DELETE from ultimate_goal_teams WHERE tournament_key = :tournamentKey")
     abstract suspend fun deleteAllFromTournament(tournamentKey: String)
 
     @Transaction

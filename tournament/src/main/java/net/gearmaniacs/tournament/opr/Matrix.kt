@@ -1,6 +1,6 @@
 package net.gearmaniacs.tournament.opr
 
-class Matrix(val rows: Int, val columns: Int) {
+internal class Matrix(val rows: Int, val columns: Int) {
 
     private val mat = Array(rows) { DoubleArray(columns) }
 

@@ -3,8 +3,8 @@ package net.theluckycoder.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import net.gearmaniacs.core.model.Match
-import net.gearmaniacs.core.model.Team
 import net.gearmaniacs.core.model.Tournament
+import net.gearmaniacs.core.model.team.Team
 import net.theluckycoder.database.dao.MatchesDao
 import net.theluckycoder.database.dao.TeamsDao
 import net.theluckycoder.database.dao.TournamentsDao

@@ -14,7 +14,7 @@ import net.gearmaniacs.core.firebase.ifLoggedIn
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.firebase.listValueEventFlow
 import net.gearmaniacs.core.firebase.valueEventFlow
-import net.gearmaniacs.core.model.Team
+import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.core.model.isNullOrEmpty

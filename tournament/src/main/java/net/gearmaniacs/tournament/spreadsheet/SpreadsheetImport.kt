@@ -2,13 +2,13 @@ package net.gearmaniacs.tournament.spreadsheet
 
 import net.gearmaniacs.core.extensions.justTry
 import net.gearmaniacs.core.model.Alliance
-import net.gearmaniacs.core.model.AutonomousData
-import net.gearmaniacs.core.model.ColorMarker
-import net.gearmaniacs.core.model.EndGameData
 import net.gearmaniacs.core.model.Match
-import net.gearmaniacs.core.model.PreferredZone
-import net.gearmaniacs.core.model.Team
-import net.gearmaniacs.core.model.TeleOpData
+import net.gearmaniacs.core.model.enums.ColorMarker
+import net.gearmaniacs.core.model.enums.PreferredZone
+import net.gearmaniacs.core.model.team.AutonomousPeriod
+import net.gearmaniacs.core.model.team.ControlledPeriod
+import net.gearmaniacs.core.model.team.EndGamePeriod
+import net.gearmaniacs.core.model.team.Team
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Sheet
@@ -74,15 +74,16 @@ internal class SpreadsheetImport(inputStream: InputStream) {
 
         check(id > 0) { "Invalid Team id on row ${row.rowNum}" }
 
-        val autonomousData = AutonomousData(
-            autoReposition,
+        // TODO
+        val autonomousData = AutonomousPeriod(
+            /*autoReposition,
             autoNavigated,
             autoDeliveredSkystones,
             autoDeliveredStones,
-            autoPlacedStones
+            autoPlacedStones*/
         )
-        val teleOpData = TeleOpData(deliveredStones, placedStones, skyscraperHeight)
-        val endGameData = EndGameData(endFoundationMoved, endParked, endCapLevel)
+        val teleOpData = ControlledPeriod(/*deliveredStones, placedStones, skyscraperHeight*/)
+        val endGameData = EndGamePeriod(/*endFoundationMoved, endParked, endCapLevel*/)
 
         val preferredZone = when (preferredZoneString?.toLowerCase(Locale.ROOT)) {
             "loading" -> PreferredZone.LOADING

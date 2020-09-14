@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.firebase.database.Exclude
 
-@Entity(tableName = "skystone_tournament")
+@Entity(tableName = "tournament")
 data class Tournament(
     @PrimaryKey @ColumnInfo(name = "key")
     @get:Exclude @set:Exclude override var key: String,
