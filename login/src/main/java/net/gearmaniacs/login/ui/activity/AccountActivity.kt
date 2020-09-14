@@ -140,6 +140,11 @@ class AccountActivity : AppCompatActivity() {
             .getReference(DatabasePaths.KEY_SKYSTONE)
             .child(user.uid)
             .setValue(null)
+
+        Firebase.database
+            .getReference(DatabasePaths.KEY_ULTIMATE_GOAL)
+            .child(user.uid)
+            .setValue(null)
             .addOnCompleteListener {
                 signOutCleaner.get().run()
             }

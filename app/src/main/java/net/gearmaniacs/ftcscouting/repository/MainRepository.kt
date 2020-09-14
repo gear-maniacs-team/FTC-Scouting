@@ -14,10 +14,10 @@ import net.gearmaniacs.core.firebase.ifLoggedIn
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.firebase.listValueEventFlow
 import net.gearmaniacs.core.firebase.valueEventFlow
-import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.core.model.isNullOrEmpty
+import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.core.utils.AbstractListenerRepository
 import net.gearmaniacs.core.utils.UserTeamPreferences
 import net.theluckycoder.database.dao.TeamsDao
@@ -34,7 +34,7 @@ class MainRepository @Inject constructor(
     private val tournamentsReference by lazy {
         Firebase.ifLoggedIn {
             Firebase.database
-                .getReference(DatabasePaths.KEY_SKYSTONE)
+                .getReference(DatabasePaths.KEY_ULTIMATE_GOAL)
                 .child(it.uid)
         }
     }

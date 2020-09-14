@@ -2,7 +2,7 @@ name: Android CI
 
 on:
   push:
-    branches: [ skystone ]
+    branches: [ ultimate-goal ]
 
 jobs:
   tests-apk:
