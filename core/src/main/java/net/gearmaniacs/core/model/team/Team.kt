@@ -56,11 +56,11 @@ data class Team(
     fun autonomousScore(): Int = autonomousPeriod?.score() ?: 0
 
     @Exclude
-    fun teleOpScore() = controlledPeriod?.score() ?: 0
+    fun controlledScore() = controlledPeriod?.score() ?: 0
 
     @Exclude
     fun endGameScore(): Int = endGamePeriod?.score() ?: 0
 
     @Exclude
-    fun score(): Int = autonomousScore() + teleOpScore() + endGameScore()
+    fun score(): Int = autonomousScore() + controlledScore() + endGameScore()
 }

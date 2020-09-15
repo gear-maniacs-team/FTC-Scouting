@@ -2,6 +2,7 @@ package net.gearmaniacs.tournament.spreadsheet
 
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.enums.PreferredZone
+import net.gearmaniacs.core.model.enums.WobbleDeliveryZone
 import net.gearmaniacs.core.model.team.AutonomousPeriod
 import net.gearmaniacs.core.model.team.ControlledPeriod
 import net.gearmaniacs.core.model.team.EndGamePeriod
@@ -16,7 +17,7 @@ internal class SpreadsheetExport {
     private val workBook = HSSFWorkbook()
 
     private fun exportTeams(teamList: List<Team>) {
-        val sheet = workBook.createSheet(SpreadsheetFields.TEAMS_SHEET)
+        val sheet = workBook.createSheet(SpreadsheetFields.TEAMS_SHEET_NAME)
 
         val headerRow = sheet.createRow(0)
 
@@ -35,8 +36,8 @@ internal class SpreadsheetExport {
             row.createCell(column++).setCellValue(team.name)
 
             val preferredZone = when (team.preferredZone) {
-                PreferredZone.LOADING -> "Loading"
-                PreferredZone.BUILDING -> "Building"
+                PreferredZone.LEFT -> "Left"
+                PreferredZone.RIGHT -> "Right"
                 else -> "None"
             }
             row.createCell(column++).setCellValue(preferredZone)
@@ -60,7 +61,12 @@ internal class SpreadsheetExport {
             val endGame = team.endGamePeriod ?: EndGamePeriod()
             row.createCell(column++).setCellValue(endGame.powerShot.toDouble())
             row.createCell(column++).setCellValue(endGame.wobbleRings.toDouble())
-            // TODO: Wobble Zone
+            val wobbleDeliveryZone = when (endGame.wobbleDeliveryZone) {
+                WobbleDeliveryZone.DEAD_ZONE -> "Dead Zone"
+                WobbleDeliveryZone.START_LINE -> "Start Line"
+                else -> "None"
+            }
+            row.createCell(column++).setCellValue(wobbleDeliveryZone)
 
             // Predicted Score
             row.createCell(column).setCellValue(team.score().toDouble())
@@ -68,7 +74,7 @@ internal class SpreadsheetExport {
     }
 
     private fun exportMatches(matchesList: List<Match>) {
-        val sheet = workBook.createSheet(SpreadsheetFields.MATCHES_SHEET)
+        val sheet = workBook.createSheet(SpreadsheetFields.MATCHES_SHEET_NAME)
 
         val headerRow = sheet.createRow(0)
 
@@ -94,11 +100,11 @@ internal class SpreadsheetExport {
     }
 
     private fun exportOpr(powerList: List<RankedTeam>) {
-        val sheet = workBook.createSheet(SpreadsheetFields.OPR_SHEET)
+        val sheet = workBook.createSheet(SpreadsheetFields.LEADERBOARD_SHEET_NAME)
 
         val headerRow = sheet.createRow(0)
 
-        SpreadsheetFields.OPR_COLUMNS.forEachIndexed { index, field ->
+        SpreadsheetFields.LEADERBOARD_COLUMNS.forEachIndexed { index, field ->
             val cell = headerRow.createCell(index)
             cell.setCellValue(field)
         }

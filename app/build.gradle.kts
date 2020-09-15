@@ -86,6 +86,10 @@ dependencies {
 
     testImplementation(Libs.Test.junit)
     testImplementation(Libs.Test.core)
+    testImplementation(Libs.hilt_dagger_android)
+    kaptTest(Libs.hilt_dagger_compiler)
+    kaptTest(Libs.hilt_android_compiler)
+
     androidTestImplementation(Libs.Test.runner)
     androidTestImplementation(Libs.Test.rules)
     androidTestImplementation(Libs.Test.espresso_core)

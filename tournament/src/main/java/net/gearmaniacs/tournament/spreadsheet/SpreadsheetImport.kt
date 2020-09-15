@@ -5,6 +5,7 @@ import net.gearmaniacs.core.model.Alliance
 import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.enums.ColorMarker
 import net.gearmaniacs.core.model.enums.PreferredZone
+import net.gearmaniacs.core.model.enums.WobbleDeliveryZone
 import net.gearmaniacs.core.model.team.AutonomousPeriod
 import net.gearmaniacs.core.model.team.ControlledPeriod
 import net.gearmaniacs.core.model.team.EndGamePeriod
@@ -33,72 +34,81 @@ internal class SpreadsheetImport(inputStream: InputStream) {
     }
 
     private fun processTeam(row: Row): Team {
-        var id = -1
+        var number = -1
         var name: String? = null
-        var preferredZoneString: String? = null
+        var preferredStartZoneString: String? = null
         var notes: String? = null
 
-        var deliveredStones = 0
-        var placedStones = 0
-        var skyscraperHeight = 0
+        var autoWobbleDelivery = false
+        var autoLowGoal = 0
+        var autoMidGoal = 0
+        var autoHighGoal = 0
+        var autoPowerShot = 0
+        var autoNavigation = false
 
-        var autoReposition = false
-        var autoNavigated = false
-        var autoDeliveredSkystones = 0
-        var autoDeliveredStones = 0
-        var autoPlacedStones = 0
+        var controlledLowGoal = 0
+        var controlledMidGoal = 0
+        var controlledHighGoal = 0
 
-        var endFoundationMoved = false
-        var endParked = false
-        var endCapLevel = 0
+        var endPowerShot = 0
+        var endWobbleRings = 0
+        var endWobbleDeliveryZoneString: String? = null
 
         row.forEachIndexed { cellIndex, cell ->
             when (cellIndex) {
-                0 -> id = cell.numericCellValue.toInt()
+                0 -> number = cell.numericCellValue.toInt()
                 1 -> name = cell.stringCellValue
-                2 -> preferredZoneString = cell.stringCellValue
+                2 -> preferredStartZoneString = cell.stringCellValue
                 3 -> notes = cell.stringCellValue.takeIf { it.isNotEmpty() }
-                4 -> deliveredStones = cell.numericCellValue.toInt()
-                5 -> placedStones = cell.numericCellValue.toInt()
-                6 -> skyscraperHeight = cell.numericCellValue.toInt()
-                7 -> autoReposition = cell.booleanCellValue
-                8 -> autoNavigated = cell.booleanCellValue
-                9 -> autoDeliveredSkystones = cell.numericCellValue.toInt()
-                10 -> autoDeliveredStones = cell.numericCellValue.toInt()
-                11 -> autoPlacedStones = cell.numericCellValue.toInt()
-                12 -> endFoundationMoved = cell.booleanCellValue
-                13 -> endParked = cell.booleanCellValue
-                14 -> endCapLevel = cell.numericCellValue.toInt()
+                4 -> autoWobbleDelivery = cell.booleanCellValue
+                5 -> autoLowGoal = cell.numericCellValue.toInt()
+                6 -> autoMidGoal = cell.numericCellValue.toInt()
+                7 -> autoHighGoal = cell.numericCellValue.toInt()
+                8 -> autoPowerShot = cell.numericCellValue.toInt()
+                9 -> autoNavigation = cell.booleanCellValue
+                10 -> controlledLowGoal = cell.numericCellValue.toInt()
+                11 -> controlledMidGoal = cell.numericCellValue.toInt()
+                12 -> controlledHighGoal = cell.numericCellValue.toInt()
+                13 -> endPowerShot = cell.numericCellValue.toInt()
+                14 -> endWobbleRings = cell.numericCellValue.toInt()
+                15 -> endWobbleDeliveryZoneString = cell.stringCellValue
             }
         }
 
-        check(id > 0) { "Invalid Team id on row ${row.rowNum}" }
+        check(number > 0) { "Invalid Team number on row ${row.rowNum}" }
 
-        // TODO
-        val autonomousData = AutonomousPeriod(
-            /*autoReposition,
-            autoNavigated,
-            autoDeliveredSkystones,
-            autoDeliveredStones,
-            autoPlacedStones*/
+        val endWobbleDeliveryZone = when (endWobbleDeliveryZoneString?.toLowerCase(Locale.ROOT)) {
+            "dead zone" -> WobbleDeliveryZone.DEAD_ZONE
+            "start line" -> WobbleDeliveryZone.START_LINE
+            else -> WobbleDeliveryZone.NONE
+        }
+
+        val autonomousPeriod = AutonomousPeriod(
+            autoWobbleDelivery,
+            autoLowGoal,
+            autoMidGoal,
+            autoHighGoal,
+            autoPowerShot,
+            autoNavigation,
         )
-        val teleOpData = ControlledPeriod(/*deliveredStones, placedStones, skyscraperHeight*/)
-        val endGameData = EndGamePeriod(/*endFoundationMoved, endParked, endCapLevel*/)
+        val controlledPeriod =
+            ControlledPeriod(controlledLowGoal, controlledMidGoal, controlledHighGoal)
+        val endGamePeriod = EndGamePeriod(endPowerShot, endWobbleRings, endWobbleDeliveryZone)
 
-        val preferredZone = when (preferredZoneString?.toLowerCase(Locale.ROOT)) {
-            "loading" -> PreferredZone.LOADING
-            "building" -> PreferredZone.BUILDING
+        val preferredZone = when (preferredStartZoneString?.toLowerCase(Locale.ROOT)) {
+            "right" -> PreferredZone.RIGHT
+            "left" -> PreferredZone.LEFT
             else -> PreferredZone.NONE
         }
 
         return Team(
             "",
             "",
-            id,
+            number,
             name,
-            autonomousData.takeIf { it.isNotEmpty() },
-            teleOpData.takeIf { it.isNotEmpty() },
-            endGameData.takeIf { it.isNotEmpty() },
+            autonomousPeriod.takeIf { it.isNotEmpty() },
+            controlledPeriod.takeIf { it.isNotEmpty() },
+            endGamePeriod.takeIf { it.isNotEmpty() },
             ColorMarker.DEFAULT,
             preferredZone,
             notes
@@ -153,7 +163,7 @@ internal class SpreadsheetImport(inputStream: InputStream) {
     }
 
     fun getTeams(): List<Team> {
-        workbook.getSheet(SpreadsheetFields.TEAMS_SHEET)?.let {
+        workbook.getSheet(SpreadsheetFields.TEAMS_SHEET_NAME)?.let {
             return extractTeams(it)
         }
 
@@ -161,7 +171,7 @@ internal class SpreadsheetImport(inputStream: InputStream) {
     }
 
     fun getMatches(): List<Match> {
-        workbook.getSheet(SpreadsheetFields.MATCHES_SHEET)?.let {
+        workbook.getSheet(SpreadsheetFields.MATCHES_SHEET_NAME)?.let {
             return extractMatches(it)
         }
 

@@ -85,7 +85,7 @@ internal class EditTeamDialog : DialogFragment() {
     private var transitionPlayed = false
 
     private var autonomousScore = 0
-    private var teleOpScore = 0
+    private var controlledScore = 0
     private var endGameScore = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,8 +126,8 @@ internal class EditTeamDialog : DialogFragment() {
             val endGamePeriod = parseEndGameData(content)
 
             val preferredZone = when {
-                content.rbZoneBuilding.isChecked -> PreferredZone.BUILDING
-                content.rbZoneLoading.isChecked -> PreferredZone.LOADING
+                content.rbStartingZoneLeft.isChecked -> PreferredZone.LEFT
+                content.rbStartingZoneRight.isChecked -> PreferredZone.RIGHT
                 else -> PreferredZone.NONE
             }
 
@@ -155,7 +155,7 @@ internal class EditTeamDialog : DialogFragment() {
             restoreTeamData(team)
 
         updateAutonomousScore(autonomousScore)
-        updateControlledScore(teleOpScore)
+        updateControlledScore(controlledScore)
         updateEndGameScore(endGameScore)
         updateTotalScore()
     }
@@ -179,7 +179,7 @@ internal class EditTeamDialog : DialogFragment() {
             updateAutonomousScore()
             updateTotalScore()
         }
-        val teleOpListener = DataChangeListener {
+        val controlledListener = DataChangeListener {
             updateControlledScore()
             updateTotalScore()
         }
@@ -195,9 +195,9 @@ internal class EditTeamDialog : DialogFragment() {
             ctAutoHighGoal.changeListener = autonomousListener
             ctAutoPowerShot.changeListener = autonomousListener
             swAutoParking.setOnCheckedChangeListener(autonomousListener)
-            ctLowGoal.changeListener = teleOpListener
-            ctMidGoal.changeListener = teleOpListener
-            ctHighGoal.changeListener = teleOpListener
+            ctLowGoal.changeListener = controlledListener
+            ctMidGoal.changeListener = controlledListener
+            ctHighGoal.changeListener = controlledListener
             ctPowerShot.changeListener = endGameListener
             ctPowerShot.changeListener = endGameListener
             ctWobbleRings.changeListener = endGameListener
@@ -226,7 +226,7 @@ internal class EditTeamDialog : DialogFragment() {
                 ctMidGoal.counter = it.midGoal
                 ctHighGoal.counter = it.highGoal
 
-                teleOpScore = it.score()
+                controlledScore = it.score()
             }
 
             team.endGamePeriod?.let {
@@ -250,8 +250,8 @@ internal class EditTeamDialog : DialogFragment() {
             }
 
             when (team.preferredZone) {
-                PreferredZone.BUILDING -> rbZoneBuilding.isChecked = true
-                PreferredZone.LOADING -> rbZoneLoading.isChecked = true
+                PreferredZone.LEFT -> rbStartingZoneLeft.isChecked = true
+                PreferredZone.RIGHT -> rbStartingZoneRight.isChecked = true
             }
 
             etNotes.setText(team.notes)
@@ -307,7 +307,7 @@ internal class EditTeamDialog : DialogFragment() {
         val newScore =
             if (score == -1) parseControlledPeriod(binding.content).score() else score
 
-        teleOpScore = newScore
+        controlledScore = newScore
         binding.content.tvDriverControlledScore.text =
             getString(R.string.driver_controlled_score, newScore)
     }
@@ -320,7 +320,7 @@ internal class EditTeamDialog : DialogFragment() {
     }
 
     private fun updateTotalScore() {
-        val totalScore = autonomousScore + teleOpScore + endGameScore
+        val totalScore = autonomousScore + controlledScore + endGameScore
 
         binding.content.tvTotalScore.text = getString(R.string.total_score, totalScore)
     }

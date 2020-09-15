@@ -242,6 +242,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="6dp"
             android:gravity="center_horizontal"
             app:checkedButton="@id/rb_wobble_delivery_none"
@@ -406,19 +407,19 @@
                 android:textSize="16sp" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/rb_zone_building"
+                android:id="@+id/rb_starting_zone_left"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/team_preferred_building"
+                android:text="@string/team_starting_zone_left"
                 android:textSize="16sp" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/rb_zone_loading"
+                android:id="@+id/rb_starting_zone_right"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/team_preferred_loading"
+                android:text="@string/team_starting_zone_right"
                 android:textSize="16sp" />
 
         </com.google.android.material.button.MaterialButtonToggleGroup>

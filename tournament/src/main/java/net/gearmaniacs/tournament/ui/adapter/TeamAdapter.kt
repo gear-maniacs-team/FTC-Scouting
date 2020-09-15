@@ -121,13 +121,13 @@ internal class TeamAdapter(
                 setupColorMarker(team.colorMarker)
 
             val preferredLocation = when (team.preferredZone) {
-                PreferredZone.BUILDING -> R.string.team_preferred_building
-                PreferredZone.LOADING -> R.string.team_preferred_loading
+                PreferredZone.LEFT -> R.string.team_starting_zone_left
+                PreferredZone.RIGHT -> R.string.team_starting_zone_right
                 else -> R.string.none
             }
 
             val description = context.getString(
-                R.string.team_description, team.autonomousScore(), team.teleOpScore(),
+                R.string.team_description, team.autonomousScore(), team.controlledScore(),
                 team.endGameScore(), context.getString(preferredLocation), team.notes.orEmpty()
             )
             tvDescription.text = description
