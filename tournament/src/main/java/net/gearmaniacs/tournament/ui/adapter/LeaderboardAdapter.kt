@@ -1,13 +1,16 @@
 package net.gearmaniacs.tournament.ui.adapter
 
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import net.gearmaniacs.core.extensions.getColorCompat
 import net.gearmaniacs.core.model.team.RankedTeam
 import net.gearmaniacs.tournament.R
 
@@ -16,15 +19,22 @@ internal class LeaderboardAdapter :
 
     private companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<RankedTeam>() {
-            override fun areItemsTheSame(old: RankedTeam, new: RankedTeam) = old.number == new.number
+            override fun areItemsTheSame(old: RankedTeam, new: RankedTeam) =
+                old.number == new.number
 
             override fun areContentsTheSame(old: RankedTeam, new: RankedTeam) = old == new
         }
+
+        private val PLACE_BACKGROUND_COLORS = intArrayOf(
+            R.color.leaderboard_red,
+            R.color.leaderboard_blue,
+            R.color.leaderboard_green,
+            R.color.leaderboard_yellow,
+            android.R.color.white,
+        )
     }
 
     private val differ = AsyncListDiffer(this, DIFF_CALLBACK)
-    private var highestScore = 0
-    private var lowestScore = 0
 
     init {
         setHasStableIds(true)
@@ -33,20 +43,12 @@ internal class LeaderboardAdapter :
     private fun getItem(position: Int): RankedTeam = differ.currentList[position]
 
     fun submitList(list: List<RankedTeam>) {
-        if (list.isEmpty()) {
-            highestScore = 0
-            lowestScore = 0
-        } else {
-            highestScore = list.first().score.toInt()
-            lowestScore = list.last().score.toInt()
-        }
-
         differ.submitList(list)
     }
 
     override fun getItemCount() = differ.currentList.size
 
-    override fun getItemId(position: Int) = getItem(position).number.hashCode().toLong()
+    override fun getItemId(position: Int) = getItem(position).number.toLong()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = LeaderboardViewHolder(
         LayoutInflater.from(parent.context).inflate(
@@ -60,16 +62,19 @@ internal class LeaderboardAdapter :
         val team = getItem(position)
         val context = holder.itemView.context
 
-        holder.tvName.text = context.getString(R.string.team_id_name, team.number, team.name)
-        holder.tvScore.text = team.score.toString()
-
-        holder.pbScore.max = highestScore - lowestScore
-        holder.pbScore.progress = team.score.toInt() - lowestScore
+        ImageViewCompat.setImageTintList(
+            holder.ivPlaceBackground,
+            ColorStateList.valueOf(context.getColorCompat(PLACE_BACKGROUND_COLORS[position % PLACE_BACKGROUND_COLORS.size]))
+        )
+        holder.tvPlaceNumber.text = (position + 1).toString()
+        holder.tvName.text = "${team.number} - ${team.name}"
+        holder.tvScore.text = "${team.score} Points"
     }
 
     class LeaderboardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val ivPlaceBackground: ImageView = itemView.findViewById(R.id.iv_place_background)
+        val tvPlaceNumber: TextView = itemView.findViewById(R.id.tv_place_number)
         val tvName: TextView = itemView.findViewById(R.id.tv_team_name)
         val tvScore: TextView = itemView.findViewById(R.id.tv_team_score)
-        val pbScore: ProgressBar = itemView.findViewById(R.id.pb_team_score)
     }
 }

@@ -11,4 +11,9 @@
     <color name="marker_blue">#0091EA</color>
     <color name="marker_green">#64DD17</color>
     <color name="marker_yellow">#FFFF00</color>
+
+    <color name="leaderboard_red">#FF5252</color>
+    <color name="leaderboard_blue">#00E5FF</color>
+    <color name="leaderboard_green">#76FF03</color>
+    <color name="leaderboard_yellow">#FFFF00</color>
 </resources>

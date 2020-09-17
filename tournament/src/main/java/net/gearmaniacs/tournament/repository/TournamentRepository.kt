@@ -10,9 +10,9 @@ import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.firebase.valueEventFlow
 import net.gearmaniacs.core.model.Match
+import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.team.RankedTeam
 import net.gearmaniacs.core.model.team.Team
-import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.utils.AbstractListenerRepository
 import net.gearmaniacs.tournament.opr.OffensivePowerRanking
 import net.gearmaniacs.tournament.ui.activity.TournamentActivity
@@ -69,12 +69,10 @@ internal class TournamentRepository @Inject constructor(
 
         val rankings = OffensivePowerRanking.computeMMSE(matches, teams) ?: emptyList()
 
-        // Format the power of each Team to only keep the first to decimals
-        rankings.map {
+        // Format the score of each Team to only keep the first to decimals
+        return rankings.map {
             it.copy(score = decimalFormat.format(it.score).toDouble())
         }
-
-        return rankings
     }
 
     override suspend fun onListenerAdded(scope: CoroutineScope) {

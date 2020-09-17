@@ -12,6 +12,12 @@ class EmptyViewAdapter : OneElementRecyclerViewAdapter<EmptyViewAdapter.ViewHold
 
     var text: CharSequence? = null
 
+    init {
+        setHasStableIds(true)
+    }
+
+    override fun getItemId(position: Int) = Long.MAX_VALUE
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
         LayoutInflater.from(parent.context)
             .inflate(R.layout.no_content_view, parent, false)

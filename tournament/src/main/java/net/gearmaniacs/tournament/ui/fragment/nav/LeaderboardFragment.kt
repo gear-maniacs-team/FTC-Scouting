@@ -46,7 +46,13 @@ internal class LeaderboardFragment : AbstractTournamentFragment(R.layout.recycle
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(activity)
             addItemDecoration(DividerItemDecoration(activity, RecyclerView.VERTICAL))
-            adapter = ConcatAdapter(emptyViewAdapter, leaderboardAdapter)
+
+            val concatConfig = ConcatAdapter.Config.Builder()
+                .setIsolateViewTypes(true)
+                .setStableIdMode(ConcatAdapter.Config.StableIdMode.SHARED_STABLE_IDS)
+                .build()
+
+            adapter = ConcatAdapter(concatConfig, emptyViewAdapter, leaderboardAdapter)
         }
 
         activity.observe(viewModel.getTeamsLiveData()) {
