@@ -7,6 +7,7 @@
         <item name="colorSecondary">@color/colorSecondary</item>
         <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
         <item name="android:statusBarColor">?attr/backgroundColor</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.NoActionBar">

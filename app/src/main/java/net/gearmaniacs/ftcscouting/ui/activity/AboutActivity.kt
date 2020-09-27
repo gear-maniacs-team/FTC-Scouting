@@ -130,7 +130,7 @@ class AboutActivity : MaterialAboutActivity() {
         .build()
 
     private fun getAuthorCard() = MaterialAboutCard.Builder()
-        .title(getString(R.string.about_author))
+        .title(getString(R.string.about_developer))
         .addItem(
             MaterialAboutActionItem(
                 "Filea Răzvan",
@@ -141,9 +141,9 @@ class AboutActivity : MaterialAboutActivity() {
         .addItem(
             MaterialAboutActionItem(
                 getString(R.string.about_visit_website),
-                AUTHOR_WEBSITE,
+                DEVELOPER_WEBSITE,
                 getDrawable(R.drawable.ic_about_website),
-                OpenUrlAction(this, AUTHOR_WEBSITE)
+                OpenUrlAction(this, DEVELOPER_WEBSITE)
             )
         )
         .addItem(
@@ -156,10 +156,18 @@ class AboutActivity : MaterialAboutActivity() {
         )
         .addItem(
             MaterialAboutActionItem(
+                getString(R.string.about_other_apps),
+                DEVELOPER_GOOGLE_PLAY,
+                getDrawable(R.drawable.ic_about_play_store),
+                OpenUrlAction(this, DEVELOPER_GOOGLE_PLAY)
+            )
+        )
+        .addItem(
+            MaterialAboutActionItem(
                 "GitHub",
-                AUTHOR_GITHUB,
+                DEVELOPER_GITHUB,
                 getDrawable(R.drawable.ic_about_github),
-                OpenUrlAction(this, AUTHOR_GITHUB)
+                OpenUrlAction(this, DEVELOPER_GITHUB)
             )
         )
         .build()
@@ -231,7 +239,9 @@ class AboutActivity : MaterialAboutActivity() {
         private const val GEAR_MANIACS_WEBSITE = "https://gearmaniacs.ro"
         private const val GEAR_MANIACS_INSTAGRAM = "https://instagram.com/gearmaniacsteam"
         private const val PRIVACY_POLICY = "https://gearmaniacs.ro/privacy-policy"
-        private const val AUTHOR_WEBSITE = "http://theluckycoder.net"
-        private const val AUTHOR_GITHUB = "https://github.com/TheLuckyCoder"
+        private const val DEVELOPER_WEBSITE = "http://theluckycoder.net"
+        private const val DEVELOPER_GOOGLE_PLAY =
+            "https://play.google.com/store/apps/dev?id=7253118641640283145"
+        private const val DEVELOPER_GITHUB = "https://github.com/TheLuckyCoder"
     }
 }

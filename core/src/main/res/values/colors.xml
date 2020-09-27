@@ -16,4 +16,6 @@
     <color name="leaderboard_blue">#00E5FF</color>
     <color name="leaderboard_green">#76FF03</color>
     <color name="leaderboard_yellow">#FFFF00</color>
+    <color name="leaderboard_orange">#FF6E40</color>
+    <color name="leaderboard_light_blue">#84FFFF</color>
 </resources>

@@ -25,11 +25,13 @@ internal class LeaderboardAdapter :
             override fun areContentsTheSame(old: RankedTeam, new: RankedTeam) = old == new
         }
 
-        private val PLACE_BACKGROUND_COLORS = intArrayOf(
+        private val PLACEMENT_BACKGROUND_COLORS = intArrayOf(
             R.color.leaderboard_red,
             R.color.leaderboard_blue,
             R.color.leaderboard_green,
             R.color.leaderboard_yellow,
+            R.color.leaderboard_light_blue,
+            R.color.leaderboard_orange,
             android.R.color.white,
         )
     }
@@ -64,7 +66,7 @@ internal class LeaderboardAdapter :
 
         ImageViewCompat.setImageTintList(
             holder.ivPlaceBackground,
-            ColorStateList.valueOf(context.getColorCompat(PLACE_BACKGROUND_COLORS[position % PLACE_BACKGROUND_COLORS.size]))
+            ColorStateList.valueOf(context.getColorCompat(PLACEMENT_BACKGROUND_COLORS[position % PLACEMENT_BACKGROUND_COLORS.size]))
         )
         holder.tvPlaceNumber.text = (position + 1).toString()
         holder.tvName.text = "${team.number} - ${team.name}"

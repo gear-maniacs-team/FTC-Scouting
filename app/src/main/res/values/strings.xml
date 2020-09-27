@@ -5,7 +5,7 @@
     <string name="intro_title_3">Team Rankings</string>
     <string name="intro_desc_1">Calculate the predicted score of teams and see quickly in which matches to play</string>
     <string name="intro_desc_2">Allows instant synchronization between all the users using the same account</string>
-    <string name="intro_desc_3">Powerful and more accurate rankings for semi-finals using the OPR Algorithm</string>
+    <string name="intro_desc_3">Fast and accurate rankings for semi-finals using the OPR Algorithm</string>
 
     <string name="terms_and_conditions">Terms and Conditions</string>
     <string name="agree_terms_and_conditions">I agree to the Terms and Conditions</string>
@@ -17,8 +17,9 @@
     <string name="about_app_feedback">App Feedback</string>
     <string name="about_visit_website">Visit Website</string>
     <string name="about_follow_instagram">Follow us on Instagram</string>
-    <string name="about_author">Author</string>
+    <string name="about_developer">Developer</string>
     <string name="about_contact">Contact</string>
+    <string name="about_other_apps">Other Apps</string>
     <string name="about_licenses">Licenses</string>
     <string name="update_details">Update Details</string>
 </resources>

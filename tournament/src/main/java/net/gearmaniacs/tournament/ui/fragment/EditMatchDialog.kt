@@ -55,7 +55,7 @@ internal class EditMatchDialog : DialogFragment() {
         }
 
         lifecycleScope.launch {
-            delay(50L)
+            delay(40L)
             binding.fabDone.hide()
             delay(400L)
             binding.fabDone.show()
