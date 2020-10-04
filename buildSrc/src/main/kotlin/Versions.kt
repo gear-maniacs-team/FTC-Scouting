@@ -1,7 +1,7 @@
 object Versions {
     object App {
-        private const val major = 1
-        private const val minor = 3
+        private const val major = 2
+        private const val minor = 0
         private const val patch = 0
 
         const val versionCode: Int = major * 100 + minor * 10 + patch
@@ -19,5 +19,5 @@ object Versions {
     const val room = "2.2.5"
     const val daggerHilt = "2.29.1-alpha"
     const val hilt = "1.0.0-alpha02"
-    const val lifecycle = "2.3.0-alpha07"
+    const val lifecycle = "2.3.0-beta01"
 }

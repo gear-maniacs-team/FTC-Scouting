@@ -112,7 +112,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:layout_marginEnd="6dp"
-            app:max="3"
+            app:max="4"
             app:text="@string/prompt_high_goal" />
 
         <net.gearmaniacs.core.view.CounterView
@@ -122,7 +122,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:layout_marginEnd="6dp"
-            app:max="4"
+            app:max="3"
             app:text="@string/prompt_power_shot" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial

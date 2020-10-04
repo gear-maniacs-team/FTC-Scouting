@@ -62,7 +62,7 @@ internal class TournamentRepository @Inject constructor(
     }
 
     suspend fun generateOprList(teams: List<Team>, matches: List<Match>): List<RankedTeam> {
-        val decimalFormat = DecimalFormat("#.##")
+        val decimalFormat = DecimalFormat("#.#")
         decimalFormat.decimalFormatSymbols = DecimalFormatSymbols().apply {
             decimalSeparator = '.'
         }

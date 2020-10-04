@@ -51,13 +51,12 @@ class AboutActivity : MaterialAboutActivity() {
         }
     }
 
-    override fun getMaterialAboutList(context: Context): MaterialAboutList {
-        return MaterialAboutList.Builder()
+    override fun getMaterialAboutList(context: Context): MaterialAboutList =
+        MaterialAboutList.Builder()
             .addCard(getAppCard())
             .addCard(getTeamCard())
             .addCard(getAuthorCard())
             .build()
-    }
 
     override fun getActivityTitle(): CharSequence? = getString(R.string.title_about)
 

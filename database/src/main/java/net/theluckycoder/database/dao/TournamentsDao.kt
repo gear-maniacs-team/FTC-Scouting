@@ -49,7 +49,6 @@ abstract class TournamentsDao {
 
     @Transaction
     open suspend fun replaceAll(list: List<Tournament>) {
-        // TODO: Find a way to improve this
         // Because of how the parent-child relation between Tournament and Team and Match
         // We cannot just delete everything and insert the new list of tournaments
         // Instead we have to execute the insertions, deletion and updates individually

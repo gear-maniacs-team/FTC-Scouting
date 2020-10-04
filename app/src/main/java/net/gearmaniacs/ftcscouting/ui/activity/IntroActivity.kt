@@ -119,17 +119,15 @@ class IntroActivity : IntroActivity() {
             if (contentView != null) {
                 val slide = getSlide(position)
 
-                if (slide === termsSlide) {
+                if (slide === termsSlide)
                     Snackbar.make(
                         contentView,
                         R.string.accept_terms_and_conditions,
                         Snackbar.LENGTH_SHORT
                     ).show()
-                }
             }
         }
     }
-
 
     override fun onBackPressed() {
         justTry {
