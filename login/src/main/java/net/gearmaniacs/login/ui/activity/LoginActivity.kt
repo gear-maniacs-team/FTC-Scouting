@@ -51,17 +51,20 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     lateinit var appPreferences: AppPreferences
 
     init {
-        lifecycleScope.launchWhenResumed {
-            val hasSeenIntro = appPreferences.seenIntroFlow.first()
-
-            if (!hasSeenIntro) {
+        lifecycleScope.launchWhenCreated {
+            val introLauncher =
                 registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                     if (result.resultCode == RESULT_OK) {
                         lifecycleScope.launch { appPreferences.setSeenIntro(true) }
                     } else {
                         finish()
                     }
-                }.launch(Intent(this@LoginActivity, Class.forName(introActivityClass.value)))
+                }
+
+            if (!appPreferences.seenIntroFlow.first()) {
+                introLauncher.launch(
+                    Intent(this@LoginActivity, Class.forName(introActivityClass.value))
+                )
             }
         }
     }

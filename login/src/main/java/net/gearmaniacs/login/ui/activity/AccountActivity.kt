@@ -56,6 +56,33 @@ class AccountActivity : AppCompatActivity() {
     @Inject
     lateinit var signOutCleaner: Lazy<SignOutCleaner>
 
+    private val googleSignInLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            val context = applicationContext
+            GlobalScope.launch(Dispatchers.Main.immediate) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+
+                try {
+                    val account = task.getResult(ApiException::class.java)!!
+
+                    val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                    val linkTask = Firebase.auth.currentUser!!.linkWithCredential(credential)
+                    linkTask.await()
+                    updateLinkedProviders()
+
+                    if (linkTask.isSuccessful)
+                        context.toast(R.string.account_provider_google_link_success)
+                    else
+                        throw IllegalStateException("Could not link account with Google")
+                } catch (e: Exception) {
+                    Log.w(TAG, "Google Account linking failed", e)
+                    context.longToast(R.string.account_provider_google_link_failure)
+                }
+
+                binding.btnConnectGoogle.isEnabled = true
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -178,31 +205,7 @@ class AccountActivity : AppCompatActivity() {
 
         val signInClient = GoogleSignIn.getClient(this, gso)
 
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            val context = applicationContext
-            GlobalScope.launch(Dispatchers.Main.immediate) {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
-
-                try {
-                    val account = task.getResult(ApiException::class.java)!!
-
-                    val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                    val linkTask = Firebase.auth.currentUser!!.linkWithCredential(credential)
-                    linkTask.await()
-                    updateLinkedProviders()
-
-                    if (linkTask.isSuccessful)
-                        context.toast(R.string.account_provider_google_link_success)
-                    else
-                        throw IllegalStateException("Could not link account with Google")
-                } catch (e: Exception) {
-                    Log.w(TAG, "Google Account linking failed", e)
-                    context.longToast(R.string.account_provider_google_link_failure)
-                }
-
-                binding.btnConnectGoogle.isEnabled = true
-            }
-        }.launch(signInClient.signInIntent)
+        googleSignInLauncher.launch(signInClient.signInIntent)
     }
 
     private fun unlinkFromGoogle() {

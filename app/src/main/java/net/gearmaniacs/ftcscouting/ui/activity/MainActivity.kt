@@ -8,6 +8,7 @@ import androidx.core.view.doOnPreDraw
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.ktx.Firebase
@@ -21,6 +22,7 @@ import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.core.utils.AppPreferences
+import net.gearmaniacs.core.utils.EmptyViewAdapter
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.databinding.MainActivityBinding
 import net.gearmaniacs.ftcscouting.ui.adapter.TournamentAdapter
@@ -58,10 +60,17 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
         setContentView(binding.root)
         setSupportActionBar(binding.bottomAppBar)
 
+        val emptyViewAdapter = EmptyViewAdapter()
+        emptyViewAdapter.text = getString(R.string.no_tournaments_found)
         val tournamentAdapter = TournamentAdapter(this)
 
+        val concatConfig = ConcatAdapter.Config.Builder()
+            .setIsolateViewTypes(true)
+            .setStableIdMode(ConcatAdapter.Config.StableIdMode.SHARED_STABLE_IDS)
+            .build()
+
         val recyclerView = binding.content.rvTournament
-        recyclerView.adapter = tournamentAdapter
+        recyclerView.adapter = ConcatAdapter(concatConfig, emptyViewAdapter, tournamentAdapter)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.addItemDecoration(
@@ -100,6 +109,8 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
 
         observe(viewModel.getTournamentsLiveData()) { list ->
             tournamentAdapter.submitList(list ?: emptyList())
+
+            emptyViewAdapter.isVisible = list.isNullOrEmpty()
         }
     }
 

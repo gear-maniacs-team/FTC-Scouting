@@ -72,7 +72,7 @@
     <string name="opr_error_no_matches">No matches found. Leaderboard can not be computed</string>
     <string name="opr_error_data">Something went wrong. Please check the input data</string>
     <string name="opr_info">Leaderboard Algorithm</string>
-    <string name="opr_info_desc">The Leaderboard page takes the results of the matches in the tournament and uses the <b>Offensive Power Power</b> Ranking algorithm to rank the teams.</string>
+    <string name="opr_info_desc">The Leaderboard page takes the results of the matches in the tournament and uses the <b>Offensive Power Ranking</b> algorithm to rank the teams.</string>
 
     <!-- Strings related to Spreadsheet -->
     <string name="spreadsheet_error">Could not export tournament to spreadsheet</string>

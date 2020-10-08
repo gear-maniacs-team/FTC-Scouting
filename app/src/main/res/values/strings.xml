@@ -12,6 +12,8 @@
     <string name="read_terms_and_conditions">Read the Terms and Conditions</string>
     <string name="accept_terms_and_conditions">Please accept the Terms and Conditions</string>
 
+    <string name="no_tournaments_found">There are no tournaments here!</string>
+
     <!-- About Screen -->
     <string name="about_privacy_policy">Privacy Policy</string>
     <string name="about_app_feedback">App Feedback</string>

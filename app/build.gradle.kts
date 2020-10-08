@@ -44,14 +44,14 @@ android {
 
     buildTypes {
         getByName("debug") {
-            manifestPlaceholders(mapOf("firebaseDisabled" to true, "crashlyticsEnabled" to false))
+            addManifestPlaceholders(mapOf("disableFirebase" to true, "enableCrashlytics" to false))
 
             extra.set("enableCrashlytics", false)
             extra.set("alwaysUpdateBuildId", false)
             isCrunchPngs = false
         }
         getByName("release") {
-            manifestPlaceholders(mapOf("firebaseDisabled" to false, "crashlyticsEnabled" to true))
+            addManifestPlaceholders(mapOf("disableFirebase" to false, "enableCrashlytics" to true))
 
             isMinifyEnabled = true
             isShrinkResources = true

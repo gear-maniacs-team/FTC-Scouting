@@ -35,6 +35,34 @@ internal class SignInFragment : Fragment() {
     private var _binding: SignInFragmentBinding? = null
     private val binding get() = _binding!!
 
+    private val googleSignInLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            lifecycleScope.launch(Dispatchers.Main.immediate) {
+                ensureActive()
+                setIsLoading(true)
+                val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+
+                try {
+                    val account = task.getResult(ApiException::class.java)!!
+
+                    val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                    val signInTask = Firebase.auth.signInWithCredential(credential)
+                    signInTask.await()
+
+                    if (signInTask.isSuccessful) {
+                        Log.v(TAG, "Google Sign In was successful")
+                        loginCallback!!.finishActivity()
+                    } else
+                        throw IllegalStateException("Could not link account with Google")
+                } catch (e: Exception) {
+                    Log.w(TAG, "Google Account linking failed", e)
+                    requireContext().longToast(R.string.account_provider_google_sign_in_failure)
+                }
+
+                setIsLoading(false)
+            }
+        }
+
     var loginCallback: LoginCallback? = null
 
     override fun onCreateView(
@@ -80,32 +108,7 @@ internal class SignInFragment : Fragment() {
 
             val signInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
-            requireActivity().registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                lifecycleScope.launch(Dispatchers.Main.immediate) {
-                    ensureActive()
-                    setIsLoading(true)
-                    val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
-
-                    try {
-                        val account = task.getResult(ApiException::class.java)!!
-
-                        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                        val signInTask = Firebase.auth.signInWithCredential(credential)
-                        signInTask.await()
-
-                        if (signInTask.isSuccessful) {
-                            Log.v(TAG, "Google Sign In was successful")
-                            loginCallback!!.finishActivity()
-                        } else
-                            throw IllegalStateException("Could not link account with Google")
-                    } catch (e: Exception) {
-                        Log.w(TAG, "Google Account linking failed", e)
-                        requireContext().longToast(R.string.account_provider_google_sign_in_failure)
-                    }
-
-                    setIsLoading(false)
-                }
-            }.launch(signInClient.signInIntent)
+            googleSignInLauncher.launch(signInClient.signInIntent)
         }
 
         binding.btnNoAccount.setOnClickListener {

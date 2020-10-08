@@ -25,9 +25,9 @@ import dagger.hilt.android.scopes.ActivityScoped
 import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.model.Match
-import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.UserTeam
+import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.databinding.TournamentActivityBinding
 import net.gearmaniacs.tournament.ui.fragment.AbstractTournamentFragment
@@ -56,6 +56,19 @@ class TournamentActivity : AppCompatActivity() {
 
     private var teamsList = emptyList<Team>()
     private var matchesList = emptyList<Match>()
+
+    private val exportSpreadsheetLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            it?.data?.data?.let { documentUri ->
+                viewModel.exportToSpreadsheet(documentUri, teamsList, matchesList)
+            }
+        }
+    private val importSpreadsheetLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            it?.data?.data?.let { documentUri ->
+                viewModel.importFromSpreadSheet(documentUri, teamsList, matchesList)
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -194,21 +207,13 @@ class TournamentActivity : AppCompatActivity() {
                     intent.putExtra(Intent.EXTRA_TITLE, it)
                 }
 
-                registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                    it?.data?.data?.let { documentUri ->
-                        viewModel.exportToSpreadsheet(documentUri, teamsList, matchesList)
-                    }
-                }.launch(intent)
+                exportSpreadsheetLauncher.launch(intent)
             }
             R.id.action_import -> {
                 val intent = getSpreadsheetIntent(Intent.ACTION_OPEN_DOCUMENT)
                 intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
 
-                registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                    it?.data?.data?.let { documentUri ->
-                        viewModel.importFromSpreadSheet(documentUri, teamsList, matchesList)
-                    }
-                }.launch(intent)
+                importSpreadsheetLauncher.launch(intent)
             }
         }
         return true
