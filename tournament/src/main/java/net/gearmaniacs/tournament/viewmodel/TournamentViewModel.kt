@@ -36,6 +36,7 @@ internal class TournamentViewModel @ViewModelInject constructor(
     private val leaderboardData = MutableNonNullLiveData(emptyList<RankedTeam>())
     private val tournamentData = tournamentRepository.tournamentFlow.asLiveData()
     private val teamsData = teamsRepository.teamsFlows.asLiveData()
+    private val queriedTeamsData = teamsRepository.queriedTeamsFlow.asLiveData()
     private val matchesData = matchesRepository.matchesFlow.asLiveData()
 
     private var listening = false
@@ -49,7 +50,7 @@ internal class TournamentViewModel @ViewModelInject constructor(
 
     fun getTeamsLiveData() = teamsData
 
-    fun getTeamsFilteredLiveData(): NonNullLiveData<List<Team>> = teamsRepository.queriedTeamsData
+    fun getTeamsFilteredLiveData() = queriedTeamsData
 
     fun getMatchesLiveData() = matchesData
 
@@ -57,14 +58,13 @@ internal class TournamentViewModel @ViewModelInject constructor(
 
     // region Teams Management
 
-    fun performTeamsSearch(query: TeamSearchAdapter.Query?) {
-        viewModelScope.launch(Dispatchers.Main.immediate) { teamsRepository.performTeamsSearch(query) }
+    fun queryTeams(query: TeamSearchAdapter.Query?) {
+        teamsRepository.updateTeamsQuery(query)
     }
 
     fun addTeamsFromMatches(teams: List<Team>, matches: List<Match>) {
-        val existingTeamIds = teams.map { it.number }
-
         viewModelScope.launch(Dispatchers.Default) {
+            val existingTeamIds = teams.map { it.number }
             val teamIds = HashSet<Int>(matches.size)
 
             matches.forEach {

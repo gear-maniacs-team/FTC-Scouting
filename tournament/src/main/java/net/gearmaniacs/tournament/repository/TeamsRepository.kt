@@ -4,14 +4,16 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
-import net.gearmaniacs.core.architecture.MutableNonNullLiveData
 import net.gearmaniacs.core.extensions.safeCollect
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.generatePushId
@@ -26,6 +28,7 @@ import net.gearmaniacs.tournament.ui.adapter.TeamSearchAdapter
 import net.theluckycoder.database.dao.TeamsDao
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 internal class TeamsRepository @Inject constructor(
     @TournamentActivity.TournamentKey
     private val tournamentKey: String,
@@ -33,13 +36,13 @@ internal class TeamsRepository @Inject constructor(
     private val tournamentReference: DatabaseReference?
 ) : AbstractListenerRepository() {
 
-    private var teamListForQuery = emptyList<Team>()
-    private var lastTeamQuery: TeamSearchAdapter.Query? = null
-
-    private var teamSearchJob: Job? = null // Last launched search job
+    private var teamQueryJob: Job? = null // Last launched query job
+    private val teamQueryStateFlow = MutableStateFlow<TeamSearchAdapter.Query?>(null)
+    private val _queriedTeamsFlow = MutableStateFlow(emptyList<Team>())
+    val queriedTeamsFlow: StateFlow<List<Team>> = _queriedTeamsFlow
 
     val teamsFlows = teamsDao.getAllByTournament(tournamentKey)
-    val queriedTeamsData = MutableNonNullLiveData(emptyList<Team>())
+
 
     suspend fun addTeam(team: Team) {
         val teamRef = Firebase.ifLoggedIn {
@@ -105,53 +108,53 @@ internal class TeamsRepository @Inject constructor(
         }
     }
 
-    suspend fun performTeamsSearch(query: TeamSearchAdapter.Query?): Unit = coroutineScope {
-        lastTeamQuery = query
-        val list = teamListForQuery
+    fun updateTeamsQuery(query: TeamSearchAdapter.Query?) {
+        teamQueryStateFlow.value = query
+    }
+
+    private suspend fun performTeamsQuery(
+        list: List<Team>,
+        query: TeamSearchAdapter.Query?
+    ): Unit = coroutineScope {
         // Cancel the last running search
-        teamSearchJob?.cancel()
+        teamQueryJob?.cancel()
 
         if (list.isEmpty() || query == null || query.isEmpty()) {
-            queriedTeamsData.value = list
+            _queriedTeamsFlow.value = list
             return@coroutineScope
         }
 
-        teamSearchJob = launch(Dispatchers.Main.immediate) {
-            val filteredList = withContext(Dispatchers.Default) {
-                var newList = list.filter {
-                    (query.defaultMarker && it.colorMarker == ColorMarker.DEFAULT)
-                            || (query.redMarker && it.colorMarker == ColorMarker.RED)
-                            || (query.blueMarker && it.colorMarker == ColorMarker.BLUE)
-                            || (query.greenMarker && it.colorMarker == ColorMarker.GREEN)
-                            || (query.yellowMarker && it.colorMarker == ColorMarker.YELLOW)
+        teamQueryJob = launch(Dispatchers.Default) {
+            var filteredList = list.filter {
+                (query.defaultMarker && it.colorMarker == ColorMarker.DEFAULT)
+                        || (query.redMarker && it.colorMarker == ColorMarker.RED)
+                        || (query.blueMarker && it.colorMarker == ColorMarker.BLUE)
+                        || (query.greenMarker && it.colorMarker == ColorMarker.GREEN)
+                        || (query.yellowMarker && it.colorMarker == ColorMarker.YELLOW)
+            }
+
+            if (query.name.isNotEmpty()) {
+                val pattern = "(?i).*(${query.name}).*".toPattern()
+
+                filteredList = filteredList.filter {
+                    pattern.matcher(it.number.toString() + ' ' + it.name.orEmpty()).matches()
                 }
-
-                if (query.name.isNotEmpty()) {
-                    val pattern = "(?i).*(${query.name}).*".toPattern()
-
-                    newList = newList.filter {
-                        pattern.matcher(it.number.toString() + ' ' + it.name.orEmpty()).matches()
-                    }
-                }
-
-                newList.toList()
             }
 
             // Don't update the data if the search was canceled
             ensureActive()
-            queriedTeamsData.value = filteredList
+            _queriedTeamsFlow.value = filteredList.toList()
         }
     }
 
     override suspend fun onListenerAdded(scope: CoroutineScope) {
         scope.launch {
-            teamsFlows.collectLatest {
+            teamsFlows.combine(teamQueryStateFlow) { b1, b2 ->
+                b1 to b2
+            }.collectLatest {
                 coroutineContext.ensureActive()
 
-                withContext(Dispatchers.Main) {
-                    teamListForQuery = it
-                    performTeamsSearch(lastTeamQuery)
-                }
+                performTeamsQuery(it.first, it.second)
             }
         }
 

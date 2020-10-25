@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
-import net.gearmaniacs.core.extensions.observeNonNull
+import net.gearmaniacs.core.extensions.observe
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.core.utils.EmptyViewAdapter
@@ -46,7 +46,7 @@ internal class TeamFragment : AbstractTournamentFragment(R.layout.recycler_view_
 
         searchAdapter = TeamSearchAdapter {
             lastQuery = it
-            viewModel.performTeamsSearch(it)
+            viewModel.queryTeams(it)
         }
         lastQuery?.let { searchAdapter.setQuery(it) }
 
@@ -64,13 +64,15 @@ internal class TeamFragment : AbstractTournamentFragment(R.layout.recycler_view_
             setFabToHideOnScroll(fab)
         }
 
-        activity.observeNonNull(viewModel.getTeamsFilteredLiveData()) {
-            val query = lastQuery
-            teamAdapter.submitList(it)
+        activity.observe(viewModel.getTeamsFilteredLiveData()) {
+            if (it != null) {
+                val query = lastQuery
+                teamAdapter.submitList(it)
 
-            val emptyViewVisible = it.isEmpty() && (query == null || query.isEmpty())
-            emptyViewAdapter.isVisible = emptyViewVisible
-            searchAdapter.isVisible = !emptyViewVisible
+                val emptyViewVisible = it.isEmpty() && (query == null || query.isEmpty())
+                emptyViewAdapter.isVisible = emptyViewVisible
+                searchAdapter.isVisible = !emptyViewVisible
+            }
         }
     }
 

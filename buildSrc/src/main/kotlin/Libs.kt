@@ -19,8 +19,7 @@ object Libs {
     val androidx_lifecycle = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle}"
     val androidx_livedata = "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.lifecycle}"
     val androidx_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.lifecycle}"
-
-    val datastore_preferences = "androidx.datastore:datastore-preferences:1.0.0-alpha01"
+    val androidx_datastore_preferences = "androidx.datastore:datastore-preferences:1.0.0-alpha02"
 
     // Room
     val room_runtime = "androidx.room:room-runtime:${Versions.room}"
@@ -28,10 +27,11 @@ object Libs {
     val room_compiler = "androidx.room:room-compiler:${Versions.room}"
 
     // Firebase
-    val firebase_analytics = "com.google.firebase:firebase-analytics-ktx:17.6.0"
-    val firebase_database = "com.google.firebase:firebase-database-ktx:19.5.0"
-    val firebase_auth = "com.google.firebase:firebase-auth-ktx:19.4.0"
-    val firebase_crashlytics = "com.google.firebase:firebase-crashlytics:17.2.2"
+    val firebase_bom = "com.google.firebase:firebase-bom:${Versions.firebaseBom}"
+    val firebase_analytics = "com.google.firebase:firebase-analytics-ktx"
+    val firebase_database = "com.google.firebase:firebase-database-ktx"
+    val firebase_auth = "com.google.firebase:firebase-auth-ktx"
+    val firebase_crashlytics = "com.google.firebase:firebase-crashlytics"
 
     // GMS
     val gms_auth = "com.google.android.gms:play-services-auth:18.1.0"
@@ -52,7 +52,7 @@ object Libs {
 
     // Tests
     object Test {
-        val junit = "junit:junit:4.13"
+        val junit = "junit:junit:4.13.1"
         val core = "androidx.test:core:1.3.0"
         val runner = "androidx.test.ext:junit:1.1.2"
         val rules = "androidx.test:rules:1.3.0"

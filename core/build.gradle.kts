@@ -61,8 +61,9 @@ dependencies {
     api(Libs.androidx_livedata)
     api(Libs.androidx_viewmodel)
 
-    api(Libs.datastore_preferences)
+    api(Libs.androidx_datastore_preferences)
 
+    api(platform(Libs.firebase_bom))
     api(Libs.firebase_analytics)
     api(Libs.firebase_auth)
     api(Libs.firebase_database)
