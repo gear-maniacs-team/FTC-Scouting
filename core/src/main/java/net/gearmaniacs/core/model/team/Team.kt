@@ -8,7 +8,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.firebase.database.Exclude
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import net.gearmaniacs.core.model.DatabaseClass
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.enums.ColorMarker
@@ -30,20 +30,34 @@ import net.gearmaniacs.core.model.enums.PreferredZone
 )
 data class Team(
     @PrimaryKey @ColumnInfo(name = "key")
-    @get:Exclude @set:Exclude override var key: String,
+    @get:Exclude @set:Exclude
+    override var key: String,
+
     @ColumnInfo(name = "tournament_key")
-    @get:Exclude val tournamentKey: String = "",
+    @get:Exclude
+    val tournamentKey: String = "",
+
     @ColumnInfo(name = "number")
     override val number: Int,
+
     @ColumnInfo(name = "name")
     override val name: String? = null,
-    @Embedded(prefix = "auto_") val autonomousPeriod: AutonomousPeriod? = null,
-    @Embedded(prefix = "controlled_") val controlledPeriod: ControlledPeriod? = null,
-    @Embedded(prefix = "end_") val endGamePeriod: EndGamePeriod? = null,
+
+    @Embedded(prefix = "auto_")
+    val autonomousPeriod: AutonomousPeriod? = null,
+
+    @Embedded(prefix = "controlled_")
+    val controlledPeriod: ControlledPeriod? = null,
+
+    @Embedded(prefix = "end_")
+    val endGamePeriod: EndGamePeriod? = null,
+
     @ColumnInfo(name = "color_marker")
     val colorMarker: Int = ColorMarker.DEFAULT,
+
     @ColumnInfo(name = "preferred_zone")
     val preferredZone: Int = PreferredZone.NONE,
+
     @ColumnInfo(name = "notes")
     val notes: String? = null
 ) : BaseTeam(number, name), DatabaseClass<Team>, Parcelable {

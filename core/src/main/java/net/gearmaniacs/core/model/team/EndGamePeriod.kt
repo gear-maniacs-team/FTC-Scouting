@@ -3,7 +3,7 @@ package net.gearmaniacs.core.model.team
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import com.google.firebase.database.Exclude
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import net.gearmaniacs.core.model.enums.WobbleDeliveryZone
 
 @Parcelize

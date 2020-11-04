@@ -5,6 +5,7 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import net.gearmaniacs.core.extensions.safeCollect
@@ -46,7 +47,7 @@ class MainRepository @Inject constructor(
         }
     }
 
-    val tournamentsFlow = tournamentsDao.getAllFlow()
+    val tournamentsFlow = tournamentsDao.getAllFlow().distinctUntilChanged()
 
     suspend fun createNewTournament(userTeam: UserTeam?, tournamentName: String) {
         val tournamentKey = if (Firebase.isLoggedIn) {

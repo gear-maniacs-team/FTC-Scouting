@@ -2,7 +2,7 @@ plugins {
     id("com.android.library")
 
     kotlin("android")
-    kotlin("android.extensions")
+    id("kotlin-parcelize")
     kotlin("kapt")
 
     id("dagger.hilt.android.plugin")
@@ -25,6 +25,10 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs = listOf(
+            "-progressive",
+            "-Xopt-in=kotlin.RequiresOptIn"
+        )
     }
 }
 

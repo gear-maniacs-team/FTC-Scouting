@@ -3,6 +3,7 @@ package net.gearmaniacs.tournament.repository
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import net.gearmaniacs.core.extensions.safeCollect
@@ -28,7 +29,7 @@ internal class TournamentRepository @Inject constructor(
     private val tournamentReference: DatabaseReference?
 ) : AbstractListenerRepository() {
 
-    val tournamentFlow = tournamentsDao.getFlow(tournamentKey)
+    val tournamentFlow = tournamentsDao.getFlow(tournamentKey).distinctUntilChanged()
 
     suspend fun updateTournamentName(tournamentName: String) {
         val tournament = Tournament(tournamentKey, tournamentName)

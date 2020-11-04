@@ -8,7 +8,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.firebase.database.Exclude
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @Entity(
@@ -26,13 +26,20 @@ import kotlinx.android.parcel.Parcelize
 )
 data class Match(
     @PrimaryKey @ColumnInfo(name = "key")
-    @get:Exclude @set:Exclude override var key: String,
+    @get:Exclude @set:Exclude
+    override var key: String,
+
     @ColumnInfo(name = "tournament_key")
     @get:Exclude val tournamentKey: String = "",
+
     @ColumnInfo(name = "id")
     val id: Int,
-    @Embedded(prefix = "red_") val redAlliance: Alliance,
-    @Embedded(prefix = "blue_") val blueAlliance: Alliance
+
+    @Embedded(prefix = "red_")
+    val redAlliance: Alliance,
+
+    @Embedded(prefix = "blue_")
+    val blueAlliance: Alliance
 ) : DatabaseClass<Match>, Parcelable {
 
     constructor() : this("", "", 0, Alliance(), Alliance())

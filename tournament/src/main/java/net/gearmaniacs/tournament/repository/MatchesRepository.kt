@@ -5,6 +5,7 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import net.gearmaniacs.core.architecture.MutableNonNullLiveData
@@ -29,7 +30,7 @@ internal class MatchesRepository @Inject constructor(
 
     private var userTeamNumber = -1
 
-    val matchesFlow = matchesDao.getAllByTournament(tournamentKey)
+    val matchesFlow = matchesDao.getAllByTournament(tournamentKey).distinctUntilChanged()
     val infoData = MutableNonNullLiveData(emptyList<Match>())
 
     private fun updateInfoData(list: List<Match>) {

@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import net.gearmaniacs.core.extensions.safeCollect
@@ -41,7 +42,7 @@ internal class TeamsRepository @Inject constructor(
     private val _queriedTeamsFlow = MutableStateFlow(emptyList<Team>())
     val queriedTeamsFlow: StateFlow<List<Team>> = _queriedTeamsFlow
 
-    val teamsFlows = teamsDao.getAllByTournament(tournamentKey)
+    val teamsFlows = teamsDao.getAllByTournament(tournamentKey).distinctUntilChanged()
 
 
     suspend fun addTeam(team: Team) {

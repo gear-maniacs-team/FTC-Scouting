@@ -2,7 +2,7 @@ plugins {
     id("com.android.library")
 
     kotlin("android")
-    kotlin("android.extensions")
+    id("kotlin-parcelize")
     kotlin("kapt")
 
     id("dagger.hilt.android.plugin")
@@ -37,10 +37,6 @@ android {
                 "-progressive",
                 "-Xopt-in=kotlin.RequiresOptIn"
         )
-    }
-
-    androidExtensions {
-        features = setOf("parcelize")
     }
 }
 

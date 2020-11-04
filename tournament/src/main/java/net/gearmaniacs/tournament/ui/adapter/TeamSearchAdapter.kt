@@ -7,7 +7,7 @@ import androidx.core.view.forEach
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import net.gearmaniacs.core.utils.OneElementRecyclerViewAdapter
 import net.gearmaniacs.tournament.databinding.TeamSearchViewBinding
 

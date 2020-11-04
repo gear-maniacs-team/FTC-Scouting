@@ -12,7 +12,7 @@ object Libs {
     val androidx_core = "androidx.core:core-ktx:1.3.2"
     val androidx_appcompat = "androidx.appcompat:appcompat:1.3.0-alpha02"
     val androidx_recycler_view = "androidx.recyclerview:recyclerview:1.2.0-alpha06"
-    val androidx_constraint_layout = "androidx.constraintlayout:constraintlayout:2.0.2"
+    val androidx_constraint_layout = "androidx.constraintlayout:constraintlayout:2.0.4"
     val androidx_swipe_refresh_layout = "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     val androidx_preference = "androidx.preference:preference:1.1.1"
     val androidx_fragment = "androidx.fragment:fragment-ktx:1.3.0-beta01"
