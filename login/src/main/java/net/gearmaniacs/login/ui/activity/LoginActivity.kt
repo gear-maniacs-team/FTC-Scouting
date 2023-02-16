@@ -13,7 +13,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import net.gearmaniacs.core.extensions.alertDialog
@@ -31,6 +30,15 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity(), LoginCallback {
+
+    private val introLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                lifecycleScope.launch { appPreferences.setSeenIntro(true) }
+            } else {
+                finish()
+            }
+        }
 
     private lateinit var binding: LoginActivityBinding
     private lateinit var auth: FirebaseAuth
@@ -52,15 +60,6 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
 
     init {
         lifecycleScope.launchWhenCreated {
-            val introLauncher =
-                registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                    if (result.resultCode == RESULT_OK) {
-                        lifecycleScope.launch { appPreferences.setSeenIntro(true) }
-                    } else {
-                        finish()
-                    }
-                }
-
             if (!appPreferences.seenIntroFlow.first()) {
                 introLauncher.launch(
                     Intent(this@LoginActivity, Class.forName(introActivityClass.value))
@@ -201,6 +200,7 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
             setTitle(R.string.confirm_use_offline_account)
             setMessage(R.string.confirm_use_offline_account_desc)
             setPositiveButton(R.string.action_use_offline) { _, _ ->
+                lifecycleScope.launch { appPreferences.setHasOfflineAccount(true) }
                 startMainActivity()
             }
             setNegativeButton(android.R.string.cancel, null)
@@ -209,7 +209,7 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     }
 
     private fun startMainActivity() {
-        GlobalScope.launch {
+        lifecycleScope.launch {
             appPreferences.setLoggedIn(true)
         }
 
@@ -232,8 +232,6 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     class IntroActivityClass(val value: String)
 
     private companion object {
-        private const val TAG = "LoginActivity"
-
         private const val BUNDLE_FRAGMENT_ACTIVE = "fragment_active"
     }
 }

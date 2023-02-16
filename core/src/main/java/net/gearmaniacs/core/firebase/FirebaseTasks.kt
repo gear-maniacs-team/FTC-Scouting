@@ -5,17 +5,15 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.getValue
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
 import net.gearmaniacs.core.model.DatabaseClass
 import kotlin.reflect.KClass
 
-@OptIn(ExperimentalCoroutinesApi::class)
 fun <T : DatabaseClass<T>> DatabaseReference.listValueEventFlow(
     parser: (DataSnapshot) -> T?
-) = callbackFlow<List<T>> {
+) = callbackFlow {
     val eventListener = object : ValueEventListener {
         override fun onCancelled(error: DatabaseError) {
             error.toException().printStackTrace()
@@ -28,7 +26,7 @@ fun <T : DatabaseClass<T>> DatabaseReference.listValueEventFlow(
                 .mapNotNull { parser(it) }
                 .toList()
 
-            channel.sendBlocking(list)
+            channel.trySendBlocking(list)
         }
     }
 
@@ -53,10 +51,9 @@ fun <T : DatabaseClass<T>> DatabaseReference.listValueEventFlow(
         null
 }
 
-@OptIn(ExperimentalCoroutinesApi::class)
 fun <T> DatabaseReference.valueEventFlow(
     parser: (DataSnapshot) -> T?
-) = callbackFlow<T?> {
+) = callbackFlow {
     val eventListener = object : ValueEventListener {
         override fun onCancelled(error: DatabaseError) {
             error.toException().printStackTrace()
@@ -64,7 +61,7 @@ fun <T> DatabaseReference.valueEventFlow(
         }
 
         override fun onDataChange(snapshot: DataSnapshot) {
-            channel.sendBlocking(parser(snapshot))
+            channel.trySendBlocking(parser(snapshot))
         }
     }
 

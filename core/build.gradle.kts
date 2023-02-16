@@ -9,41 +9,35 @@ plugins {
 }
 
 android {
-    compileSdkVersion(Versions.Sdk.compile)
+    compileSdk = Versions.Sdk.compile
 
     defaultConfig {
-        minSdkVersion(Versions.Sdk.min)
-        targetSdkVersion(Versions.Sdk.target)
+        minSdk = Versions.Sdk.min
+        targetSdk = Versions.Sdk.target
 
         consumerProguardFiles("core-rules.pro")
 
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += mapOf(
-                    "room.incremental" to "true"
+                    "room.incremental" to "true",
+                    "room.schemaLocation" to "$projectDir/schemas",
+                    "room.expandProjection" to "true"
                 )
             }
         }
     }
 
     compileOptions {
-        sourceCompatibility(JavaVersion.VERSION_1_8)
-        targetCompatibility(JavaVersion.VERSION_1_8)
-    }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs = listOf(
-                "-progressive",
-                "-Xopt-in=kotlin.RequiresOptIn"
-        )
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 }
 
 dependencies {
-    api(Libs.kotlin_stdlib)
-    api(Libs.kotlin_coroutines)
-    api(Libs.kotlin_coroutines_play_services)
+//    api(Libs.kotlin_stdlib)
+    api(libs.kotlin.coroutines.android)
+    api(libs.kotlin.coroutines.playServices)
 
     api(Libs.google_material)
     api(Libs.androidx_core)
@@ -56,20 +50,20 @@ dependencies {
     api(Libs.androidx_lifecycle)
     api(Libs.androidx_livedata)
     api(Libs.androidx_viewmodel)
-
-    api(Libs.androidx_datastore_preferences)
+    api(Libs.androidx_nav_fragment)
+    api(Libs.androidx_nav_ui)
+    api(libs.androidX.dataStore)
 
     api(platform(Libs.firebase_bom))
     api(Libs.firebase_analytics)
     api(Libs.firebase_auth)
     api(Libs.firebase_database)
 
-    api(Libs.room_runtime)
-    api(Libs.room_ktx)
-    kapt(Libs.room_compiler)
+    api(libs.room.runtime)
+    api(libs.room.paging)
+    kapt(libs.room.compiler)
 
-    implementation(Libs.hilt_dagger_android)
-    implementation(Libs.hilt_lifecycle)
-    kapt(Libs.hilt_dagger_compiler)
-    kapt(Libs.hilt_android_compiler)
+    implementation(libs.dagger.android)
+    kapt(libs.dagger.compiler)
+    kapt(libs.dagger.hilt.compiler)
 }

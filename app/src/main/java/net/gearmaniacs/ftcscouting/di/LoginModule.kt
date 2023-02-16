@@ -3,14 +3,14 @@ package net.gearmaniacs.ftcscouting.di
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.components.SingletonComponent
 import net.gearmaniacs.ftcscouting.ui.activity.IntroActivity
 import net.gearmaniacs.ftcscouting.ui.activity.MainActivity
 import net.gearmaniacs.login.ui.activity.LoginActivity
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 object LoginModule {
 
     @Provides

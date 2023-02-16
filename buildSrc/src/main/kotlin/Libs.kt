@@ -1,30 +1,19 @@
 @Suppress("MayBeConstant") // Improve performance on change
 object Libs {
-    // Kotlin
-    val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
-    val kotlin_coroutines =
-        "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.kotlinCoroutines}"
-    val kotlin_coroutines_play_services =
-        "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${Versions.kotlinCoroutines}"
-
     // AndroidX
-    val google_material = "com.google.android.material:material:1.3.0-alpha03"
+    val google_material = "com.google.android.material:material:1.3.0-alpha04"
     val androidx_core = "androidx.core:core-ktx:1.3.2"
     val androidx_appcompat = "androidx.appcompat:appcompat:1.3.0-alpha02"
-    val androidx_recycler_view = "androidx.recyclerview:recyclerview:1.2.0-alpha06"
+    val androidx_recycler_view = "androidx.recyclerview:recyclerview:1.2.0"
     val androidx_constraint_layout = "androidx.constraintlayout:constraintlayout:2.0.4"
     val androidx_swipe_refresh_layout = "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     val androidx_preference = "androidx.preference:preference:1.1.1"
-    val androidx_fragment = "androidx.fragment:fragment-ktx:1.3.0-beta01"
+    val androidx_fragment = "androidx.fragment:fragment-ktx:1.3.0-beta02"
     val androidx_lifecycle = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle}"
     val androidx_livedata = "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.lifecycle}"
     val androidx_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.lifecycle}"
-    val androidx_datastore_preferences = "androidx.datastore:datastore-preferences:1.0.0-alpha02"
-
-    // Room
-    val room_runtime = "androidx.room:room-runtime:${Versions.room}"
-    val room_ktx = "androidx.room:room-ktx:${Versions.room}"
-    val room_compiler = "androidx.room:room-compiler:${Versions.room}"
+    val androidx_nav_fragment = "androidx.navigation:navigation-fragment-ktx:2.5.3"
+    val androidx_nav_ui = "androidx.navigation:navigation-ui-ktx:2.5.3"
 
     // Firebase
     val firebase_bom = "com.google.firebase:firebase-bom:${Versions.firebaseBom}"
@@ -34,15 +23,7 @@ object Libs {
     val firebase_crashlytics = "com.google.firebase:firebase-crashlytics"
 
     // GMS
-    val gms_auth = "com.google.android.gms:play-services-auth:18.1.0"
-
-    // Hilt
-    val hilt_dagger_android = "com.google.dagger:hilt-android:${Versions.daggerHilt}"
-    val hilt_lifecycle = "androidx.hilt:hilt-lifecycle-viewmodel:${Versions.hilt}"
-
-    // Hilt Compiler
-    val hilt_dagger_compiler = "com.google.dagger:hilt-android-compiler:${Versions.daggerHilt}"
-    val hilt_android_compiler = "androidx.hilt:hilt-compiler:${Versions.hilt}"
+    val gms_auth = "com.google.android.gms:play-services-auth:19.0.0"
 
     // Other Libraries
     val material_intro = "com.heinrichreimersoftware:material-intro:2.0.0"

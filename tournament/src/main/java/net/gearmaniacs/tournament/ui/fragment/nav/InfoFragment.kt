@@ -2,6 +2,7 @@ package net.gearmaniacs.tournament.ui.fragment.nav
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,14 +16,13 @@ import net.gearmaniacs.core.view.FabRecyclerView
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.ui.activity.TournamentActivity
 import net.gearmaniacs.tournament.ui.adapter.InfoAdapter
-import net.gearmaniacs.tournament.ui.fragment.AbstractTournamentFragment
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @AndroidEntryPoint
-internal class InfoFragment : AbstractTournamentFragment(R.layout.recycler_view_layout) {
+internal class InfoFragment : Fragment(R.layout.recycler_view_layout) {
 
     private val viewModel by activityViewModels<TournamentViewModel>()
-    private lateinit var fab: FloatingActionButton
+    private var fab: FloatingActionButton? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val activity = requireActivity()
@@ -43,7 +43,7 @@ internal class InfoFragment : AbstractTournamentFragment(R.layout.recycler_view_
         val user = activity.intent.getParcelableExtra<UserTeam>(TournamentActivity.ARG_USER)
 
         if (!user.isNullOrEmpty()) {
-            activity.observeNonNull(viewModel.getInfoLiveData(user)) {
+            viewLifecycleOwner.observeNonNull(viewModel.getInfoLiveData(user)) {
                 infoAdapter.submitList(it)
 
                 emptyViewAdapter.isVisible = it.isEmpty()
@@ -54,18 +54,17 @@ internal class InfoFragment : AbstractTournamentFragment(R.layout.recycler_view_
         }
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        if (!hidden && fab.isOrWillBeShown)
-            fab.hide()
+    override fun onStart() {
+        super.onStart()
+        fab?.let {
+            if (it.isOrWillBeShown) {
+                it.hide()
+            }
+        }
     }
 
-    override fun fabClickListener() = Unit
-
-    override fun getFragmentTag() = fragmentTag
-
-    companion object : ICompanion {
-        override val fragmentTag = "InfoFragment"
-
-        override fun newInstance() = InfoFragment()
+    override fun onDestroy() {
+        super.onDestroy()
+        fab = null
     }
 }

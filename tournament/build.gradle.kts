@@ -4,31 +4,24 @@ plugins {
     kotlin("android")
     id("kotlin-parcelize")
     kotlin("kapt")
+    id("androidx.navigation.safeargs.kotlin")
 
     id("dagger.hilt.android.plugin")
 }
 
 android {
-    compileSdkVersion(Versions.Sdk.compile)
+    compileSdk = Versions.Sdk.compile
 
     defaultConfig {
-        minSdkVersion(Versions.Sdk.min)
-        targetSdkVersion(Versions.Sdk.target)
+        minSdk = Versions.Sdk.min
+        targetSdk = Versions.Sdk.target
 
         consumerProguardFiles("tournament-rules.pro")
     }
 
     compileOptions {
-        sourceCompatibility(JavaVersion.VERSION_1_8)
-        targetCompatibility(JavaVersion.VERSION_1_8)
-    }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs = listOf(
-            "-progressive",
-            "-Xopt-in=kotlin.RequiresOptIn"
-        )
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 }
 
@@ -38,8 +31,7 @@ dependencies {
 
     implementation(Libs.apache_poi)
 
-    implementation(Libs.hilt_dagger_android)
-    implementation(Libs.hilt_lifecycle)
-    kapt(Libs.hilt_dagger_compiler)
-    kapt(Libs.hilt_android_compiler)
+    implementation(libs.dagger.android)
+    kapt(libs.dagger.compiler)
+    kapt(libs.dagger.hilt.compiler)
 }

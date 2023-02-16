@@ -2,10 +2,10 @@ package net.gearmaniacs.tournament.viewmodel
 
 import android.app.Application
 import android.net.Uri
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -25,8 +25,10 @@ import net.gearmaniacs.tournament.repository.TournamentRepository
 import net.gearmaniacs.tournament.spreadsheet.SpreadsheetExport
 import net.gearmaniacs.tournament.spreadsheet.SpreadsheetImport
 import net.gearmaniacs.tournament.ui.adapter.TeamSearchAdapter
+import javax.inject.Inject
 
-internal class TournamentViewModel @ViewModelInject constructor(
+@HiltViewModel
+internal class TournamentViewModel @Inject constructor(
     private val tournamentRepository: TournamentRepository,
     private val teamsRepository: TeamsRepository,
     private val matchesRepository: MatchesRepository,

@@ -1,5 +1,6 @@
 package net.gearmaniacs.tournament.ui.fragment
 
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,14 +11,19 @@ import android.widget.CompoundButton
 import android.widget.RadioGroup
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.updatePadding
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import androidx.transition.Slide
 import com.google.android.material.button.MaterialButtonToggleGroup
+import com.google.android.material.transition.MaterialContainerTransform
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.gearmaniacs.core.extensions.textString
+import net.gearmaniacs.core.extensions.themeColor
 import net.gearmaniacs.core.extensions.toIntOrElse
 import net.gearmaniacs.core.model.enums.ColorMarker
 import net.gearmaniacs.core.model.enums.PreferredZone
@@ -33,23 +39,9 @@ import net.gearmaniacs.tournament.databinding.EditTeamDialogBinding
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @AndroidEntryPoint
-internal class EditTeamDialog : DialogFragment() {
+internal class EditTeamDialog : Fragment() {
 
-    companion object {
-        const val TAG = "TeamEditDialog"
-
-        private const val ARG_TEAM = "team"
-
-        fun newInstance() = EditTeamDialog()
-
-        fun newInstance(team: Team) = EditTeamDialog().apply {
-            val bundle = Bundle()
-            bundle.putParcelable(ARG_TEAM, team)
-            arguments = bundle
-        }
-    }
-
-    private class DataChangeListener(
+    private class InputChangeListener(
         private val listener: () -> Unit
     ) : RadioGroup.OnCheckedChangeListener,
         CompoundButton.OnCheckedChangeListener,
@@ -82,25 +74,22 @@ internal class EditTeamDialog : DialogFragment() {
     private val binding get() = _binding!!
 
     private val viewModel by activityViewModels<TournamentViewModel>()
-    private var transitionPlayed = false
+    private val arguments by navArgs<EditTeamDialogArgs>()
 
     private var autonomousScore = 0
     private var controlledScore = 0
     private var endGameScore = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = EditTeamDialogBinding.inflate(inflater, container, false)
 
-        binding.bottomBar.setNavigationOnClickListener { dismiss() }
+        binding.bottomBar.setNavigationOnClickListener {
+            findNavController().popBackStack(R.id.teamFragment, false)
+        }
         binding.bottomBar.doOnPreDraw { bottom_bar ->
             binding.content.layoutContent.updatePadding(bottom = (bottom_bar.height * 1.6f).toInt())
         }
@@ -116,7 +105,21 @@ internal class EditTeamDialog : DialogFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val team = arguments?.getParcelable<Team>(ARG_TEAM)
+        enterTransition = MaterialContainerTransform().apply {
+            startView = requireActivity().findViewById(R.id.fab)
+            endView = binding.content.layoutContent
+            duration = 500L
+            scrimColor = Color.TRANSPARENT
+            containerColor = requireContext().themeColor(R.attr.colorSurface)
+            startContainerColor = requireContext().themeColor(R.attr.colorSecondary)
+            endContainerColor = requireContext().themeColor(R.attr.colorSurface)
+        }
+        returnTransition = Slide().apply {
+            duration = 500L
+            addTarget(binding.content.layoutContent.id)
+        }
+
+        val team = arguments.team
         val content = binding.content
 
         binding.fabDone.setOnClickListener {
@@ -146,7 +149,7 @@ internal class EditTeamDialog : DialogFragment() {
 
             viewModel.updateTeam(parsedTeam)
 
-            dismiss()
+            findNavController().popBackStack(R.id.teamFragment, false)
         }
 
         setupListeners()
@@ -160,30 +163,21 @@ internal class EditTeamDialog : DialogFragment() {
         updateTotalScore()
     }
 
-    override fun onStart() {
-        super.onStart()
-
-        if (!transitionPlayed) {
-            transitionPlayed = true
-            dialog?.window?.setWindowAnimations(R.style.FullScreenDialogStyle)
-        }
-    }
-
     override fun onDestroy() {
         _binding = null
         super.onDestroy()
     }
 
     private fun setupListeners() {
-        val autonomousListener = DataChangeListener {
+        val autonomousListener = InputChangeListener {
             updateAutonomousScore()
             updateTotalScore()
         }
-        val controlledListener = DataChangeListener {
+        val controlledListener = InputChangeListener {
             updateControlledScore()
             updateTotalScore()
         }
-        val endGameListener = DataChangeListener {
+        val endGameListener = InputChangeListener {
             updateEndGameScore()
             updateTotalScore()
         }

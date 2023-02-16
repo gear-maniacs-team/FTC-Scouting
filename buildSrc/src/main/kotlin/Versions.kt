@@ -10,15 +10,10 @@ object Versions {
 
     object Sdk {
         const val min = 21
-        const val compile = 30
+        const val compile = 33
         const val target = 30
     }
 
-    const val kotlin = "1.4.20-RC"
-    const val kotlinCoroutines = "1.4.1"
-    const val room = "2.2.5"
-    const val daggerHilt = "2.29.1-alpha"
-    const val hilt = "1.0.0-alpha02"
     const val lifecycle = "2.3.0-beta01"
-    const val firebaseBom = "26.0.0"
+    const val firebaseBom = "31.2.2"
 }

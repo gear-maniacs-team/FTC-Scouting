@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import net.gearmaniacs.core.extensions.alertDialog
 import net.gearmaniacs.core.extensions.observe
@@ -42,16 +41,8 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
 
     private lateinit var userTeam: UserTeam
 
-    private var isLoggedIn = false
-
     @Inject
     lateinit var appPreferences: AppPreferences
-
-    init {
-        lifecycleScope.launchWhenCreated {
-            appPreferences.isLoggedInFlow.collect { isLoggedIn = it }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,13 +107,15 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
 
     override fun onStart() {
         super.onStart()
-        if (isLoggedIn)
-            viewModel.startListening()
-        else {
-            if (Firebase.isLoggedIn) {
-                lifecycleScope.launch { appPreferences.setLoggedIn(true) }
-            } else
-                startActivity<LoginActivity>()
+        lifecycleScope.launch {
+            if (appPreferences.isLoggedIn() || appPreferences.hasOfflineAccount())
+                viewModel.startListening()
+            else {
+                if (Firebase.isLoggedIn) {
+                    lifecycleScope.launch { appPreferences.setLoggedIn(true) }
+                } else
+                    startActivity<LoginActivity>()
+            }
         }
     }
 

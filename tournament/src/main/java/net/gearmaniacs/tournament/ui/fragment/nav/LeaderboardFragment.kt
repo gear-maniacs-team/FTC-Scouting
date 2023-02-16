@@ -2,6 +2,7 @@ package net.gearmaniacs.tournament.ui.fragment.nav
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
@@ -19,14 +20,13 @@ import net.gearmaniacs.core.utils.EmptyViewAdapter
 import net.gearmaniacs.core.view.FabRecyclerView
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.ui.adapter.LeaderboardAdapter
-import net.gearmaniacs.tournament.ui.fragment.AbstractTournamentFragment
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
-internal class LeaderboardFragment : AbstractTournamentFragment(R.layout.recycler_view_layout) {
+internal class LeaderboardFragment : Fragment(R.layout.recycler_view_layout) {
 
     private val viewModel by activityViewModels<TournamentViewModel>()
     private lateinit var emptyViewAdapter: EmptyViewAdapter
-    private lateinit var fab: FloatingActionButton
+    private var fab: FloatingActionButton? = null
 
     private var teamsList = emptyList<Team>()
     private var matchesList = emptyList<Match>()
@@ -55,41 +55,45 @@ internal class LeaderboardFragment : AbstractTournamentFragment(R.layout.recycle
             adapter = ConcatAdapter(concatConfig, emptyViewAdapter, leaderboardAdapter)
         }
 
-        activity.observe(viewModel.getTeamsLiveData()) {
+        viewLifecycleOwner.observe(viewModel.getTeamsLiveData()) {
             if (it != null) {
                 teamsList = it
                 observedDataChanged = true
             }
         }
 
-        activity.observe(viewModel.getMatchesLiveData()) {
+        viewLifecycleOwner.observe(viewModel.getMatchesLiveData()) {
             if (it != null) {
                 matchesList = it
                 observedDataChanged = true
             }
         }
 
-        activity.observeNonNull(viewModel.getLeaderboardLiveData()) {
+        viewLifecycleOwner.observeNonNull(viewModel.getLeaderboardLiveData()) {
             leaderboardAdapter.submitList(it)
 
             emptyViewAdapter.isVisible = it.isEmpty()
         }
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        if (!hidden && fab.isOrWillBeShown)
-            fab.hide()
+    override fun onStart() {
+        super.onStart()
+        fab?.let {
+            if (it.isOrWillBeShown) {
+                it.hide()
+            }
+        }
 
-        if (!hidden && observedDataChanged) {
-            // Only recompute the Leaderboard data when needed
+        if (observedDataChanged) {
             observedDataChanged = false
             refreshData()
         }
     }
 
-    override fun fabClickListener() = Unit
-
-    override fun getFragmentTag() = fragmentTag
+    override fun onDestroy() {
+        super.onDestroy()
+        fab = null
+    }
 
     private fun refreshData() {
         lifecycleScope.launch(Dispatchers.Main.immediate) {
@@ -97,11 +101,5 @@ internal class LeaderboardFragment : AbstractTournamentFragment(R.layout.recycle
             val response = viewModel.refreshLeaderboardData(teamsList, matchesList)
             emptyViewAdapter.text = response
         }
-    }
-
-    companion object : ICompanion {
-        override val fragmentTag = LeaderboardFragment::class.simpleName!!
-
-        override fun newInstance() = LeaderboardFragment()
     }
 }

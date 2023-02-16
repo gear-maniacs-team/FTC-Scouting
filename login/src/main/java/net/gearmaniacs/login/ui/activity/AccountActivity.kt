@@ -13,6 +13,7 @@ import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -59,7 +60,7 @@ class AccountActivity : AppCompatActivity() {
     private val googleSignInLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             val context = applicationContext
-            GlobalScope.launch(Dispatchers.Main.immediate) {
+            lifecycleScope.launch(Dispatchers.Main.immediate) {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
 
                 try {
@@ -209,7 +210,7 @@ class AccountActivity : AppCompatActivity() {
     }
 
     private fun unlinkFromGoogle() {
-        GlobalScope.launch(Dispatchers.Main.immediate) {
+        lifecycleScope.launch(Dispatchers.Main.immediate) {
             binding.btnConnectGoogle.isEnabled = false
 
             val task = Firebase.auth.currentUser!!.unlink(GoogleAuthProvider.PROVIDER_ID)

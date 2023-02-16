@@ -22,15 +22,15 @@ import net.theluckycoder.database.dao.MatchesDao
 import javax.inject.Inject
 
 internal class MatchesRepository @Inject constructor(
-    @TournamentActivity.TournamentKey
-    private val tournamentKey: String,
+    tournamentKey: TournamentActivity.TournamentKey,
     private val matchesDao: MatchesDao,
     private val tournamentReference: DatabaseReference?
 ) : AbstractListenerRepository() {
 
+    private val tournamentKey = tournamentKey.value
     private var userTeamNumber = -1
 
-    val matchesFlow = matchesDao.getAllByTournament(tournamentKey).distinctUntilChanged()
+    val matchesFlow = matchesDao.getAllByTournament(this.tournamentKey).distinctUntilChanged()
     val infoData = MutableNonNullLiveData(emptyList<Match>())
 
     private fun updateInfoData(list: List<Match>) {

@@ -4,7 +4,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
@@ -29,20 +28,19 @@ import net.gearmaniacs.tournament.ui.adapter.TeamSearchAdapter
 import net.theluckycoder.database.dao.TeamsDao
 import javax.inject.Inject
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class TeamsRepository @Inject constructor(
-    @TournamentActivity.TournamentKey
-    private val tournamentKey: String,
+    tournamentKey: TournamentActivity.TournamentKey,
     private val teamsDao: TeamsDao,
     private val tournamentReference: DatabaseReference?
 ) : AbstractListenerRepository() {
 
+    private val tournamentKey = tournamentKey.value
     private var teamQueryJob: Job? = null // Last launched query job
     private val teamQueryStateFlow = MutableStateFlow<TeamSearchAdapter.Query?>(null)
     private val _queriedTeamsFlow = MutableStateFlow(emptyList<Team>())
     val queriedTeamsFlow: StateFlow<List<Team>> = _queriedTeamsFlow
 
-    val teamsFlows = teamsDao.getAllByTournament(tournamentKey).distinctUntilChanged()
+    val teamsFlows = teamsDao.getAllByTournament(this.tournamentKey).distinctUntilChanged()
 
 
     suspend fun addTeam(team: Team) {

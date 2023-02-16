@@ -1,12 +1,12 @@
 package net.gearmaniacs.core.utils
 
 import android.content.Context
-import androidx.datastore.preferences.SharedPreferencesMigration
-import androidx.datastore.preferences.createDataStore
-import androidx.datastore.preferences.edit
-import androidx.datastore.preferences.preferencesKey
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -18,15 +18,10 @@ class AppPreferences @Inject constructor(
     context: Context
 ) {
 
-    private val settingsDataStore = context.createDataStore(
-        name = "settings",
-        migrations = listOf(
-            SharedPreferencesMigration(context, context.packageName + "_preferences")
-        )
-    )
+    private val settingsDataStore = context.appDataStore
 
     val seenIntroFlow: Flow<Boolean> =
-        settingsDataStore.data.map { it[SEEN_INTRO] ?: false }
+        settingsDataStore.data.map { it[SEEN_INTRO] ?: false }.distinctUntilChanged()
 
     suspend fun seenIntro() = seenIntroFlow.first()
 
@@ -35,7 +30,7 @@ class AppPreferences @Inject constructor(
     }
 
     val isLoggedInFlow: Flow<Boolean> =
-        settingsDataStore.data.map { it[IS_LOGGED_IN] ?: false }
+        settingsDataStore.data.map { it[IS_LOGGED_IN] ?: false }.distinctUntilChanged()
 
     suspend fun isLoggedIn() = isLoggedInFlow.first()
 
@@ -43,8 +38,20 @@ class AppPreferences @Inject constructor(
         preferences[IS_LOGGED_IN] = value
     }
 
+    val hasOfflineAccount: Flow<Boolean> =
+        settingsDataStore.data.map { it[HAS_OFFLINE_ACCOUNT] ?: false }.distinctUntilChanged()
+
+    suspend fun hasOfflineAccount() = hasOfflineAccount.first()
+
+    suspend fun setHasOfflineAccount(value: Boolean) = settingsDataStore.edit { preferences ->
+        preferences[HAS_OFFLINE_ACCOUNT] = value
+    }
+
     private companion object {
-        private val SEEN_INTRO = preferencesKey<Boolean>("key_intro_seen")
-        private val IS_LOGGED_IN = preferencesKey<Boolean>("is_logged_in")
+        private val Context.appDataStore by preferencesDataStore("settings")
+
+        private val SEEN_INTRO = booleanPreferencesKey("key_intro_seen")
+        private val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
+        private val HAS_OFFLINE_ACCOUNT = booleanPreferencesKey("has_offline_account")
     }
 }

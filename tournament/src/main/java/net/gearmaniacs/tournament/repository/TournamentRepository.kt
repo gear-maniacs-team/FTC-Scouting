@@ -23,13 +23,14 @@ import java.text.DecimalFormatSymbols
 import javax.inject.Inject
 
 internal class TournamentRepository @Inject constructor(
-    @TournamentActivity.TournamentKey
-    private val tournamentKey: String,
+    tournamentKey: TournamentActivity.TournamentKey,
     private val tournamentsDao: TournamentsDao,
     private val tournamentReference: DatabaseReference?
 ) : AbstractListenerRepository() {
 
-    val tournamentFlow = tournamentsDao.getFlow(tournamentKey).distinctUntilChanged()
+    private val tournamentKey = tournamentKey.value
+
+    val tournamentFlow = tournamentsDao.getFlow(this.tournamentKey).distinctUntilChanged()
 
     suspend fun updateTournamentName(tournamentName: String) {
         val tournament = Tournament(tournamentKey, tournamentName)

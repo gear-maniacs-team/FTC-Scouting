@@ -10,35 +10,32 @@ plugins {
 }
 
 android {
-    compileSdkVersion(Versions.Sdk.compile)
+    compileSdk = Versions.Sdk.compile
 
     defaultConfig {
-        applicationId("net.gearmaniacs.ftcscouting")
-        minSdkVersion(Versions.Sdk.min)
-        targetSdkVersion(Versions.Sdk.target)
-        versionCode(Versions.App.versionCode)
-        versionName(Versions.App.versionName)
-        resConfigs("en")
+        applicationId = "net.gearmaniacs.ftcscouting"
+        minSdk = Versions.Sdk.min
+        targetSdk = Versions.Sdk.target
+        versionCode = Versions.App.versionCode
+        versionName = Versions.App.versionName
+        resourceConfigurations += listOf("en", "ro")
 
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += mapOf(
                     "room.incremental" to "true",
-                    "room.schemaLocation" to "$projectDir/schemas"
+                    "room.schemaLocation" to "$projectDir/schemas",
+                    "room.expandProjection" to "true"
                 )
             }
         }
 
-        testInstrumentationRunner("androidx.test.runner.AndroidJUnitRunner")
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
-        sourceCompatibility(JavaVersion.VERSION_1_8)
-        targetCompatibility(JavaVersion.VERSION_1_8)
-    }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     buildTypes {
@@ -64,6 +61,13 @@ android {
     }
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).configureEach {
+    kotlinOptions {
+        jvmTarget = "11"
+        freeCompilerArgs = freeCompilerArgs + listOf("-Xjvm-default=all")
+    }
+}
+
 dependencies {
     implementation(project(Modules.core))
     implementation(project(Modules.login))
@@ -76,18 +80,17 @@ dependencies {
     implementation(Libs.material_about)
     implementation(Libs.licenser)
 
-    kapt(Libs.room_compiler)
+    kapt(libs.room.compiler)
 
-    implementation(Libs.hilt_dagger_android)
-    implementation(Libs.hilt_lifecycle)
-    kapt(Libs.hilt_dagger_compiler)
-    kapt(Libs.hilt_android_compiler)
+    implementation(libs.dagger.android)
+    kapt(libs.dagger.compiler)
+    kapt(libs.dagger.hilt.compiler)
 
     testImplementation(Libs.Test.junit)
     testImplementation(Libs.Test.core)
-    testImplementation(Libs.hilt_dagger_android)
-    kaptTest(Libs.hilt_dagger_compiler)
-    kaptTest(Libs.hilt_android_compiler)
+    testImplementation(libs.dagger.android)
+    kaptTest(libs.dagger.compiler)
+    kaptTest(libs.dagger.hilt.compiler)
 
     androidTestImplementation(Libs.Test.runner)
     androidTestImplementation(Libs.Test.rules)
