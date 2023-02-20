@@ -1,5 +1,7 @@
 package net.gearmaniacs.core.model
 
 interface DatabaseClass<T> : Comparable<T> {
-    var key: String
+    val key: String
+
+    fun copyWithKey(newKey: String): T
 }

@@ -32,10 +32,15 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    buildFeatures.compose = true
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+    }
 }
 
 dependencies {
-//    api(Libs.kotlin_stdlib)
     api(libs.kotlin.coroutines.android)
     api(libs.kotlin.coroutines.playServices)
 
@@ -58,6 +63,20 @@ dependencies {
     api(Libs.firebase_analytics)
     api(Libs.firebase_auth)
     api(Libs.firebase_database)
+
+    api(libs.compose.compiler)
+    api(libs.compose.foundation)
+    api(libs.compose.ui)
+    api(libs.compose.material3)
+    api(libs.compose.animation)
+    api(libs.compose.toolingPreview)
+    api(libs.compose.activity)
+    api(libs.compose.viewmodel)
+
+    api(libs.voyager.navigator)
+    api(libs.voyager.tabNavigator)
+    api(libs.voyager.transitions)
+    api(libs.voyager.androidx)
 
     api(libs.room.runtime)
     api(libs.room.paging)

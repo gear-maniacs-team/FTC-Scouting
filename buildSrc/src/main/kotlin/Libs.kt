@@ -2,7 +2,7 @@
 object Libs {
     // AndroidX
     val google_material = "com.google.android.material:material:1.3.0-alpha04"
-    val androidx_core = "androidx.core:core-ktx:1.3.2"
+    val androidx_core = "androidx.core:core-ktx:1.9.0"
     val androidx_appcompat = "androidx.appcompat:appcompat:1.3.0-alpha02"
     val androidx_recycler_view = "androidx.recyclerview:recyclerview:1.2.0"
     val androidx_constraint_layout = "androidx.constraintlayout:constraintlayout:2.0.4"

@@ -14,8 +14,6 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.transition.Slide
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.transition.MaterialContainerTransform
@@ -74,7 +72,6 @@ internal class EditTeamDialog : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel by activityViewModels<TournamentViewModel>()
-    private val arguments by navArgs<EditTeamDialogArgs>()
 
     private var autonomousScore = 0
     private var controlledScore = 0
@@ -87,9 +84,6 @@ internal class EditTeamDialog : Fragment() {
     ): View {
         _binding = EditTeamDialogBinding.inflate(inflater, container, false)
 
-        binding.bottomBar.setNavigationOnClickListener {
-            findNavController().popBackStack(R.id.teamFragment, false)
-        }
         binding.bottomBar.doOnPreDraw { bottom_bar ->
             binding.content.layoutContent.updatePadding(bottom = (bottom_bar.height * 1.6f).toInt())
         }
@@ -119,7 +113,7 @@ internal class EditTeamDialog : Fragment() {
             addTarget(binding.content.layoutContent.id)
         }
 
-        val team = arguments.team
+        val team: Team? = null
         val content = binding.content
 
         binding.fabDone.setOnClickListener {
@@ -148,8 +142,6 @@ internal class EditTeamDialog : Fragment() {
             )
 
             viewModel.updateTeam(parsedTeam)
-
-            findNavController().popBackStack(R.id.teamFragment, false)
         }
 
         setupListeners()

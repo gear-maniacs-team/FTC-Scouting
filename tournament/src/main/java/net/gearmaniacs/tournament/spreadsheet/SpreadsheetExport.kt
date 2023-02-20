@@ -1,6 +1,6 @@
 package net.gearmaniacs.tournament.spreadsheet
 
-import net.gearmaniacs.core.model.Match
+import net.gearmaniacs.core.model.match.Match
 import net.gearmaniacs.core.model.enums.PreferredZone
 import net.gearmaniacs.core.model.enums.WobbleDeliveryZone
 import net.gearmaniacs.core.model.team.AutonomousPeriod

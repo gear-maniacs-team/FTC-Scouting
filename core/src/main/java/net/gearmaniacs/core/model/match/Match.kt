@@ -1,6 +1,7 @@
-package net.gearmaniacs.core.model
+package net.gearmaniacs.core.model.match
 
 import android.os.Parcelable
+import androidx.compose.runtime.Immutable
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
@@ -9,7 +10,10 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.firebase.database.Exclude
 import kotlinx.parcelize.Parcelize
+import net.gearmaniacs.core.model.DatabaseClass
+import net.gearmaniacs.core.model.Tournament
 
+@Immutable
 @Parcelize
 @Entity(
     tableName = "matches",
@@ -26,8 +30,8 @@ import kotlinx.parcelize.Parcelize
 )
 data class Match(
     @PrimaryKey @ColumnInfo(name = "key")
-    @get:Exclude @set:Exclude
-    override var key: String,
+    @get:Exclude
+    override val key: String,
 
     @ColumnInfo(name = "tournament_key")
     @get:Exclude val tournamentKey: String = "",
@@ -48,4 +52,8 @@ data class Match(
 
     fun containsTeam(teamId: Int) =
         redAlliance.containsTeam(teamId) || blueAlliance.containsTeam(teamId)
+
+    override fun copyWithKey(newKey: String): Match {
+        return this.copy(key = newKey)
+    }
 }

@@ -2,37 +2,30 @@ package net.gearmaniacs.tournament.repository
 
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import net.gearmaniacs.core.extensions.safeCollect
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.firebase.valueEventFlow
-import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Tournament
+import net.gearmaniacs.core.model.match.Match
 import net.gearmaniacs.core.model.team.RankedTeam
 import net.gearmaniacs.core.model.team.Team
-import net.gearmaniacs.core.utils.AbstractListenerRepository
 import net.gearmaniacs.tournament.opr.OffensivePowerRanking
-import net.gearmaniacs.tournament.ui.activity.TournamentActivity
 import net.theluckycoder.database.dao.TournamentsDao
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import javax.inject.Inject
 
 internal class TournamentRepository @Inject constructor(
-    tournamentKey: TournamentActivity.TournamentKey,
     private val tournamentsDao: TournamentsDao,
     private val tournamentReference: DatabaseReference?
-) : AbstractListenerRepository() {
+) {
 
-    private val tournamentKey = tournamentKey.value
+    fun getTournament(tournamentKey: String) =
+        tournamentsDao.getFlow(tournamentKey)
 
-    val tournamentFlow = tournamentsDao.getFlow(this.tournamentKey).distinctUntilChanged()
-
-    suspend fun updateTournamentName(tournamentName: String) {
+    suspend fun updateTournamentName(tournamentKey: String, tournamentName: String) {
         val tournament = Tournament(tournamentKey, tournamentName)
         tournamentsDao.update(tournament)
 
@@ -45,7 +38,7 @@ internal class TournamentRepository @Inject constructor(
         }
     }
 
-    suspend fun deleteTournament() {
+    suspend fun deleteTournament(tournamentKey: String) {
         tournamentsDao.delete(tournamentKey)
 
         if (Firebase.isLoggedIn) {
@@ -77,20 +70,18 @@ internal class TournamentRepository @Inject constructor(
         }
     }
 
-    override suspend fun onListenerAdded(scope: CoroutineScope) {
+    suspend fun startListener(tournamentKey: String) {
         if (!Firebase.isLoggedIn) return
 
-        scope.launch {
-            val databaseReference = tournamentReference!!
-                .child(DatabasePaths.KEY_TOURNAMENTS)
-                .child(tournamentKey)
+        val databaseReference = tournamentReference!!
+            .child(DatabasePaths.KEY_TOURNAMENTS)
+            .child(tournamentKey)
 
-            databaseReference.valueEventFlow<String>().safeCollect { name ->
-                if (name != null)
-                    tournamentsDao.update(Tournament(tournamentKey, name))
-                else
-                    tournamentsDao.delete(tournamentKey)
-            }
+        databaseReference.valueEventFlow<String>().safeCollect { name ->
+            if (name != null)
+                tournamentsDao.update(Tournament(tournamentKey, name))
+            else
+                tournamentsDao.delete(tournamentKey)
         }
     }
 }

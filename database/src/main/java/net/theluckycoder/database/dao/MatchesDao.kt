@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
-import net.gearmaniacs.core.model.Match
+import net.gearmaniacs.core.model.match.Match
 
 @Dao
 abstract class MatchesDao {

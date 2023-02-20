@@ -1,8 +1,8 @@
 package net.gearmaniacs.tournament.spreadsheet
 
 import net.gearmaniacs.core.extensions.justTry
-import net.gearmaniacs.core.model.Alliance
-import net.gearmaniacs.core.model.Match
+import net.gearmaniacs.core.model.match.Alliance
+import net.gearmaniacs.core.model.match.Match
 import net.gearmaniacs.core.model.enums.ColorMarker
 import net.gearmaniacs.core.model.enums.PreferredZone
 import net.gearmaniacs.core.model.enums.WobbleDeliveryZone
@@ -77,7 +77,7 @@ internal class SpreadsheetImport(inputStream: InputStream) {
 
         check(number > 0) { "Invalid Team number on row ${row.rowNum}" }
 
-        val endWobbleDeliveryZone = when (endWobbleDeliveryZoneString?.toLowerCase(Locale.ROOT)) {
+        val endWobbleDeliveryZone = when (endWobbleDeliveryZoneString?.lowercase(Locale.ROOT)) {
             "dead zone" -> WobbleDeliveryZone.DEAD_ZONE
             "start line" -> WobbleDeliveryZone.START_LINE
             else -> WobbleDeliveryZone.NONE
@@ -95,7 +95,7 @@ internal class SpreadsheetImport(inputStream: InputStream) {
             ControlledPeriod(controlledLowGoal, controlledMidGoal, controlledHighGoal)
         val endGamePeriod = EndGamePeriod(endPowerShot, endWobbleRings, endWobbleDeliveryZone)
 
-        val preferredZone = when (preferredStartZoneString?.toLowerCase(Locale.ROOT)) {
+        val preferredZone = when (preferredStartZoneString?.lowercase(Locale.ROOT)) {
             "right" -> PreferredZone.RIGHT
             "left" -> PreferredZone.LEFT
             else -> PreferredZone.NONE

@@ -2,46 +2,45 @@ package net.gearmaniacs.tournament.repository
 
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import net.gearmaniacs.core.architecture.MutableNonNullLiveData
 import net.gearmaniacs.core.extensions.safeCollect
 import net.gearmaniacs.core.firebase.DatabasePaths
 import net.gearmaniacs.core.firebase.generatePushId
 import net.gearmaniacs.core.firebase.ifLoggedIn
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.firebase.listValueEventFlow
-import net.gearmaniacs.core.model.Match
-import net.gearmaniacs.core.utils.AbstractListenerRepository
-import net.gearmaniacs.tournament.ui.activity.TournamentActivity
+import net.gearmaniacs.core.model.match.Match
 import net.theluckycoder.database.dao.MatchesDao
 import javax.inject.Inject
 
 internal class MatchesRepository @Inject constructor(
-    tournamentKey: TournamentActivity.TournamentKey,
     private val matchesDao: MatchesDao,
     private val tournamentReference: DatabaseReference?
-) : AbstractListenerRepository() {
+) {
 
-    private val tournamentKey = tournamentKey.value
     private var userTeamNumber = -1
 
-    val matchesFlow = matchesDao.getAllByTournament(this.tournamentKey).distinctUntilChanged()
-    val infoData = MutableNonNullLiveData(emptyList<Match>())
+    fun getMatchesFlow(tournamentKey: String) =
+        matchesDao.getAllByTournament(tournamentKey)
+
+    private val _infoFlow = MutableStateFlow(emptyList<Match>())
+    val infoFlow = _infoFlow.asStateFlow()
 
     private fun updateInfoData(list: List<Match>) {
         if (userTeamNumber == -1)
-            infoData.postValue(emptyList())
+            _infoFlow.value = emptyList()
 
         val filteredList = list.filter { match -> match.containsTeam(userTeamNumber) }
-        infoData.postValue(filteredList)
+        _infoFlow.value = filteredList
     }
 
-    suspend fun addMatch(match: Match) {
+    suspend fun addMatch(tournamentKey: String, match: Match) {
         val ref = Firebase.ifLoggedIn {
             tournamentReference!!
                 .child(DatabasePaths.KEY_DATA)
@@ -49,10 +48,10 @@ internal class MatchesRepository @Inject constructor(
                 .child(DatabasePaths.KEY_MATCHES)
         }
 
-        insertMatch(match, ref)
+        insertMatch(tournamentKey, match, ref)
     }
 
-    suspend fun addMatches(matches: List<Match>) {
+    suspend fun addMatches(tournamentKey: String, matches: List<Match>) {
         val ref = Firebase.ifLoggedIn {
             tournamentReference!!
                 .child(DatabasePaths.KEY_DATA)
@@ -61,11 +60,11 @@ internal class MatchesRepository @Inject constructor(
         }
 
         matches.forEach {
-            insertMatch(it, ref)
+            insertMatch(tournamentKey, it, ref)
         }
     }
 
-    private suspend fun insertMatch(match: Match, ref: DatabaseReference?) {
+    private suspend fun insertMatch(tournamentKey: String, match: Match, ref: DatabaseReference?) {
         val key = if (ref != null) {
             val matchRef = ref.push()
             matchRef.setValue(match)
@@ -77,7 +76,7 @@ internal class MatchesRepository @Inject constructor(
         matchesDao.insert(match.copy(key = key, tournamentKey = tournamentKey))
     }
 
-    suspend fun updateMatch(match: Match) {
+    suspend fun updateMatch(tournamentKey: String, match: Match) {
         matchesDao.insert(match)
 
         if (Firebase.isLoggedIn) {
@@ -91,7 +90,7 @@ internal class MatchesRepository @Inject constructor(
         }
     }
 
-    suspend fun deleteMatch(matchKey: String) {
+    suspend fun deleteMatch(tournamentKey: String, matchKey: String) {
         matchesDao.delete(matchKey)
 
         if (Firebase.isLoggedIn) {
@@ -109,18 +108,16 @@ internal class MatchesRepository @Inject constructor(
         userTeamNumber = number
     }
 
-    override suspend fun onListenerAdded(scope: CoroutineScope) {
-        scope.launch {
-            matchesFlow.collectLatest {
+    suspend fun startListener(tournamentKey: String) = coroutineScope {
+        launch {
+            getMatchesFlow(tournamentKey).collectLatest {
                 coroutineContext.ensureActive()
 
                 updateInfoData(it)
             }
         }
 
-        if (!Firebase.isLoggedIn) return
-
-        scope.launch {
+        if (Firebase.isLoggedIn) {
             val databaseReference = tournamentReference!!
                 .child(DatabasePaths.KEY_DATA)
                 .child(tournamentKey)

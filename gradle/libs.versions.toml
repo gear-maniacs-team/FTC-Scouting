@@ -7,6 +7,7 @@ kotlin_datetime = "0.4.0"
 kotlin_collections = "0.3.5"
 compose_other = "1.4.0-beta01"
 compose_activity = "1.6.1"
+compose_viewmodel = "2.5.1"
 compose_compiler = "1.4.2"
 compose_material3 = "1.1.0-alpha06"
 accompanist = "0.28.0"
@@ -40,11 +41,13 @@ compose_animation = { module = "androidx.compose.animation:animation", version.r
 compose_tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose_other" }
 compose_toolingPreview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose_other" }
 compose_activity = { module = "androidx.activity:activity-compose", version.ref = "compose_activity" }
+compose_viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "compose_viewmodel" }
 
 voyager_navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager_tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 voyager_transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 voyager_androidx = { module = "cafe.adriel.voyager:voyager-androidx", version.ref = "voyager" }
+voyager_hilt = { module = "cafe.adriel.voyager:voyager-hilt", version.ref = "voyager" }
 
 accompanist_systemUi = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 accompanist_pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
@@ -63,7 +66,7 @@ paging_compose = { module = "androidx.paging:paging-compose", version.ref = "pag
 
 dagger_android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
 dagger_compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger" }
-dagger_hilt_plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "dagger" }
+dagger_plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "dagger" }
 dagger_hilt_compiler = "androidx.hilt:hilt-compiler:1.0.0"
 dagger_hilt_work = "androidx.hilt:hilt-work:1.0.0"
 

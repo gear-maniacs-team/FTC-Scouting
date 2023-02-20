@@ -1,8 +1,8 @@
 package net.gearmaniacs.ftcscouting
 
 import kotlinx.coroutines.runBlocking
-import net.gearmaniacs.core.model.Alliance
-import net.gearmaniacs.core.model.Match
+import net.gearmaniacs.core.model.match.Alliance
+import net.gearmaniacs.core.model.match.Match
 import net.gearmaniacs.core.model.team.RankedTeam
 import net.gearmaniacs.tournament.opr.OffensivePowerRanking
 import org.junit.Test

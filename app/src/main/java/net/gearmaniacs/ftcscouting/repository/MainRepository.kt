@@ -4,7 +4,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.scopes.ActivityRetainedScoped
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -19,7 +19,6 @@ import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.core.model.isNullOrEmpty
 import net.gearmaniacs.core.model.team.Team
-import net.gearmaniacs.core.utils.AbstractListenerRepository
 import net.gearmaniacs.core.utils.UserTeamPreferences
 import net.theluckycoder.database.dao.TeamsDao
 import net.theluckycoder.database.dao.TournamentsDao
@@ -30,7 +29,7 @@ class MainRepository @Inject constructor(
     private val tournamentsDao: TournamentsDao,
     private val teamsDao: TeamsDao,
     private val userDataPreferences: UserTeamPreferences
-) : AbstractListenerRepository() {
+) {
 
     private val tournamentsReference by lazy {
         Firebase.ifLoggedIn {
@@ -97,30 +96,28 @@ class MainRepository @Inject constructor(
         }
     }
 
-    override suspend fun onListenerAdded(scope: CoroutineScope) {
-        if (!Firebase.isLoggedIn) return
+    suspend fun startListener() = coroutineScope {
+        if (!Firebase.isLoggedIn) return@coroutineScope
 
-        scope.launch {
+        launch {
             userReference!!.valueEventFlow<UserTeam>().safeCollect {
                 if (it != null)
                     userDataPreferences.updateUserTeam(it)
             }
         }
 
-        scope.launch {
-            tournamentsReference!!
-                .child(DatabasePaths.KEY_TOURNAMENTS)
-                .listValueEventFlow { snapshot ->
-                    val snapshotKey = snapshot.key
-                    val name = snapshot.getValue<String>()
+        tournamentsReference!!
+            .child(DatabasePaths.KEY_TOURNAMENTS)
+            .listValueEventFlow { snapshot ->
+                val snapshotKey = snapshot.key
+                val name = snapshot.getValue<String>()
 
-                    if (snapshotKey != null && name != null)
-                        Tournament(snapshotKey, name)
-                    else
-                        null
-                }.safeCollect {
-                    tournamentsDao.replaceAll(it)
-                }
-        }
+                if (snapshotKey != null && name != null)
+                    Tournament(snapshotKey, name)
+                else
+                    null
+            }.safeCollect {
+                tournamentsDao.replaceAll(it)
+            }
     }
 }

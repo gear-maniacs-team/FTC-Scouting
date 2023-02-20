@@ -1,6 +1,7 @@
 package net.gearmaniacs.core.model.team
 
 import android.os.Parcelable
+import androidx.compose.runtime.Immutable
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
@@ -14,6 +15,7 @@ import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.enums.ColorMarker
 import net.gearmaniacs.core.model.enums.PreferredZone
 
+@Immutable
 @Parcelize
 @Entity(
     tableName = "ultimate_goal_teams",
@@ -30,8 +32,8 @@ import net.gearmaniacs.core.model.enums.PreferredZone
 )
 data class Team(
     @PrimaryKey @ColumnInfo(name = "key")
-    @get:Exclude @set:Exclude
-    override var key: String,
+    @get:Exclude
+    override val key: String,
 
     @ColumnInfo(name = "tournament_key")
     @get:Exclude
@@ -77,4 +79,8 @@ data class Team(
 
     @Exclude
     fun score(): Int = autonomousScore() + controlledScore() + endGameScore()
+
+    override fun copyWithKey(newKey: String): Team {
+        return this.copy(key = newKey)
+    }
 }

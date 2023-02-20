@@ -15,7 +15,7 @@
 
     <item
         android:id="@+id/nav_graph_matches"
-        android:icon="@drawable/ic_matches"
+        android:icon="@drawable/ic_matches_filled"
         android:orderInCategory="2"
         android:title="@string/title_matches" />
 

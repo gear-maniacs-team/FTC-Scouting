@@ -10,6 +10,11 @@
         <item name="android:windowContentTransitions">true</item>
     </style>
 
+    <style name="AppTheme.Compose" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
     <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorSecondary">@color/colorSecondary</item>

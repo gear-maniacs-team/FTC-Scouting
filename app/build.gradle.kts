@@ -38,6 +38,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
+    buildFeatures.compose = true
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+    }
+
     buildTypes {
         getByName("debug") {
             addManifestPlaceholders(mapOf("disableFirebase" to true, "enableCrashlytics" to false))

@@ -119,11 +119,6 @@ class MainActivity : AppCompatActivity(), RecyclerViewItemListener<Tournament> {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        viewModel.stopListening()
-    }
-
     override fun onClickListener(item: Tournament) {
         TournamentActivity.startActivity(this, userTeam, item)
     }

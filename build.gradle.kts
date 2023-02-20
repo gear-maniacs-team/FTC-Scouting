@@ -1,13 +1,13 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
         classpath(libs.agp)
         classpath(libs.kotlinGradlePlugin)
-        classpath(libs.dagger.hilt.plugin)
+        classpath(libs.dagger.plugin)
         classpath("com.google.gms:google-services:4.3.15")
         classpath("com.google.firebase:firebase-crashlytics-gradle:2.9.4")
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3")
@@ -17,7 +17,7 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven { url = uri("https://jitpack.io") }
     }
 }

@@ -1,6 +1,6 @@
 # Keep Data Classes Members
--keepclassmembers class net.gearmaniacs.core.model.Alliance { *; }
--keepclassmembers class net.gearmaniacs.core.model.Match { *; }
+-keepclassmembers class net.gearmaniacs.core.model.match.Alliance { *; }
+-keepclassmembers class net.gearmaniacs.core.model.match.Match { *; }
 -keepclassmembers class net.gearmaniacs.core.model.team.AutonomousPeriod { *; }
 -keepclassmembers class net.gearmaniacs.core.model.team.ControlledPeriod { *; }
 -keepclassmembers class net.gearmaniacs.core.model.team.EndGamePeriod { *; }

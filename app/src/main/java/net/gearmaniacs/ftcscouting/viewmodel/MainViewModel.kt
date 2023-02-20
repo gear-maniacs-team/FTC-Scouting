@@ -5,7 +5,6 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.utils.UserTeamPreferences
@@ -31,15 +30,7 @@ class MainViewModel @Inject constructor(
         if (listening) return
         listening = true
 
-        viewModelScope.launch(Dispatchers.IO) { repository.addListener() }
-    }
-
-    fun stopListening() {
-        if (!listening) return
-
-        viewModelScope.launch(Dispatchers.IO) { repository.removeListener() }
-
-        listening = false
+        viewModelScope.launch(Dispatchers.IO) { repository.startListener() }
     }
 
     fun createNewTournament(tournamentName: String) = viewModelScope.launch(Dispatchers.IO) {
@@ -48,9 +39,5 @@ class MainViewModel @Inject constructor(
 
     fun deleteTournament(tournament: Tournament) = viewModelScope.launch(Dispatchers.IO) {
         repository.deleteTournament(tournament.key)
-    }
-
-    override fun onCleared() {
-        GlobalScope.launch(Dispatchers.IO) { repository.clear() }
     }
 }

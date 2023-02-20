@@ -3,44 +3,37 @@ package net.gearmaniacs.tournament.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.doOnPreDraw
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updateMargins
-import androidx.lifecycle.LiveData
-import androidx.navigation.NavController
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.SlideOrientation
+import cafe.adriel.voyager.transitions.SlideTransition
 import com.google.firebase.ktx.Firebase
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.components.ActivityComponent
-import dagger.hilt.android.qualifiers.ActivityContext
-import net.gearmaniacs.core.extensions.observe
-import net.gearmaniacs.core.extensions.setupWithNavController
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import net.gearmaniacs.core.firebase.isLoggedIn
-import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.UserTeam
+import net.gearmaniacs.core.model.match.Match
 import net.gearmaniacs.core.model.team.Team
+import net.gearmaniacs.core.ui.theme.AppTheme
 import net.gearmaniacs.tournament.R
-import net.gearmaniacs.tournament.databinding.TournamentActivityBinding
 import net.gearmaniacs.tournament.ui.fragment.NewTournamentDialog
+import net.gearmaniacs.tournament.ui.screen.TournamentScreen
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @AndroidEntryPoint
 class TournamentActivity : AppCompatActivity() {
 
-    private lateinit var binding: TournamentActivityBinding
     private val viewModel by viewModels<TournamentViewModel>()
-    private lateinit var currentNavController: LiveData<NavController>
 
     private var teamsList = emptyList<Team>()
     private var matchesList = emptyList<Match>()
@@ -58,114 +51,34 @@ class TournamentActivity : AppCompatActivity() {
             }
         }
 
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding = TournamentActivityBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         // Make sure the data from the intent is not null
-        intent.getStringExtra(ARG_TOURNAMENT_KEY)
-            ?: throw IllegalArgumentException(ARG_TOURNAMENT_KEY)
+        viewModel.tournamentKey = intent.getStringExtra(ARG_TOURNAMENT_KEY)
+            ?: throw IllegalArgumentException("Missing $ARG_TOURNAMENT_KEY")
+        viewModel.startListening()
 
-        if (savedInstanceState == null) {
-            setupBottomNavigationBar()
-        } // Else, need to wait for onRestoreInstanceState
+        setContent {
+            AppTheme {
+                val user = intent.getParcelableExtra<UserTeam>(ARG_USER)
 
-        binding.bottomNavigation.doOnPreDraw { appBar ->
-            binding.navHostFragment.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                updateMargins(bottom = appBar.height)
-            }
-        }
-
-        // Observe Live Data
-        observe(viewModel.getCurrentTournamentLiveData()) { thisTournament: Tournament? ->
-            if (thisTournament == null) {
-                // Means the Tournament has been deleted so we should close the activity
-                finish()
-                return@observe
-            }
-
-            supportActionBar?.title = thisTournament.name
-        }
-
-        observe(viewModel.getTeamsLiveData()) {
-            if (it != null)
-                teamsList = it
-        }
-
-        observe(viewModel.getMatchesLiveData()) {
-            if (it != null)
-                matchesList = it
-        }
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        // Now that BottomNavigationBar has restored its instance state
-        // and its selectedItemId, we can proceed with setting up the
-        // BottomNavigationBar with Navigation
-        setupBottomNavigationBar()
-    }
-
-    private fun setupBottomNavigationBar() {
-        val bottomNavigationView = binding.bottomNavigation
-        val navGraphIds = listOf(
-            R.navigation.nav_graph_info,
-            R.navigation.nav_graph_teams,
-            R.navigation.nav_graph_matches,
-            R.navigation.nav_graph_leaderboard
-        )
-
-        // Setup the bottom navigation view with a list of navigation graphs
-        val controller = bottomNavigationView.setupWithNavController(
-            navGraphIds = navGraphIds,
-            fragmentManager = supportFragmentManager,
-            containerId = binding.navHostFragment.id,
-            intent = intent
-        )
-
-        controller.observe(this, { navController ->
-            navController.addOnDestinationChangedListener { controller, destination, arguments ->
-                when (destination.id) {
-                    R.id.editTeamDialog -> {
-
-                        hideAppBars()
-                    }
+                Navigator(TournamentScreen(user)) {
+                    SlideTransition(it, orientation = SlideOrientation.Vertical)
                 }
             }
-        })
-
-        currentNavController = controller
-    }
-
-    private fun hideAppBars() {
-        binding.run {
-            toolbar.visibility = View.GONE
-            bottomNavigation.visibility = View.GONE
-            fab.visibility = View.INVISIBLE
         }
-    }
 
-    private fun showAppBars() {
-        binding.run {
-            toolbar.visibility = View.VISIBLE
-            bottomNavigation.visibility = View.VISIBLE
-            fab.visibility = View.VISIBLE
+
+        lifecycleScope.launch {
+            viewModel.teamsFlow.collectLatest { teamsList = it }
         }
-    }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_tournament, menu)
-        val oprInfoVisible =
-            currentNavController.value!!.graph.id == R.navigation.nav_graph_leaderboard
-
-        menu.findItem(R.id.action_opr_info).isVisible = oprInfoVisible
-
-        return super.onCreateOptionsMenu(menu)
+        lifecycleScope.launch {
+            viewModel.matchesFlow.collectLatest { matchesList = it }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -194,9 +107,9 @@ class TournamentActivity : AppCompatActivity() {
             R.id.action_export -> {
                 val intent = getSpreadsheetIntent(Intent.ACTION_CREATE_DOCUMENT)
                 intent.flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                viewModel.getCurrentTournamentLiveData().value?.name?.let {
-                    intent.putExtra(Intent.EXTRA_TITLE, it)
-                }
+//                viewModel.getCurrentTournamentLiveData().value?.name?.let {
+//                    intent.putExtra(Intent.EXTRA_TITLE, it)
+//                }
 
                 exportSpreadsheetLauncher.launch(intent)
             }
@@ -210,22 +123,10 @@ class TournamentActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onStart() {
-        super.onStart()
-        viewModel.startListening()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        viewModel.stopListening()
-    }
-
-    override fun onSupportNavigateUp(): Boolean = currentNavController.value?.navigateUp() ?: false
-
     private fun changeTournamentName() {
         val dialogFragment = NewTournamentDialog()
         dialogFragment.actionButtonStringRes = R.string.action_update
-        dialogFragment.defaultName = viewModel.getCurrentTournamentLiveData().value?.name
+//        dialogFragment.defaultName = viewModel.getCurrentTournamentLiveData().value?.name
 
         dialogFragment.actionButtonListener = { newName ->
             viewModel.updateTournamentName(newName)
@@ -266,23 +167,6 @@ class TournamentActivity : AppCompatActivity() {
             }
 
             context.startActivity(intent)
-        }
-    }
-
-    /*
-     * Provide the tournament key passed by the intent
-     */
-    class TournamentKey(val value: String)
-
-    internal fun getTournamentKey() = TournamentKey(intent.getStringExtra(ARG_TOURNAMENT_KEY)!!)
-
-    @Module
-    @InstallIn(ActivityComponent::class)
-    internal object TournamentKeyModule {
-
-        @Provides
-        fun provideTournamentKey(@ActivityContext activity: Context): TournamentKey {
-            return (activity as TournamentActivity).getTournamentKey()
         }
     }
 }

@@ -1,5 +1,8 @@
 package net.gearmaniacs.core.model.team
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 data class RankedTeam(
     override val number: Int,
     override val name: String,

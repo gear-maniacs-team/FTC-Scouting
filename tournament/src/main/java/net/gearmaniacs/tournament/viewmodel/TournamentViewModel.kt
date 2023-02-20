@@ -2,20 +2,21 @@ package net.gearmaniacs.tournament.viewmodel
 
 import android.app.Application
 import android.net.Uri
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import net.gearmaniacs.core.architecture.MutableNonNullLiveData
-import net.gearmaniacs.core.architecture.NonNullLiveData
 import net.gearmaniacs.core.extensions.app
 import net.gearmaniacs.core.extensions.toast
-import net.gearmaniacs.core.model.Match
 import net.gearmaniacs.core.model.UserTeam
+import net.gearmaniacs.core.model.match.Match
 import net.gearmaniacs.core.model.team.RankedTeam
 import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.tournament.R
@@ -24,7 +25,7 @@ import net.gearmaniacs.tournament.repository.TeamsRepository
 import net.gearmaniacs.tournament.repository.TournamentRepository
 import net.gearmaniacs.tournament.spreadsheet.SpreadsheetExport
 import net.gearmaniacs.tournament.spreadsheet.SpreadsheetImport
-import net.gearmaniacs.tournament.ui.adapter.TeamSearchAdapter
+import net.gearmaniacs.tournament.ui.model.TeamSearchQuery
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,32 +36,33 @@ internal class TournamentViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
 
-    private val leaderboardData = MutableNonNullLiveData(emptyList<RankedTeam>())
-    private val tournamentData = tournamentRepository.tournamentFlow.asLiveData()
-    private val teamsData = teamsRepository.teamsFlows.asLiveData()
-    private val queriedTeamsData = teamsRepository.queriedTeamsFlow.asLiveData()
-    private val matchesData = matchesRepository.matchesFlow.asLiveData()
+    var tournamentKey = ""
+
+    private val _leaderboardFlow = MutableStateFlow(emptyList<RankedTeam>())
+    val leaderBoardFlow = _leaderboardFlow.asStateFlow()
+    val tournamentFlow by lazy {
+        tournamentRepository.getTournament(tournamentKey).distinctUntilChanged()
+    }
+    val teamsFlow by lazy {
+        teamsRepository.getTeamsFlow(tournamentKey).distinctUntilChanged()
+    }
+    val queriedTeamsFlow = teamsRepository.queriedTeamsFlow
+    val matchesFlow by lazy {
+        matchesRepository.getMatchesFlow(tournamentKey).distinctUntilChanged()
+    }
+
+    val showAppBar = mutableStateOf(true)
 
     private var listening = false
 
-    fun getInfoLiveData(userTeam: UserTeam): NonNullLiveData<List<Match>> {
+    fun getInfoFlow(userTeam: UserTeam): StateFlow<List<Match>> {
         matchesRepository.setUserTeamNumber(userTeam.id)
-        return matchesRepository.infoData
+        return matchesRepository.infoFlow
     }
-
-    fun getCurrentTournamentLiveData() = tournamentData
-
-    fun getTeamsLiveData() = teamsData
-
-    fun getTeamsFilteredLiveData() = queriedTeamsData
-
-    fun getMatchesLiveData() = matchesData
-
-    fun getLeaderboardLiveData(): NonNullLiveData<List<RankedTeam>> = leaderboardData
 
     // region Teams Management
 
-    fun queryTeams(query: TeamSearchAdapter.Query?) {
+    fun queryTeams(query: TeamSearchQuery) {
         teamsRepository.updateTeamsQuery(query)
     }
 
@@ -82,7 +84,7 @@ internal class TournamentViewModel @Inject constructor(
                 .map { Team(key = "", number = it) }
                 .toList()
 
-            teamsRepository.addTeams(newTeamsList)
+            teamsRepository.addTeams(tournamentKey, newTeamsList)
         }
     }
 
@@ -90,13 +92,13 @@ internal class TournamentViewModel @Inject constructor(
         val key = team.key
 
         if (key.isEmpty())
-            teamsRepository.addTeam(team)
+            teamsRepository.addTeam(tournamentKey, team)
         else
-            teamsRepository.updateTeam(team)
+            teamsRepository.updateTeam(tournamentKey, team)
     }
 
     fun deleteTeam(teamKey: String) = viewModelScope.launch(Dispatchers.IO) {
-        teamsRepository.deleteTeam(teamKey)
+        teamsRepository.deleteTeam(tournamentKey, teamKey)
     }
 
     // endregion
@@ -107,13 +109,13 @@ internal class TournamentViewModel @Inject constructor(
         val key = match.key
 
         if (key.isEmpty())
-            matchesRepository.addMatch(match)
+            matchesRepository.addMatch(tournamentKey, match)
         else
-            matchesRepository.updateMatch(match)
+            matchesRepository.updateMatch(tournamentKey, match)
     }
 
     fun deleteMatch(matchKey: String) = viewModelScope.launch(Dispatchers.IO) {
-        matchesRepository.deleteMatch(matchKey)
+        matchesRepository.deleteMatch(tournamentKey, matchKey)
     }
 
     // endregion
@@ -122,25 +124,23 @@ internal class TournamentViewModel @Inject constructor(
 
     fun updateTournamentName(newName: String) = viewModelScope.launch(Dispatchers.IO) {
         if (newName.isNotBlank())
-            tournamentRepository.updateTournamentName(newName)
+            tournamentRepository.updateTournamentName(tournamentKey, newName)
     }
 
     fun deleteTournament() = viewModelScope.launch(Dispatchers.IO) {
-        tournamentRepository.deleteTournament()
+        tournamentRepository.deleteTournament(tournamentKey)
     }
 
     // endregion
 
     suspend fun refreshLeaderboardData(teams: List<Team>, matches: List<Match>) =
-        withContext(Dispatchers.Main.immediate) {
+        withContext(Dispatchers.Default) {
             if (matches.isEmpty())
                 return@withContext app.getString(R.string.opr_error_no_matches)
 
-            val powerRankings = withContext(Dispatchers.Default) {
-                tournamentRepository.generateOprList(teams, matches)
-            }
+            val powerRankings = tournamentRepository.generateOprList(teams, matches)
 
-            leaderboardData.value = powerRankings
+            _leaderboardFlow.value = powerRankings
 
             if (powerRankings.isEmpty())
                 app.getString(R.string.opr_error_data)
@@ -181,8 +181,12 @@ internal class TournamentViewModel @Inject constructor(
                 val importedTeams = import.getTeams()
                 val importedMatches = import.getMatches()
 
-                teamsRepository.addTeams(importedTeams.filterNot { currentTeams.contains(it) })
-                matchesRepository.addMatches(importedMatches.filterNot { currentMatches.contains(it) })
+                teamsRepository.addTeams(
+                    tournamentKey,
+                    importedTeams.filterNot { currentTeams.contains(it) })
+                matchesRepository.addMatches(
+                    tournamentKey,
+                    importedMatches.filterNot { currentMatches.contains(it) })
             }
         }
 
@@ -192,26 +196,8 @@ internal class TournamentViewModel @Inject constructor(
         if (listening) return
         listening = true
 
-        viewModelScope.launch(Dispatchers.IO) { tournamentRepository.addListener() }
-        viewModelScope.launch(Dispatchers.IO) { teamsRepository.addListener() }
-        viewModelScope.launch(Dispatchers.IO) { matchesRepository.addListener() }
-    }
-
-    fun stopListening() {
-        if (!listening) return
-
-        viewModelScope.launch(Dispatchers.IO) { tournamentRepository.removeListener() }
-        viewModelScope.launch(Dispatchers.IO) { teamsRepository.removeListener() }
-        viewModelScope.launch(Dispatchers.IO) { matchesRepository.removeListener() }
-
-        listening = false
-    }
-
-    override fun onCleared() {
-        GlobalScope.launch(Dispatchers.IO) {
-            tournamentRepository.clear()
-            teamsRepository.clear()
-            matchesRepository.clear()
-        }
+        viewModelScope.launch(Dispatchers.IO) { tournamentRepository.startListener(tournamentKey) }
+        viewModelScope.launch(Dispatchers.IO) { teamsRepository.startListener(tournamentKey) }
+        viewModelScope.launch(Dispatchers.IO) { matchesRepository.startListener(tournamentKey) }
     }
 }

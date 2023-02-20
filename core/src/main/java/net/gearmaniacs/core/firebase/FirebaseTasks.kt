@@ -46,7 +46,7 @@ fun <T : DatabaseClass<T>> DatabaseReference.listValueEventFlow(
     val value = dataSnapshot.getValue(clazz.java)
 
     if (snapshotKey != null && value != null)
-        value.also { it.key = snapshotKey }
+        value.copyWithKey(snapshotKey)
     else
         null
 }
