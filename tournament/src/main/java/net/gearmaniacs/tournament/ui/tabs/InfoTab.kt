@@ -27,14 +27,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import kotlinx.parcelize.Parcelize
-import net.gearmaniacs.core.model.match.Match
 import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.core.model.isNullOrEmpty
+import net.gearmaniacs.core.model.match.Match
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @Parcelize
-data class InfoTab(private val userTeam: UserTeam?) : BottomTab, Parcelable {
+internal data class InfoTab(private val userTeam: UserTeam?) : BottomTab, Parcelable {
 
     override val options: TabOptions
         @Composable

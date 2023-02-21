@@ -18,16 +18,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -48,6 +51,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.parcelize.Parcelize
 import net.gearmaniacs.core.model.match.Alliance
 import net.gearmaniacs.core.model.match.Match
@@ -59,7 +64,7 @@ import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Parcelize
-class EditMatchScreen(
+internal class EditMatchScreen(
     private val nextMatchId: Int,
     private val match: Match? = null,
 ) : Screen, Parcelable {
@@ -232,7 +237,11 @@ class EditMatchScreen(
         AnimatedVisibility(
             visibleState = visibleState, enter = scaleIn(), exit = scaleOut()
         ) {
-            FloatingActionButton(onClick = onClick) {
+            FloatingActionButton(
+                onClick = onClick,
+                containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
+                elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
+            ) {
                 Icon(painterResource(R.drawable.ic_done), contentDescription = null)
             }
         }
@@ -274,15 +283,24 @@ class EditMatchScreen(
                     dismissOnClickOutside = true,
                 ),
                 content = {
-                    val options = remember(teams.value, value) {
-                        if (value.isBlank())
-                            return@remember emptyList()
-                        teams.value.asSequence().filterTeamsByQuery(value).take(5).toList()
+                    var options by remember { mutableStateOf(emptyList<Team>()) }
+
+                    LaunchedEffect(teams.value, value) {
+                        options = if (value.isBlank()) {
+                            emptyList()
+                        } else {
+                            withContext(Dispatchers.Default) {
+                                teams.value.asSequence().filterTeamsByQuery(value).take(5).toList()
+                            }
+                        }
                     }
 
                     options.forEach { team ->
                         DropdownMenuItem(
-                            text = { Text("${team.number} - ${team.name.orEmpty()}") },
+                            text = {
+                                val name = if (team.name != null) " - " + team.name else ""
+                                Text("${team.number}$name")
+                            },
                             onClick = {
                                 onValueChange(team.number.toString())
                                 expanded = false

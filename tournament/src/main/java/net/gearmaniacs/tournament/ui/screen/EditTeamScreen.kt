@@ -15,8 +15,10 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -44,7 +46,7 @@ import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @OptIn(ExperimentalAnimationApi::class)
 @Parcelize
-class EditTeamScreen(private val team: Team?) : Screen, Parcelable {
+internal class EditTeamScreen(private val team: Team?) : Screen, Parcelable {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -110,7 +112,11 @@ class EditTeamScreen(private val team: Team?) : Screen, Parcelable {
         AnimatedVisibility(
             visibleState = visibleState, enter = scaleIn(), exit = scaleOut()
         ) {
-            FloatingActionButton(onClick = onClick) {
+            FloatingActionButton(
+                onClick = onClick,
+                containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
+                elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
+            ) {
                 Icon(painterResource(R.drawable.ic_done), contentDescription = null)
             }
         }

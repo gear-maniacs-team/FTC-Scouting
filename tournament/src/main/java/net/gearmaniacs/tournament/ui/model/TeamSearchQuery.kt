@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class TeamSearchQuery(
+internal data class TeamSearchQuery(
     val name: String,
     val defaultMarker: Boolean,
     val redMarker: Boolean,

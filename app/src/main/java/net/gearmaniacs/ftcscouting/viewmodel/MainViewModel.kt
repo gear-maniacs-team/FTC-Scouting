@@ -1,10 +1,10 @@
 package net.gearmaniacs.ftcscouting.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.utils.UserTeamPreferences
@@ -17,24 +17,15 @@ class MainViewModel @Inject constructor(
     private val repository: MainRepository
 ) : ViewModel() {
 
-    private var listening = false
+    val userTeamFlow = userDataPreferences.userTeamFlow
+    val tournamentsFlow = repository.tournamentsFlow
 
-    private val userDataLiveData = userDataPreferences.userTeamFlow.asLiveData()
-    private val tournamentsLiveData = repository.tournamentsFlow.asLiveData()
-
-    fun getUserTeamLiveData() = userDataLiveData
-
-    fun getTournamentsLiveData() = tournamentsLiveData
-
-    fun startListening() {
-        if (listening) return
-        listening = true
-
+    init {
         viewModelScope.launch(Dispatchers.IO) { repository.startListener() }
     }
 
     fun createNewTournament(tournamentName: String) = viewModelScope.launch(Dispatchers.IO) {
-        repository.createNewTournament(userDataLiveData.value, tournamentName)
+        repository.createNewTournament(userTeamFlow.first(), tournamentName)
     }
 
     fun deleteTournament(tournament: Tournament) = viewModelScope.launch(Dispatchers.IO) {

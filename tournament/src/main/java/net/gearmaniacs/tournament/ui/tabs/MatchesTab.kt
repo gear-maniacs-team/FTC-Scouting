@@ -41,15 +41,19 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.withContext
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.model.match.Match
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.ui.ExpandableItem
 import net.gearmaniacs.tournament.ui.screen.EditMatchScreen
+import net.gearmaniacs.tournament.utils.filterTeamsByQuery
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
-object MatchesTab : BottomTab {
+internal object MatchesTab : BottomTab {
 
     override val options: TabOptions
         @Composable
@@ -83,29 +87,49 @@ object MatchesTab : BottomTab {
 
         val listState = rememberLazyListState()
         val matches by viewModel.matchesFlow.collectAsState(emptyList())
-        LaunchedEffect(matches) {
+        val teams = viewModel.teamsFlow.collectAsState(emptyList())
+
+        var teamQuery by rememberSaveable { mutableStateOf("") }
+        var filteredMatches by remember { mutableStateOf(emptyList<Match>()) }
+
+        LaunchedEffect(matches, teamQuery) {
             nextMatchId = if (matches.isNotEmpty()) matches.lastIndex else 0
+
+            filteredMatches = if (teamQuery.isBlank()) {
+                matches
+            } else {
+                withContext(Dispatchers.Default) {
+                    val teamsList = teams.value.asSequence()
+                        .filterTeamsByQuery(teamQuery)
+                        .map { it.number }
+                        .toList()
+
+                    ensureActive()
+
+                    matches.filter { match ->
+                        teamsList.any { match.containsTeam(it) }
+                    }
+                }
+            }
         }
-
-        var query by rememberSaveable { mutableStateOf("") }
-
-        if (matches.isEmpty() && query.isEmpty()) {
+        if (matches.isEmpty() && teamQuery.isEmpty()) {
             Text(stringResource(R.string.empty_tab_matches))
         } else {
-            LazyColumn(Modifier.fillMaxWidth(), state = listState) {
+            LazyColumn(Modifier.fillMaxSize(), state = listState) {
                 item {
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
-                        value = query,
-                        onValueChange = { query = it },
+                        value = teamQuery,
+                        onValueChange = { teamQuery = it },
+                        singleLine = true,
                         label = { Text(stringResource(R.string.action_search)) },
                         placeholder = { Text(stringResource(R.string.action_search_team)) },
                         leadingIcon = { Icon(painterResource(R.drawable.ic_search), null) },
                         trailingIcon = {
-                            if (query.isNotBlank()) {
-                                IconButton(onClick = { query = "" }) {
+                            if (teamQuery.isNotBlank()) {
+                                IconButton(onClick = { teamQuery = "" }) {
                                     Icon(painterResource(R.drawable.ic_close), null)
                                 }
                             }
@@ -117,7 +141,7 @@ object MatchesTab : BottomTab {
                     Divider()
                 }
 
-                items(matches, key = { it.key }) { match ->
+                items(filteredMatches, key = { it.key }) { match ->
                     MatchItem(viewModel, match)
 
                     Divider()

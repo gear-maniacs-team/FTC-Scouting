@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.gearmaniacs.core.extensions.app
@@ -66,9 +67,10 @@ internal class TournamentViewModel @Inject constructor(
         teamsRepository.updateTeamsQuery(query)
     }
 
-    fun addTeamsFromMatches(teams: List<Team>, matches: List<Match>) {
+    fun addTeamsFromMatches() {
         viewModelScope.launch(Dispatchers.Default) {
-            val existingTeamIds = teams.map { it.number }
+            val matches = matchesFlow.first()
+            val existingTeamIds = teamsFlow.first().map { it.number }
             val teamIds = HashSet<Int>(matches.size)
 
             matches.forEach {
@@ -150,8 +152,10 @@ internal class TournamentViewModel @Inject constructor(
 
     // region Spreadsheet
 
-    fun exportToSpreadsheet(fileUri: Uri, teams: List<Team>, matches: List<Match>) =
+    fun exportToSpreadsheet(fileUri: Uri) =
         viewModelScope.launch(Dispatchers.IO) {
+            val teams = teamsFlow.first()
+            val matches = matchesFlow.first()
             val powerRankings = tournamentRepository.generateOprList(teams, matches)
 
             try {
@@ -174,8 +178,11 @@ internal class TournamentViewModel @Inject constructor(
             }
         }
 
-    fun importFromSpreadSheet(fileUri: Uri, currentTeams: List<Team>, currentMatches: List<Match>) =
+    fun importFromSpreadSheet(fileUri: Uri) =
         viewModelScope.launch(Dispatchers.IO) {
+            val currentTeams = teamsFlow.first()
+            val currentMatches = matchesFlow.first()
+
             app.contentResolver.openInputStream(fileUri)?.use { inputStream ->
                 val import = SpreadsheetImport(inputStream)
                 val importedTeams = import.getTeams()

@@ -61,7 +61,7 @@ import net.gearmaniacs.tournament.ui.screen.EditTeamScreen
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
-object TeamsTab : BottomTab {
+internal object TeamsTab : BottomTab {
 
     override val options: TabOptions
         @Composable
@@ -106,7 +106,7 @@ object TeamsTab : BottomTab {
                 textAlign = TextAlign.Center
             )
         } else {
-            LazyColumn(Modifier.fillMaxWidth(), state = listState) {
+            LazyColumn(Modifier.fillMaxSize(), state = listState) {
                 item {
                     QueryOptions(query)
 
@@ -131,6 +131,7 @@ object TeamsTab : BottomTab {
                 modifier = Modifier.fillMaxWidth(),
                 value = query.name,
                 onValueChange = { queryState.value = query.copy(name = it) },
+                singleLine = true,
                 label = {
                     Text(stringResource(R.string.action_search))
                 },

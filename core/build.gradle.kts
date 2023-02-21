@@ -55,8 +55,6 @@ dependencies {
     api(Libs.androidx_lifecycle)
     api(Libs.androidx_livedata)
     api(Libs.androidx_viewmodel)
-    api(Libs.androidx_nav_fragment)
-    api(Libs.androidx_nav_ui)
     api(libs.androidX.dataStore)
 
     api(platform(Libs.firebase_bom))
@@ -70,6 +68,7 @@ dependencies {
     api(libs.compose.material3)
     api(libs.compose.animation)
     api(libs.compose.toolingPreview)
+    debugApi(libs.compose.tooling)
     api(libs.compose.activity)
     api(libs.compose.viewmodel)
 
@@ -79,7 +78,6 @@ dependencies {
     api(libs.voyager.androidx)
 
     api(libs.room.runtime)
-    api(libs.room.paging)
     kapt(libs.room.compiler)
 
     implementation(libs.dagger.android)

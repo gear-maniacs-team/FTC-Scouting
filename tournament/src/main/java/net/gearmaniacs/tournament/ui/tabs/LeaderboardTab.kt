@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -42,7 +41,7 @@ import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 import kotlin.random.Random
 
-object LeaderboardTab : BottomTab {
+internal object LeaderboardTab : BottomTab {
 
     override val options: TabOptions
         @Composable
@@ -85,7 +84,7 @@ object LeaderboardTab : BottomTab {
                 Text(stringResource(R.string.empty_tab_leaderboard))
             }
             else -> {
-                LazyColumn(Modifier.fillMaxWidth()) {
+                LazyColumn(Modifier.fillMaxSize()) {
                     itemsIndexed(rankedTeams, key = { _, team -> team.number }) { index, team ->
                         LeaderboardItem(index, team)
 
