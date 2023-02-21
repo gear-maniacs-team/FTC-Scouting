@@ -47,13 +47,10 @@ dependencies {
     api(Libs.google_material)
     api(Libs.androidx_core)
     api(Libs.androidx_appcompat)
-    api(Libs.androidx_recycler_view)
     api(Libs.androidx_constraint_layout)
     api(Libs.androidx_swipe_refresh_layout)
-    api(Libs.androidx_preference)
     api(Libs.androidx_fragment)
     api(Libs.androidx_lifecycle)
-    api(Libs.androidx_livedata)
     api(Libs.androidx_viewmodel)
     api(libs.androidX.dataStore)
 

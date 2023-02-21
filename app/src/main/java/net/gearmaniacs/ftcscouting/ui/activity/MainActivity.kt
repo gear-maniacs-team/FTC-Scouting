@@ -1,8 +1,8 @@
 package net.gearmaniacs.ftcscouting.ui.activity
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
@@ -63,7 +63,7 @@ import net.gearmaniacs.tournament.ui.dialog.NewTournamentDialog
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var appPreferences: AppPreferences
@@ -77,19 +77,6 @@ class MainActivity : AppCompatActivity() {
                 MainScreen()
             }
         }
-
-        /* binding.fabNewTournament.setOnClickListener {
-             val dialogFragment = NewTournamentDialog()
-             dialogFragment.actionButtonStringRes = R.string.action_create
-
-             dialogFragment.actionButtonListener = { name ->
-                 val tournamentName = name.trim()
-
-                 if (tournamentName.isNotEmpty())
-                     viewModel.createNewTournament(tournamentName)
-             }
-             dialogFragment.show(supportFragmentManager, dialogFragment.tag)
-         }*/
     }
 
     override fun onStart() {

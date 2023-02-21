@@ -3,9 +3,9 @@ package net.gearmaniacs.tournament.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.core.view.WindowCompat
 import cafe.adriel.voyager.navigator.Navigator
@@ -19,7 +19,7 @@ import net.gearmaniacs.tournament.ui.screen.TournamentScreen
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @AndroidEntryPoint
-class TournamentActivity : AppCompatActivity() {
+class TournamentActivity : ComponentActivity() {
 
     private val viewModel by viewModels<TournamentViewModel>()
 
