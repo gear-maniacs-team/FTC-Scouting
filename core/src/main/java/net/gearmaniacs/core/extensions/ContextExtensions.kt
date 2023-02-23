@@ -6,26 +6,18 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Build
-import android.util.TypedValue
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
-import androidx.annotation.StyleRes
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.core.content.res.use
-import androidx.fragment.app.Fragment
 
 
 inline fun <reified T : Activity> Context.startActivity() =
     startActivity(Intent(this, T::class.java))
-
-fun Context.getColorCompat(@ColorRes colorRes: Int) = ContextCompat.getColor(this, colorRes)
 
 fun Context.toast(text: CharSequence) {
     Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
@@ -45,12 +37,6 @@ fun Context.longToast(@StringRes resId: Int) {
 
 inline fun Context.alertDialog(func: AlertDialog.Builder.() -> Unit): AlertDialog.Builder {
     val builder = AlertDialog.Builder(this)
-    builder.func()
-    return builder
-}
-
-inline fun Fragment.alertDialog(func: AlertDialog.Builder.() -> Unit): AlertDialog.Builder {
-    val builder = AlertDialog.Builder(requireContext())
     builder.func()
     return builder
 }
@@ -76,29 +62,13 @@ fun Context.themeColor(
     }
 }
 
-/**
- * Retrieve a style from the current [android.content.res.Resources.Theme].
- */
-@StyleRes
-fun Context.themeStyle(@AttrRes attr: Int): Int {
-    val tv = TypedValue()
-    theme.resolveAttribute(attr, tv, true)
-    return tv.data
-}
-
-@Suppress("DEPRECATION")
 fun Context.isNetworkAvailable(): Boolean {
     val connectivityManager = getSystemService<ConnectivityManager>() ?: return false
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        val nw = connectivityManager.activeNetwork ?: return false
-        val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
+    val nw = connectivityManager.activeNetwork ?: return false
+    val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
 
-        return actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-                || actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
-                || actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
-                || actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH)
-    } else {
-        val nwInfo = connectivityManager.activeNetworkInfo ?: return false
-        return nwInfo.isConnected
-    }
+    return actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+            || actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+            || actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+            || actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH)
 }

@@ -17,13 +17,14 @@
     <application
         android:name=".ScoutingApp"
         android:allowBackup="true"
+        android:enableOnBackInvokedCallback="true"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
 
         <activity
             android:name=".ui.activity.MainActivity"
@@ -40,15 +41,18 @@
 
         <activity
             android:name=".ui.activity.IntroActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="false"
             android:noHistory="true"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.Compose" />
 
         <activity
             android:name=".ui.activity.AboutActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="false"
             android:label="@string/title_about"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme.Compose"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name="com.google.firebase.auth.internal.FederatedSignInActivity"

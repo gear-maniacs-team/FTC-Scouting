@@ -17,16 +17,6 @@ android {
         targetSdk = Versions.Sdk.target
 
         consumerProguardFiles("core-rules.pro")
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += mapOf(
-                    "room.incremental" to "true",
-                    "room.schemaLocation" to "$projectDir/schemas",
-                    "room.expandProjection" to "true"
-                )
-            }
-        }
     }
 
     compileOptions {
@@ -71,7 +61,6 @@ dependencies {
     api(libs.compose.viewmodel)
 
     api(libs.voyager.navigator)
-    api(libs.voyager.tabNavigator)
     api(libs.voyager.transitions)
     api(libs.voyager.androidx)
 

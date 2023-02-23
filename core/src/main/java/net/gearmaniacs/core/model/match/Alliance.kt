@@ -1,10 +1,12 @@
 package net.gearmaniacs.core.model.match
 
 import android.os.Parcelable
+import androidx.compose.runtime.Immutable
 import androidx.room.ColumnInfo
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@Immutable
 data class Alliance(
     @ColumnInfo(name = "first_team")
     val firstTeam: Int,

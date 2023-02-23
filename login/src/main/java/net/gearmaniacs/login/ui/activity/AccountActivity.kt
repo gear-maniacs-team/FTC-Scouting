@@ -148,6 +148,10 @@ class AccountActivity : ComponentActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        updateLinkedProviders()
+    }
 
     @Composable
     private fun AccountCategory(userTeam: UserTeam) {

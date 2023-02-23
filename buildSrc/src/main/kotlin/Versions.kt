@@ -13,7 +13,7 @@ object Versions {
     object Sdk {
         const val min = 26
         const val compile = 33
-        const val target = 30
+        const val target = 33
     }
 
     const val lifecycle = "2.3.0-beta01"

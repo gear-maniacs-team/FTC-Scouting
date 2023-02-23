@@ -1,189 +1,205 @@
 package net.gearmaniacs.ftcscouting.ui.activity
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.net.Uri
+import android.os.Bundle
 import android.view.MenuItem
-import com.danielstone.materialaboutlibrary.MaterialAboutActivity
-import com.danielstone.materialaboutlibrary.items.MaterialAboutActionItem
-import com.danielstone.materialaboutlibrary.items.MaterialAboutItemOnClickAction
-import com.danielstone.materialaboutlibrary.items.MaterialAboutTitleItem
-import com.danielstone.materialaboutlibrary.model.MaterialAboutCard
-import com.danielstone.materialaboutlibrary.model.MaterialAboutList
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.WindowCompat
 import com.marcoscg.licenser.Library
 import com.marcoscg.licenser.License
 import com.marcoscg.licenser.LicenserDialog
 import dagger.hilt.android.AndroidEntryPoint
+import net.gearmaniacs.core.ui.theme.AppTheme
 import net.gearmaniacs.ftcscouting.BuildConfig
 import net.gearmaniacs.ftcscouting.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
-@SuppressLint("UseCompatLoadingForDrawables")
-class AboutActivity : MaterialAboutActivity() {
+class AboutActivity : ComponentActivity() {
 
-    private class OpenUrlAction(
-        private val context: Context,
-        private val url: String
-    ) : MaterialAboutItemOnClickAction {
-
-        override fun onClick() {
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            context.startActivity(browserIntent)
-        }
+    private fun openUrl(url: String) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(browserIntent)
     }
 
-    private class OpenEmailAction(
-        private val context: Context,
-        private val email: String,
-        private val title: String? = null
-    ) : MaterialAboutItemOnClickAction {
+    private fun openEmail(email: String, title: String) {
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:")
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
+            putExtra(Intent.EXTRA_SUBJECT, title)
+        }
 
-        override fun onClick() {
-            val intent = Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:")
-                putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
-                putExtra(Intent.EXTRA_SUBJECT, title)
+        if (intent.resolveActivity(packageManager) != null) startActivity(intent)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        setContent {
+            AppTheme {
+                Scaffold(Modifier.fillMaxSize(), bottomBar = {
+                    BottomAppBar(actions = {
+                        IconButton(onClick = { finish() }) {
+                            Icon(painterResource(R.drawable.ic_arrow_back), null)
+                        }
+                    })
+                }) { paddingValues ->
+                    Column(
+                        Modifier
+                            .padding(paddingValues)
+                            .verticalScroll(rememberScrollState())
+                            .padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        AppCard()
+                        TeamCard()
+                        AuthorCard()
+                    }
+                }
             }
-
-            if (intent.resolveActivity(context.packageManager) != null)
-                context.startActivity(intent)
         }
     }
 
-    override fun getMaterialAboutList(context: Context): MaterialAboutList =
-        MaterialAboutList.Builder()
-            .addCard(getAppCard())
-            .addCard(getTeamCard())
-            .addCard(getAuthorCard())
-            .build()
+    @Composable
+    private fun Item(
+        title: String, summary: String?, iconResId: Int, action: (() -> Unit)? = null
+    ) {
+        val mod = if (action != null) Modifier.clickable(
+            role = Role.Button, onClick = action
+        ) else Modifier
+        ListItem(modifier = mod,
+            headlineText = { Text(title) },
+            supportingText = if (summary != null) {
+                { Text(summary) }
+            } else null,
+            leadingContent = {
+                Icon(painterResource(iconResId), contentDescription = null)
+            })
+    }
 
-    override fun getActivityTitle(): CharSequence? = getString(R.string.title_about)
+    @Composable
+    private fun Item(titleId: Int, summary: String?, iconResId: Int, action: (() -> Unit)? = null) {
+        Item(stringResource(titleId), summary, iconResId, action)
+    }
 
-    private fun getAppCard() = MaterialAboutCard.Builder()
-        .addItem(
-            MaterialAboutTitleItem(
-                getString(R.string.app_name),
-                "© 2019-2020 Gear Maniacs",
-                getDrawable(R.mipmap.ic_launcher)
-            )
-        )
-        .addItem(
-            MaterialAboutActionItem(
-                getString(R.string.version),
-                BuildConfig.VERSION_NAME,
-                getDrawable(R.drawable.ic_about_version)
-            )
-        )
-        .addItem(
-            MaterialAboutActionItem(
-                getString(R.string.about_privacy_policy),
-                PRIVACY_POLICY,
-                getDrawable(R.drawable.ic_about_privacy_policy),
-                OpenUrlAction(this, PRIVACY_POLICY)
-            )
-        )
-        .addItem(
-            MaterialAboutActionItem(
-                getString(R.string.about_app_feedback),
-                APP_EMAIL,
-                getDrawable(R.drawable.ic_about_email),
-                OpenEmailAction(this, APP_EMAIL, "FTC Scouting App")
-            )
-        )
-        .addItem(
-            MaterialAboutActionItem(
-                getString(R.string.about_licenses),
-                null,
-                getDrawable(R.drawable.ic_about_licenses),
-                ::showLicensesDialog
-            )
-        )
-        .build()
+    @Composable
+    private fun AppCard() = OutlinedCard(Modifier.fillMaxWidth()) {
+        ListItem(headlineText = { Text(stringResource(R.string.app_name)) },
+            supportingText = { Text("© 2019-2023 Gear Maniacs") },
+            leadingContent = {
+                ResourcesCompat.getDrawable(
+                    LocalContext.current.resources, R.mipmap.ic_launcher, LocalContext.current.theme
+                )?.let { drawable ->
+                    val bitmap = Bitmap.createBitmap(
+                        drawable.intrinsicWidth,
+                        drawable.intrinsicHeight,
+                        Bitmap.Config.ARGB_8888,
+                    )
+                    val canvas = Canvas(bitmap)
+                    drawable.setBounds(0, 0, canvas.width, canvas.height)
+                    drawable.draw(canvas)
 
-    private fun getTeamCard() = MaterialAboutCard.Builder()
-        .title("Team")
-        .addItem(
-            MaterialAboutActionItem(
-                "Gear Maniacs",
-                "The Most Motivated Robotics Team",
-                getDrawable(R.drawable.ic_about_team)
-            )
-        )
-        .addItem(
-            MaterialAboutActionItem(
-                getString(R.string.about_visit_website),
-                GEAR_MANIACS_WEBSITE,
-                getDrawable(R.drawable.ic_about_website),
-                OpenUrlAction(this, GEAR_MANIACS_WEBSITE)
-            )
-        )
-        .addItem(
-            MaterialAboutActionItem(
-                getString(R.string.about_follow_instagram),
-                GEAR_MANIACS_INSTAGRAM,
-                getDrawable(R.drawable.ic_about_instagram),
-                OpenUrlAction(this, GEAR_MANIACS_INSTAGRAM)
-            )
-        )
-        .build()
+                    Icon(
+                        bitmap.asImageBitmap(), null, Modifier.size(48.dp), tint = Color.Unspecified
+                    )
+                }
+            })
 
-    private fun getAuthorCard() = MaterialAboutCard.Builder()
-        .title(getString(R.string.about_developer))
-        .addItem(
-            MaterialAboutActionItem(
-                "Filea Răzvan",
-                "TheLuckyCoder",
-                getDrawable(R.drawable.ic_about_author)
-            )
+        Item(R.string.version, BuildConfig.VERSION_NAME, R.drawable.ic_about_version)
+        Item(R.string.about_privacy_policy, PRIVACY_POLICY, R.drawable.ic_about_privacy_policy) {
+            openUrl(PRIVACY_POLICY)
+        }
+        Item(R.string.about_app_feedback, APP_EMAIL, R.drawable.ic_about_email) {
+            openEmail(APP_EMAIL, "FTC Scouting App")
+        }
+        Item(R.string.about_licenses, null, R.drawable.ic_about_licenses) {
+            showLicensesDialog()
+        }
+    }
+
+    @Composable
+    private fun TeamCard() = OutlinedCard(Modifier.fillMaxWidth()) {
+        Text(
+            "Team",
+            fontSize = 17.5.sp,
+            modifier = Modifier.padding(start = 16.dp, top = 16.dp),
+            fontWeight = FontWeight.SemiBold
         )
-        .addItem(
-            MaterialAboutActionItem(
-                getString(R.string.about_visit_website),
-                DEVELOPER_WEBSITE,
-                getDrawable(R.drawable.ic_about_website),
-                OpenUrlAction(this, DEVELOPER_WEBSITE)
-            )
+
+        Item("Gear Maniacs", "The Most Motivated Robotics Team", R.drawable.ic_about_team)
+        Item(R.string.about_visit_website, GEAR_MANIACS_WEBSITE, R.drawable.ic_about_website) {
+            openUrl(GEAR_MANIACS_WEBSITE)
+        }
+        Item(
+            R.string.about_follow_instagram, GEAR_MANIACS_INSTAGRAM, R.drawable.ic_about_instagram
+        ) {
+            openUrl(GEAR_MANIACS_INSTAGRAM)
+        }
+    }
+
+    @Composable
+    private fun AuthorCard() = OutlinedCard(Modifier.fillMaxWidth()) {
+        Text(
+            stringResource(R.string.about_developer),
+            fontSize = 17.5.sp,
+            modifier = Modifier.padding(start = 16.dp, top = 16.dp),
+            fontWeight = FontWeight.SemiBold
         )
-        .addItem(
-            MaterialAboutActionItem(
-                getString(R.string.about_contact),
-                DEVELOPER_EMAIL,
-                getDrawable(R.drawable.ic_about_email),
-                OpenEmailAction(this, DEVELOPER_EMAIL, getString(R.string.app_name))
-            )
-        )
-        .addItem(
-            MaterialAboutActionItem(
-                getString(R.string.about_other_apps),
-                DEVELOPER_GOOGLE_PLAY,
-                getDrawable(R.drawable.ic_about_play_store),
-                OpenUrlAction(this, DEVELOPER_GOOGLE_PLAY)
-            )
-        )
-        .addItem(
-            MaterialAboutActionItem(
-                "GitHub",
-                DEVELOPER_GITHUB,
-                getDrawable(R.drawable.ic_about_github),
-                OpenUrlAction(this, DEVELOPER_GITHUB)
-            )
-        )
-        .build()
+
+        Item("Filea Răzvan", "TheLuckyCoder", R.drawable.ic_about_author)
+//        Item(R.string.about_visit_website, DEVELOPER_WEBSITE, R.drawable.ic_about_website) {
+//            openUrl(DEVELOPER_WEBSITE)
+//        }
+        Item(R.string.about_contact, DEVELOPER_EMAIL, R.drawable.ic_about_email) {
+            openEmail(DEVELOPER_EMAIL, "Gear Maniacs FTC Scouting App")
+        }
+        Item("GitHub", DEVELOPER_GITHUB, R.drawable.ic_about_github) {
+            openUrl(DEVELOPER_GITHUB)
+        }
+    }
 
     private fun showLicensesDialog() {
         val dialog = LicenserDialog(this).apply {
             setTitle(R.string.about_licenses)
             setNeutralButton(android.R.string.ok, null)
             setLibrary(
-                "Kotlin",
-                "https://kotlinlang.org/",
-                License.APACHE2
+                "Kotlin", "https://kotlinlang.org/", License.APACHE2
             )
             setLibrary(
-                "Kotlin Coroutines",
-                "https://github.com/Kotlin/kotlinx.coroutines",
-                License.APACHE2
+                "Kotlin Coroutines", "https://github.com/Kotlin/kotlinx.coroutines", License.APACHE2
             )
             setLibrary(
                 "AndroidX and Jetpack Libraries",
@@ -191,29 +207,16 @@ class AboutActivity : MaterialAboutActivity() {
                 License.APACHE2
             )
             setLibrary(
-                "Firebase",
-                "https://github.com/firebase/firebase-android-sdk",
-                License.APACHE2
+                "Firebase", "https://github.com/firebase/firebase-android-sdk", License.APACHE2
             )
             setLibrary(
-                "POI",
-                "https://poi.apache.org/",
-                License.APACHE2
+                "POI", "https://poi.apache.org/", License.APACHE2
             )
             setLibrary(
-                "Material Intro",
-                "https://github.com/heinrichreimer/material-intro",
-                License.MIT
+                "Material Intro", "https://github.com/heinrichreimer/material-intro", License.MIT
             )
             setLibrary(
-                "Material About Library",
-                "https://github.com/daniel-stoneuk/material-about-library",
-                License.MIT
-            )
-            setLibrary(
-                "Licenser",
-                "https://github.com/marcoscgdev/Licenser",
-                License.MIT
+                "Licenser", "https://github.com/marcoscgdev/Licenser", License.MIT
             )
         }
 
@@ -233,14 +236,13 @@ class AboutActivity : MaterialAboutActivity() {
             setLibrary(Library(title, url, license))
 
         private const val APP_EMAIL = "gearmaniacsteam@gmail.com"
-        private const val DEVELOPER_EMAIL = "mail@theluckycoder.net"
+        private const val DEVELOPER_EMAIL = "razvan.filea@gmail.com"
 
         private const val GEAR_MANIACS_WEBSITE = "https://gearmaniacs.ro"
         private const val GEAR_MANIACS_INSTAGRAM = "https://instagram.com/gearmaniacsteam"
         private const val PRIVACY_POLICY = "https://gearmaniacs.ro/privacy-policy"
-        private const val DEVELOPER_WEBSITE = "http://theluckycoder.net"
-        private const val DEVELOPER_GOOGLE_PLAY =
-            "https://play.google.com/store/apps/dev?id=7253118641640283145"
+
+        //        private const val DEVELOPER_WEBSITE = "http://theluckycoder.net"
         private const val DEVELOPER_GITHUB = "https://github.com/TheLuckyCoder"
     }
 }

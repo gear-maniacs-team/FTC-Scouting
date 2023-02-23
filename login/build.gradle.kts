@@ -37,6 +37,8 @@ dependencies {
     implementation(project(Modules.core))
     implementation(project(Modules.database))
 
+    implementation(libs.compose.compiler)
+
     implementation(Libs.gms_auth)
 
     implementation(libs.dagger.android)

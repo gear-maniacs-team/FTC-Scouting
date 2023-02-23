@@ -10,10 +10,7 @@ object Libs {
     val androidx_preference = "androidx.preference:preference:1.1.1"
     val androidx_fragment = "androidx.fragment:fragment-ktx:1.3.0-beta02"
     val androidx_lifecycle = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle}"
-    val androidx_livedata = "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.lifecycle}"
     val androidx_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.lifecycle}"
-    val androidx_nav_fragment = "androidx.navigation:navigation-fragment-ktx:2.5.3"
-    val androidx_nav_ui = "androidx.navigation:navigation-ui-ktx:2.5.3"
 
     // Firebase
     val firebase_bom = "com.google.firebase:firebase-bom:${Versions.firebaseBom}"
@@ -23,11 +20,9 @@ object Libs {
     val firebase_crashlytics = "com.google.firebase:firebase-crashlytics"
 
     // GMS
-    val gms_auth = "com.google.android.gms:play-services-auth:19.0.0"
+    val gms_auth = "com.google.android.gms:play-services-auth:20.4.1"
 
     // Other Libraries
-    val material_intro = "com.heinrichreimersoftware:material-intro:2.0.0"
-    val material_about = "com.github.daniel-stoneuk:material-about-library:3.2.0-rc01"
     val licenser = "com.github.marcoscgdev:Licenser:2.0.0"
     val apache_poi = "org.apache.poi:poi:4.0.1"
 

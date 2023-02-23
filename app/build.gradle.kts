@@ -77,6 +77,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).configure
 }
 
 dependencies {
+    debugImplementation(libs.kotlin.reflect)
     implementation(project(Modules.core))
     implementation(project(Modules.login))
     implementation(project(Modules.tournament))
@@ -84,8 +85,7 @@ dependencies {
 
     implementation(Libs.firebase_crashlytics)
 
-    implementation(Libs.material_intro)
-    implementation(Libs.material_about)
+    implementation(libs.compose.compiler)
     implementation(Libs.licenser)
 
     kapt(libs.room.compiler)

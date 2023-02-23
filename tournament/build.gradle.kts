@@ -4,7 +4,6 @@ plugins {
     kotlin("android")
     id("kotlin-parcelize")
     kotlin("kapt")
-    id("androidx.navigation.safeargs.kotlin")
 
     id("dagger.hilt.android.plugin")
 }
@@ -37,6 +36,8 @@ dependencies {
     implementation(project(Modules.database))
 
     implementation(Libs.apache_poi)
+
+    implementation(libs.voyager.tabNavigator)
 
     implementation(libs.dagger.android)
     kapt(libs.dagger.compiler)
