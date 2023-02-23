@@ -19,6 +19,8 @@ class AccountViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
 
+    val userTeamFlow = repository.userTeamFlow
+
     fun updateUserData(userTeam: UserTeam) = viewModelScope.launch(Dispatchers.IO) {
         val stringInt = repository.updateUserData(userTeam)
 

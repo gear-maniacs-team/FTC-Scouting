@@ -107,8 +107,8 @@ class PowerRankingTest {
 
     @Test
     fun checkPowerRanking_firstAndLastTeam() {
-        val firstResult = RankedTeam(id = 77, name = "", score = 232.48538)
-        val lastResult = RankedTeam(id = 44, name = "", score = -2.6085517)
+        val firstResult = RankedTeam(number = 77, name = "", score = 232.48538)
+        val lastResult = RankedTeam(number = 44, name = "", score = -2.6085517)
 
         val matches = ArrayList<Match>(redAlliances.size)
 

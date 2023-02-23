@@ -10,6 +10,7 @@ plugins {
 }
 
 android {
+    namespace = "net.gearmaniacs.ftcscouting"
     compileSdk = Versions.Sdk.compile
 
     defaultConfig {
@@ -34,11 +35,14 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = Versions.java
+        targetCompatibility = Versions.java
     }
 
-    buildFeatures.compose = true
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
 
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
@@ -57,7 +61,6 @@ android {
 
             isMinifyEnabled = true
             isShrinkResources = true
-            isZipAlignEnabled = true
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -69,7 +72,6 @@ android {
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).configureEach {
     kotlinOptions {
-        jvmTarget = "11"
         freeCompilerArgs = freeCompilerArgs + listOf("-Xjvm-default=all")
     }
 }
@@ -97,12 +99,6 @@ dependencies {
     testImplementation(libs.dagger.android)
     kaptTest(libs.dagger.compiler)
     kaptTest(libs.dagger.hilt.compiler)
-
-    androidTestImplementation(Libs.Test.runner)
-    androidTestImplementation(Libs.Test.rules)
-    androidTestImplementation(Libs.Test.espresso_core)
-    androidTestImplementation(Libs.Test.espresso_contrib)
-    androidTestImplementation(Libs.Test.uiautomator)
 }
 
 kapt {

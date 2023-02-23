@@ -16,7 +16,7 @@ import net.gearmaniacs.core.firebase.ifLoggedIn
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.firebase.listValueEventFlow
 import net.gearmaniacs.core.model.match.Match
-import net.theluckycoder.database.dao.MatchesDao
+import net.gearmaniacs.database.dao.MatchesDao
 import javax.inject.Inject
 
 internal class MatchesRepository @Inject constructor(

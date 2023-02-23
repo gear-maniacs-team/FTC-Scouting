@@ -6,7 +6,7 @@ import net.gearmaniacs.core.model.team.BaseTeam
 import net.gearmaniacs.core.model.match.Match
 import net.gearmaniacs.core.model.team.RankedTeam
 
-internal object OffensivePowerRanking {
+object OffensivePowerRanking {
 
     /**
      * Creates a list with all the team numbers from the matches

@@ -1,4 +1,4 @@
-package net.theluckycoder.database
+package net.gearmaniacs.database
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

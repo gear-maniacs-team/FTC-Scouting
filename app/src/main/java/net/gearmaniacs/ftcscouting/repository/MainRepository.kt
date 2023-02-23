@@ -20,8 +20,8 @@ import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.core.model.isNullOrEmpty
 import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.core.utils.UserTeamPreferences
-import net.theluckycoder.database.dao.TeamsDao
-import net.theluckycoder.database.dao.TournamentsDao
+import net.gearmaniacs.database.dao.TeamsDao
+import net.gearmaniacs.database.dao.TournamentsDao
 import javax.inject.Inject
 
 @ActivityRetainedScoped

@@ -19,6 +19,7 @@
     <string name="title_about">About</string>
     <string name="version">Version</string>
     <string name="name">Name</string>
+    <string name="error_invalid_number">Number is invalid</string>
 
     <string name="prompt_team_number">Team Number</string>
     <string name="prompt_team_name">Team Name</string>

@@ -1,16 +1,21 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="net.gearmaniacs.login">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
         <activity
             android:name=".ui.activity.LoginActivity"
+            android:exported="false"
             android:theme="@style/AppTheme.NoActionBar.Transparent" />
 
-        <activity android:name=".ui.activity.ResetPasswordActivity" />
+        <activity
+            android:name=".ui.activity.ResetPasswordActivity"
+            android:exported="false" />
 
         <activity
             android:name=".ui.activity.AccountActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:exported="false"
             android:label="@string/title_account"
-            android:windowSoftInputMode="adjustPan" />
+            android:theme="@style/AppTheme.Compose"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 </manifest>

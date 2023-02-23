@@ -9,6 +9,7 @@ plugins {
 }
 
 android {
+    namespace = "net.gearmaniacs.core"
     compileSdk = Versions.Sdk.compile
 
     defaultConfig {
@@ -29,8 +30,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = Versions.java
+        targetCompatibility = Versions.java
     }
 
     buildFeatures.compose = true

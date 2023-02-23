@@ -8,6 +8,7 @@ plugins {
 }
 
 android {
+    namespace = "net.gearmaniacs.login"
     compileSdk = Versions.Sdk.compile
 
     defaultConfig {
@@ -17,15 +18,18 @@ android {
         consumerProguardFiles("login-rules.pro")
     }
 
-    buildFeatures.compose = true
+    buildFeatures {
+        compose = true
+        viewBinding = true
+    }
 
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = Versions.java
+        targetCompatibility = Versions.java
     }
 }
 

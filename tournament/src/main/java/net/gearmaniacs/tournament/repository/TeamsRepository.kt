@@ -22,7 +22,7 @@ import net.gearmaniacs.core.model.enums.ColorMarker
 import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.tournament.ui.model.TeamSearchQuery
 import net.gearmaniacs.tournament.utils.filterTeamsByQuery
-import net.theluckycoder.database.dao.TeamsDao
+import net.gearmaniacs.database.dao.TeamsDao
 import javax.inject.Inject
 
 internal class TeamsRepository @Inject constructor(

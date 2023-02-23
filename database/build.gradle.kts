@@ -8,6 +8,7 @@ plugins {
 }
 
 android {
+    namespace = "net.gearmaniacs.database"
     compileSdk = Versions.Sdk.compile
 
     defaultConfig {
@@ -16,14 +17,18 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments += mapOf("room.incremental" to "true")
+                arguments += mapOf(
+                    "room.incremental" to "true",
+                    "room.schemaLocation" to "$projectDir/schemas",
+                    "room.expandProjection" to "true"
+                )
             }
         }
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = Versions.java
+        targetCompatibility = Versions.java
     }
 }
 

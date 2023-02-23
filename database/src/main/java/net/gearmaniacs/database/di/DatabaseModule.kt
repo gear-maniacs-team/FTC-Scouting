@@ -1,4 +1,4 @@
-package net.theluckycoder.database.di
+package net.gearmaniacs.database.di
 
 import android.content.Context
 import androidx.room.Room
@@ -7,7 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import net.theluckycoder.database.AppDatabase
+import net.gearmaniacs.database.AppDatabase
 import javax.inject.Singleton
 
 @Module

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -28,6 +27,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -57,8 +57,8 @@ import kotlinx.parcelize.Parcelize
 import net.gearmaniacs.core.model.match.Alliance
 import net.gearmaniacs.core.model.match.Match
 import net.gearmaniacs.core.model.team.Team
+import net.gearmaniacs.core.ui.NumberField
 import net.gearmaniacs.tournament.R
-import net.gearmaniacs.tournament.ui.NumberField
 import net.gearmaniacs.tournament.utils.filterTeamsByQuery
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
@@ -70,7 +70,7 @@ internal class EditMatchScreen(
 ) : Screen, Parcelable {
 
     @Composable
-    override fun Content() = Column(Modifier.fillMaxSize()) {
+    override fun Content() {
         val viewModel: TournamentViewModel = viewModel()
         val navigator = LocalNavigator.currentOrThrow
         val ctx = LocalContext.current
@@ -99,140 +99,146 @@ internal class EditMatchScreen(
             mutableStateOf(match?.blueAlliance?.score?.toString().orEmpty())
         }
 
-        Column(
-            Modifier
-                .weight(1f)
-                .padding(16.dp)
-                .verticalScroll(scrollState)
-                .safeDrawingPadding()
-        ) {
-            NumberField(
-                modifier = Modifier.fillMaxWidth(),
-                value = matchNumber,
-                onValueChange = { matchNumber = it },
-                hint = stringResource(R.string.prompt_match_number),
-                maxLength = 4,
-            )
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            bottomBar = {
+                BottomAppBar(
+                    actions = {
+                        IconButton(onClick = { navigator.pop() }) {
+                            Icon(painterResource(R.drawable.ic_close), null)
+                        }
+                    },
+                    floatingActionButton = {
+                        FloatingAction {
+                            try {
+                                val redAlliance = Alliance(
+                                    firstTeam = redFirstTeam.toInt(),
+                                    secondTeam = redSecondTeam.toInt(),
+                                    score = redScore.toInt()
+                                )
 
-            Text(
-                stringResource(R.string.red_alliance),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = colorResource(R.color.alliance_red),
-                modifier = Modifier.padding(top = 24.dp)
-            )
+                                val blueAlliance = Alliance(
+                                    firstTeam = blueFirstTeam.toInt(),
+                                    secondTeam = blueSecondTeam.toInt(),
+                                    score = blueScore.toInt()
+                                )
 
-            Row {
-                TeamField(
-                    modifier = Modifier.weight(1f),
-                    value = redFirstTeam,
-                    onValueChange = { redFirstTeam = it },
-                    hint = stringResource(R.string.prompt_first_team),
-                    teams = teams,
+                                val parsedMatch = Match(
+                                    key = match?.key.orEmpty(),
+                                    tournamentKey = match?.tournamentKey ?: viewModel.tournamentKey,
+                                    id = matchNumber.toInt(),
+                                    redAlliance = redAlliance,
+                                    blueAlliance = blueAlliance
+                                )
+
+                                viewModel.updateMatch(parsedMatch)
+                                navigator.pop()
+                            } catch (_: NumberFormatException) {
+                                Toast.makeText(ctx, "Invalid Number", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    })
+
+            }) { paddingValues ->
+
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .verticalScroll(scrollState)
+                    .padding(paddingValues)
+            ) {
+                NumberField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = matchNumber,
+                    onValueChange = { matchNumber = it },
+                    hint = stringResource(R.string.prompt_match_number),
+                    maxLength = 4,
                 )
 
-                Spacer(Modifier.width(8.dp))
+                Text(
+                    stringResource(R.string.red_alliance),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(R.color.alliance_red),
+                    modifier = Modifier.padding(top = 24.dp)
+                )
 
-                TeamField(
-                    modifier = Modifier.weight(1f),
-                    value = redSecondTeam,
-                    onValueChange = { redSecondTeam = it },
-                    hint = stringResource(R.string.prompt_second_team),
-                    teams = teams,
+                Row {
+                    TeamField(
+                        modifier = Modifier.weight(1f),
+                        value = redFirstTeam,
+                        onValueChange = { redFirstTeam = it },
+                        hint = stringResource(R.string.prompt_first_team),
+                        teams = teams,
+                    )
+
+                    Spacer(Modifier.width(8.dp))
+
+                    TeamField(
+                        modifier = Modifier.weight(1f),
+                        value = redSecondTeam,
+                        onValueChange = { redSecondTeam = it },
+                        hint = stringResource(R.string.prompt_second_team),
+                        teams = teams,
+                    )
+                }
+
+                NumberField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    value = redScore,
+                    onValueChange = { redScore = it },
+                    hint = stringResource(R.string.prompt_score),
+                    maxLength = 4,
+                )
+
+                Text(
+                    stringResource(R.string.blue_alliance),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(R.color.alliance_blue),
+                    modifier = Modifier.padding(top = 24.dp)
+                )
+
+                Row {
+                    TeamField(
+                        modifier = Modifier.weight(1f),
+                        value = blueFirstTeam,
+                        onValueChange = { blueFirstTeam = it },
+                        hint = stringResource(R.string.prompt_first_team),
+                        teams = teams,
+                    )
+
+                    Spacer(Modifier.width(8.dp))
+
+                    TeamField(
+                        modifier = Modifier.weight(1f),
+                        value = blueSecondTeam,
+                        onValueChange = { blueSecondTeam = it },
+                        hint = stringResource(R.string.prompt_second_team),
+                        teams = teams,
+                    )
+                }
+
+                NumberField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    value = blueScore,
+                    onValueChange = { blueScore = it },
+                    hint = stringResource(R.string.prompt_score),
+                    maxLength = 4,
                 )
             }
-
-            NumberField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                value = redScore,
-                onValueChange = { redScore = it },
-                hint = stringResource(R.string.prompt_score),
-                maxLength = 4,
-            )
-
-            Text(
-                stringResource(R.string.blue_alliance),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = colorResource(R.color.alliance_blue),
-                modifier = Modifier.padding(top = 24.dp)
-            )
-
-            Row {
-                TeamField(
-                    modifier = Modifier.weight(1f),
-                    value = blueFirstTeam,
-                    onValueChange = { blueFirstTeam = it },
-                    hint = stringResource(R.string.prompt_first_team),
-                    teams = teams,
-                )
-
-                Spacer(Modifier.width(8.dp))
-
-                TeamField(
-                    modifier = Modifier.weight(1f),
-                    value = blueSecondTeam,
-                    onValueChange = { blueSecondTeam = it },
-                    hint = stringResource(R.string.prompt_second_team),
-                    teams = teams,
-                )
-            }
-
-            NumberField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                value = blueScore,
-                onValueChange = { blueScore = it },
-                hint = stringResource(R.string.prompt_score),
-                maxLength = 4,
-            )
         }
-
-        BottomAppBar(
-            actions = {
-                IconButton(onClick = { navigator.pop() }) {
-                    Icon(painterResource(R.drawable.ic_close), null)
-                }
-            },
-            floatingActionButton = {
-                FloatingAction {
-                    try {
-                        val redAlliance = Alliance(
-                            firstTeam = redFirstTeam.toInt(),
-                            secondTeam = redSecondTeam.toInt(),
-                            score = redScore.toInt()
-                        )
-
-                        val blueAlliance = Alliance(
-                            firstTeam = blueFirstTeam.toInt(),
-                            secondTeam = blueSecondTeam.toInt(),
-                            score = blueScore.toInt()
-                        )
-
-                        val parsedMatch = Match(
-                            key = match?.key.orEmpty(),
-                            tournamentKey = match?.tournamentKey ?: viewModel.tournamentKey,
-                            id = matchNumber.toInt(),
-                            redAlliance = redAlliance,
-                            blueAlliance = blueAlliance
-                        )
-
-                        viewModel.updateMatch(parsedMatch)
-                        navigator.pop()
-                    } catch (_: NumberFormatException) {
-                        Toast.makeText(ctx, "Invalid Number", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            })
-
     }
 
     @Composable
     private fun FloatingAction(onClick: () -> Unit) {
-        val visibleState = remember { MutableTransitionState(false) }.apply { targetState = true }
+        val visibleState =
+            remember { MutableTransitionState(false) }.apply { targetState = true }
 
         AnimatedVisibility(
             visibleState = visibleState, enter = scaleIn(), exit = scaleOut()
@@ -274,7 +280,7 @@ internal class EditMatchScreen(
             )
 
             DropdownMenu(
-                expanded = expanded,
+                expanded = expanded && value.isNotBlank(),
                 onDismissRequest = { expanded = false },
                 modifier = Modifier.exposedDropdownSize(),
                 properties = PopupProperties(
@@ -290,7 +296,8 @@ internal class EditMatchScreen(
                             emptyList()
                         } else {
                             withContext(Dispatchers.Default) {
-                                teams.value.asSequence().filterTeamsByQuery(value).take(5).toList()
+                                teams.value.asSequence().filterTeamsByQuery(value).take(5)
+                                    .toList()
                             }
                         }
                     }

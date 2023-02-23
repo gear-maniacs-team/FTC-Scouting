@@ -1,13 +1,13 @@
-package net.theluckycoder.database
+package net.gearmaniacs.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import net.gearmaniacs.core.model.match.Match
 import net.gearmaniacs.core.model.Tournament
+import net.gearmaniacs.core.model.match.Match
 import net.gearmaniacs.core.model.team.Team
-import net.theluckycoder.database.dao.MatchesDao
-import net.theluckycoder.database.dao.TeamsDao
-import net.theluckycoder.database.dao.TournamentsDao
+import net.gearmaniacs.database.dao.MatchesDao
+import net.gearmaniacs.database.dao.TeamsDao
+import net.gearmaniacs.database.dao.TournamentsDao
 
 @Database(version = 1, entities = [Tournament::class, Match::class, Team::class])
 abstract class AppDatabase : RoomDatabase() {

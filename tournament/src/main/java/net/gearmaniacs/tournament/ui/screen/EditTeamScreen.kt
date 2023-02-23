@@ -40,8 +40,8 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.parcelize.Parcelize
 import net.gearmaniacs.core.model.team.Team
+import net.gearmaniacs.core.ui.NumberField
 import net.gearmaniacs.tournament.R
-import net.gearmaniacs.tournament.ui.NumberField
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @OptIn(ExperimentalAnimationApi::class)

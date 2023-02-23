@@ -1,3 +1,5 @@
+import org.gradle.api.JavaVersion
+
 object Versions {
     object App {
         private const val major = 3
@@ -9,11 +11,12 @@ object Versions {
     }
 
     object Sdk {
-        const val min = 23
+        const val min = 26
         const val compile = 33
         const val target = 30
     }
 
     const val lifecycle = "2.3.0-beta01"
     const val firebaseBom = "31.2.2"
+    val java = JavaVersion.VERSION_17
 }

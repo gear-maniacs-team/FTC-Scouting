@@ -58,22 +58,20 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
     @Inject
     lateinit var appPreferences: AppPreferences
 
-    init {
-        lifecycleScope.launchWhenCreated {
-            if (!appPreferences.seenIntroFlow.first()) {
-                introLauncher.launch(
-                    Intent(this@LoginActivity, Class.forName(introActivityClass.value))
-                )
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = LoginActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         auth = Firebase.auth
+
+        lifecycleScope.launch {
+            if (!appPreferences.seenIntroFlow.first()) {
+                introLauncher.launch(
+                    Intent(this@LoginActivity, Class.forName(introActivityClass.value))
+                )
+            }
+        }
 
         if (Firebase.isLoggedIn) {
             // If the user is logged in the MainActivity will be launched in onStart
@@ -136,10 +134,12 @@ class LoginActivity : AppCompatActivity(), LoginCallback {
                     hide(loginBaseFragment)
                     hide(registerFragment)
                 }
+
                 RegisterFragment.TAG -> {
                     hide(loginBaseFragment)
                     hide(signInFragment)
                 }
+
                 else -> {
                     hide(signInFragment)
                     hide(registerFragment)

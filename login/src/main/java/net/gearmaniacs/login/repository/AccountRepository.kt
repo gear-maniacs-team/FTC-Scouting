@@ -16,6 +16,8 @@ class AccountRepository @Inject constructor(
     private val userDataPreferences: UserTeamPreferences
 ) {
 
+    val userTeamFlow = userDataPreferences.userTeamFlow
+
     suspend fun updateUserData(userTeam: UserTeam): Int {
         userDataPreferences.updateUserTeam(userTeam)
 

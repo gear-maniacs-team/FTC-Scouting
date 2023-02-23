@@ -239,13 +239,6 @@ private fun MainMenuContent(userTeam: UserTeam?) = Column(
         currentUser.email?.let { email ->
             Text(email, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
         }
-
-        TextButton(
-            onClick = { showSignOutDialog = true },
-            modifier = Modifier.align(Alignment.End)
-        ) {
-            Text(stringResource(R.string.action_sign_out), fontSize = 16.sp)
-        }
     } else {
         OutlinedButton(
             onClick = { ctx.startActivity<LoginActivity>() },

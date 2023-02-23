@@ -1,4 +1,4 @@
-package net.theluckycoder.database.dao
+package net.gearmaniacs.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
