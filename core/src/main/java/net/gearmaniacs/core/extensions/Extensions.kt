@@ -5,14 +5,6 @@ import android.widget.EditText
 
 fun <T> lazyFast(operation: () -> T): Lazy<T> = lazy(LazyThreadSafetyMode.NONE, operation)
 
-inline fun justTry(block: () -> Unit) {
-    try {
-        block()
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
-}
-
 fun String.isValidEmail(): Boolean =
     isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(this).matches()
 

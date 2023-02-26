@@ -2,22 +2,16 @@
 
     <application>
         <activity
-            android:name=".ui.activity.ResetPasswordActivity"
-            android:exported="false" />
-
-        <activity
             android:name=".ui.activity.AccountActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="false"
             android:label="@string/title_account"
-            android:theme="@style/AppTheme.Compose"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".ui.activity.IntroActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="false"
-            android:noHistory="true"
-            android:theme="@style/AppTheme.Compose" />
+            android:noHistory="true" />
     </application>
 </manifest>

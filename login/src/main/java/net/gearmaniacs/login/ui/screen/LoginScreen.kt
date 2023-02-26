@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.google.firebase.ktx.Firebase
@@ -49,6 +50,9 @@ import net.gearmaniacs.login.ui.activity.IntroActivity
 import net.gearmaniacs.login.viewmodel.LoginViewModel
 
 class LoginScreen : Screen {
+
+    override val key: ScreenKey
+        get() = KEY
 
     @Composable
     override fun Content() {
@@ -93,8 +97,8 @@ class LoginScreen : Screen {
                 stringResource(R.string.app_name),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .sizeIn(maxHeight = 182.dp)
-                    .padding(20.dp),
+                    .sizeIn(maxHeight = 172.dp)
+                    .padding(vertical = 20.dp),
             )
 
             Text(
@@ -178,5 +182,9 @@ class LoginScreen : Screen {
                 },
             )
         }
+    }
+
+    companion object {
+        const val KEY = "LoginScreen"
     }
 }

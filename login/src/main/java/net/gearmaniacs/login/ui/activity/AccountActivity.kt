@@ -3,11 +3,9 @@ package net.gearmaniacs.login.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,25 +40,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.lifecycleScope
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import net.gearmaniacs.core.extensions.longToast
+import net.gearmaniacs.core.extensions.parcelable
 import net.gearmaniacs.core.extensions.toIntOrElse
-import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.core.firebase.DatabasePaths
-import net.gearmaniacs.core.firebase.FirebaseConstants
 import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.core.model.isNullOrEmpty
 import net.gearmaniacs.core.ui.NumberField
@@ -77,33 +65,6 @@ class AccountActivity : ComponentActivity() {
 
     @Inject
     lateinit var signOutCleaner: Lazy<SignOutCleaner>
-
-    private var linkedWithGoogle by mutableStateOf(false)
-
-    private val googleSignInLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            val context = applicationContext
-            lifecycleScope.launch(Dispatchers.Main.immediate) {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
-
-                try {
-                    val account = task.getResult(ApiException::class.java)!!
-
-                    val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                    val linkTask = Firebase.auth.currentUser!!.linkWithCredential(credential)
-                    linkTask.await()
-                    updateLinkedProviders()
-
-                    if (linkTask.isSuccessful)
-                        context.toast(R.string.account_provider_google_link_success)
-                    else
-                        throw IllegalStateException("Could not link account with Google")
-                } catch (e: Exception) {
-                    Log.w(TAG, "Google Account linking failed", e)
-                    context.longToast(R.string.account_provider_google_link_failure)
-                }
-            }
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -139,16 +100,11 @@ class AccountActivity : ComponentActivity() {
             }
         }
 
-        val originalUserData = intent.getParcelableExtra<UserTeam>(ARG_USER_TEAM)
+        val originalUserData = intent.parcelable<UserTeam>(ARG_USER_TEAM)
 
         if (originalUserData.isNullOrEmpty()) {
             Toast.makeText(this, R.string.team_details_previous_not_found, Toast.LENGTH_LONG).show()
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        updateLinkedProviders()
     }
 
     @Composable
@@ -200,22 +156,6 @@ class AccountActivity : ComponentActivity() {
             fontSize = 17.sp,
             color = MaterialTheme.colorScheme.secondary
         )
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text("Google", modifier = Modifier.weight(1f))
-
-            OutlinedButton(
-                onClick = {
-                    if (linkedWithGoogle) {
-                        unlinkFromGoogle()
-                    } else {
-                        linkWithGoogle()
-                    }
-                },
-                enabled = layoutEnabled,
-            ) {
-                Text(stringResource(if (linkedWithGoogle) R.string.action_disconnect else R.string.action_connect))
-            }
-        }
 
         if (showSignOutDialog) {
             AlertDialog(
@@ -230,7 +170,7 @@ class AccountActivity : ComponentActivity() {
                 confirmButton = {
                     TextButton(onClick = {
                         Firebase.auth.signOut()
-                        signOutCleaner.get().run()
+                        signOutCleaner.get().run(this.applicationContext)
                     }) {
                         Text(stringResource(R.string.action_sign_out))
                     }
@@ -334,7 +274,7 @@ class AccountActivity : ComponentActivity() {
             .child(user.uid)
             .setValue(null)
             .addOnCompleteListener {
-                signOutCleaner.get().run()
+                signOutCleaner.get().run(this.applicationContext)
             }
 
         user.delete().addOnSuccessListener {
@@ -342,37 +282,7 @@ class AccountActivity : ComponentActivity() {
         }
     }
 
-    private fun linkWithGoogle() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(FirebaseConstants.WEB_CLIENT_ID)
-            .requestEmail()
-            .build()
-
-        val signInClient = GoogleSignIn.getClient(this, gso)
-
-        googleSignInLauncher.launch(signInClient.signInIntent)
-    }
-
-    private fun unlinkFromGoogle() {
-        lifecycleScope.launch(Dispatchers.Main.immediate) {
-            val task = Firebase.auth.currentUser!!.unlink(GoogleAuthProvider.PROVIDER_ID)
-            task.await()
-
-            updateLinkedProviders()
-        }
-    }
-
-    private fun updateLinkedProviders() {
-        linkedWithGoogle = false
-        Firebase.auth.currentUser?.providerData?.let { providers ->
-            linkedWithGoogle =
-                providers.firstOrNull { it.providerId == GoogleAuthProvider.PROVIDER_ID } != null
-        }
-    }
-
     companion object {
-        private val TAG = AccountActivity::class.simpleName!!
-
         private const val ARG_USER_TEAM = "user_team"
 
         fun startActivity(context: Context, userTeam: UserTeam?) {

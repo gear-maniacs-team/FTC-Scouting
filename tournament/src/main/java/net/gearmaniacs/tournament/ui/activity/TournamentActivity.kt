@@ -12,6 +12,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideOrientation
 import cafe.adriel.voyager.transitions.SlideTransition
 import dagger.hilt.android.AndroidEntryPoint
+import net.gearmaniacs.core.extensions.parcelable
 import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.core.ui.theme.AppTheme
@@ -35,7 +36,7 @@ class TournamentActivity : ComponentActivity() {
 
         setContent {
             AppTheme {
-                val user = intent.getParcelableExtra<UserTeam>(ARG_USER)
+                val user = intent.parcelable<UserTeam>(ARG_USER)
 
                 Navigator(TournamentScreen(user)) {
                     SlideTransition(it, orientation = SlideOrientation.Vertical)

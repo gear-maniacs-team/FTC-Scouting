@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ElevatedCard
@@ -17,11 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -48,12 +49,16 @@ internal data class InfoTab(private val userTeam: UserTeam?) : BottomTab, Parcel
         @Composable get() = painterResource(R.drawable.ic_info_filled)
 
     @Composable
-    override fun Content() = Box(Modifier.fillMaxSize()) {
+    override fun Content() = Box(
+        Modifier
+            .fillMaxSize()
+            .wrapContentSize()) {
 
         if (userTeam.isNullOrEmpty()) {
             Text(
                 stringResource(R.string.team_details_not_found),
-                modifier = Modifier.align(Alignment.Center)
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(32.dp),
             )
         } else {
             val viewModel: TournamentViewModel = viewModel()
@@ -63,7 +68,8 @@ internal data class InfoTab(private val userTeam: UserTeam?) : BottomTab, Parcel
             if (infoData.isEmpty()) {
                 Text(
                     stringResource(R.string.empty_tab_info),
-                    modifier = Modifier.align(Alignment.Center)
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(32.dp),
                 )
             } else {
                 Cards(infoData)

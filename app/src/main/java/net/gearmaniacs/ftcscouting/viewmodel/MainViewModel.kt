@@ -24,10 +24,6 @@ class MainViewModel @Inject constructor(
     val tournamentsFlow = repository.tournamentsFlow
     val hasOfflineAccountFlow = appPreferences.hasOfflineAccount.distinctUntilChanged()
 
-    init {
-        viewModelScope.launch(Dispatchers.IO) { repository.startListener() }
-    }
-
     fun createNewTournament(tournamentName: String) = viewModelScope.launch(Dispatchers.IO) {
         repository.createNewTournament(userTeamFlow.first(), tournamentName)
     }
@@ -38,5 +34,9 @@ class MainViewModel @Inject constructor(
 
     fun setLoggedIn() = viewModelScope.launch {
         appPreferences.setLoggedIn(true)
+    }
+
+    fun startListening() {
+        viewModelScope.launch(Dispatchers.IO) { repository.startListener() }
     }
 }

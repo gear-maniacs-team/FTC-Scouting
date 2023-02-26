@@ -84,9 +84,7 @@ dependencies {
     implementation(project(Modules.database))
 
     implementation(Libs.firebase_crashlytics)
-
     implementation(libs.compose.compiler)
-    implementation(Libs.licenser)
 
     kapt(libs.room.compiler)
 

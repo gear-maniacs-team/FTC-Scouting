@@ -70,8 +70,11 @@ object MainScreen : Screen {
         LaunchedEffect(Firebase.isLoggedIn, hasOfflineAccount) {
             if (Firebase.isLoggedIn) {
                 viewModel.setLoggedIn()
+                viewModel.startListening()
             } else if (hasOfflineAccount == false) {
                 nav.push(LoginScreen())
+            } else {
+                viewModel.startListening()
             }
         }
 

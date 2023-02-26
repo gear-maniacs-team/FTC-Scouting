@@ -1,5 +1,8 @@
 package net.gearmaniacs.database
 
+import android.content.Context
+import com.jakewharton.processphoenix.ProcessPhoenix
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -14,11 +17,14 @@ class SignOutCleaner @Inject constructor(
     private val userTeamPreferences: UserTeamPreferences
 ) {
 
-    fun run() = GlobalScope.launch(Dispatchers.IO) {
+    @OptIn(DelicateCoroutinesApi::class)
+    fun run(ctx: Context) = GlobalScope.launch(Dispatchers.IO) {
         database.clearAllTables()
 
         appPreferences.setLoggedIn(false)
 
         userTeamPreferences.updateUserTeam(UserTeam())
+
+        ProcessPhoenix.triggerRebirth(ctx)
     }
 }

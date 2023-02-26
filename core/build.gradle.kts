@@ -35,14 +35,6 @@ dependencies {
     api(libs.kotlin.coroutines.android)
     api(libs.kotlin.coroutines.playServices)
 
-    api(Libs.google_material)
-    api(Libs.androidx_core)
-    api(Libs.androidx_appcompat)
-    api(Libs.androidx_constraint_layout)
-    api(Libs.androidx_swipe_refresh_layout)
-    api(Libs.androidx_fragment)
-    api(Libs.androidx_lifecycle)
-    api(Libs.androidx_viewmodel)
     api(libs.androidX.dataStore)
 
     api(platform(Libs.firebase_bom))
@@ -64,7 +56,7 @@ dependencies {
     api(libs.voyager.transitions)
     api(libs.voyager.androidx)
 
-    api(libs.room.runtime)
+    implementation(libs.room.runtime)
     kapt(libs.room.compiler)
 
     implementation(libs.dagger.android)

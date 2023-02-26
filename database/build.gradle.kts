@@ -35,6 +35,9 @@ android {
 dependencies {
     implementation(project(Modules.core))
 
+    implementation("com.jakewharton:process-phoenix:2.1.2")
+
+    implementation(libs.room.runtime)
     kapt(libs.room.compiler)
 
     implementation(libs.dagger.android)

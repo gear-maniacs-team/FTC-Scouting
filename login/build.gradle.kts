@@ -20,7 +20,6 @@ android {
 
     buildFeatures {
         compose = true
-        viewBinding = true
     }
 
     composeOptions {
@@ -36,10 +35,6 @@ android {
 dependencies {
     implementation(project(Modules.core))
     implementation(project(Modules.database))
-
-    implementation(libs.voyager.tabNavigator)
-
-    implementation(Libs.gms_auth)
 
     implementation(libs.dagger.android)
     kapt(libs.dagger.compiler)
