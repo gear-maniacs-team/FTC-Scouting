@@ -34,7 +34,7 @@ data class Match(
     override val key: String,
 
     @ColumnInfo(name = "tournament_key")
-    @get:Exclude val tournamentKey: String = "",
+    @get:Exclude val tournamentKey: String,
 
     @ColumnInfo(name = "id")
     val id: Int,

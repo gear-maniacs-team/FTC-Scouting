@@ -24,7 +24,6 @@ object Libs {
 
     // Other Libraries
     val licenser = "com.github.marcoscgdev:Licenser:2.0.0"
-    val apache_poi = "org.apache.poi:poi:4.0.1"
 
     // Tests
     object Test {

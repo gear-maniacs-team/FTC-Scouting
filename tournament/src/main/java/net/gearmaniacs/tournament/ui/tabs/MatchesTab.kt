@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -52,7 +51,6 @@ import net.gearmaniacs.tournament.ui.screen.EditMatchScreen
 import net.gearmaniacs.tournament.utils.filterTeamsByQuery
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 internal object MatchesTab : BottomTab {
 
     override val options: TabOptions

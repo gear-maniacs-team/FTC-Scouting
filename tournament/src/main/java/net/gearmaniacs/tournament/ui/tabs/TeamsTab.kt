@@ -50,14 +50,16 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.ensureActive
 import net.gearmaniacs.core.firebase.isLoggedIn
-import net.gearmaniacs.core.model.enums.ColorMarker
-import net.gearmaniacs.core.model.enums.PreferredZone
+import net.gearmaniacs.core.model.enums.ColorMark
+import net.gearmaniacs.core.model.enums.StartZone
 import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.ui.ExpandableItem
 import net.gearmaniacs.tournament.ui.model.TeamSearchQuery
 import net.gearmaniacs.tournament.ui.screen.EditTeamScreen
+import net.gearmaniacs.tournament.utils.filterTeamsByQuery
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -92,14 +94,31 @@ internal object TeamsTab : BottomTab {
         val viewModel: TournamentViewModel = viewModel()
 
         val listState = rememberLazyListState()
-        val teams by viewModel.queriedTeamsFlow.collectAsState()
-        val query = rememberSaveable { mutableStateOf(TeamSearchQuery()) }
+        val teams by viewModel.teamsFlow.collectAsState(emptyList())
+        var filteredTeams by remember { mutableStateOf(emptyList<Team>()) }
+        val searchQuery = rememberSaveable { mutableStateOf(TeamSearchQuery()) }
 
-        LaunchedEffect(query.value) {
-            viewModel.queryTeams(query.value)
+        LaunchedEffect(teams, searchQuery.value) {
+            val query = searchQuery.value
+            var filteredList = teams.filter {
+                val marker = it.colorMark
+                (query.defaultMarker && marker == ColorMark.DEFAULT)
+                        || (query.redMarker && marker == ColorMark.RED)
+                        || (query.blueMarker && marker == ColorMark.BLUE)
+                        || (query.greenMarker && marker == ColorMark.GREEN)
+                        || (query.yellowMarker && marker == ColorMark.YELLOW)
+            }
+
+            ensureActive()
+
+            if (query.name.isNotEmpty()) {
+                filteredList = filteredList.asSequence().filterTeamsByQuery(query.name).toList()
+            }
+
+            filteredTeams = filteredList
         }
 
-        if (teams.isEmpty() && query.value.isEmpty()) {
+        if (teams.isEmpty() && searchQuery.value.isEmpty()) {
             Text(
                 stringResource(R.string.empty_tab_teams),
                 modifier = Modifier.padding(32.dp),
@@ -108,12 +127,12 @@ internal object TeamsTab : BottomTab {
         } else {
             LazyColumn(Modifier.fillMaxSize(), state = listState) {
                 item {
-                    QueryOptions(query)
+                    QueryOptions(searchQuery)
 
                     Divider()
                 }
 
-                items(teams, key = { it.key }) { team ->
+                items(filteredTeams, key = { it.key }) { team ->
                     TeamItem(viewModel, team)
 
                     Divider()
@@ -183,17 +202,17 @@ internal object TeamsTab : BottomTab {
     private fun TeamItem(viewModel: TournamentViewModel, team: Team) {
         val nav = LocalNavigator.current
         var showDialog by remember { mutableStateOf(false) }
-        val markerColor = colorResource(ColorMarker.getResColor(team.colorMarker))
+        val markerColor = colorResource(team.colorMark.getResColor())
 
-        val preferredLocation = when (team.preferredZone) {
-            PreferredZone.LEFT -> R.string.team_starting_zone_left
-            PreferredZone.RIGHT -> R.string.team_starting_zone_right
+        val preferredLocation = when (team.startZone) {
+            StartZone.LEFT -> R.string.team_starting_zone_left
+            StartZone.RIGHT -> R.string.team_starting_zone_right
             else -> R.string.none
         }
 
         val description = stringResource(
-            R.string.team_description, team.autonomousScore(), team.controlledScore(),
-            team.endGameScore(), stringResource(preferredLocation), team.notes.orEmpty()
+            R.string.team_description, team.autonomousScore, team.teleOpScore,
+            stringResource(preferredLocation), team.notes.orEmpty()
         )
 
         if (showDialog) {
@@ -227,11 +246,11 @@ internal object TeamsTab : BottomTab {
                     R.string.team_id_name, team.number, team.name.orEmpty()
                 )
             ),
-            subtitle = stringResource(R.string.team_predicted_score, team.score()),
+            subtitle = stringResource(R.string.team_predicted_score, team.totalScore()),
             description = description,
             onEditAction = { nav?.push(EditTeamScreen(team)) },
             onDeleteAction = { showDialog = true },
-            extraIcon = if (team.colorMarker != ColorMarker.DEFAULT) {
+            extraIcon = if (team.colorMark != ColorMark.DEFAULT) {
                 {
                     Box(
                         Modifier

@@ -11,8 +11,8 @@ import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.match.Match
 import net.gearmaniacs.core.model.team.RankedTeam
 import net.gearmaniacs.core.model.team.Team
-import net.gearmaniacs.tournament.opr.OffensivePowerRanking
 import net.gearmaniacs.database.dao.TournamentsDao
+import net.gearmaniacs.tournament.opr.OffensivePowerRanking
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import javax.inject.Inject

@@ -21,12 +21,12 @@ import net.gearmaniacs.core.model.match.Match
 import net.gearmaniacs.core.model.team.RankedTeam
 import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.tournament.R
+import net.gearmaniacs.tournament.csv.CsvExport
+import net.gearmaniacs.tournament.csv.CsvImport
 import net.gearmaniacs.tournament.repository.MatchesRepository
 import net.gearmaniacs.tournament.repository.TeamsRepository
 import net.gearmaniacs.tournament.repository.TournamentRepository
-import net.gearmaniacs.tournament.spreadsheet.SpreadsheetExport
-import net.gearmaniacs.tournament.spreadsheet.SpreadsheetImport
-import net.gearmaniacs.tournament.ui.model.TeamSearchQuery
+import java.nio.charset.Charset
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,14 +40,13 @@ internal class TournamentViewModel @Inject constructor(
     var tournamentKey = ""
 
     private val _leaderboardFlow = MutableStateFlow(emptyList<RankedTeam>())
-    val leaderBoardFlow = _leaderboardFlow.asStateFlow()
+    val leaderboardFlow = _leaderboardFlow.asStateFlow()
     val tournamentFlow by lazy {
         tournamentRepository.getTournament(tournamentKey).distinctUntilChanged()
     }
     val teamsFlow by lazy {
         teamsRepository.getTeamsFlow(tournamentKey).distinctUntilChanged()
     }
-    val queriedTeamsFlow = teamsRepository.queriedTeamsFlow
     val matchesFlow by lazy {
         matchesRepository.getMatchesFlow(tournamentKey).distinctUntilChanged()
     }
@@ -62,10 +61,6 @@ internal class TournamentViewModel @Inject constructor(
     }
 
     // region Teams Management
-
-    fun queryTeams(query: TeamSearchQuery) {
-        teamsRepository.updateTeamsQuery(query)
-    }
 
     fun addTeamsFromMatches() {
         viewModelScope.launch(Dispatchers.Default) {
@@ -152,45 +147,66 @@ internal class TournamentViewModel @Inject constructor(
 
     // region Spreadsheet
 
-    fun exportToSpreadsheet(fileUri: Uri) =
-        viewModelScope.launch(Dispatchers.IO) {
-            val teams = teamsFlow.first()
-            val matches = matchesFlow.first()
-            val powerRankings = tournamentRepository.generateOprList(teams, matches)
-
-            try {
-                val export = SpreadsheetExport()
-                export.export(teams, matches, powerRankings)
-
-                app.contentResolver.openOutputStream(fileUri)!!.use {
-                    export.writeToStream(it)
-                }
-
-                launch(Dispatchers.Main) {
-                    app.toast(R.string.spreadsheet_saved_successfully)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-
-                launch(Dispatchers.Main) {
-                    app.toast(R.string.spreadsheet_error)
-                }
+    private fun exportCsv(fileUri: Uri, csv: String) {
+        val message = try {
+            app.contentResolver.openOutputStream(fileUri)!!.buffered().use {
+                it.write(csv.toByteArray())
             }
+
+            R.string.csv_saved_successfully
+        } catch (e: Exception) {
+            e.printStackTrace()
+
+            R.string.spreadsheet_error
         }
 
-    fun importFromSpreadSheet(fileUri: Uri) =
+        viewModelScope.launch(Dispatchers.Main) {
+            app.toast(message)
+        }
+    }
+
+    fun exportTeamsToCsv(fileUri: Uri) =
+        viewModelScope.launch(Dispatchers.IO) {
+            val teams = teamsFlow.first()
+            val csv = CsvExport.exportTeams(teams)
+            exportCsv(fileUri, csv)
+        }
+
+    fun exportMatchesToCsv(fileUri: Uri) =
+        viewModelScope.launch(Dispatchers.IO) {
+            val matches = matchesFlow.first()
+            val csv = CsvExport.exportMatches(matches)
+            exportCsv(fileUri, csv)
+        }
+
+    fun exportOprToCsv(fileUri: Uri) =
+        viewModelScope.launch(Dispatchers.IO) {
+            val csv = CsvExport.exportOpr(leaderboardFlow.value)
+            exportCsv(fileUri, csv)
+        }
+
+    fun importTeamsFromCsv(fileUri: Uri) =
         viewModelScope.launch(Dispatchers.IO) {
             val currentTeams = teamsFlow.first()
-            val currentMatches = matchesFlow.first()
 
-            app.contentResolver.openInputStream(fileUri)?.use { inputStream ->
-                val import = SpreadsheetImport(inputStream)
-                val importedTeams = import.getTeams()
-                val importedMatches = import.getMatches()
+            app.contentResolver.openInputStream(fileUri)?.buffered()?.use { inputStream ->
+                val csv = inputStream.readBytes().toString(Charset.defaultCharset())
+                val importedTeams = CsvImport.importTeams(csv)
 
                 teamsRepository.addTeams(
                     tournamentKey,
                     importedTeams.filterNot { currentTeams.contains(it) })
+            }
+        }
+
+    fun importMatchesFromCsv(fileUri: Uri) =
+        viewModelScope.launch(Dispatchers.IO) {
+            val currentMatches = matchesFlow.first()
+
+            app.contentResolver.openInputStream(fileUri)?.buffered()?.use { inputStream ->
+                val csv = inputStream.readBytes().toString(Charset.defaultCharset())
+                val importedMatches = CsvImport.importMatch(csv)
+
                 matchesRepository.addMatches(
                     tournamentKey,
                     importedMatches.filterNot { currentMatches.contains(it) })

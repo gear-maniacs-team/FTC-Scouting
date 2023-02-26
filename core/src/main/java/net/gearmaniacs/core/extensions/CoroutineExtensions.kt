@@ -2,7 +2,6 @@ package net.gearmaniacs.core.extensions
 
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlin.coroutines.coroutineContext
 
 /**

@@ -41,8 +41,6 @@ class AppPreferences @Inject constructor(
     val hasOfflineAccount: Flow<Boolean> =
         settingsDataStore.data.map { it[HAS_OFFLINE_ACCOUNT] ?: false }.distinctUntilChanged()
 
-    suspend fun hasOfflineAccount() = hasOfflineAccount.first()
-
     suspend fun setHasOfflineAccount(value: Boolean) = settingsDataStore.edit { preferences ->
         preferences[HAS_OFFLINE_ACCOUNT] = value
     }

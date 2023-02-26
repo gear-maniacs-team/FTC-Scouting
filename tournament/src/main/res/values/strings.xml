@@ -25,7 +25,7 @@
     <string name="driver_controlled_score">Driver Controlled Score: %d</string>
     <string name="endgame_score">End Game Score: %d</string>
     <string name="total_score">Total Score: %d</string>
-    <string name="team_description">Autonomous Score: %d\nDriver Controlled Score: %d\nEnd Game Score: %d\nPreferred Starting Zone: %s\nNotes: %s</string>
+    <string name="team_description">Autonomous Score: %d\nDriver Controlled Score: %d\nPreferred Start Zone: %s\nNotes: %s</string>
     <string name="team_notes">Notes</string>
     <string name="delete_team">Delete this team?</string>
     <string name="delete_team_desc">Are you sure you want to delete this team? If deleted, it will also be removed from all other devices!</string>
@@ -33,6 +33,8 @@
     <string name="period_autonomous">Autonomous</string>
     <string name="period_driver_controlled">Driver Controlled</string>
     <string name="period_end_game">End Game</string>
+    <string name="prompt_autonomous_score">Autonomous Score</string>
+    <string name="prompt_driver_controlled_score">Driver Controlled Score</string>
     <string name="prompt_wobble_delivery">Wobble Goal Delivery</string>
     <string name="prompt_wobble_delivery_zone">Wobble Goal Delivery:</string>
     <string name="prompt_wobble_delivery_start_line">Start Line</string>
@@ -44,7 +46,7 @@
     <string name="prompt_high_goal">High Goal</string>
     <string name="prompt_power_shot">Power Shot</string>
     <string name="prompt_parking">Parking</string>
-    <string name="preferred_zone">Preferred Starting Zone:</string>
+    <string name="start_zone">Preferred Start Zone:</string>
 
     <!-- Strings related to matches -->
     <string name="delete_match">Delete this match?</string>
@@ -74,14 +76,19 @@
     <string name="opr_info">Leaderboard Algorithm</string>
     <string name="opr_info_desc">The Leaderboard page takes the results of the matches in the tournament and uses the <b>Offensive Power Ranking</b> algorithm to rank the teams.</string>
 
-    <!-- Strings related to Spreadsheet -->
-    <string name="spreadsheet_error">Could not export tournament to spreadsheet</string>
-    <string name="spreadsheet_saved_successfully">Tournament successfully exported</string>
-    <string name="spreadsheet_export">Export to Spreadsheet</string>
-    <string name="spreadsheet_import">Import from Spreadsheet</string>
+    <!-- Strings related to CSV -->
+    <string name="spreadsheet_error">Failed to export to CSV</string>
+    <string name="csv_saved_successfully">Exported to CSV successfully</string>
+    <string name="csv_export">Export to CSV</string>
+    <string name="csv_import">Import from CSV</string>
+    <string name="csv_export_teams">Export teams to CSV</string>
+    <string name="csv_export_matches">Export matches to CSV</string>
+    <string name="csv_export_opr">Export the Offensive Power Ranking to CSV</string>
+    <string name="csv_import_teams">Import teams from CSV</string>
+    <string name="csv_import_matches">Import matches from CSV</string>
 
-    <!-- Color Marker-->
-    <string name="color_marker">Color Marker:</string>
+    <!-- Color Mark-->
+    <string name="color_mark">Color Mark:</string>
     <string name="color_default">Default</string>
     <string name="color_red">Red</string>
     <string name="color_blue">Blue</string>

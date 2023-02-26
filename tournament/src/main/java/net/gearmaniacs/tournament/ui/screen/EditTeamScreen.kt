@@ -8,20 +8,21 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,6 +40,8 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.parcelize.Parcelize
+import net.gearmaniacs.core.model.enums.ColorMark
+import net.gearmaniacs.core.model.enums.StartZone
 import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.core.ui.NumberField
 import net.gearmaniacs.tournament.R
@@ -48,9 +51,8 @@ import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 @Parcelize
 internal class EditTeamScreen(private val team: Team?) : Screen, Parcelable {
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    override fun Content() = Column(Modifier.fillMaxSize()) {
+    override fun Content() {
         val viewModel: TournamentViewModel = viewModel()
         val navigator = LocalNavigator.currentOrThrow
         val ctx = LocalContext.current
@@ -62,52 +64,117 @@ internal class EditTeamScreen(private val team: Team?) : Screen, Parcelable {
         var teamName by rememberSaveable {
             mutableStateOf(team?.name.orEmpty())
         }
-
-        Column(
-            Modifier
-                .weight(1f)
-                .padding(16.dp)
-                .verticalScroll(scrollState)
-                .safeDrawingPadding()
-        ) {
-            NumberField(
-                modifier = Modifier.fillMaxWidth(),
-                value = teamNumber,
-                onValueChange = { teamNumber = it },
-                hint = stringResource(R.string.prompt_team_number),
-                maxLength = 7,
-            )
-
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = teamName,
-                onValueChange = { teamName = it },
-                label = { Text(stringResource(R.string.prompt_team_name)) },
-                singleLine = true,
-            )
+        var autoScore by rememberSaveable {
+            mutableStateOf(team?.autonomousScore?.toString().orEmpty())
         }
+        var teleOpScore by rememberSaveable {
+            mutableStateOf(team?.teleOpScore?.toString().orEmpty())
+        }
+        var colorMark by rememberSaveable {
+            mutableStateOf(team?.colorMark ?: ColorMark.DEFAULT)
+        }
+        var startZone by rememberSaveable {
+            mutableStateOf(team?.startZone ?: StartZone.NONE)
+        }
+        var notes by rememberSaveable { mutableStateOf(team?.notes.orEmpty()) }
 
-        BottomAppBar(
-            actions = {
-                IconButton(onClick = { navigator.pop() }) {
-                    Icon(painterResource(R.drawable.ic_close), null)
-                }
-            },
-            floatingActionButton = {
-                FloatingAction {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            bottomBar = {
+                BottomBar(onClick = {
                     try {
-//                            viewModel.updateTeam(parsedMatch)
+                        val parsedTeam = Team(
+                            key = team?.key.orEmpty(),
+                            tournamentKey = team?.tournamentKey ?: viewModel.tournamentKey,
+                            number = teamNumber.toInt(),
+                            name = teamName,
+                            autonomousScore = autoScore.toInt(),
+                            teleOpScore = teleOpScore.toInt(),
+                            colorMark = colorMark,
+                            startZone = startZone,
+                            notes = notes,
+                        )
+
+                        viewModel.updateTeam(parsedTeam)
                         navigator.pop()
                     } catch (_: NumberFormatException) {
                         Toast.makeText(ctx, "Invalid Number", Toast.LENGTH_SHORT).show()
                     }
+                })
+            }
+        ) { paddingValues ->
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .verticalScroll(scrollState)
+                    .padding(paddingValues)
+            ) {
+                NumberField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = teamNumber,
+                    onValueChange = { teamNumber = it },
+                    hint = stringResource(R.string.prompt_team_number),
+                    maxLength = 7,
+                )
+
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = teamName,
+                    onValueChange = { teamName = it },
+                    label = { Text(stringResource(R.string.prompt_team_name)) },
+                    singleLine = true,
+                )
+
+                Spacer(Modifier.height(32.dp))
+
+                NumberField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = autoScore,
+                    onValueChange = { autoScore = it },
+                    hint = stringResource(R.string.prompt_autonomous_score),
+                    maxLength = 3,
+                )
+
+                NumberField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = teleOpScore,
+                    onValueChange = { teleOpScore = it },
+                    hint = stringResource(R.string.prompt_driver_controlled_score),
+                    maxLength = 3,
+                )
+
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = notes,
+                    onValueChange = { notes = it },
+                    label = { Text(stringResource(R.string.team_notes)) },
+                    singleLine = true,
+                )
+            }
+        }
+    }
+
+    @Composable
+    private fun BottomBar(onClick: () -> Unit) {
+        val navigator = LocalNavigator.current
+
+        BottomAppBar(
+            actions = {
+                IconButton(onClick = { navigator?.pop() }) {
+                    Icon(painterResource(R.drawable.ic_close), null)
                 }
-            })
+            },
+            floatingActionButton = {
+                FloatingAction(onClick = onClick)
+            }
+        )
     }
 
     @Composable
     private fun FloatingAction(onClick: () -> Unit) {
-        val visibleState = remember { MutableTransitionState(false) }.apply { targetState = true }
+        val visibleState =
+            remember { MutableTransitionState(false) }.apply { targetState = true }
 
         AnimatedVisibility(
             visibleState = visibleState, enter = scaleIn(), exit = scaleOut()

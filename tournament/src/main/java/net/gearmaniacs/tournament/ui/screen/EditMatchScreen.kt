@@ -102,45 +102,36 @@ internal class EditMatchScreen(
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             bottomBar = {
-                BottomAppBar(
-                    actions = {
-                        IconButton(onClick = { navigator.pop() }) {
-                            Icon(painterResource(R.drawable.ic_close), null)
-                        }
-                    },
-                    floatingActionButton = {
-                        FloatingAction {
-                            try {
-                                val redAlliance = Alliance(
-                                    firstTeam = redFirstTeam.toInt(),
-                                    secondTeam = redSecondTeam.toInt(),
-                                    score = redScore.toInt()
-                                )
+                BottomBar(onClick = {
+                    try {
+                        val redAlliance = Alliance(
+                            firstTeam = redFirstTeam.toInt(),
+                            secondTeam = redSecondTeam.toInt(),
+                            score = redScore.toInt()
+                        )
 
-                                val blueAlliance = Alliance(
-                                    firstTeam = blueFirstTeam.toInt(),
-                                    secondTeam = blueSecondTeam.toInt(),
-                                    score = blueScore.toInt()
-                                )
+                        val blueAlliance = Alliance(
+                            firstTeam = blueFirstTeam.toInt(),
+                            secondTeam = blueSecondTeam.toInt(),
+                            score = blueScore.toInt()
+                        )
 
-                                val parsedMatch = Match(
-                                    key = match?.key.orEmpty(),
-                                    tournamentKey = match?.tournamentKey ?: viewModel.tournamentKey,
-                                    id = matchNumber.toInt(),
-                                    redAlliance = redAlliance,
-                                    blueAlliance = blueAlliance
-                                )
+                        val parsedMatch = Match(
+                            key = match?.key.orEmpty(),
+                            tournamentKey = match?.tournamentKey ?: viewModel.tournamentKey,
+                            id = matchNumber.toInt(),
+                            redAlliance = redAlliance,
+                            blueAlliance = blueAlliance
+                        )
 
-                                viewModel.updateMatch(parsedMatch)
-                                navigator.pop()
-                            } catch (_: NumberFormatException) {
-                                Toast.makeText(ctx, "Invalid Number", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    })
-
-            }) { paddingValues ->
-
+                        viewModel.updateMatch(parsedMatch)
+                        navigator.pop()
+                    } catch (_: NumberFormatException) {
+                        Toast.makeText(ctx, "Invalid Number", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            }
+        ) { paddingValues ->
             Column(
                 Modifier
                     .fillMaxSize()
@@ -233,6 +224,22 @@ internal class EditMatchScreen(
                 )
             }
         }
+    }
+
+    @Composable
+    private fun BottomBar(onClick: () -> Unit) {
+        val navigator = LocalNavigator.current
+
+        BottomAppBar(
+            actions = {
+                IconButton(onClick = { navigator?.pop() }) {
+                    Icon(painterResource(R.drawable.ic_close), null)
+                }
+            },
+            floatingActionButton = {
+                FloatingAction(onClick = onClick)
+            }
+        )
     }
 
     @Composable

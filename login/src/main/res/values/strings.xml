@@ -43,4 +43,17 @@
     <string name="account_provider_google_sign_in_failure">Signing in with Google Account Failed</string>
     <string name="account_provider_google_link_success">Linking with Google Account Succeeded</string>
     <string name="account_provider_google_link_failure">Linking with Google Account Failed</string>
+
+    <!-- Intro -->
+    <string name="intro_title_1">Manage Teams &amp; Matches</string>
+    <string name="intro_title_2">Instant Synchronization</string>
+    <string name="intro_title_3">Team Rankings</string>
+    <string name="intro_desc_1">Calculate the predicted score of teams and see quickly in which matches to play</string>
+    <string name="intro_desc_2">Allows instant synchronization between all the users using the same account</string>
+    <string name="intro_desc_3">Fast and accurate rankings for semi-finals using the OPR Algorithm</string>
+
+    <string name="terms_and_conditions">Terms and Conditions</string>
+    <string name="agree_terms_and_conditions">I agree to the Terms and Conditions</string>
+    <string name="read_terms_and_conditions">Read the Terms and Conditions</string>
+    <string name="accept_terms_and_conditions">Please accept the Terms and Conditions</string>
 </resources>

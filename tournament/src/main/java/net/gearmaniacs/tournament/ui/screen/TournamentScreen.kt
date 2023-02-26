@@ -217,14 +217,14 @@ private fun TopBarActions() {
     val exportLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             it.data?.data?.let { documentUri ->
-                viewModel.exportToSpreadsheet(documentUri)
+                viewModel.exportTeamsToCsv(documentUri)
             }
         }
 
     val importLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             it.data?.data?.let { documentUri ->
-                viewModel.importFromSpreadSheet(documentUri)
+                viewModel.importTeamsFromCsv(documentUri)
             }
         }
 
@@ -242,7 +242,7 @@ private fun TopBarActions() {
         )
 
         DropdownMenuItem(
-            text = { Text(stringResource(R.string.spreadsheet_export)) },
+            text = { Text(stringResource(R.string.csv_export)) },
             onClick = {
                 val intent = getSpreadsheetIntent(Intent.ACTION_CREATE_DOCUMENT)
                 intent.flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
@@ -253,7 +253,7 @@ private fun TopBarActions() {
         )
 
         DropdownMenuItem(
-            text = { Text(stringResource(R.string.spreadsheet_import)) },
+            text = { Text(stringResource(R.string.csv_import)) },
             onClick = {
                 val intent = getSpreadsheetIntent(Intent.ACTION_OPEN_DOCUMENT)
                 intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION

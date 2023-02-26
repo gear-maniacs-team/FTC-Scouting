@@ -70,7 +70,7 @@ internal object LeaderboardTab : BottomTab {
             errorMessage = viewModel.refreshLeaderboardData(teams.value, matches.value)
         }
 
-        val rankedTeams by viewModel.leaderBoardFlow.collectAsState(emptyList())
+        val rankedTeams by viewModel.leaderboardFlow.collectAsState(emptyList())
 
         when {
             errorMessage.isNotEmpty() -> {
@@ -80,9 +80,11 @@ internal object LeaderboardTab : BottomTab {
                     textAlign = TextAlign.Center
                 )
             }
+
             rankedTeams.isEmpty() -> {
                 Text(stringResource(R.string.empty_tab_leaderboard))
             }
+
             else -> {
                 LazyColumn(Modifier.fillMaxSize()) {
                     itemsIndexed(rankedTeams, key = { _, team -> team.number }) { index, team ->

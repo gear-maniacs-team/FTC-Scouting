@@ -9,7 +9,7 @@ import net.gearmaniacs.database.dao.MatchesDao
 import net.gearmaniacs.database.dao.TeamsDao
 import net.gearmaniacs.database.dao.TournamentsDao
 
-@Database(version = 1, entities = [Tournament::class, Match::class, Team::class])
+@Database(version = 2, entities = [Tournament::class, Match::class, Team::class])
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun tournamentsDao(): TournamentsDao

@@ -3,7 +3,6 @@ package net.gearmaniacs.tournament.ui.dialog
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -13,7 +12,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
 import net.gearmaniacs.tournament.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewTournamentDialog(
     onDismiss: () -> Unit,

@@ -35,7 +35,7 @@ dependencies {
     implementation(project(Modules.core))
     implementation(project(Modules.database))
 
-    implementation(Libs.apache_poi)
+    implementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.8.0")
 
     implementation(libs.voyager.tabNavigator)
 

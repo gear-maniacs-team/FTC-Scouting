@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -71,7 +70,6 @@ import net.gearmaniacs.login.R
 import net.gearmaniacs.login.viewmodel.AccountViewModel
 import javax.inject.Inject
 
-@OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
 class AccountActivity : ComponentActivity() {
 
@@ -155,7 +153,7 @@ class AccountActivity : ComponentActivity() {
 
     @Composable
     private fun AccountCategory(userTeam: UserTeam) {
-        val user = Firebase.auth.currentUser!!
+        val user = Firebase.auth.currentUser ?: return
 
         var layoutEnabled by remember { mutableStateOf(true) }
         var showSignOutDialog by remember { mutableStateOf(false) }

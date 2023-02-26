@@ -37,7 +37,7 @@ dependencies {
     implementation(project(Modules.core))
     implementation(project(Modules.database))
 
-    implementation(libs.compose.compiler)
+    implementation(libs.voyager.tabNavigator)
 
     implementation(Libs.gms_auth)
 

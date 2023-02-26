@@ -3,7 +3,6 @@ package net.gearmaniacs.core.model.team
 import android.os.Parcelable
 import androidx.compose.runtime.Immutable
 import androidx.room.ColumnInfo
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -12,13 +11,13 @@ import com.google.firebase.database.Exclude
 import kotlinx.parcelize.Parcelize
 import net.gearmaniacs.core.model.DatabaseClass
 import net.gearmaniacs.core.model.Tournament
-import net.gearmaniacs.core.model.enums.ColorMarker
-import net.gearmaniacs.core.model.enums.PreferredZone
+import net.gearmaniacs.core.model.enums.ColorMark
+import net.gearmaniacs.core.model.enums.StartZone
 
 @Immutable
 @Parcelize
 @Entity(
-    tableName = "ultimate_goal_teams",
+    tableName = "teams",
     foreignKeys = [ForeignKey(
         entity = Tournament::class,
         parentColumns = ["key"],
@@ -45,20 +44,17 @@ data class Team(
     @ColumnInfo(name = "name")
     override val name: String? = null,
 
-    @Embedded(prefix = "auto_")
-    val autonomousPeriod: AutonomousPeriod? = null,
+    @ColumnInfo(name = "auto_score")
+    val autonomousScore: Int = 0,
 
-    @Embedded(prefix = "controlled_")
-    val controlledPeriod: ControlledPeriod? = null,
+    @ColumnInfo(name = "teleop_score")
+    val teleOpScore: Int = 0,
 
-    @Embedded(prefix = "end_")
-    val endGamePeriod: EndGamePeriod? = null,
+    @ColumnInfo(name = "color_mark")
+    val colorMark: ColorMark = ColorMark.DEFAULT,
 
-    @ColumnInfo(name = "color_marker")
-    val colorMarker: Int = ColorMarker.DEFAULT,
-
-    @ColumnInfo(name = "preferred_zone")
-    val preferredZone: Int = PreferredZone.NONE,
+    @ColumnInfo(name = "start_zone")
+    val startZone: StartZone = StartZone.NONE,
 
     @ColumnInfo(name = "notes")
     val notes: String? = null
@@ -68,17 +64,7 @@ data class Team(
 
     override fun compareTo(other: Team): Int = number.compareTo(other.number)
 
-    @Exclude
-    fun autonomousScore(): Int = autonomousPeriod?.score() ?: 0
-
-    @Exclude
-    fun controlledScore() = controlledPeriod?.score() ?: 0
-
-    @Exclude
-    fun endGameScore(): Int = endGamePeriod?.score() ?: 0
-
-    @Exclude
-    fun score(): Int = autonomousScore() + controlledScore() + endGameScore()
+    fun totalScore(): Int = autonomousScore + teleOpScore
 
     override fun copyWithKey(newKey: String): Team {
         return this.copy(key = newKey)

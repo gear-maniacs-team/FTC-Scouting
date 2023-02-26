@@ -1,4 +1,4 @@
-package net.gearmaniacs.ftcscouting.ui.activity
+package net.gearmaniacs.login.ui.activity
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -69,7 +69,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import net.gearmaniacs.core.ui.theme.AppTheme
 import net.gearmaniacs.core.utils.AppPreferences
-import net.gearmaniacs.ftcscouting.R
+import net.gearmaniacs.login.R
 import javax.inject.Inject
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
