@@ -83,7 +83,7 @@ dependencies {
     implementation(project(Modules.tournament))
     implementation(project(Modules.database))
 
-    implementation(Libs.firebase_crashlytics)
+    implementation(libs.firebase.crashlytics)
     implementation(libs.compose.compiler)
 
     kapt(libs.room.compiler)

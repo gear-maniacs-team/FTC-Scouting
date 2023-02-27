@@ -9,7 +9,7 @@ import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.tournament.csv.CsvFields.MATCH_COLUMNS
 import net.gearmaniacs.tournament.csv.CsvFields.TEAM_COLUMNS
 
-object CsvImport {
+internal object CsvImport {
 
     fun importTeams(content: String): List<Team> {
         return csvReader().readAllWithHeader(content).map {
@@ -22,7 +22,7 @@ object CsvImport {
                 teleOpScore = it[TEAM_COLUMNS[3]].unquote().toInt(),
                 colorMark = ColorMark.fromString(it[TEAM_COLUMNS[4]].unquote()),
                 startZone = StartZone.fromString(it[TEAM_COLUMNS[5]].unquote()),
-                notes = it[TEAM_COLUMNS[6]]?.trim('\"', '\''),
+                notes = it[TEAM_COLUMNS[6]]?.trim('\"', '\'').takeIf { !it.isNullOrBlank() },
             )
         }
     }
@@ -37,7 +37,7 @@ object CsvImport {
                 tournamentKey = "",
                 id = it[MATCH_COLUMNS[0]].unquote().toInt(),
                 redAlliance = Alliance(
-                    firstTeam = it[MATCH_COLUMNS[0]].unquote().toInt(),
+                    firstTeam = it[MATCH_COLUMNS[1]].unquote().toInt(),
                     secondTeam = it[MATCH_COLUMNS[2]].unquote().toInt(),
                     score = it[MATCH_COLUMNS[3]].unquote().toInt(),
                 ),

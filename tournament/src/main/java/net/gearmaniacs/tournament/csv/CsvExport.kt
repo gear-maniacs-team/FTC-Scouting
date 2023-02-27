@@ -5,7 +5,7 @@ import net.gearmaniacs.core.model.match.Match
 import net.gearmaniacs.core.model.team.RankedTeam
 import net.gearmaniacs.core.model.team.Team
 
-object CsvExport {
+internal object CsvExport {
 
     fun exportTeams(teamList: List<Team>): String {
         val list = teamList.map {

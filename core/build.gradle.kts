@@ -37,10 +37,10 @@ dependencies {
 
     api(libs.androidX.dataStore)
 
-    api(platform(Libs.firebase_bom))
-    api(Libs.firebase_analytics)
-    api(Libs.firebase_auth)
-    api(Libs.firebase_database)
+    api(platform(libs.firebase.bom))
+    api(libs.firebase.analytics)
+    api(libs.firebase.auth)
+    api(libs.firebase.database)
 
     api(libs.compose.compiler)
     api(libs.compose.foundation)

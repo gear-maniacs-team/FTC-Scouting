@@ -2,6 +2,7 @@ package net.gearmaniacs.tournament.viewmodel
 
 import android.app.Application
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -181,6 +182,7 @@ internal class TournamentViewModel @Inject constructor(
 
     fun exportOprToCsv(fileUri: Uri) =
         viewModelScope.launch(Dispatchers.IO) {
+            refreshLeaderboardData(teamsFlow.first(), matchesFlow.first())
             val csv = CsvExport.exportOpr(leaderboardFlow.value)
             exportCsv(fileUri, csv)
         }
@@ -190,12 +192,16 @@ internal class TournamentViewModel @Inject constructor(
             val currentTeams = teamsFlow.first()
 
             app.contentResolver.openInputStream(fileUri)?.buffered()?.use { inputStream ->
-                val csv = inputStream.readBytes().toString(Charset.defaultCharset())
-                val importedTeams = CsvImport.importTeams(csv)
+                try {
+                    val csv = inputStream.readBytes().toString(Charset.defaultCharset())
+                    val importedTeams = CsvImport.importTeams(csv)
 
-                teamsRepository.addTeams(
-                    tournamentKey,
-                    importedTeams.filterNot { currentTeams.contains(it) })
+                    teamsRepository.addTeams(
+                        tournamentKey,
+                        importedTeams.filterNot { currentTeams.contains(it) })
+                } catch (e: Exception) {
+                    Log.e("CsvImport", "Failed to import teams", e)
+                }
             }
         }
 
@@ -204,12 +210,16 @@ internal class TournamentViewModel @Inject constructor(
             val currentMatches = matchesFlow.first()
 
             app.contentResolver.openInputStream(fileUri)?.buffered()?.use { inputStream ->
-                val csv = inputStream.readBytes().toString(Charset.defaultCharset())
-                val importedMatches = CsvImport.importMatch(csv)
+                try {
+                    val csv = inputStream.readBytes().toString(Charset.defaultCharset())
+                    val importedMatches = CsvImport.importMatch(csv)
 
-                matchesRepository.addMatches(
-                    tournamentKey,
-                    importedMatches.filterNot { currentMatches.contains(it) })
+                    matchesRepository.addMatches(
+                        tournamentKey,
+                        importedMatches.filterNot { currentMatches.contains(it) })
+                } catch (e: Exception) {
+                    Log.e("CsvImport", "Failed to import matches", e)
+                }
             }
         }
 

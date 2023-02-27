@@ -6,7 +6,7 @@ kotlin_serialization = "1.4.1"
 kotlin_datetime = "0.4.0"
 kotlin_collections = "0.3.5"
 compose_other = "1.4.0-beta02"
-compose_activity = "1.6.1"
+compose_activity = "1.7.0-beta02"
 compose_viewmodel = "2.5.1"
 compose_compiler = "1.4.3"
 compose_material3 = "1.1.0-alpha07"
@@ -15,6 +15,7 @@ voyager = "1.0.0-rc03"
 androidx_room = "2.5.0"
 androidx_datastore = "1.0.0"
 dagger = "2.45"
+firebase = "31.2.2"
 
 [libraries]
 agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
@@ -56,3 +57,8 @@ dagger_plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", versi
 dagger_hilt_compiler = "androidx.hilt:hilt-compiler:1.0.0"
 dagger_hilt_work = "androidx.hilt:hilt-work:1.0.0"
 
+firebase_bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase" }
+firebase_analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
+firebase_database = { module = "com.google.firebase:firebase-database-ktx" }
+firebase_auth = { module = "com.google.firebase:firebase-auth-ktx" }
+firebase_crashlytics = { module = "com.google.firebase:firebase-crashlytics" }

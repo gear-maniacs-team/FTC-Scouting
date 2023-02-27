@@ -10,16 +10,11 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.FadeTransition
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.ui.theme.AppTheme
-import net.gearmaniacs.core.utils.AppPreferences
 import net.gearmaniacs.ftcscouting.ui.screen.MainScreen
 import net.gearmaniacs.login.ui.screen.LoginScreen
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    @Inject
-    lateinit var appPreferences: AppPreferences
 
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {

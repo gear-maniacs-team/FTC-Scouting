@@ -1,7 +1,7 @@
 package net.gearmaniacs.tournament.ui.screen
 
 import android.app.Activity
-import android.content.Intent
+import android.net.Uri
 import android.os.Parcelable
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -70,8 +71,7 @@ internal data class TournamentScreen(private val userTeam: UserTeam?) : Screen, 
         val navigator = LocalNavigator.currentOrThrow
 
         TabNavigator(InfoTab(userTeam)) { tabNavigator ->
-            Scaffold(
-                modifier = Modifier.fillMaxSize(),
+            Scaffold(modifier = Modifier.fillMaxSize(),
                 snackbarHost = { SnackbarHost(snackbarHostState) },
                 topBar = {
                     AnimatedVisibility(
@@ -81,20 +81,16 @@ internal data class TournamentScreen(private val userTeam: UserTeam?) : Screen, 
                     ) {
                         val tournament by viewModel.tournamentFlow.collectAsState(null)
 
-                        TopAppBar(
-                            title = {
-                                Text(tournament?.name.orEmpty())
-                            },
-                            navigationIcon = {
-                                IconButton(onClick = { ctx.finish() }) {
-                                    Icon(
-                                        painterResource(R.drawable.ic_arrow_back),
-                                        contentDescription = null
-                                    )
-                                }
-                            },
-                            actions = { TopBarActions() }
-                        )
+                        TopAppBar(title = {
+                            Text(tournament?.name.orEmpty())
+                        }, navigationIcon = {
+                            IconButton(onClick = { ctx.finish() }) {
+                                Icon(
+                                    painterResource(R.drawable.ic_arrow_back),
+                                    contentDescription = null
+                                )
+                            }
+                        }, actions = { TopBarActions() })
                     }
                 },
                 bottomBar = {
@@ -113,8 +109,7 @@ internal data class TournamentScreen(private val userTeam: UserTeam?) : Screen, 
                     CompositionLocalProvider(LocalNavigator provides navigator) {
                         tab?.FloatingAction()
                     }
-                }
-            ) { paddingValues ->
+                }) { paddingValues ->
 
                 CompositionLocalProvider(
                     LocalSnackbarHostState provides snackbarHostState,
@@ -138,8 +133,7 @@ private fun RowScope.TabNavigationItem(tab: BottomTab) {
     val tabNavigator = LocalTabNavigator.current
     val selected = tabNavigator.current == tab
 
-    NavigationBarItem(
-        selected = selected,
+    NavigationBarItem(selected = selected,
         onClick = { tabNavigator.current = tab },
         label = { Text(tab.options.title) },
         icon = {
@@ -147,14 +141,15 @@ private fun RowScope.TabNavigationItem(tab: BottomTab) {
                 painter = if (selected) tab.selectedIcon else tab.options.icon!!,
                 contentDescription = tab.options.title
             )
-        }
-    )
+        })
 }
 
 @Composable
 private fun TopBarActions() {
     val viewModel: TournamentViewModel = viewModel()
     val tournament by viewModel.tournamentFlow.collectAsState(null)
+    val ctx = LocalContext.current as Activity
+
     var showEditNameSheet by remember { mutableStateOf(false) }
     var showOptions by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -176,18 +171,15 @@ private fun TopBarActions() {
     }
 
     if (showDeleteDialog) {
-        DeleteTournamentDialog(
-            onDismiss = { showDeleteDialog = false },
-            onDelete = {
-                viewModel.deleteTournament()
-                showDeleteDialog = false
-            }
-        )
+        DeleteTournamentDialog(onDismiss = { showDeleteDialog = false }, onDelete = {
+            viewModel.deleteTournament()
+            showDeleteDialog = false
+            ctx.finish()
+        })
     }
 
     if (addTeamsDialog) {
-        AlertDialog(
-            onDismissRequest = { addTeamsDialog = false },
+        AlertDialog(onDismissRequest = { addTeamsDialog = false },
             title = { Text(stringResource(R.string.add_teams_from_matches)) },
             text = { Text(stringResource(R.string.add_teams_from_matches_desc)) },
             confirmButton = {
@@ -202,8 +194,7 @@ private fun TopBarActions() {
                 TextButton(onClick = { addTeamsDialog = false }) {
                     Text(stringResource(android.R.string.cancel))
                 }
-            }
-        )
+            })
     }
 
     IconButton(onClick = { showEditNameSheet = true }) {
@@ -214,58 +205,113 @@ private fun TopBarActions() {
         Icon(painterResource(R.drawable.ic_more_vertical), null)
     }
 
-    val exportLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            it.data?.data?.let { documentUri ->
-                viewModel.exportTeamsToCsv(documentUri)
-            }
-        }
-
-    val importLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            it.data?.data?.let { documentUri ->
-                viewModel.importTeamsFromCsv(documentUri)
-            }
-        }
-
     DropdownMenu(expanded = showOptions, onDismissRequest = { showOptions = false }) {
-        DropdownMenuItem(
-            text = { Text(stringResource(R.string.action_delete_tournament)) },
-            onClick = { viewModel.deleteTournament() },
-            leadingIcon = { Icon(painterResource(R.drawable.ic_delete), null) }
-        )
+        DropdownMenuItem(text = { Text(stringResource(R.string.action_delete_tournament)) },
+            onClick = { showDeleteDialog = true },
+            leadingIcon = { Icon(painterResource(R.drawable.ic_delete), null) })
 
-        DropdownMenuItem(
-            text = { Text(stringResource(R.string.action_add_teams)) },
+        DropdownMenuItem(text = { Text(stringResource(R.string.action_add_teams)) },
             onClick = { addTeamsDialog = true },
-            leadingIcon = { Icon(painterResource(R.drawable.ic_move_group), null) }
-        )
+            leadingIcon = { Icon(painterResource(R.drawable.ic_move_group), null) })
 
+        Divider()
+
+        CsvExport()
+        CsvImport()
+    }
+}
+
+@Composable
+private fun CsvExport() {
+    val viewModel: TournamentViewModel = viewModel()
+
+    val tournament by viewModel.tournamentFlow.collectAsState(null)
+    var expanded by remember { mutableStateOf(false) }
+
+    val exportTeamsLauncher = rememberExportResult(viewModel::exportTeamsToCsv)
+    val exportMatchesLauncher = rememberExportResult(viewModel::exportMatchesToCsv)
+    val exportOprLauncher = rememberExportResult(viewModel::exportOprToCsv)
+
+    DropdownMenuItem(
+        text = { Text(stringResource(R.string.csv_export)) },
+        onClick = { expanded = true },
+    )
+
+    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
         DropdownMenuItem(
-            text = { Text(stringResource(R.string.csv_export)) },
+            leadingIcon = { Icon(painterResource(R.drawable.ic_teams_filled), null) },
+            text = { Text(stringResource(R.string.csv_export_teams)) },
             onClick = {
-                val intent = getSpreadsheetIntent(Intent.ACTION_CREATE_DOCUMENT)
-                intent.flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                intent.putExtra(Intent.EXTRA_TITLE, tournament?.name)
-
-                exportLauncher.launch(intent)
+                expanded = false
+                exportTeamsLauncher.launch(tournament?.name)
             },
         )
 
         DropdownMenuItem(
-            text = { Text(stringResource(R.string.csv_import)) },
+            leadingIcon = { Icon(painterResource(R.drawable.ic_matches_filled), null) },
+            text = { Text(stringResource(R.string.csv_export_matches)) },
             onClick = {
-                val intent = getSpreadsheetIntent(Intent.ACTION_OPEN_DOCUMENT)
-                intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                expanded = false
+                exportMatchesLauncher.launch(tournament?.name)
+            },
+        )
 
-                importLauncher.launch(intent)
+        DropdownMenuItem(
+            leadingIcon = { Icon(painterResource(R.drawable.ic_leaderboard_filled), null) },
+            text = { Text(stringResource(R.string.csv_export_leaderboard)) },
+            onClick = {
+                expanded = false
+                exportOprLauncher.launch(tournament?.name)
             },
         )
     }
 }
 
-private fun getSpreadsheetIntent(action: String) =
-    Intent(action).apply {
-        type = "application/vnd.ms-excel"
-        addCategory(Intent.CATEGORY_OPENABLE)
+
+@Composable
+private fun CsvImport() {
+    val viewModel: TournamentViewModel = viewModel()
+
+    var expanded by remember { mutableStateOf(false) }
+
+    val importTeamsLauncher = rememberImportResult(viewModel::importTeamsFromCsv)
+    val importMatchesLauncher = rememberImportResult(viewModel::importMatchesFromCsv)
+
+    DropdownMenuItem(
+        text = { Text(stringResource(R.string.csv_import)) },
+        onClick = { expanded = true },
+    )
+
+    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        DropdownMenuItem(
+            leadingIcon = { Icon(painterResource(R.drawable.ic_teams_filled), null) },
+            text = { Text(stringResource(R.string.csv_import_teams)) },
+            onClick = {
+                expanded = false
+                importTeamsLauncher.launch(arrayOf("text/*"))
+            },
+        )
+
+        DropdownMenuItem(
+            leadingIcon = { Icon(painterResource(R.drawable.ic_matches_filled), null) },
+            text = { Text(stringResource(R.string.csv_import_matches)) },
+            onClick = {
+                expanded = false
+                importMatchesLauncher.launch(arrayOf("text/*"))
+            },
+        )
     }
+}
+
+@Composable
+private fun rememberExportResult(callback: (Uri) -> Unit) =
+    rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) {
+        if (it != null) callback(it)
+    }
+
+@Composable
+private fun rememberImportResult(callback: (Uri) -> Unit) =
+    rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) {
+        if (it != null) callback(it)
+    }
+

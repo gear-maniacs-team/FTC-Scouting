@@ -21,10 +21,6 @@
     <string name="team_starting_zone_right">Right</string>
     <string name="team_id_name">#%d - %s</string>
     <string name="team_predicted_score">Predicted Score: %d</string>
-    <string name="autonomous_score">Autonomous Score: %d</string>
-    <string name="driver_controlled_score">Driver Controlled Score: %d</string>
-    <string name="endgame_score">End Game Score: %d</string>
-    <string name="total_score">Total Score: %d</string>
     <string name="team_description">Autonomous Score: %d\nDriver Controlled Score: %d\nPreferred Start Zone: %s\nNotes: %s</string>
     <string name="team_notes">Notes</string>
     <string name="delete_team">Delete this team?</string>
@@ -32,20 +28,8 @@
     <string name="delete_team_desc_offline">Are you sure you want to delete this team?</string>
     <string name="period_autonomous">Autonomous</string>
     <string name="period_driver_controlled">Driver Controlled</string>
-    <string name="period_end_game">End Game</string>
     <string name="prompt_autonomous_score">Autonomous Score</string>
     <string name="prompt_driver_controlled_score">Driver Controlled Score</string>
-    <string name="prompt_wobble_delivery">Wobble Goal Delivery</string>
-    <string name="prompt_wobble_delivery_zone">Wobble Goal Delivery:</string>
-    <string name="prompt_wobble_delivery_start_line">Start Line</string>
-    <string name="prompt_wobble_delivery_dead_zone">Dead Zone</string>
-    <string name="prompt_wobble_rings">Wobble Goal Rings</string>
-    <string name="prompt_navigation">Navigation</string>
-    <string name="prompt_low_goal">Low Goal</string>
-    <string name="prompt_mid_goal">Mid Goal</string>
-    <string name="prompt_high_goal">High Goal</string>
-    <string name="prompt_power_shot">Power Shot</string>
-    <string name="prompt_parking">Parking</string>
     <string name="start_zone">Preferred Start Zone:</string>
 
     <!-- Strings related to matches -->
@@ -64,9 +48,9 @@
     <string name="match_draw">Draw</string>
     <string name="match_basic_info">R%d &#8211; B%d: %s</string>
     <string name="match_score_details">Red: %d &#8211; Blue: %d</string>
-    <string name="match_detailed_info">Red Alliance: %d and %d\nBlue Alliance: %d and %d</string>
-    <string name="match_info_red_alliance">Red Alliance: %d and %d</string>
-    <string name="match_info_blue_alliance">Blue Alliance: %d and %d</string>
+    <string name="match_detailed_info">Red Alliance: %d &amp; %d\nBlue Alliance: %d &amp; %d</string>
+    <string name="match_info_red_alliance">Red Alliance: %d &amp; %d</string>
+    <string name="match_info_blue_alliance">Blue Alliance: %d &amp; %d</string>
     <string name="add_teams_from_matches">Add teams from matches</string>
     <string name="add_teams_from_matches_desc">Are you sure you want to add all the teams from the Matches?</string>
 
@@ -81,11 +65,11 @@
     <string name="csv_saved_successfully">Exported to CSV successfully</string>
     <string name="csv_export">Export to CSV</string>
     <string name="csv_import">Import from CSV</string>
-    <string name="csv_export_teams">Export teams to CSV</string>
-    <string name="csv_export_matches">Export matches to CSV</string>
-    <string name="csv_export_opr">Export the Offensive Power Ranking to CSV</string>
-    <string name="csv_import_teams">Import teams from CSV</string>
-    <string name="csv_import_matches">Import matches from CSV</string>
+    <string name="csv_export_teams">Export Teams to CSV</string>
+    <string name="csv_export_matches">Export Matches to CSV</string>
+    <string name="csv_export_leaderboard">Export Leaderboard to CSV</string>
+    <string name="csv_import_teams">Import Teams from CSV</string>
+    <string name="csv_import_matches">Import Matches from CSV</string>
 
     <!-- Color Mark-->
     <string name="color_mark">Color Mark:</string>

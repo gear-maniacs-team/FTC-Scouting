@@ -37,6 +37,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.FloatingActionButton
@@ -124,6 +125,7 @@ class IntroActivity : ComponentActivity() {
                 val slide = slides[pagerState.currentPage]
 
                 val backgroundColor by animateColorAsState(colorResource(slide.background))
+                val fabColor by animateColorAsState(colorResource(slide.backgroundDark))
 
                 Surface(color = backgroundColor) {
                     Box(
@@ -145,7 +147,7 @@ class IntroActivity : ComponentActivity() {
                             }
                         }
 
-                        BottomSection()
+                        BottomSection(fabColor)
                     }
                 }
             }
@@ -153,7 +155,7 @@ class IntroActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun BoxScope.BottomSection() {
+    private fun BoxScope.BottomSection(fabColor: Color) {
         val scope = rememberCoroutineScope()
 
         Box(
@@ -168,13 +170,18 @@ class IntroActivity : ComponentActivity() {
                 enter = scaleIn(),
                 exit = scaleOut(),
             ) {
-                FloatingActionButton(onClick = {
-                    scope.launch {
-                        pagerState.animateScrollToPage(
-                            pagerState.currentPage - 1
-                        )
-                    }
-                }) {
+                FloatingActionButton(
+                    onClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(
+                                pagerState.currentPage - 1
+                            )
+                        }
+                    },
+                    containerColor = fabColor,
+                    contentColor = Color.White,
+                    shape = CircleShape,
+                ) {
                     Icon(painterResource(R.drawable.ic_arrow_back), null)
                 }
             }
@@ -185,13 +192,18 @@ class IntroActivity : ComponentActivity() {
                 enter = scaleIn(),
                 exit = scaleOut(),
             ) {
-                FloatingActionButton(onClick = {
-                    scope.launch {
-                        pagerState.animateScrollToPage(
-                            pagerState.currentPage - 1
-                        )
-                    }
-                }) {
+                FloatingActionButton(
+                    onClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(
+                                pagerState.currentPage - 1
+                            )
+                        }
+                    },
+                    containerColor = fabColor,
+                    contentColor = Color.White,
+                    shape = CircleShape,
+                ) {
                     Icon(painterResource(R.drawable.ic_arrow_forward), null)
                 }
             }
@@ -202,12 +214,17 @@ class IntroActivity : ComponentActivity() {
                 enter = scaleIn(),
                 exit = scaleOut(),
             ) {
-                FloatingActionButton(onClick = {
-                    scope.launch {
-                        appPreferences.setSeenIntro(true)
-                        finish()
-                    }
-                }) {
+                FloatingActionButton(
+                    onClick = {
+                        scope.launch {
+                            appPreferences.setSeenIntro(true)
+                            finish()
+                        }
+                    },
+                    containerColor = fabColor,
+                    contentColor = Color.White,
+                    shape = CircleShape,
+                ) {
                     Icon(painterResource(R.drawable.ic_done), null)
                 }
             }
@@ -319,8 +336,7 @@ class IntroActivity : ComponentActivity() {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Checkbox(
-                    checked = termsAccepted,
-                    onCheckedChange = null
+                    checked = termsAccepted, onCheckedChange = null
                 )
 
                 Text(
