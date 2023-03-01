@@ -273,6 +273,11 @@ class AccountActivity : ComponentActivity() {
             .getReference(DatabasePaths.KEY_ULTIMATE_GOAL)
             .child(user.uid)
             .setValue(null)
+
+        Firebase.database
+            .getReference(DatabasePaths.KEY_UNIVERSAL)
+            .child(user.uid)
+            .setValue(null)
             .addOnCompleteListener {
                 signOutCleaner.get().run(this.applicationContext)
             }

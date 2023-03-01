@@ -16,7 +16,7 @@ internal object TournamentModule {
     @Provides
     fun provideTournamentFirebaseReference() = Firebase.ifLoggedIn {
         Firebase.database
-            .getReference(DatabasePaths.KEY_ULTIMATE_GOAL)
+            .getReference(DatabasePaths.KEY_UNIVERSAL)
             .child(it.uid)
     }
 }

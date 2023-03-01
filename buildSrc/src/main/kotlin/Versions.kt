@@ -4,7 +4,7 @@ object Versions {
     object App {
         private const val major = 3
         private const val minor = 0
-        private const val patch = 0
+        private const val patch = 1
 
         const val versionCode: Int = major * 100 + minor * 10 + patch
         const val versionName: String = "$major.$minor.$patch"

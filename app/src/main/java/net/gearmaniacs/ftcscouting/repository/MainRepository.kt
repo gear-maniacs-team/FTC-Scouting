@@ -34,7 +34,7 @@ class MainRepository @Inject constructor(
     private val tournamentsReference by lazy {
         Firebase.ifLoggedIn {
             Firebase.database
-                .getReference(DatabasePaths.KEY_ULTIMATE_GOAL)
+                .getReference(DatabasePaths.KEY_UNIVERSAL)
                 .child(it.uid)
         }
     }
