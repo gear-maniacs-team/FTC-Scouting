@@ -26,12 +26,9 @@
     <string name="delete_team">Delete this team?</string>
     <string name="delete_team_desc">Are you sure you want to delete this team? If deleted, it will also be removed from all other devices!</string>
     <string name="delete_team_desc_offline">Are you sure you want to delete this team?</string>
-    <string name="period_autonomous">Autonomous</string>
     <string name="prompt_predicted_score">Predicted Score</string>
-    <string name="period_driver_controlled">Driver Controlled</string>
     <string name="prompt_autonomous_score">Autonomous Score</string>
     <string name="prompt_driver_controlled_score">Driver Controlled Score</string>
-    <string name="start_zone">Preferred Start Zone:</string>
 
     <!-- Strings related to matches -->
     <string name="delete_match">Delete this match?</string>

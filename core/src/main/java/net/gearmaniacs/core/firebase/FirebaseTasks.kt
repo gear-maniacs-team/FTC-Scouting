@@ -4,7 +4,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.getValue
+import com.google.firebase.database.getValue
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
@@ -23,7 +23,7 @@ fun <T : DatabaseClass<T>> DatabaseReference.listValueEventFlow(
         override fun onDataChange(snapshot: DataSnapshot) {
             val list = snapshot.children.asSequence()
                 .filter { it.key != null }
-                .mapNotNull { parser(it) }
+                .mapNotNull(parser)
                 .toList()
 
             channel.trySendBlocking(list)

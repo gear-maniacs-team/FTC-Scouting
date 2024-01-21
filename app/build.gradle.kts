@@ -18,7 +18,7 @@ android {
         targetSdk = Versions.Sdk.target
         versionCode = Versions.App.versionCode
         versionName = Versions.App.versionName
-        resourceConfigurations += listOf("en", "ro")
+        resourceConfigurations += listOf("en")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -44,8 +44,8 @@ android {
         getByName("release") {
             addManifestPlaceholders(mapOf("disableFirebase" to false))
 
-            isDebuggable = true
-            signingConfig = signingConfigs.getByName("debug")
+//            isDebuggable = true
+//            signingConfig = signingConfigs.getByName("debug")
             isMinifyEnabled = true
             isShrinkResources = true
 
