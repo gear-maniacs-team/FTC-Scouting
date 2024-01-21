@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
-import net.gearmaniacs.core.model.team.Team
+import net.gearmaniacs.database.model.team.Team
 
 @Dao
 abstract class TeamsDao {

@@ -6,16 +6,21 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.view.WindowCompat
+import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
+import cafe.adriel.voyager.core.lifecycle.LocalNavigatorScreenLifecycleProvider
+import cafe.adriel.voyager.core.lifecycle.NavigatorScreenLifecycleProvider
+import cafe.adriel.voyager.core.lifecycle.ScreenLifecycleOwner
+import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideOrientation
 import cafe.adriel.voyager.transitions.SlideTransition
 import dagger.hilt.android.AndroidEntryPoint
 import net.gearmaniacs.core.extensions.parcelable
-import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.core.ui.theme.AppTheme
+import net.gearmaniacs.database.model.Tournament
 import net.gearmaniacs.tournament.ui.screen.TournamentScreen
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
@@ -24,7 +29,6 @@ class TournamentActivity : ComponentActivity() {
 
     private val viewModel by viewModels<TournamentViewModel>()
 
-    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -34,12 +38,21 @@ class TournamentActivity : ComponentActivity() {
             ?: throw IllegalArgumentException("Missing $ARG_TOURNAMENT_KEY")
         viewModel.startListening()
 
-        setContent {
-            AppTheme {
-                val user = intent.parcelable<UserTeam>(ARG_USER)
+        val emptyLifecycleProvider = object : NavigatorScreenLifecycleProvider {
+            @ExperimentalVoyagerApi
+            override fun provide(screen: Screen): List<ScreenLifecycleOwner> = emptyList()
+        }
 
-                Navigator(TournamentScreen(user)) {
-                    SlideTransition(it, orientation = SlideOrientation.Vertical)
+        setContent {
+            CompositionLocalProvider(
+                LocalNavigatorScreenLifecycleProvider provides emptyLifecycleProvider
+            ) {
+                AppTheme {
+                    val user = intent.parcelable<UserTeam>(ARG_USER)
+
+                    Navigator(TournamentScreen(user)) {
+                        SlideTransition(it, orientation = SlideOrientation.Vertical)
+                    }
                 }
             }
         }

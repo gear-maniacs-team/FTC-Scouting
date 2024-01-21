@@ -7,9 +7,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.utils.AppPreferences
 import net.gearmaniacs.core.utils.UserTeamPreferences
+import net.gearmaniacs.database.model.Tournament
 import net.gearmaniacs.ftcscouting.repository.MainRepository
 import javax.inject.Inject
 

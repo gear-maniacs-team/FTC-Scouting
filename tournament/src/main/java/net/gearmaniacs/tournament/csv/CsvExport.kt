@@ -1,9 +1,9 @@
 package net.gearmaniacs.tournament.csv
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
-import net.gearmaniacs.core.model.match.Match
-import net.gearmaniacs.core.model.team.RankedTeam
-import net.gearmaniacs.core.model.team.Team
+import net.gearmaniacs.database.model.match.Match
+import net.gearmaniacs.database.model.team.RankedTeam
+import net.gearmaniacs.database.model.team.Team
 
 internal object CsvExport {
 

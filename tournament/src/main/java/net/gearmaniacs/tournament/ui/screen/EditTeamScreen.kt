@@ -7,7 +7,10 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,15 +24,18 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -42,12 +48,12 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.parcelize.Parcelize
 import net.gearmaniacs.core.model.enums.ColorMark
 import net.gearmaniacs.core.model.enums.StartZone
-import net.gearmaniacs.core.model.team.Team
+import net.gearmaniacs.database.model.team.Team
 import net.gearmaniacs.core.ui.NumberField
 import net.gearmaniacs.tournament.R
+import net.gearmaniacs.tournament.ui.ColorMarkChip
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
-@OptIn(ExperimentalAnimationApi::class)
 @Parcelize
 internal class EditTeamScreen(private val team: Team?) : Screen, Parcelable {
 
@@ -70,7 +76,7 @@ internal class EditTeamScreen(private val team: Team?) : Screen, Parcelable {
         var teleOpScore by rememberSaveable {
             mutableStateOf(team?.teleOpScore?.toString().orEmpty())
         }
-        var colorMark by rememberSaveable {
+        val colorMark = rememberSaveable {
             mutableStateOf(team?.colorMark ?: ColorMark.DEFAULT)
         }
         var startZone by rememberSaveable {
@@ -90,7 +96,7 @@ internal class EditTeamScreen(private val team: Team?) : Screen, Parcelable {
                             name = teamName,
                             autonomousScore = autoScore.toInt(),
                             teleOpScore = teleOpScore.toInt(),
-                            colorMark = colorMark,
+                            colorMark = colorMark.value,
                             startZone = startZone,
                             notes = notes,
                         )
@@ -126,7 +132,12 @@ internal class EditTeamScreen(private val team: Team?) : Screen, Parcelable {
                     singleLine = true,
                 )
 
-                Spacer(Modifier.height(32.dp))
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    stringResource(R.string.prompt_predicted_score),
+                    color = MaterialTheme.colorScheme.secondary
+                )
 
                 NumberField(
                     modifier = Modifier.fillMaxWidth(),
@@ -144,6 +155,28 @@ internal class EditTeamScreen(private val team: Team?) : Screen, Parcelable {
                     maxLength = 3,
                 )
 
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    stringResource(R.string.color_mark),
+                    color = MaterialTheme.colorScheme.secondary
+                )
+
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.Start)
+                ) {
+                    SingleChoiceColorMarkChip(ColorMark.DEFAULT, colorMark)
+                    SingleChoiceColorMarkChip(ColorMark.RED, colorMark)
+                    SingleChoiceColorMarkChip(ColorMark.BLUE, colorMark)
+                    SingleChoiceColorMarkChip(ColorMark.GREEN, colorMark)
+                    SingleChoiceColorMarkChip(ColorMark.YELLOW, colorMark)
+                }
+
+                Spacer(Modifier.height(16.dp))
+
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = notes,
@@ -152,6 +185,16 @@ internal class EditTeamScreen(private val team: Team?) : Screen, Parcelable {
                     singleLine = true,
                 )
             }
+        }
+    }
+
+    @Composable
+    private fun SingleChoiceColorMarkChip(
+        colorMark: ColorMark,
+        currentState: MutableState<ColorMark>
+    ) {
+        ColorMarkChip(colorMark, colorMark == currentState.value) {
+            currentState.value = colorMark
         }
     }
 

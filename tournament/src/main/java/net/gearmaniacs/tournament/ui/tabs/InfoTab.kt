@@ -30,7 +30,7 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import kotlinx.parcelize.Parcelize
 import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.core.model.isNullOrEmpty
-import net.gearmaniacs.core.model.match.Match
+import net.gearmaniacs.database.model.match.Match
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
@@ -52,7 +52,8 @@ internal data class InfoTab(private val userTeam: UserTeam?) : BottomTab, Parcel
     override fun Content() = Box(
         Modifier
             .fillMaxSize()
-            .wrapContentSize()) {
+            .wrapContentSize()
+    ) {
 
         if (userTeam.isNullOrEmpty()) {
             Text(

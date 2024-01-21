@@ -1,4 +1,4 @@
-package net.gearmaniacs.core.model.team
+package net.gearmaniacs.database.model.team
 
 import androidx.compose.runtime.Immutable
 

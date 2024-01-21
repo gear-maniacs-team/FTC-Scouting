@@ -2,9 +2,9 @@ package net.gearmaniacs.tournament.opr
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import net.gearmaniacs.core.model.match.Match
-import net.gearmaniacs.core.model.team.BaseTeam
-import net.gearmaniacs.core.model.team.RankedTeam
+import net.gearmaniacs.database.model.match.Match
+import net.gearmaniacs.database.model.team.BaseTeam
+import net.gearmaniacs.database.model.team.RankedTeam
 
 object OffensivePowerRanking {
 

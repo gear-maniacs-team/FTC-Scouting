@@ -3,9 +3,9 @@ package net.gearmaniacs.tournament.csv
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import net.gearmaniacs.core.model.enums.ColorMark
 import net.gearmaniacs.core.model.enums.StartZone
-import net.gearmaniacs.core.model.match.Alliance
-import net.gearmaniacs.core.model.match.Match
-import net.gearmaniacs.core.model.team.Team
+import net.gearmaniacs.database.model.match.Alliance
+import net.gearmaniacs.database.model.match.Match
+import net.gearmaniacs.database.model.team.Team
 import net.gearmaniacs.tournament.csv.CsvFields.MATCH_COLUMNS
 import net.gearmaniacs.tournament.csv.CsvFields.TEAM_COLUMNS
 

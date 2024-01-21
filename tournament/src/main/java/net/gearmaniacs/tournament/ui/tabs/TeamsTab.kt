@@ -18,8 +18,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -54,15 +52,15 @@ import kotlinx.coroutines.ensureActive
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.model.enums.ColorMark
 import net.gearmaniacs.core.model.enums.StartZone
-import net.gearmaniacs.core.model.team.Team
+import net.gearmaniacs.database.model.team.Team
 import net.gearmaniacs.tournament.R
+import net.gearmaniacs.tournament.ui.ColorMarkChip
 import net.gearmaniacs.tournament.ui.ExpandableItem
 import net.gearmaniacs.tournament.ui.model.TeamSearchQuery
 import net.gearmaniacs.tournament.ui.screen.EditTeamScreen
 import net.gearmaniacs.tournament.utils.filterTeamsByQuery
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 internal object TeamsTab : BottomTab {
 
     override val options: TabOptions
@@ -175,34 +173,29 @@ internal object TeamsTab : BottomTab {
                     .horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.Start)
             ) {
-                QueryChip(R.string.color_default, query.defaultMarker) {
+                ColorMarkChip(ColorMark.DEFAULT, query.defaultMarker) {
                     query = query.copy(defaultMarker = !query.defaultMarker)
                 }
-                QueryChip(R.string.color_red, query.redMarker) {
+                ColorMarkChip(ColorMark.RED, query.redMarker) {
                     query = query.copy(redMarker = !query.redMarker)
                 }
-                QueryChip(R.string.color_blue, query.blueMarker) {
+                ColorMarkChip(ColorMark.BLUE, query.blueMarker) {
                     query = query.copy(blueMarker = !query.blueMarker)
                 }
-                QueryChip(R.string.color_green, query.greenMarker) {
+                ColorMarkChip(ColorMark.GREEN, query.greenMarker) {
                     query = query.copy(greenMarker = !query.greenMarker)
                 }
-                QueryChip(R.string.color_yellow, query.yellowMarker) {
+                ColorMarkChip(ColorMark.YELLOW, query.yellowMarker) {
                     query = query.copy(yellowMarker = !query.yellowMarker)
                 }
             }
         }
 
     @Composable
-    private fun QueryChip(label: Int, value: Boolean, onClick: () -> Unit) {
-        FilterChip(selected = value, onClick = onClick, label = { Text(stringResource(label)) })
-    }
-
-    @Composable
     private fun TeamItem(viewModel: TournamentViewModel, team: Team) {
         val nav = LocalNavigator.current
         var showDialog by remember { mutableStateOf(false) }
-        val markerColor = colorResource(team.colorMark.getResColor())
+        val markerColor = colorResource(team.colorMark.getColorResource())
 
         val preferredLocation = when (team.startZone) {
             StartZone.LEFT -> R.string.team_starting_zone_left

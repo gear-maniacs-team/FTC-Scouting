@@ -1,11 +1,9 @@
 plugins {
-    id("com.android.library")
-
-    kotlin("android")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
     id("kotlin-parcelize")
-    kotlin("kapt")
-
-    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -14,7 +12,6 @@ android {
 
     defaultConfig {
         minSdk = Versions.Sdk.min
-        targetSdk = Versions.Sdk.target
 
         consumerProguardFiles("core-rules.pro")
     }
@@ -39,7 +36,9 @@ dependencies {
 
     api(platform(libs.firebase.bom))
     api(libs.firebase.analytics)
-    api(libs.firebase.auth)
+    api(libs.firebase.auth) {
+        exclude(module = "play-services-safetynet")
+    }
     api(libs.firebase.database)
 
     api(libs.compose.compiler)
@@ -54,12 +53,8 @@ dependencies {
 
     api(libs.voyager.navigator)
     api(libs.voyager.transitions)
-    api(libs.voyager.androidx)
-
-    implementation(libs.room.runtime)
-    kapt(libs.room.compiler)
 
     implementation(libs.dagger.android)
-    kapt(libs.dagger.compiler)
-    kapt(libs.dagger.hilt.compiler)
+    ksp(libs.dagger.compiler)
+    ksp(libs.dagger.hilt.compiler)
 }

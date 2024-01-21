@@ -1,4 +1,4 @@
-package net.gearmaniacs.core.model.match
+package net.gearmaniacs.database.model.match
 
 import android.os.Parcelable
 import androidx.compose.runtime.Immutable
@@ -11,7 +11,7 @@ import androidx.room.PrimaryKey
 import com.google.firebase.database.Exclude
 import kotlinx.parcelize.Parcelize
 import net.gearmaniacs.core.model.DatabaseClass
-import net.gearmaniacs.core.model.Tournament
+import net.gearmaniacs.database.model.Tournament
 
 @Immutable
 @Parcelize

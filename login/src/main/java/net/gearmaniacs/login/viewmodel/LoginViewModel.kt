@@ -17,8 +17,4 @@ class LoginViewModel @Inject constructor(
         appPreferences.setHasOfflineAccount(true)
     }
 
-    suspend fun setLoggedIn() {
-        appPreferences.setLoggedIn(true)
-    }
-
 }

@@ -1,10 +1,9 @@
 plugins {
-    id("com.android.library")
-
-    kotlin("android")
-    kotlin("kapt")
-
-    id("dagger.hilt.android.plugin")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -13,23 +12,28 @@ android {
 
     defaultConfig {
         minSdk = Versions.Sdk.min
-        targetSdk = Versions.Sdk.target
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += mapOf(
-                    "room.incremental" to "true",
-                    "room.schemaLocation" to "$projectDir/schemas",
-                    "room.expandProjection" to "true"
-                )
-            }
-        }
     }
 
     compileOptions {
         sourceCompatibility = Versions.java
         targetCompatibility = Versions.java
     }
+    kotlin {
+        sourceSets {
+            debug {
+                kotlin.srcDir("build/generated/source/proto/debug/java")
+            }
+            release {
+                kotlin.srcDir("build/generated/source/proto/release/java")
+            }
+        }
+    }
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+    arg("room.incremental", true.toString())
+    arg("room.expandProjection", true.toString())
 }
 
 dependencies {
@@ -38,9 +42,9 @@ dependencies {
     implementation("com.jakewharton:process-phoenix:2.1.2")
 
     implementation(libs.room.runtime)
-    kapt(libs.room.compiler)
+    ksp(libs.room.compiler)
 
     implementation(libs.dagger.android)
-    kapt(libs.dagger.compiler)
-    kapt(libs.dagger.hilt.compiler)
+    ksp(libs.dagger.compiler)
+    ksp(libs.dagger.hilt.compiler)
 }

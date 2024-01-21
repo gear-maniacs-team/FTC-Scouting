@@ -18,9 +18,9 @@ import kotlinx.coroutines.withContext
 import net.gearmaniacs.core.extensions.app
 import net.gearmaniacs.core.extensions.toast
 import net.gearmaniacs.core.model.UserTeam
-import net.gearmaniacs.core.model.match.Match
-import net.gearmaniacs.core.model.team.RankedTeam
-import net.gearmaniacs.core.model.team.Team
+import net.gearmaniacs.database.model.match.Match
+import net.gearmaniacs.database.model.team.RankedTeam
+import net.gearmaniacs.database.model.team.Team
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.csv.CsvExport
 import net.gearmaniacs.tournament.csv.CsvImport

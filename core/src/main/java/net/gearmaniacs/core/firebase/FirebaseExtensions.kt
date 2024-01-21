@@ -6,7 +6,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.core.utilities.PushIdGenerator
 import com.google.firebase.ktx.Firebase
 
-@Suppress("unused")
+@Suppress("UnusedReceiverParameter")
 val Firebase.isLoggedIn
     get() = Firebase.auth.currentUser != null
 
@@ -18,7 +18,7 @@ inline fun <R> Firebase.ifLoggedIn(func: (user: FirebaseUser) -> R): R? {
     return null
 }
 
-@Suppress("unused")
+@Suppress("UnusedReceiverParameter")
 @SuppressLint("RestrictedApi")
 fun Firebase.generatePushId(): String =
     PushIdGenerator.generatePushChildName(System.currentTimeMillis())

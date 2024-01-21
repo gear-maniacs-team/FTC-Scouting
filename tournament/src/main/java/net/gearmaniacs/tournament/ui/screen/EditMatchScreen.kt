@@ -3,7 +3,6 @@ package net.gearmaniacs.tournament.ui.screen
 import android.os.Parcelable
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
@@ -54,15 +53,15 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.parcelize.Parcelize
-import net.gearmaniacs.core.model.match.Alliance
-import net.gearmaniacs.core.model.match.Match
-import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.core.ui.NumberField
+import net.gearmaniacs.database.model.match.Alliance
+import net.gearmaniacs.database.model.match.Match
+import net.gearmaniacs.database.model.team.Team
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.utils.filterTeamsByQuery
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Parcelize
 internal class EditMatchScreen(
     private val nextMatchId: Int,

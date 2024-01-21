@@ -1,39 +1,38 @@
 [versions]
-agp = "8.0.0-beta03"
-kotlin = "1.8.10"
-kotlin_coroutines = "1.6.4"
-kotlin_serialization = "1.4.1"
-kotlin_datetime = "0.4.0"
-kotlin_collections = "0.3.5"
-compose_other = "1.4.0-beta02"
-compose_activity = "1.7.0-beta02"
-compose_viewmodel = "2.5.1"
-compose_compiler = "1.4.3"
-compose_material3 = "1.1.0-alpha07"
-accompanist = "0.28.0"
-voyager = "1.0.0-rc03"
-androidx_room = "2.5.0"
+agp = "8.2.1"
+kotlin_base = "1.9.22"
+kotlin_ksp = "1.9.22-1.0.17"
+kotlin_coroutines = "1.7.3"
+compose_other = "1.5.4"
+compose_activity = "1.8.2"
+compose_viewmodel = "2.7.0"
+compose_compiler = "1.5.8"
+compose_material3 = "1.1.2"
+voyager = "1.0.0"
+androidx_room = "2.6.1"
 androidx_datastore = "1.0.0"
-dagger = "2.45"
-firebase = "31.2.2"
+dagger = "2.50"
+google_services = "4.4.0"
+firebase = "32.7.1"
+
+[plugins]
+android_application = { id = "com.android.application", version.ref = "agp" }
+android_library = { id = "com.android.library", version.ref = "agp" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin_base" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "kotlin_ksp" }
+googleServices = { id = "com.google.gms.google-services", version.ref = "google_services" }
 
 [libraries]
-agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
-kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-
 kotlin_coroutines_android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlin_coroutines" }
 kotlin_coroutines_playServices = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlin_coroutines" }
-kotlin_serializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin_serialization" }
-kotlin_dateTime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlin_datetime" }
-kotlin_collections = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlin_collections" }
-kotlin_reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+kotlin_reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin_base" }
 
 androidX_dataStore = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx_datastore" }
 
 compose_compiler = { module = "androidx.compose.compiler:compiler", version.ref = "compose_compiler" }
 compose_foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose_other" }
 compose_ui = { module = "androidx.compose.ui:ui", version.ref = "compose_other" }
-compose_material = { module = "androidx.compose.material:material", version.ref = "compose_other" }
 compose_material3 = { module = "androidx.compose.material3:material3", version.ref = "compose_material3" }
 compose_animation = { module = "androidx.compose.animation:animation", version.ref = "compose_other" }
 compose_tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose_other" }
@@ -44,21 +43,15 @@ compose_viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose",
 voyager_navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager_tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 voyager_transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
-voyager_androidx = { module = "cafe.adriel.voyager:voyager-androidx", version.ref = "voyager" }
-voyager_hilt = { module = "cafe.adriel.voyager:voyager-hilt", version.ref = "voyager" }
 
 room_runtime = { module = "androidx.room:room-ktx", version.ref = "androidx_room" }
 room_compiler = { module = "androidx.room:room-compiler", version.ref = "androidx_room" }
-room_test = { module = "androidx.room:room-testing", version.ref = "androidx_room" }
 
 dagger_android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
 dagger_compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger" }
-dagger_plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "dagger" }
-dagger_hilt_compiler = "androidx.hilt:hilt-compiler:1.0.0"
-dagger_hilt_work = "androidx.hilt:hilt-work:1.0.0"
+dagger_hilt_compiler = "androidx.hilt:hilt-compiler:1.1.0"
 
 firebase_bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase" }
-firebase_analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
-firebase_database = { module = "com.google.firebase:firebase-database-ktx" }
-firebase_auth = { module = "com.google.firebase:firebase-auth-ktx" }
-firebase_crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+firebase_analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase_database = { module = "com.google.firebase:firebase-database" }
+firebase_auth = { module = "com.google.firebase:firebase-auth" }

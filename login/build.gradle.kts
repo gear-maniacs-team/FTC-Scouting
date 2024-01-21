@@ -1,10 +1,8 @@
 plugins {
-    id("com.android.library")
-
-    kotlin("android")
-    kotlin("kapt")
-
-    id("dagger.hilt.android.plugin")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -13,7 +11,6 @@ android {
 
     defaultConfig {
         minSdk = Versions.Sdk.min
-        targetSdk = Versions.Sdk.target
 
         consumerProguardFiles("login-rules.pro")
     }
@@ -37,6 +34,6 @@ dependencies {
     implementation(project(Modules.database))
 
     implementation(libs.dagger.android)
-    kapt(libs.dagger.compiler)
-    kapt(libs.dagger.hilt.compiler)
+    ksp(libs.dagger.compiler)
+    ksp(libs.dagger.hilt.compiler)
 }

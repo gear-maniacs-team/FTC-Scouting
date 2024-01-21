@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import net.gearmaniacs.core.model.team.RankedTeam
+import net.gearmaniacs.database.model.team.RankedTeam
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.viewmodel.TournamentViewModel
 import kotlin.random.Random

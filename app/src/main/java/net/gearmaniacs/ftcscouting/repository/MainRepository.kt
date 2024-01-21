@@ -1,9 +1,9 @@
 package net.gearmaniacs.ftcscouting.repository
 
+import com.google.firebase.database.getValue
 import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
-import dagger.hilt.android.scopes.ActivityRetainedScoped
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -15,16 +15,16 @@ import net.gearmaniacs.core.firebase.ifLoggedIn
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.firebase.listValueEventFlow
 import net.gearmaniacs.core.firebase.valueEventFlow
-import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.UserTeam
 import net.gearmaniacs.core.model.isNullOrEmpty
-import net.gearmaniacs.core.model.team.Team
 import net.gearmaniacs.core.utils.UserTeamPreferences
 import net.gearmaniacs.database.dao.TeamsDao
 import net.gearmaniacs.database.dao.TournamentsDao
+import net.gearmaniacs.database.model.Tournament
+import net.gearmaniacs.database.model.team.Team
 import javax.inject.Inject
 
-@ActivityRetainedScoped
+@ViewModelScoped
 class MainRepository @Inject constructor(
     private val tournamentsDao: TournamentsDao,
     private val teamsDao: TeamsDao,

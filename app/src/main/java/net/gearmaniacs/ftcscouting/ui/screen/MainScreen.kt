@@ -22,7 +22,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -44,8 +43,8 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import net.gearmaniacs.core.extensions.startActivity
 import net.gearmaniacs.core.firebase.isLoggedIn
-import net.gearmaniacs.core.model.Tournament
 import net.gearmaniacs.core.model.UserTeam
+import net.gearmaniacs.database.model.Tournament
 import net.gearmaniacs.ftcscouting.R
 import net.gearmaniacs.ftcscouting.ui.activity.AboutActivity
 import net.gearmaniacs.ftcscouting.viewmodel.MainViewModel
@@ -152,7 +151,6 @@ private fun BottomBar() {
 
     var showCreateDialog by remember { mutableStateOf(false) }
     var showMenu by remember { mutableStateOf(false) }
-    val bottomSheetState = rememberSheetState(true)
 
     BottomAppBar(
         actions = {
@@ -189,7 +187,6 @@ private fun BottomBar() {
     if (showMenu) {
         ModalBottomSheet(
             onDismissRequest = { showMenu = false },
-            sheetState = bottomSheetState,
         ) {
             MainMenuContent(userTeam)
         }

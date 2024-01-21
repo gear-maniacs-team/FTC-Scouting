@@ -7,13 +7,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
@@ -36,6 +34,7 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -64,7 +63,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -73,7 +71,7 @@ import net.gearmaniacs.core.utils.AppPreferences
 import net.gearmaniacs.login.R
 import javax.inject.Inject
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @AndroidEntryPoint
 class IntroActivity : ComponentActivity() {
 
@@ -93,7 +91,6 @@ class IntroActivity : ComponentActivity() {
         Slide(R.color.color_intro_3, R.color.color_dark_intro_3) {
             PresentationSlide(R.string.intro_title_3, R.string.intro_desc_3, R.drawable.img_intro_3)
         },
-
         Slide(R.color.color_intro_4, R.color.color_dark_intro_4) {
             TermsSlide()
         },
@@ -103,7 +100,6 @@ class IntroActivity : ComponentActivity() {
     lateinit var appPreferences: AppPreferences
 
     private var termsAccepted by mutableStateOf(false)
-    private val pagerState = PagerState(0, 0f)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,18 +110,19 @@ class IntroActivity : ComponentActivity() {
             return
         }
 
-        onBackPressedDispatcher.addCallback(this) {
-            lifecycleScope.launch {
-                pagerState.animateScrollToPage(0)
-            }
-        }
-
         setContent {
             AppTheme {
+                val pagerState = rememberPagerState { slides.size }
                 val slide = slides[pagerState.currentPage]
 
-                val backgroundColor by animateColorAsState(colorResource(slide.background))
-                val fabColor by animateColorAsState(colorResource(slide.backgroundDark))
+                val backgroundColor by animateColorAsState(
+                    colorResource(slide.background),
+                    label = "background"
+                )
+                val fabColor by animateColorAsState(
+                    colorResource(slide.backgroundDark),
+                    label = "fab"
+                )
 
                 Surface(color = backgroundColor) {
                     Box(
@@ -134,9 +131,8 @@ class IntroActivity : ComponentActivity() {
                             .safeDrawingPadding()
                     ) {
                         HorizontalPager(
-                            pageCount = slides.size,
+                            modifier = Modifier.align(Alignment.Center),
                             state = pagerState,
-                            modifier = Modifier.align(Alignment.Center)
                         ) { page ->
                             Box(
                                 Modifier
@@ -147,7 +143,7 @@ class IntroActivity : ComponentActivity() {
                             }
                         }
 
-                        BottomSection(fabColor)
+                        BottomSection(pagerState, fabColor)
                     }
                 }
             }
@@ -155,7 +151,7 @@ class IntroActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun BoxScope.BottomSection(fabColor: Color) {
+    private fun BoxScope.BottomSection(pagerState: PagerState, fabColor: Color) {
         val scope = rememberCoroutineScope()
 
         Box(

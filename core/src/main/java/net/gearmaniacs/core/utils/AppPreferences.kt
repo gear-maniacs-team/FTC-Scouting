@@ -29,7 +29,7 @@ class AppPreferences @Inject constructor(
         preferences[SEEN_INTRO] = value
     }
 
-    val isLoggedInFlow: Flow<Boolean> =
+    private val isLoggedInFlow: Flow<Boolean> =
         settingsDataStore.data.map { it[IS_LOGGED_IN] ?: false }.distinctUntilChanged()
 
     suspend fun isLoggedIn() = isLoggedInFlow.first()

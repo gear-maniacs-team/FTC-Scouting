@@ -11,7 +11,6 @@
     <string name="action_edit">Edit</string>
     <string name="action_create_tournament">Create Tournament</string>
     <string name="action_delete_account">Delete Account</string>
-    <string name="link_your_account">Link your account</string>
     <string name="title_tournament_name">Tournament Name</string>
     <string name="none">None</string>
     <string name="title_about">About</string>
@@ -30,4 +29,12 @@
     <string name="team_details">Team Details</string>
     <string name="team_details_updated">Team Details Updated</string>
     <string name="team_details_update_error">Team Details could not be updated</string>
+
+    <!-- Color Mark-->
+    <string name="color_mark">Color Mark:</string>
+    <string name="color_default">Default</string>
+    <string name="color_red">Red</string>
+    <string name="color_blue">Blue</string>
+    <string name="color_green">Green</string>
+    <string name="color_yellow">Yellow</string>
 </resources>

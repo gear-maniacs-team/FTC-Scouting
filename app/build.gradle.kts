@@ -1,12 +1,11 @@
 plugins {
-    id("com.android.application")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlinAndroid)
 
-    kotlin("android")
-    kotlin("kapt")
+    alias(libs.plugins.ksp)
 
     id("com.google.gms.google-services")
-    id("com.google.firebase.crashlytics")
-    id("dagger.hilt.android.plugin")
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -20,16 +19,6 @@ android {
         versionCode = Versions.App.versionCode
         versionName = Versions.App.versionName
         resourceConfigurations += listOf("en", "ro")
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += mapOf(
-                    "room.incremental" to "true",
-                    "room.schemaLocation" to "$projectDir/schemas",
-                    "room.expandProjection" to "true"
-                )
-            }
-        }
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -50,15 +39,13 @@ android {
 
     buildTypes {
         getByName("debug") {
-            addManifestPlaceholders(mapOf("disableFirebase" to true, "enableCrashlytics" to false))
-
-            extra.set("enableCrashlytics", false)
-            extra.set("alwaysUpdateBuildId", false)
-            isCrunchPngs = false
+            addManifestPlaceholders(mapOf("disableFirebase" to true))
         }
         getByName("release") {
-            addManifestPlaceholders(mapOf("disableFirebase" to false, "enableCrashlytics" to true))
+            addManifestPlaceholders(mapOf("disableFirebase" to false))
 
+            isDebuggable = true
+            signingConfig = signingConfigs.getByName("debug")
             isMinifyEnabled = true
             isShrinkResources = true
 
@@ -68,6 +55,12 @@ android {
             )
         }
     }
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+    arg("room.incremental", true.toString())
+    arg("room.expandProjection", true.toString())
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).configureEach {
@@ -83,22 +76,17 @@ dependencies {
     implementation(project(Modules.tournament))
     implementation(project(Modules.database))
 
-    implementation(libs.firebase.crashlytics)
     implementation(libs.compose.compiler)
 
-    kapt(libs.room.compiler)
+    ksp(libs.room.compiler)
 
     implementation(libs.dagger.android)
-    kapt(libs.dagger.compiler)
-    kapt(libs.dagger.hilt.compiler)
+    ksp(libs.dagger.compiler)
+    ksp(libs.dagger.hilt.compiler)
 
     testImplementation(Libs.Test.junit)
     testImplementation(Libs.Test.core)
     testImplementation(libs.dagger.android)
-    kaptTest(libs.dagger.compiler)
-    kaptTest(libs.dagger.hilt.compiler)
-}
-
-kapt {
-    correctErrorTypes = true
+    kspTest(libs.dagger.compiler)
+    kspTest(libs.dagger.hilt.compiler)
 }

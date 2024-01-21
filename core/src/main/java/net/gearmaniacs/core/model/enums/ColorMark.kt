@@ -12,12 +12,20 @@ enum class ColorMark : Parcelable {
     GREEN,
     YELLOW;
 
-    fun getResColor(): Int = when (this) {
-        DEFAULT -> android.R.color.white
+    fun getColorResource(): Int = when (this) {
+        DEFAULT -> android.R.color.darker_gray
         RED -> R.color.marker_red
         BLUE -> R.color.marker_blue
         GREEN -> R.color.marker_green
         YELLOW -> R.color.marker_yellow
+    }
+
+    fun getLabelResource() = when (this) {
+        DEFAULT -> R.string.color_default
+        RED -> R.string.color_red
+        BLUE -> R.string.color_blue
+        GREEN -> R.string.color_green
+        YELLOW -> R.string.color_yellow
     }
 
     override fun toString() = when (this) {

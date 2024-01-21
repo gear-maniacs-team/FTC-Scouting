@@ -2,9 +2,9 @@ package net.gearmaniacs.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import net.gearmaniacs.core.model.Tournament
-import net.gearmaniacs.core.model.match.Match
-import net.gearmaniacs.core.model.team.Team
+import net.gearmaniacs.database.model.Tournament
+import net.gearmaniacs.database.model.match.Match
+import net.gearmaniacs.database.model.team.Team
 import net.gearmaniacs.database.dao.MatchesDao
 import net.gearmaniacs.database.dao.TeamsDao
 import net.gearmaniacs.database.dao.TournamentsDao

@@ -151,12 +151,6 @@ class AccountActivity : ComponentActivity() {
 
         Spacer(Modifier.height(8.dp))
 
-        Text(
-            stringResource(R.string.link_your_account),
-            fontSize = 17.sp,
-            color = MaterialTheme.colorScheme.secondary
-        )
-
         if (showSignOutDialog) {
             AlertDialog(
                 onDismissRequest = { showSignOutDialog = false },

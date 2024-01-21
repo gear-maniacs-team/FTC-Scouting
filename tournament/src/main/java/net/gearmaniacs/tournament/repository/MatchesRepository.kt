@@ -15,7 +15,7 @@ import net.gearmaniacs.core.firebase.generatePushId
 import net.gearmaniacs.core.firebase.ifLoggedIn
 import net.gearmaniacs.core.firebase.isLoggedIn
 import net.gearmaniacs.core.firebase.listValueEventFlow
-import net.gearmaniacs.core.model.match.Match
+import net.gearmaniacs.database.model.match.Match
 import net.gearmaniacs.database.dao.MatchesDao
 import javax.inject.Inject
 

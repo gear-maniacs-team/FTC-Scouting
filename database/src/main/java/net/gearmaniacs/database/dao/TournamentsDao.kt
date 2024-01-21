@@ -8,7 +8,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
-import net.gearmaniacs.core.model.Tournament
+import net.gearmaniacs.database.model.Tournament
 
 @Dao
 abstract class TournamentsDao {

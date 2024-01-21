@@ -97,8 +97,8 @@ class AboutActivity : ComponentActivity() {
             role = Role.Button, onClick = action
         ) else Modifier
         ListItem(modifier = mod,
-            headlineText = { Text(title) },
-            supportingText = if (summary != null) {
+            headlineContent = { Text(title) },
+            supportingContent = if (summary != null) {
                 { Text(summary) }
             } else null,
             leadingContent = {
@@ -113,8 +113,8 @@ class AboutActivity : ComponentActivity() {
 
     @Composable
     private fun AppCard() = OutlinedCard(Modifier.fillMaxWidth()) {
-        ListItem(headlineText = { Text(stringResource(R.string.app_name)) },
-            supportingText = { Text("© 2019-2023 Gear Maniacs") },
+        ListItem(headlineContent = { Text(stringResource(R.string.app_name)) },
+            supportingContent = { Text("© 2019-2023 Gear Maniacs") },
             leadingContent = {
                 ResourcesCompat.getDrawable(
                     LocalContext.current.resources, R.mipmap.ic_launcher, LocalContext.current.theme

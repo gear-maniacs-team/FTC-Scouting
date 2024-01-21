@@ -27,6 +27,7 @@
     <string name="delete_team_desc">Are you sure you want to delete this team? If deleted, it will also be removed from all other devices!</string>
     <string name="delete_team_desc_offline">Are you sure you want to delete this team?</string>
     <string name="period_autonomous">Autonomous</string>
+    <string name="prompt_predicted_score">Predicted Score</string>
     <string name="period_driver_controlled">Driver Controlled</string>
     <string name="prompt_autonomous_score">Autonomous Score</string>
     <string name="prompt_driver_controlled_score">Driver Controlled Score</string>
@@ -70,12 +71,4 @@
     <string name="csv_export_leaderboard">Export Leaderboard to CSV</string>
     <string name="csv_import_teams">Import Teams from CSV</string>
     <string name="csv_import_matches">Import Matches from CSV</string>
-
-    <!-- Color Mark-->
-    <string name="color_mark">Color Mark:</string>
-    <string name="color_default">Default</string>
-    <string name="color_red">Red</string>
-    <string name="color_blue">Blue</string>
-    <string name="color_green">Green</string>
-    <string name="color_yellow">Yellow</string>
 </resources>

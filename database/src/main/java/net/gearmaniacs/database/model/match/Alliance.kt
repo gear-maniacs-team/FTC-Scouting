@@ -1,4 +1,4 @@
-package net.gearmaniacs.core.model.match
+package net.gearmaniacs.database.model.match
 
 import android.os.Parcelable
 import androidx.compose.runtime.Immutable

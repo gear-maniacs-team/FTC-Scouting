@@ -1,10 +1,11 @@
-package net.gearmaniacs.core.model
+package net.gearmaniacs.database.model
 
 import androidx.compose.runtime.Immutable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.firebase.database.Exclude
+import net.gearmaniacs.core.model.DatabaseClass
 
 @Immutable
 @Entity(tableName = "tournament")

@@ -44,7 +44,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 import net.gearmaniacs.core.firebase.isLoggedIn
-import net.gearmaniacs.core.model.match.Match
+import net.gearmaniacs.database.model.match.Match
 import net.gearmaniacs.tournament.R
 import net.gearmaniacs.tournament.ui.ExpandableItem
 import net.gearmaniacs.tournament.ui.screen.EditMatchScreen
